@@ -1,0 +1,105 @@
+#aeControlIframe {
+    position: absolute;
+    zIndex: 9;
+}
+
+#aeControlContainer {
+    position: absolute;
+  	top: 10px;
+  	left: 10px;
+	width: 300px;
+	height: 60px;
+	zIndex: 10;
+	background: rgba(255, 255, 255, 0.7);
+}
+
+#aeControlContainer #aeTitleContainer {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: inherit;
+	height: 60px;
+	margin: 0px;
+	padding: 0px;
+	box-sizing:border-box;
+}
+
+#aeControlContainer #aeTitleContainer p {
+	text-align: center;
+	width: inherit;
+    padding: 0px;
+    margin: 0px;
+    font-size: 3em;
+    font-color: white;
+}
+
+#aeControlContainer #aeMenuButtonContainer {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: auto;
+	height: auto;
+	margin: 0px;
+    padding: 13px 0px 0px 10px;
+}
+	
+#aeControlContainer #aeMenuButtonContainer #aeMenuList {
+	display: none;
+	position: absolute;
+	top: 100%;
+    left: 100%;
+    margin-left: 10px;
+    font-size: 1em;
+}
+
+/* begin COMMON FIELDS styling */
+.avyAutoComplete {
+    border: 1px solid #77d5f7;
+    width: 200px;
+    height: 20px;
+}
+
+.avyDate {
+    border: 1px solid #77d5f7;
+    width: 80px;
+    height: 20px;
+}
+
+.avyLocation {
+    border: 1px solid #77d5f7;
+    width: 200px;
+    height: 20px;
+}
+
+.avyRDSliderContainer {
+	position: relative;
+	width: 200px
+}
+
+.avyRDSliderValue {
+	position: fixed;
+    width: 30px;
+    background: transparent;
+    border: none;
+    height: 20px;
+    font-size: 1em;
+    padding: 0px 5px 0px 0px;
+}
+
+.avyRDSlider {
+    float: right;
+    width: 170px;
+    margin-top: 5px;
+}
+
+.avyHumanNumber {
+	border: none;
+    width: 30px;
+    height: 20px;
+    font-size: 1em;
+}
+
+.avyHumanNumber .ui-spinner-input {
+    font-size: .7em;
+}
+/* end COMMON FIELDS styling */

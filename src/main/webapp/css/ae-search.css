@@ -1,0 +1,79 @@
+#aeSearchControlContainer {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+#aeSearchControlContainer hr {
+    margin: 0px 10px 0px 10px;
+    padding: 0px;
+}
+
+.avySearchHeaderContainer {
+    position: relative;
+    padding: 15px 0px 25px 10px;
+}
+
+.avySearchHeader {
+    position: fixed;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 150px;
+}
+
+#avySearchHelpLink {
+    float: right;
+    font-size: .9em;
+    padding: 3px 10px 0px 0px;
+}
+
+.avySearchTableLabel {
+	width: 70px;
+	font-size: 1em;
+	padding: 5px 0px 0px 0px;
+    margin: 0px;
+}
+
+.avySearchTableInput {
+	width:210px;
+	padding: 5px 0px 0px 0px;
+    margin: 0px;
+}
+
+#aeSearchControlContainer table {
+    padding: 0px 10px 0px 10px;
+    margin: 0px;
+    width: 100%;
+    cellspacing: 0px;
+    cellpadding: 0px;
+}
+
+#aeSearchControlContainer table .avySearchSubHeader {
+	padding: 20px 0px 5px 0px;
+}
+
+#avySearchDetailsTable #avySearchHumanNumbersTable {
+	float: left;
+	width: 100%;
+	cellspacing: 0px;
+    cellpadding: 0px;
+    padding: 0px;
+    margin: 0px;
+    border-spacing: 0px;
+}
+
+#avySearchButtonContainer {
+	position: relative;
+	width: 100%;
+}
+
+#avySearchButtonContainer #avySearchButton {
+    float: right;
+    padding: 5px;
+    margin: 20px 10px 20px 0px;
+}

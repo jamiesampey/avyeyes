@@ -1,0 +1,31 @@
+.ui-widget {
+	font-size: 1em;
+}
+
+div.ui-datepicker{
+ font-size: .8em;
+ z-index: 1002;
+}
+
+.noclose .ui-dialog-titlebar-close {
+    display: none;
+}
+
+.ui-widget-overlay {
+   background: black;
+   opacity: .40;
+   filter: Alpha(Opacity=40);
+}
+
+.ui-autocomplete {
+	font-size: .9em;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+}
+
+.ui-button-text {
+    font-size: .8em;
+    padding: 1px 1px 1px 1px;
+}

@@ -1,0 +1,58 @@
+.avyReportDialog {
+    font-size: 1em;
+}
+
+#avyReportDetailsDialog {
+    padding: 0px;
+    margin: 0px;	
+}
+
+#avyReportDetailsMainTable {
+	cellspacing: 0px;
+	cellpadding: 0px;
+	border-spacing: 0px;
+}
+
+#avyReportDetailsMainTable td {
+    padding: 0px;
+    margin: 0px;
+    border-spacing: 0px;
+}
+
+#avyReportDetailsLeftColumnTable {
+	padding: 0px;
+	margin: 0px;
+	cellspacing: 0px;
+    cellpadding: 0px;
+	border-spacing: 10px;
+}
+
+#avyReportDetailsRightColumnTable {
+    padding: 0px 0px 0px 20px;
+    margin: 0px;
+    cellspacing: 0px;
+    cellpadding: 0px;
+    border-spacing: 10px;
+}
+
+#avyReportDetailsDialog table td label {
+    width: 100px;
+}
+
+.avyReportSectionHeader {
+	font-weight: bold;
+	padding: 10px 0px 10px 0px;
+}
+
+#avyReportSlopeElevation {
+    border: 0px;
+    width: 60px;
+}
+
+.avySlopeAspectAutoComplete {
+    width: 30px;
+}
+
+.avySlopeAngle {
+	width: 30px;
+}

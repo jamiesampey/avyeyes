@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <title>Avy Eyes</title>
+	    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	    
+	    <script type="text/javascript" src="/js/lib/jquery-1.10.2.js"></script>
+	    <script type="text/javascript" src="/js/lib/jquery-ui-1.10.4.custom.min.js"></script>
+	    <script type="text/javascript" src="/js/lib/jquery.geocomplete.min.js"></script>
+        <script type="text/javascript" src="/js/lib/geo-0.2.min.js"></script>	           
+
+		<script type="text/javascript" src="/js/ae-earth.js"></script>
+		<script type="text/javascript" src="/js/ae-draw.js"></script>
+	    <script type="text/javascript" src="/js/ae-report.js"></script>
+        <script type="text/javascript" src="/js/ae-view.js"></script>
+        	           
+	    <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.10.3.custom.css">
+		<link rel="stylesheet" type="text/css" href="/css/ae-common.css">
+		<link rel="stylesheet" type="text/css" href="/css/ae-search.css">
+		<link rel="stylesheet" type="text/css" href="/css/ae-report.css">
+	    <link rel="stylesheet" type="text/css" href="/css/ae-jquery-mods.css">
+	</head>
+	<body style="margin:0px; overflow:hidden; font-size:100%">	
+	    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+
+	    <script type="text/javascript">
+          var avyEyesView;
+          function geInitCallback() {
+	    	 avyEyesView = new AvyEyesView();
+          }      
+	    </script>    
+		
+		<div id="map3d" style="height:100%; width:100%;"></div>
+		
+		<div id="liftContent" class="lift:surround?with=default&at=content">
+		
+		<div id="multiDialog" class="avyReportDialog"></div>
+		
+		<div id="aeControlContainer">
+            <div id="aeTitleContainer">
+                <p>Avy Eyes</p>
+            </div>
+		    <div id="aeMenuButtonContainer">
+		      <ul id="aeMenuList">
+		          <li><a id="reportMenuItem" href="#">Report</a></li>
+		          <li><a id="aboutMenuItem" href="#">About</a></li>
+		          <li><a id="reportTestMenuItem" href="#">test details</a></li>
+		      </ul>
+		      <a id="aeMenuButton" href="#"><img src="/images/threeLinesMenu.png"></a>
+		    </div>
+		
+		    <form class="lift:form.ajax">
+			<div id="aeSearchControlContainer" class="lift:AvySearch?form.post">
+			  <hr>
+			  
+			  <div class="avySearchHeaderContainer">
+			     <div id="avySearchTitle" class="avySearchHeader">Avalanche Search</div>
+			     <div id="avySearchHelpLink"><a href="#">how it works</a></div>
+			  </div>
+			  
+			  <table id="avySearchDetailsTable">
+                 <tr>			         
+			         <td class="avySearchTableLabel"><label for="avySearchLocation">Location</label></td>
+			         <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation" type="text"/></td>
+			      </tr>
+			      <tr>
+    			      <td class="avySearchTableLabel"><label for="avySearchFromDate">From</label></td>
+    			      <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate" type="text" /></td>
+    			  </tr>
+    			  <tr>
+			         <td class="avySearchTableLabel"><label for="avySearchToDate">To</label></td>
+			         <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
+			      </tr>
+                  <tr>
+                    <td class="avySearchSubHeader" colspan="2">Additional Criteria</td>
+                  </tr>  
+		         <tr>
+		             <td class="avySearchTableLabel"><label for="avySearchType">Type</label></td>
+                     <td class="avySearchTableInput">
+                        <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
+                        <input id="avySearchType" type="hidden"/>
+                     </td>
+                 </tr>
+                 <tr>
+                  <td class="avySearchTableLabel"><label for="avySearchTrigger">Trigger</label></td>
+                  <td class="avySearchTableInput">
+                    <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                    <input id="avySearchTrigger" type="hidden"/>
+                  </td>
+                 </tr>
+                 <tr>
+                    <td class="avySearchTableLabel"><label for="avySearchRsizeValue">R size</label></td>
+                    <td class="avySearchTableInput">
+                           <div class="avyRDSliderContainer">
+	                        <input id="avySearchRsizeValue" class="avyRDSliderValue" type="text"/>
+	                        <div id="avyRSearchRsizeSlider" class="avyRDSlider"/>
+                        </div>  
+                    </td>
+                 </tr>
+                 <tr>
+                    <td class="avySearchTableLabel"><label for="avySearchDsizeValue">D size</label></td>
+                    <td class="avySearchTableInput">
+                       <div class="avyRDSliderContainer">
+	                       <input id="avySearchDsizeValue" class="avyRDSliderValue" type="text"/>
+	                       <div id="avySearchDsizeSlider" class="avyRDSlider"/>
+                       </div>
+                    </td>
+                 </tr>
+                 <tr>
+                    <td class="avySearchSubHeader" colspan="2">Human Numbers</td>
+                  </tr>
+                 <tr>
+                    <td colspan="2">
+                        <table id="avySearchHumanNumbersTable">
+                            <tr>
+			                    <td><label for="avySearchNumCaught">Caught</label></td>
+			                    <td><input id="avySearchNumCaught" class="avyHumanNumber"/></td>
+                                <td><label for="avySearchNumKilled">Killed</label></td>
+                                <td><input id="avySearchNumKilled" class="avyHumanNumber"/></td>
+			                 </tr>
+			             </table>
+                    </td>
+                </tr>
+             </table>
+             <div>
+                <input id="avySearchNorthLimit" type="hidden"/>
+                <input id="avySearchEastLimit" type="hidden"/>
+                <input id="avySearchSouthLimit" type="hidden"/>
+                <input id="avySearchWestLimit" type="hidden"/>
+                <input id="avySearchCameraAlt" type="hidden"/>
+                <input id="avySearchCameraTilt" type="hidden"/>
+                <input id="avySearchCameraLat" type="hidden"/>
+                <input id="avySearchCameraLng" type="hidden"/>
+             </div>
+		     <div id="avySearchButtonContainer">
+		          <input id="avySearchButton" type="submit" class="avyButton" value="Search" />
+		          <input id="avySearchSubmitBinding" type="hidden"/>
+		     </div>
+			</div>
+			</form> <!-- END LIFT FORM -->
+		</div>
+		
+	   <div id="avyReportInitDialog" class="avyReportDialog" title="Avalanche Report">
+		  <p>Click the link below to begin an avalanche report.</p>
+		  <p>You may optionally enter a nearby location to prime the Google Earth view.</p>
+		      <label for='avyReportInitLocation'>Nearby location</label>
+		      <input id='avyReportInitLocation' class='avyLocation' type='text'/>
+	   </div>
+	   
+	   <div id="avyReportBeginDialog" class="avyReportDialog" title="Avalanche Report">
+	       <p>Use the Google Earth controls in the upper right hand corner to zoom in on the avalanche path.</p> 
+	       <p>Zoom in and tilt the view as much as possible to get a complete view of the slide path while 
+	       still keeping the <i>entire</i> path visible in the window. <a href="#">See Example</a></p>
+	       <p>When you have the best view of the entire path click Begin Drawing to trace the avalanche path with the mouse. 
+	       Click once to begin the trace, move the mouse around the perimeter of the path, and click a second time to complete the drawing.<p>
+       </div>
+       
+       <div id="avyReportDrawConfirmDialog" class="avyReportDialog" title="Avalanche Report">
+            <p>Are you satisfied with the drawing?</p>
+            <p>Click Accept Drawing to keep the current drawing and continue on to enter information about this avalanche. 
+            Click Redraw to erase the current drawing and try again.</p>       
+       </div>
+	   
+	   <div id="avyReportDetailsDialog" class="avyReportDialog" title="Avalanche Report">
+	   <form class="lift:form.ajax">
+	   <div class="lift:AvyReport">
+	       <table id="avyReportDetailsMainTable">
+	           <tr>
+	             <td>
+	             <table id="avyReportDetailsLeftColumnTable">
+    	             <tr> 
+    	               <td class="avyReportSectionHeader" colspan="2">Scene Description</td>
+    	             </tr>
+                     <tr>
+                        <td><label for="avyReportAreaName">Area name</label></td>
+                        <td><input id="avyReportAreaName" type="text"/></td>
+                     </tr>	             
+	                 <tr>
+	                   <td><label for="avyReportDate">Date</label></td>
+                       <td><input id="avyReportDate" class="avyDate" type="text"/></td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportWeather">Sky</label></td>
+                       <td>
+                         <input class="avyAutoComplete avySkyAutoComplete" type="text"/>
+                         <input id="avyReportSky" type="hidden"/>
+                       </td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportPrecip">Precip</label></td>
+                        <td>
+                          <input class="avyAutoComplete avyPrecipAutoComplete" type="text"/>
+                          <input id="avyReportPrecip" type="hidden"/>
+                        </td>
+	                 </tr>
+	                 <tr>
+	                   <td class="avyReportSectionHeader" colspan="2"><br>Avalanche Description</td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportType">Type</label></td>
+                       <td>
+                         <input class="avyAutoComplete avyTypeAutoComplete" type="text">
+                         <input id="avyReportType" type="hidden"/>
+                       </td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportTrigger">Trigger</label></td>
+                       <td>
+                         <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                         <input id="avyReportTrigger" type="hidden" />
+                       </td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportBedSurface">Bed surface</label></td>
+                       <td>
+                         <input class="avyAutoComplete avyInterfaceAutoComplete" type="text"/>
+                         <input id="avyReportBedSurface" type="hidden"/>
+                       </td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportRsizeValue">R size</label></td>
+                       <td>
+                         <div class="avyRDSliderContainer">
+                            <input id="avyReportRsizeValue" class="avyRDSliderValue" type="text"/>
+                            <div id="avyReportRsizeSlider" class="avyRDSlider"/>
+                         </div>
+                       </td>
+	                 </tr>
+	                 <tr>
+	                   <td><label for="avyReportDsizeValue">D size</label></td>
+                       <td>
+                         <div class="avyRDSliderContainer">
+                            <input id="avyReportDsizeValue" class="avyRDSliderValue" type="text"/>
+                            <div id="avyReportDsizeSlider" class="avyRDSlider"/>
+                         </div>
+                       </td>
+	                 </tr>
+	             </table>
+	             </td>
+	             <td>
+	               <table id="avyReportDetailsRightColumnTable">
+	                 </tr>
+                       <td class="avyReportSectionHeader" colspan="2">Site Description</td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportElevation">Slope Elevation</label></td>
+                       <td><input id="avyReportElevation" type="text" readonly />ft</td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportAspect">Slope Aspect</label></td>
+                       <td>
+                         <input id="avyReportAspectAC" class="avyAutoComplete avyAspectAutoComplete" type="text" />
+                         <input id="avyReportAspect" type="hidden"/>
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportAngle">Slope Angle</label></td>
+                       <td><input id="avyReportAngle" class="avySlopeAngle" />degrees</td>
+                     </tr>
+                     <tr>
+                       <td colspan="2"/>
+                     </tr>
+                     <tr>
+                       <td class="avyReportSectionHeader" colspan="2"><br>Human Numbers</td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportNumCaught">Caught</label></td>
+                       <td><input id="avyReportNumCaught" class="avyHumanNumber"/></td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportNumPartiallyBuried">Partially Buried</label></td>
+                       <td><input id="avyReportNumPartiallyBuried" class="avyHumanNumber"/></td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportNumFullyBuried">Fully Buried</label></td>
+                       <td><input id="avyReportNumFullyBuried" class="avyHumanNumber"/></td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportNumInjured">Injured</label></td>
+                       <td><input id="avyReportNumInjured" class="avyHumanNumber"/></td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportNumKilled">Killed</label></td>
+                       <td><input id="avyReportNumKilled" class="avyHumanNumber"/></td>
+                     </tr>
+                     <tr>
+                       <td><label for="avyReportModeOfTravel">Mode of travel</label></td>
+                       <td>
+                         <input class="avyAutoComplete avyModeOfTravelAutoComplete" type="text"/>
+                         <input id="avyReportModeOfTravel" type="hidden"/>
+                       </td>
+                     </tr> 
+	               </table>
+	             </td>
+	           </tr>  
+               <tr>
+                    <td class="avyReportSectionHeader" colspan="2">Comments</td>
+               </tr>
+               <tr>
+                    <td colspan="2"><textarea id="avyReportComments" rows="4" cols="80"></textarea></td>
+               </tr>
+               <tr>
+                    <td class="avyReportSectionHeader" colspan="2">Images</td>
+               </tr>
+               <tr>
+                   <td colspan="2">[image upload holder]
+                   <input id="avyReportLat" type="hidden"/>
+                   <input id="avyReportLng" type="hidden"/>
+                    <input id="avyReportKml" type="hidden"/>
+                    <input id="avyReportSubmitBinding" type="hidden"/>
+                    </td>
+               </tr>
+		   </table>
+	   </div>   
+	   </form> <!-- END LIFT FORM -->
+	   </div> <!-- END DIALOG DIV -->
+	   
+	   </div> <!-- END LIFT CONTENT -->
+	   
+	   <iframe id='aeControlIframe' frameBorder='0' scrolling='no' src='javascript:void(0);'/>
+  </body>
+</html>
