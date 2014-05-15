@@ -58,7 +58,7 @@ object AvySearch {
       else {
         val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange)
         
-        Call("avyEyesView.overlaySearchResultKml", kml.toString).cmd &
+        Call("view.overlaySearchResultKml", kml.toString).cmd &
         JsDialog.info("Found " + matchingAvalanchesInRange.size 
             + " avalanches within the current view that match the search criteria. Click on an avalanche for details.")
       }

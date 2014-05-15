@@ -27,14 +27,6 @@ object AvyReport {
   var modeOfTravel = ""; var submitterEmail = ""; var comments = ""; var kmlStr = ""
       
   def render = {
-//    S.appendJs(
-//        Call("avyEyesView.wireAutoCompletes", ".avySkyAutoComplete", Sky.toJsArray).cmd &
-//        Call("avyEyesView.wireAutoCompletes", ".avyPrecipAutoComplete", Precip.toJsArray).cmd &
-//        Call("avyEyesView.wireAutoCompletes", ".avyBedSurfaceAutoComplete", AvalancheInterface.toJsArray).cmd &
-//        Call("avyEyesView.wireAutoCompletes", ".avySlopeAspectAutoComplete", Aspect.toJsArray).cmd &
-//        Call("avyEyesView.wireAutoCompletes", ".avyModeOfTravelAutoComplete", ModeOfTravel.toJsArray).cmd
-//        )
-    
     "#avyReportLat" #> SHtml.hidden(lat = _, "") &
     "#avyReportLng" #> SHtml.hidden(lng = _, "") &
     "#avyReportAreaName" #> SHtml.text("", areaName = _) &

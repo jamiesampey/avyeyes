@@ -22,6 +22,8 @@ jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js"
 
 jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
 
+(test in Test) <<= (test in Test) dependsOn (jasmine)
+
 libraryDependencies ++= {
   val liftVersion = "2.5.1"
   Seq(

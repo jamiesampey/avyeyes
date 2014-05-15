@@ -1,6 +1,8 @@
-function AvyReport(aeView, submitReportCallback) {
+define(['ae-draw', 'jquery-ui'], function(AvyDraw) {
+
+function AvyReport(avyEyesView, submitReportCallback) {
 	var self = this;
-	var view = aeView;
+	var view = avyEyesView;
 	var avyDraw = null;
 	
 	this.clearAvyDrawing = function() {
@@ -103,7 +105,7 @@ function AvyReport(aeView, submitReportCallback) {
 	}
 	
 	this.doAvyDraw = function() {
-		avyDraw = new AvyDraw(
+		avyDraw = new AvyDraw(view.getGE(),
 			function(lat, lng, elev, aspect, angle, kmlStr) {
 				$('#avyReportLat').val(lat);
 				$('#avyReportLng').val(lng);
@@ -176,5 +178,7 @@ function AvyReport(aeView, submitReportCallback) {
 			  ]
 	    });	
 	}
-	
 }
+
+return AvyReport;
+});

@@ -1,5 +1,8 @@
-function AvyDraw(submitDrawing) {
+define(['geojs'], function() {
+
+function AvyDraw(gePlugin, submitDrawing) {
 	var self = this;
+	var ge = gePlugin;
 	
 	var AVY_DRAW_COLOR = '773b3bff';
 	var FEET_PER_METER = 3.28084;
@@ -114,3 +117,6 @@ function AvyDraw(submitDrawing) {
 	  }
 	}
 }
+
+return AvyDraw;
+});

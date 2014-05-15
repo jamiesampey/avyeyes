@@ -1,7 +1,18 @@
+define(['ae-report', 
+        'async!https://maps.googleapis.com/maps/api/js?v=3.15&libraries=places&sensor=true&key=' + GOOGLE_API_KEY, 
+        'jquery-ui', 
+        'jquery-geocomplete'], function(AvyReport) {
+
 function AvyEyesView() {
 	var self = this;
+	var ge = null;
+	var geocoder = new google.maps.Geocoder();
 	var currentReport = null;
 	var avySearchResultKmlObj = null;
+	
+	var INIT_LAT = 44.0;
+	var INIT_LNG = -115.0;
+	var INIT_ALT_FT = 2700000.0;
 	
 	this.aeFirstImpression = true;
 	this.initialGeocodeForReport = false;
@@ -55,6 +66,14 @@ function AvyEyesView() {
 		}
 		self.stopNavControlBlink();
 		self.showSearchMenu();
+	}
+	
+	this.viewChangeEndTimeout = function() {
+		var viewChangeEndTimer;
+		if(viewChangeEndTimer){
+		    clearTimeout(viewChangeEndTimer);
+		  }
+		viewChangeEndTimer = setTimeout(avyEyesView.viewChangeEnd(), 200);
 	}
 	
 	this.viewChangeEnd = function() {
@@ -134,28 +153,32 @@ function AvyEyesView() {
 		ge.getFeatures().removeChild(avySearchResultKmlObj);
 	}
 
+	this.getGE = function() {
+		return ge;
+	}
 	
-	// CONSTRUCTOR CODE
-	
-	$(".avyAutoComplete").autocomplete({
-		minLength: 0,
-		delay: 0,
-		select: function(event, ui) {
-			$(this).siblings(':hidden').val(ui.item.value);
-			$(this).val(ui.item.label);
-			return false;
-		}
-	});
-	
-	$(".avyAutoComplete").change(function() {
-		$(this).val('');
-		$(this).siblings(':hidden').val('');
-	});
-	
-	$(".avyAutoComplete").focus(function(){            
-		$(this).autocomplete("search");
-    });
-	
+	this.init = function(gePlugin) {
+		ge = gePlugin;
+		
+		$(".avyAutoComplete").autocomplete({
+			minLength: 0,
+			delay: 0,
+			select: function(event, ui) {
+				$(this).siblings(':hidden').val(ui.item.value);
+				$(this).val(ui.item.label);
+				return false;
+			}
+		});
+		
+		$(".avyAutoComplete").change(function() {
+			$(this).val('');
+			$(this).siblings(':hidden').val('');
+		});
+		
+		$(".avyAutoComplete").focus(function(){            
+			$(this).autocomplete("search");
+	    });
+		
 	  var aeMenuList = $('#aeMenuList');
 	  aeMenuList.menu();
 	
@@ -232,7 +255,10 @@ function AvyEyesView() {
 			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 14000.0, 44.0);
 		});
 		
-		this.flyTo(43.0, -115.0, 2320000.0, 0.0);
+		this.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_FT, 0.0);
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
-	// END CONSTRUCTOR CODE
+	}
 }
+
+return AvyEyesView;
+});

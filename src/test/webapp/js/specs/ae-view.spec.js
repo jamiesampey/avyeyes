@@ -1,10 +1,15 @@
-define(['ae-view', 'jquery'], function(AvyEyesView, $) {
+define(['ae-view'], function(AvyEyesView) {
 
-        describe('AvyEyesView: initialize', function() {
-            it('should be first impression', function() {
-                var view = new AvyEyesView();
-//                expect(1).toEqual(1);
-            });
-        });
-    }
-);
+	describe('AvyEyesView initialization', function() {
+		var view = new AvyEyesView();
+		
+		it('should have first impression set to true', function() {
+	    	expect(view.aeFirstImpression).toEqual(true);
+	    });
+	    
+	    it('should have initial geocode set to false', function() {
+	    	expect(view.initialGeocodeForReport).toEqual(false);
+	    });
+	});
+
+});

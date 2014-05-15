@@ -2,17 +2,9 @@
 <html>
 	<head>
 	    <title>Avy Eyes</title>
-	    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	    
-	    <script type="text/javascript" src="/js/lib/jquery-1.10.2.js"></script>
-	    <script type="text/javascript" src="/js/lib/jquery-ui-1.10.4.custom.min.js"></script>
-	    <script type="text/javascript" src="/js/lib/jquery.geocomplete.min.js"></script>
-        <script type="text/javascript" src="/js/lib/geo-0.2.min.js"></script>	           
 
-		<script type="text/javascript" src="/js/ae-earth.js"></script>
-		<script type="text/javascript" src="/js/ae-draw.js"></script>
-	    <script type="text/javascript" src="/js/ae-report.js"></script>
-        <script type="text/javascript" src="/js/ae-view.js"></script>
+        <script type="text/javascript" src="/js/lib/jquery.js"></script>
+ 	    <script data-main="js/main" src="/js/lib/require/require.min.js"></script>
         	           
 	    <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.10.3.custom.css">
 		<link rel="stylesheet" type="text/css" href="/css/ae-common.css">
@@ -21,15 +13,6 @@
 	    <link rel="stylesheet" type="text/css" href="/css/ae-jquery-mods.css">
 	</head>
 	<body style="margin:0px; overflow:hidden; font-size:100%">	
-	    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
-
-	    <script type="text/javascript">
-          var avyEyesView;
-          function geInitCallback() {
-	    	 avyEyesView = new AvyEyesView();
-          }      
-	    </script>    
-		
 		<div id="map3d" style="height:100%; width:100%;"></div>
 		
 		<div id="liftContent" class="lift:surround?with=default&at=content">
