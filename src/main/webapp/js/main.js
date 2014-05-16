@@ -1,18 +1,13 @@
 require.config({
 	baseUrl: 'js',
     paths: {
-    	'jquery': 'lib/jquery',
         'jquery-ui': 'lib/jquery-ui.custom.min',
         'jquery-geocomplete': 'lib/jquery.geocomplete.min',
         'geojs': 'lib/geo.min',
     	'async': 'lib/require/async',
         'goog': 'lib/require/goog',
         'propertyParser': 'lib/require/propertyParser'
-    },
-	shim: {
-		'jquery-ui': ['jquery'],
-		'jquery-geocomplete': ['jquery']
-	}
+    }
 });
 
 var view = null;

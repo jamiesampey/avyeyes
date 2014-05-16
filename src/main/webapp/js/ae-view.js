@@ -1,5 +1,5 @@
 define(['ae-report', 
-        'async!https://maps.googleapis.com/maps/api/js?v=3.15&libraries=places&sensor=true&key=' + GOOGLE_API_KEY, 
+        'async!https://maps.googleapis.com/maps/api/js?v=3.15&libraries=places&sensor=true', 
         'jquery-ui', 
         'jquery-geocomplete'], function(AvyReport) {
 

@@ -6,7 +6,7 @@
  */
 define(function(){
 
-    var DEFAULT_PARAM_NAME = 'callback',
+    var DEFAULT_CALLBACK_PARAM_NAME = 'callback',
         _uid = 0;
 
     function injectScript(src){
@@ -15,12 +15,21 @@ define(function(){
         t = document.getElementsByTagName('script')[0]; t.parentNode.insertBefore(s,t);
     }
 
-    function formatUrl(name, id){
-        var paramRegex = /!(.+)/,
-            url = name.replace(paramRegex, ''),
-            param = (paramRegex.test(name))? name.replace(/.+!/, '') : DEFAULT_PARAM_NAME;
-        url += (url.indexOf('?') < 0)? '?' : '&';
-        return url + param +'='+ id;
+    function formatUrl(name, callbackFunc){
+        var callbackParamRegex = /!(.+)/,
+            url = name.replace(callbackParamRegex, ''),
+            callbackParam = (callbackParamRegex.test(name))? name.replace(/.+!/, '') : DEFAULT_CALLBACK_PARAM_NAME;
+        url = addParam(url, callbackParam, callbackFunc);
+        if (url.indexOf('google') > -1) {
+        	url = addParam(url, "key", GOOGLE_API_KEY);
+        }
+        console.log("jamie says hi");
+        return url;
+    }
+    
+    function addParam(url, name, val) {
+    	url += (url.indexOf('?') < 0)? '?' : '&';
+        return url + name +'='+ val;
     }
 
     function uid() {
