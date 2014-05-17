@@ -1,12 +1,9 @@
-define(['ae-report', 
-        'async!https://maps.googleapis.com/maps/api/js?v=3.15&libraries=places&sensor=true', 
-        'jquery-ui', 
-        'jquery-geocomplete'], function(AvyReport) {
+define(['gearth', 'gmaps', 'ae-report', 'jquery-ui', 'jquery-geocomplete'], function(gearth, gmaps, AvyReport) {
 
 function AvyEyesView() {
 	var self = this;
 	var ge = null;
-	var geocoder = new google.maps.Geocoder();
+	var geocoder = new gmaps.Geocoder();
 	var currentReport = null;
 	var avySearchResultKmlObj = null;
 	
@@ -112,7 +109,7 @@ function AvyEyesView() {
 	    
 	this.geocodeAndFlyToLocation = function(address, range, tilt) {
 	  geocoder.geocode( { 'address': address}, function(results, status) {
-	    if (status == google.maps.GeocoderStatus.OK && results.length) {
+	    if (status == gmaps.GeocoderStatus.OK && results.length) {
 			var latLng = results[0].geometry.location;
 	    	self.flyTo(latLng.lat(), latLng.lng(), range, tilt);
 	    } else {
@@ -157,8 +154,7 @@ function AvyEyesView() {
 		return ge;
 	}
 	
-	this.init = function(gePlugin) {
-		ge = gePlugin;
+	this.init = function() {
 		
 		$(".avyAutoComplete").autocomplete({
 			minLength: 0,
@@ -258,6 +254,34 @@ function AvyEyesView() {
 		this.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_FT, 0.0);
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
 	}
+	
+	this.initCB = function(instance) {
+		ge = instance;
+	    ge.getWindow().setVisibility(true);
+	    ge.getOptions().setStatusBarVisibility(true);
+	    ge.getOptions().setUnitsFeetMiles(true);
+	    ge.getOptions().setFlyToSpeed(0.4);
+	    ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
+	    ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
+	    ge.getLayerRoot().enableLayerById(ge.LAYER_ROADS, true);
+	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
+	    
+	    self.init();
+	}
+		    
+	this.failureCB = function(errorCode) {
+	    self.showModalDialog("Error", "failureCB: " + errorCode);
+	}
+
+	this.viewChangeEndTimeout = function() {
+		var viewChangeEndTimer;
+		if(viewChangeEndTimer){
+		    clearTimeout(viewChangeEndTimer);
+		  }
+		viewChangeEndTimer = setTimeout(self.viewChangeEnd(), 200);
+	}
+	
+	gearth.createInstance('map3d', self.initCB, self.failureCB, { 'language': 'en' });
 }
 
 return AvyEyesView;

@@ -23,7 +23,6 @@ define(function(){
         if (url.indexOf('google') > -1) {
         	url = addParam(url, "key", GOOGLE_API_KEY);
         }
-        console.log("jamie says hi");
         return url;
     }
     
