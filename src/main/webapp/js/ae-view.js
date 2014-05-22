@@ -1,6 +1,6 @@
-define(['gearth', 'gmaps', 'ae-report', 'jquery-ui', 'jquery-geocomplete'], function(gearth, gmaps, AvyReport) {
+define(['ae-report', 'jquery-ui', 'jquery-geocomplete'], function(AvyReport) {
 
-function AvyEyesView() {
+function AvyEyesView(gearth, gmaps) {
 	var self = this;
 	var ge = null;
 	var geocoder = new gmaps.Geocoder();
@@ -9,7 +9,7 @@ function AvyEyesView() {
 	
 	var INIT_LAT = 44.0;
 	var INIT_LNG = -115.0;
-	var INIT_ALT_FT = 2700000.0;
+	var INIT_ALT_METERS = 2700000.0;
 	
 	this.aeFirstImpression = true;
 	this.initialGeocodeForReport = false;
@@ -97,23 +97,23 @@ function AvyEyesView() {
 		}
 	}
 		
-	this.flyTo = function(lat, lng, range, tilt) {
+	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees) {
 		var lookAt = ge.createLookAt('');
 	    lookAt.setLatitude(lat);
 	    lookAt.setLongitude(lng);
-	    lookAt.setRange(range);
+	    lookAt.setRange(rangeMeters);
 	    lookAt.setAltitudeMode(ge.ALTITUDE_RELATIVE_TO_GROUND);
-	    lookAt.setTilt(tilt);
+	    lookAt.setTilt(tiltDegrees);
 	    ge.getView().setAbstractView(lookAt);
 	}
 	    
-	this.geocodeAndFlyToLocation = function(address, range, tilt) {
+	this.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
 	  geocoder.geocode( { 'address': address}, function(results, status) {
 	    if (status == gmaps.GeocoderStatus.OK && results.length) {
 			var latLng = results[0].geometry.location;
-	    	self.flyTo(latLng.lat(), latLng.lng(), range, tilt);
+	    	self.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees);
 	    } else {
-	      alert('Geocode was not successful for the following reason: ' + status);
+	      self.showModalDialog('Error', 'Geocode was not successful.', status);
 	    }
 	  });
 	}
@@ -155,7 +155,6 @@ function AvyEyesView() {
 	}
 	
 	this.init = function() {
-		
 		$(".avyAutoComplete").autocomplete({
 			minLength: 0,
 			delay: 0,
@@ -189,7 +188,7 @@ function AvyEyesView() {
 	  
 	  $('#aboutMenuItem').click(function(){
 		 aeMenuList.slideToggle(200);
-		 alert('about the project');
+		 self.showModalDialog('Info', '...about the project');
 			});
 		
 		$('.avyDate').datepicker({
@@ -248,10 +247,10 @@ function AvyEyesView() {
 		$('.avyLocation').geocomplete({types: ['geocode']});
 		
 		$('#avySearchLocation').blur(function (event) {
-			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 14000.0, 44.0);
+			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 9400.0, 40.0);
 		});
 		
-		this.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_FT, 0.0);
+		this.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0.0);
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
 	}
 	

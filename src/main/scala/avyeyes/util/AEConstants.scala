@@ -7,7 +7,7 @@ object AEConstants {
 	def humanNumberUnknown: Int = -1
 
 	def CAM_TILT_RANGE_CUTOFF = 45.0
-	def CAM_REL_ALT_LIMIT_METERS = 4500.0
+	def CAM_REL_ALT_LIMIT_METERS = 9500.0
 	def AVY_DIST_RANGE_MILES = 10.0
 	def EARTH_RADIUS_MILES = 3959.0
 	

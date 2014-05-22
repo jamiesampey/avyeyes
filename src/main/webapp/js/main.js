@@ -16,6 +16,6 @@ var view = null;
 var GOOGLE_API_KEY = 'AIzaSyAHuPQo0kaoI-rEGr0q57EkOF2UPNpFP28';
 
 //Start the main app logic.
-requirejs(['ae-view'], function (AvyEyesView) {
-	view = new AvyEyesView();
+requirejs(['gearth', 'gmaps', 'ae-view'], function (gearth, gmaps, AvyEyesView) {
+	view = new AvyEyesView(gearth, gmaps);
 });
