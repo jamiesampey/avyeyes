@@ -1,5 +1,5 @@
 define([], function() {
-	function GEPlugin() {
+	function GearthPluginMock() {
 		var window = new GEWindow();
 		var options = new GEOptions();
 		var navControl = new GENavControl();
@@ -42,11 +42,11 @@ define([], function() {
 	}
 	
 	function GENavControl() {
-		this.setVisibility = function(enum){}	
+		this.setVisibility = function(bool){}	
 	}
 	
 	function GELayerRoot() {
-		this.enableLayerById = function(enum, bool){}	
+		this.enableLayerById = function(id, bool){}	
 	}
 	
 	function GEView() {
@@ -68,5 +68,5 @@ define([], function() {
 	    this.setTilt = function(tilt) {this.tilt = tilt;} 
 	}
 	
-	return GEPlugin;
+	return GearthPluginMock;
 });
