@@ -7,6 +7,7 @@ require.config({
         'jquery-ui': EnvJasmine.libDir + 'jquery-ui.custom.min',
         'jquery-geocomplete': EnvJasmine.libDir + 'jquery.geocomplete.min',
         'geojs': EnvJasmine.libDir + 'geo.min',
+    	'geplugin': EnvJasmine.mocksDir + 'geplugin',
     	'gmaps': EnvJasmine.mocksDir + 'gmaps',
     	'gearth': EnvJasmine.mocksDir + 'gearth'
     }

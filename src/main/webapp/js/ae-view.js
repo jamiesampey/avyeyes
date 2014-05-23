@@ -250,7 +250,7 @@ function AvyEyesView(gearth, gmaps) {
 			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 9400.0, 40.0);
 		});
 		
-		this.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0.0);
+		self.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0.0);
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
 	}
 	
