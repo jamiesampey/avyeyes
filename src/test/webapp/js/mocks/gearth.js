@@ -1,11 +1,7 @@
 define([], function() {
 	function GearthMock() {
-		this.createInstance = function(div, successCallback, failureCallback, options) {
-			// no op
-		}
-		this.addEventListener = function(geView, event, callback) {
-			// no op
-		}
+		this.createInstance = function(div, successCallback, failureCallback, options) {}
+		this.addEventListener = function(geView, event, callback) {}
 	}
 	return GearthMock;
 });

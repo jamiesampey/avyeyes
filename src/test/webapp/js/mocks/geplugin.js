@@ -50,7 +50,8 @@ define([], function() {
 	}
 	
 	function GEView() {
-		this.getView = function(){}
+		this.getViewportGlobeBounds = function(){}
+		this.copyAsCamera = function(id){}
 	}
 	
 	function GELookAt(name) {

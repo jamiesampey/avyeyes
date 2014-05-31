@@ -4,13 +4,13 @@ function AvyEyesView(gearth, gmaps) {
 	var self = this;
 	var ge = null;
 	var geocoder = new gmaps.Geocoder();
-	var currentReport = null;
 	var avySearchResultKmlObj = null;
 	
 	var INIT_LAT = 44.0;
 	var INIT_LNG = -115.0;
 	var INIT_ALT_METERS = 2700000.0;
 	
+	this.currentReport = null;
 	this.aeFirstImpression = true;
 	this.initialGeocodeForReport = false;
 	
@@ -48,29 +48,21 @@ function AvyEyesView(gearth, gmaps) {
 	}
 	
 	this.doReport = function() {
-		currentReport = new AvyReport(self, function() {
+		this.currentReport = new AvyReport(self, function() {
 			$("#avyReportDetailsDialog").children('form').submit();
-			currentReport = null;
+			this.currentReport = null;
 		});
 		
-		currentReport.initAvyReport();
+		this.currentReport.initAvyReport();
 	}
 
 	this.cancelReport = function() {
-		if (currentReport) {
-			currentReport.clearAllFields();
-			currentReport = null;
+		if (this.currentReport) {
+			this.currentReport.clearAllFields();
+			this.currentReport = null;
 		}
 		self.stopNavControlBlink();
 		self.showSearchMenu();
-	}
-	
-	this.viewChangeEndTimeout = function() {
-		var viewChangeEndTimer;
-		if(viewChangeEndTimer){
-		    clearTimeout(viewChangeEndTimer);
-		  }
-		viewChangeEndTimer = setTimeout(avyEyesView.viewChangeEnd(), 200);
 	}
 	
 	this.viewChangeEnd = function() {
@@ -91,8 +83,8 @@ function AvyEyesView(gearth, gmaps) {
 			this.aeFirstImpression = false;
 		}
 		
-		if (currentReport && this.initialGeocodeForReport) {
-			setTimeout(currentReport.beginReport, 2000);
+		if (this.currentReport && this.initialGeocodeForReport) {
+			setTimeout(this.currentReport.beginReport, 2000);
 			this.initialGeocodeForReport = false;
 		}
 	}
@@ -254,8 +246,12 @@ function AvyEyesView(gearth, gmaps) {
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
 	}
 	
-	this.initCB = function(instance) {
+	this.setGEPlugin = function(instance) {
 		ge = instance;
+	}
+	
+	this.initCB = function(instance) {
+		self.setGEPlugin(instance);
 	    ge.getWindow().setVisibility(true);
 	    ge.getOptions().setStatusBarVisibility(true);
 	    ge.getOptions().setUnitsFeetMiles(true);
