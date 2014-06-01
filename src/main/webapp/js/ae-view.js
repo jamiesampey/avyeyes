@@ -3,14 +3,14 @@ define(['ae-report', 'jquery-ui', 'jquery-geocomplete'], function(AvyReport) {
 function AvyEyesView(gearth, gmaps) {
 	var self = this;
 	var ge = null;
-	var geocoder = new gmaps.Geocoder();
-	var avySearchResultKmlObj = null;
+	var geocoder = null;
 	
 	var INIT_LAT = 44.0;
 	var INIT_LNG = -115.0;
 	var INIT_ALT_METERS = 2700000.0;
 	
 	this.currentReport = null;
+	this.avySearchResultKmlObj = null;
 	this.aeFirstImpression = true;
 	this.initialGeocodeForReport = false;
 	
@@ -100,7 +100,7 @@ function AvyEyesView(gearth, gmaps) {
 	}
 	    
 	this.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
-	  geocoder.geocode( { 'address': address}, function(results, status) {
+	  geocoder.geocode( {'address': address}, function(results, status) {
 	    if (status == gmaps.GeocoderStatus.OK && results.length) {
 			var latLng = results[0].geometry.location;
 	    	self.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees);
@@ -134,18 +134,15 @@ function AvyEyesView(gearth, gmaps) {
 	}
 	
 	this.overlaySearchResultKml = function(kmlStr) {
-		avySearchResultKmlObj = ge.parseKml(kmlStr);
-		ge.getFeatures().appendChild(avySearchResultKmlObj);
+		this.avySearchResultKmlObj = ge.parseKml(kmlStr);
+		ge.getFeatures().appendChild(this.avySearchResultKmlObj);
 	}
 		
 	this.clearSearchResultKml = function() {
-		ge.getFeatures().removeChild(avySearchResultKmlObj);
+		ge.getFeatures().removeChild(this.avySearchResultKmlObj);
+		this.avySearchResultKmlObj = null;
 	}
 
-	this.getGE = function() {
-		return ge;
-	}
-	
 	this.init = function() {
 		$(".avyAutoComplete").autocomplete({
 			minLength: 0,
@@ -245,14 +242,12 @@ function AvyEyesView(gearth, gmaps) {
 		self.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0.0);
 		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
 	}
-	
-	this.setGEPlugin = function(instance) {
-		ge = instance;
-	}
-	
+
 	this.initCB = function(instance) {
-		self.setGEPlugin(instance);
-	    ge.getWindow().setVisibility(true);
+		self.setGE(instance);
+	    self.setGeocoder(new gmaps.Geocoder());
+	    
+		ge.getWindow().setVisibility(true);
 	    ge.getOptions().setStatusBarVisibility(true);
 	    ge.getOptions().setUnitsFeetMiles(true);
 	    ge.getOptions().setFlyToSpeed(0.4);
@@ -274,6 +269,18 @@ function AvyEyesView(gearth, gmaps) {
 		    clearTimeout(viewChangeEndTimer);
 		  }
 		viewChangeEndTimer = setTimeout(self.viewChangeEnd(), 200);
+	}
+	
+	this.getGE = function() {
+		return ge;
+	}
+	
+	this.setGE = function(instance) {
+		ge = instance;
+	}
+	
+	this.setGeocoder = function(instance) {
+		geocoder = instance;
 	}
 	
 	gearth.createInstance('map3d', self.initCB, self.failureCB, { 'language': 'en' });

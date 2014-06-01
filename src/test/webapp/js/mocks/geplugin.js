@@ -5,6 +5,7 @@ define([], function() {
 		var navControl = new GENavControl();
 		var layerRoot = new GELayerRoot();
 		var view = new GEView();
+		var features = new GEFeatures();
 		
 		this.getWindow = function() {
 			return window;
@@ -26,8 +27,16 @@ define([], function() {
 			return view;
 		}
 		
+		this.getFeatures = function() {
+			return features;
+		}
+		
 		this.createLookAt = function(name) {
 			return new GELookAt(name);
+		}
+		
+		this.parseKml = function(kml) {
+			return {};
 		}
 	}
 	
@@ -52,6 +61,12 @@ define([], function() {
 	function GEView() {
 		this.getViewportGlobeBounds = function(){}
 		this.copyAsCamera = function(id){}
+		this.setAbstractView = function(lookAt){}
+	}
+	
+	function GEFeatures() {
+		this.appendChild = function(){}
+		this.removeChild = function(){}
 	}
 	
 	function GELookAt(name) {

@@ -5,9 +5,10 @@ define(['jquery', 'jasmine-jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 	var geplugin = new gePluginMock();
 	var gmaps = new gmapsMock();
 	
+	var view;
+	var geViewMock = geplugin.getView();
+	
 	describe('GE viewchangeend event handling', function() {
-		var view;
-		var geViewMock;
 		var reportMock;
 		
 		var viewBoundNorth = 'nb';
@@ -21,8 +22,7 @@ define(['jquery', 'jasmine-jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 		
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGEPlugin(geplugin);
-			geViewMock = geplugin.getView();
+			view.setGE(geplugin);
 	
 			reportMock = function(){
 				this.beginReport = function(){}
@@ -114,6 +114,40 @@ define(['jquery', 'jasmine-jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 			view.viewChangeEnd();
 			
 			expect(window.setTimeout).not.toHaveBeenCalled();
+		});
+	});
+	
+	describe('Geocode and fly to functionality', function() {
+		beforeEach(function() {
+			view = new AvyEyesView(gearth, gmaps);
+			view.setGE(geplugin);
+			spyOn(geplugin, 'getView').andReturn(geViewMock);
+		});
+		
+		it('sets the GE View to a new LookAt', function() {
+			spyOn(geViewMock, 'setAbstractView');
+			
+			var lat = '25.2542342';
+			var lng = '96.324552';
+			var range = '20000';
+			var tilt = '35.2';
+			
+			view.flyTo(lat, lng, range, tilt);
+			
+			expect(geViewMock.setAbstractView.mostRecentCall.args[0].lat).toEqual(lat);
+			expect(geViewMock.setAbstractView.mostRecentCall.args[0].lng).toEqual(lng);
+			expect(geViewMock.setAbstractView.mostRecentCall.args[0].range).toEqual(range);
+			expect(geViewMock.setAbstractView.mostRecentCall.args[0].tilt).toEqual(tilt);
+		});
+		
+		it('geocodes address', function() {
+			var geocoderMock = new gmaps.Geocoder();
+			spyOn(geocoderMock, 'geocode');
+			view.setGeocoder(geocoderMock);
+			
+			var address = 'aspen, co';
+			view.geocodeAndFlyToLocation(address, 13000, 65.5);
+			expect(geocoderMock.geocode.mostRecentCall.args[0].address).toEqual(address);
 		});
 	});
 });
