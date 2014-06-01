@@ -6,6 +6,7 @@ define([], function() {
 		var layerRoot = new GELayerRoot();
 		var view = new GEView();
 		var features = new GEFeatures();
+		var globe = new GEGlobe();
 		
 		this.getWindow = function() {
 			return window;
@@ -31,11 +32,19 @@ define([], function() {
 			return features;
 		}
 		
+		this.getGlobe = function() {
+			return globe;
+		}
+		
 		this.createLookAt = function(name) {
 			return new GELookAt(name);
 		}
 		
 		this.parseKml = function(kml) {
+			return {};
+		}
+		
+		this.createDocument = function(name) {
 			return {};
 		}
 	}
@@ -65,9 +74,11 @@ define([], function() {
 	}
 	
 	function GEFeatures() {
-		this.appendChild = function(){}
-		this.removeChild = function(){}
+		this.appendChild = function(child){}
+		this.removeChild = function(child){}
 	}
+	
+	function GEGlobe() {}
 	
 	function GELookAt(name) {
 		this.name = name;

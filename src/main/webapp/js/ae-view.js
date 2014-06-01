@@ -1,7 +1,9 @@
 define(['ae-report', 'jquery-ui', 'jquery-geocomplete'], function(AvyReport) {
 
-function AvyEyesView(gearth, gmaps) {
+function AvyEyesView(gearthInst, gmapsInst) {
 	var self = this;
+	var gearth = gearthInst;
+	var gmaps = gmapsInst;
 	var ge = null;
 	var geocoder = null;
 	
@@ -48,18 +50,18 @@ function AvyEyesView(gearth, gmaps) {
 	}
 	
 	this.doReport = function() {
-		this.currentReport = new AvyReport(self, function() {
+		self.currentReport = new AvyReport(self, function() {
 			$("#avyReportDetailsDialog").children('form').submit();
-			this.currentReport = null;
+			self.currentReport = null;
 		});
 		
-		this.currentReport.initAvyReport();
+		self.currentReport.initAvyReport();
 	}
 
 	this.cancelReport = function() {
-		if (this.currentReport) {
-			this.currentReport.clearAllFields();
-			this.currentReport = null;
+		if (self.currentReport) {
+			self.currentReport.clearAllFields();
+			self.currentReport = null;
 		}
 		self.stopNavControlBlink();
 		self.showSearchMenu();
@@ -78,14 +80,14 @@ function AvyEyesView(gearth, gmaps) {
 		$("#avySearchCameraLat").val(camera.getLatitude());
 		$("#avySearchCameraLng").val(camera.getLongitude());
 		
-		if (this.aeFirstImpression) {
-			this.showSearchMenu();
-			this.aeFirstImpression = false;
+		if (self.aeFirstImpression) {
+			self.showSearchMenu();
+			self.aeFirstImpression = false;
 		}
 		
-		if (this.currentReport && this.initialGeocodeForReport) {
-			setTimeout(this.currentReport.beginReport, 2000);
-			this.initialGeocodeForReport = false;
+		if (self.currentReport && self.initialGeocodeForReport) {
+			setTimeout(self.currentReport.beginReport, 2000);
+			self.initialGeocodeForReport = false;
 		}
 	}
 		
@@ -112,14 +114,14 @@ function AvyEyesView(gearth, gmaps) {
 
 	this.stopNavControlBlink = function() {
 		ge.getNavigationControl().setVisibility(ge.VISIBILITY_AUTO);
-		clearInterval(this.navControlBlinkInterval);
+		clearInterval(self.navControlBlinkInterval);
 	}
 	
 	this.navControlBlinkInterval = null;
 	this.navControlBlink = function(numBlinks) {
 		var blinkCount = 0;
 		$('#map3d').focus();
-		this.navControlBlinkInterval = setInterval(function(){
+		self.navControlBlinkInterval = setInterval(function(){
 			if (ge.getNavigationControl().getVisibility() != ge.VISIBILITY_SHOW) {
 				ge.getNavigationControl().setVisibility(ge.VISIBILITY_SHOW);
 			} else {
@@ -134,13 +136,13 @@ function AvyEyesView(gearth, gmaps) {
 	}
 	
 	this.overlaySearchResultKml = function(kmlStr) {
-		this.avySearchResultKmlObj = ge.parseKml(kmlStr);
-		ge.getFeatures().appendChild(this.avySearchResultKmlObj);
+		self.avySearchResultKmlObj = ge.parseKml(kmlStr);
+		ge.getFeatures().appendChild(self.avySearchResultKmlObj);
 	}
 		
 	this.clearSearchResultKml = function() {
-		ge.getFeatures().removeChild(this.avySearchResultKmlObj);
-		this.avySearchResultKmlObj = null;
+		ge.getFeatures().removeChild(self.avySearchResultKmlObj);
+		self.avySearchResultKmlObj = null;
 	}
 
 	this.init = function() {
@@ -269,6 +271,10 @@ function AvyEyesView(gearth, gmaps) {
 		    clearTimeout(viewChangeEndTimer);
 		  }
 		viewChangeEndTimer = setTimeout(self.viewChangeEnd(), 200);
+	}
+
+	this.getGEarth = function() {
+		return gearth;
 	}
 	
 	this.getGE = function() {

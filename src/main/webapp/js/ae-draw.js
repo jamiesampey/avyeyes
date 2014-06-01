@@ -1,7 +1,8 @@
 define(['geojs'], function() {
 
-function AvyDraw(gePlugin, submitDrawing) {
+function AvyDraw(gearthInst, gePlugin, submitDrawing) {
 	var self = this;
+	var gearth = gearthInst;
 	var ge = gePlugin;
 	
 	var AVY_DRAW_COLOR = '773b3bff';
@@ -23,8 +24,8 @@ function AvyDraw(gePlugin, submitDrawing) {
 	//	$('#map3d').css('cursor', 'pointer');
 		drawingKmlObj = ge.createDocument('');
 		ge.getFeatures().appendChild(drawingKmlObj);
-		google.earth.addEventListener(ge.getGlobe(), 'mousemove', this.onMouseMove); 
-		google.earth.addEventListener(ge.getGlobe(), 'mousedown', this.onMouseDown); 
+		gearth.addEventListener(ge.getGlobe(), 'mousemove', self.onMouseMove); 
+		gearth.addEventListener(ge.getGlobe(), 'mousedown', self.onMouseDown); 
 	}
 	
 	this.convertLineStringToPolygon = function() {
@@ -86,8 +87,8 @@ function AvyDraw(gePlugin, submitDrawing) {
 	this.onMouseDown = function(event) {
 	  if (isMouseDown) {
 	    isMouseDown = false;
-	    google.earth.removeEventListener(ge.getGlobe(), 'mousemove', this.onMouseMove); 
-		google.earth.removeEventListener(ge.getGlobe(), 'mousedown', this.onMouseDown);
+	    gearth.removeEventListener(ge.getGlobe(), 'mousemove', self.onMouseMove); 
+		gearth.removeEventListener(ge.getGlobe(), 'mousedown', self.onMouseDown);
 		
 	    coords.pushLatLngAlt(event.getLatitude(), event.getLongitude(), event.getAltitude());
 	    self.convertLineStringToPolygon();

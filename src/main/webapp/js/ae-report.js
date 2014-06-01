@@ -3,25 +3,45 @@ define(['ae-draw', 'jquery-ui'], function(AvyDraw) {
 function AvyReport(avyEyesView, submitReportCallback) {
 	var self = this;
 	var view = avyEyesView;
-	var avyDraw = null;
+	
+	this.currentDrawing = null;
+	
+	this.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect, angle, kmlStr) {
+		$('#avyReportLat').val(lat);
+		$('#avyReportLng').val(lng);
+		$('#avyReportElevation').val(elev);
+		$('#avyReportAspectAC').val(aspect);
+		$('#avyReportAspect').val(aspect);
+		$('#avyReportAngle').val(angle);
+		$('#avyReportKml').val(kmlStr);
+	}
 	
 	this.clearAvyDrawing = function() {
-		if (avyDraw) {
-			avyDraw.clearDrawing();
-			avyDraw = null;
+		if (self.currentDrawing) {
+			self.currentDrawing.clearDrawing();
+			self.currentDrawing = null;
 		}
-		
-		$('#avyReportLat').val('');
-		$('#avyReportLng').val('');
-		$('#avyReportSlopeEvelvation').val('');
-		$('#avyReportSlopeAspect').val('');
-		$('#avyReportSlopeAngle').val('');
-		$('#avyReportKml').val('');
+		self.setAvyDrawingHiddenInputs('', '', '', '', '', '');
 	}
 
 	this.clearAllFields = function() {
 		self.clearAvyDrawing();
 		$('#avyReportDetailsDialog').find('input:text, input:hidden, textarea').val('');
+	}
+	
+	this.doAvyDrawing = function() {
+		self.currentDrawing = new AvyDraw(view.getGEarth(), view.getGE(),
+			function(lat, lng, elev, aspect, angle, kmlStr) {
+				self.setAvyDrawingHiddenInputs(lat, lng, elev, aspect, angle, kmlStr);
+				self.confirmDrawing();
+			});
+		
+		self.currentDrawing.startAvyDraw();
+	}
+	
+	this.beginReportWithGeocode = function() {
+		view.initialGeocodeForReport = true;
+		view.geocodeAndFlyToLocation($('#avyReportInitLocation').val(), 8000.0, 65.0);
 	}
 	
 	this.initAvyReport = function() {
@@ -68,11 +88,6 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			});
 	}
 	
-	this.beginReportWithGeocode = function() {
-		view.initialGeocodeForReport = true;
-		view.geocodeAndFlyToLocation($('#avyReportInitLocation').val(), 8000.0, 65.0);
-	}
-	
 	this.beginReport = function() {
 		$.ui.dialog.prototype._focusTabbable = function(){};
 		$('#avyReportBeginDialog').dialog({
@@ -88,7 +103,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			      click: function(event, ui) {
 				    $(this).dialog('close');
 				    view.stopNavControlBlink();
-				    self.doAvyDraw();
+				    self.doAvyDrawing();
 			      }
 			    },
 			    {
@@ -101,24 +116,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  ]
 			});
 		
-		view.navControlBlink(3);
-	}
-	
-	this.doAvyDraw = function() {
-		avyDraw = new AvyDraw(view.getGE(),
-			function(lat, lng, elev, aspect, angle, kmlStr) {
-				$('#avyReportLat').val(lat);
-				$('#avyReportLng').val(lng);
-				$('#avyReportElevation').val(elev);
-				$('#avyReportAspectAC').val(aspect);
-				$('#avyReportAspect').val(aspect);
-				$('#avyReportAngle').val(angle);
-				$('#avyReportKml').val(kmlStr);
-				
-				self.confirmDrawing();
-			});
-		
-		avyDraw.startAvyDraw();
+		view.navControlBlink(50);
 	}
 	
 	this.confirmDrawing = function() {
@@ -143,7 +141,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			      click: function(event, ui) {
 			        $(this).dialog('close');
 			        self.clearAvyDrawing();
-			        self.doAvyDraw();
+			        self.doAvyDrawing();
 			      }
 				}
 			  ]
