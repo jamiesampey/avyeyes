@@ -4,6 +4,7 @@ function AvyDraw(gearthInst, gePlugin, submitDrawing) {
 	var self = this;
 	var gearth = gearthInst;
 	var ge = gePlugin;
+	var geo = window.geo;
 	
 	var AVY_DRAW_COLOR = '773b3bff';
 	var FEET_PER_METER = 3.28084;
@@ -32,13 +33,13 @@ function AvyDraw(gearthInst, gePlugin, submitDrawing) {
 	  var polygon = ge.createPolygon('');
 	  var outer = ge.createLinearRing('');
 	  polygon.setOuterBoundary(outer);
-	  var lineString = self.lineStringPlacemark.getGeometry();
 	  
 	  var highestCoord = ge.createCoord();
 	  highestCoord.setAltitude(0);
 	  var lowestCoord = ge.createCoord();
 	  lowestCoord.setAltitude(9000); // meters
 	  
+	  var lineString = self.lineStringPlacemark.getGeometry();
 	  for (var i = 0; i < lineString.getCoordinates().getLength(); i++) {
 	    var coord = lineString.getCoordinates().get(i);
 	    if (coord.getAltitude() > highestCoord.getAltitude()) {
@@ -50,18 +51,18 @@ function AvyDraw(gearthInst, gePlugin, submitDrawing) {
 	    outer.getCoordinates().pushLatLngAlt(coord.getLatitude(), coord.getLongitude(), coord.getAltitude());
 	  }
 	
-	  self.lineStringPlacemark.setGeometry(polygon);
+	  // replace the lineString with the polygon
+	  self.lineStringPlacemark.setGeometry(polygon); 
 	  
 	  var highPoint = new geo.Point(highestCoord);
 	  var lowPoint = new geo.Point(lowestCoord);
 	  var heading = highPoint.heading(lowPoint);
 	  var hDist = highPoint.distance(lowPoint);
-	  var vDist = highestCoord.getAltitude() - lowestCoord.getAltitude();  
+	  var vDist = highPoint.altitude() - lowPoint.altitude();  
 	  var angleRadians = Math.asin(vDist/hDist);
 	  
-	  submitDrawing(highestCoord.getLatitude(), 
-			  highestCoord.getLongitude(), 
-			  Math.round(highestCoord.getAltitude() * FEET_PER_METER), 
+	  submitDrawing(highPoint.lat(), highPoint.lng(), 
+			  Math.round(highPoint.altitude() * FEET_PER_METER), 
 			  self.headingToDirection(heading.toFixed(1)),
 			  Math.round(angleRadians * (180/Math.PI)),
 			  self.drawingKmlObj.getKml());

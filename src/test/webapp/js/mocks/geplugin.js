@@ -55,16 +55,28 @@ define([], function() {
 			return new GEStyleSelector(name);
 		}
 		
-		this.parseKml = function(kml) {
-			return {};
-		}
-		
 		this.createDocument = function(name) {
 			return new GEDocument(name);
 		}
 		
 		this.createGECoords = function() {
 			return new GECoords();
+		}
+		
+		this.createCoord = function() {
+			return new GECoord('', '', '');
+		}
+		
+		this.createPolygon = function(name) {
+			return new GEPolygon(name);
+		}
+		
+		this.createLinearRing = function(name) {
+			return new GELinearRing(name);
+		}
+		
+		this.parseKml = function(kml) {
+			return {};
 		}
 	}
 	
@@ -124,6 +136,7 @@ define([], function() {
 		this.geometry;
 		this.styleSelector;
 		this.setGeometry = function(obj) { this.geometry = obj;}
+		this.getGeometry = function() {return this.geometry;}
 		this.setStyleSelector = function(obj) {this.styleSelector = obj;}
 		this.getStyleSelector = function() {return this.styleSelector;}
 	}
@@ -163,14 +176,40 @@ define([], function() {
 	}
 	
 	function GECoords() {
-		this.lat;
-		this.lng;
-		this.alt;
+		this.coords = new Array();
 		this.pushLatLngAlt = function(lat, lng, alt) {
-			this.lat = lat;
-			this.lng = lng;
-			this.alt = alt;
+			this.coords.push(new GECoord(lat, lng, alt));
 		}
+		this.get = function(idx) {
+			return this.coords[idx];
+		}
+		this.getLength = function() {
+			return this.coords.length;
+		}
+	}
+	
+	function GECoord(lat, lng, alt) {
+		this.lat = lat;
+		this.lng = lng;
+		this.alt = alt;
+		this.getLatitude = function() {return this.lat;}
+		this.getLongitude = function() {return this.lng;}
+		this.setAltitude = function(val) {this.alt = val;}
+		this.getAltitude = function() {return this.alt;}
+	}
+	
+	function GEPolygon(name) { 
+		this.name = name;
+		this.outerBoundary;
+		this.setOuterBoundary = function(obj) {
+			this.outerBoundary = obj;
+		}
+	}
+	
+	function GELinearRing(name) {
+		this.name = name;
+		this.coords = new GECoords();
+		this.getCoordinates = function() { return this.coords;}
 	}
 	
 	return GearthPluginMock;

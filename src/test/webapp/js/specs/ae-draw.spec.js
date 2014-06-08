@@ -4,9 +4,23 @@ define(['jquery', 'gearth', 'geplugin', 'ae-draw'],
 	var gearth = new gearthMock();
 	var geplugin = new gePluginMock();
 	var gefeatures = geplugin.getFeatures(); 
+
+	var callbackLat, callbackLng, callbackAlt, callbackAspect, callbackAngle, callbackKml;
+	var submitDrawingCallbackMock = function(lat, lng, alt, aspect, angle, kml) {
+		callbackLat = lat;
+		callbackLng = lng;
+		callbackAlt = alt;
+		callbackAspect = aspect;
+		callbackAngle = angle;
+		callbackKml = kml;
+	}
+	
+	var DrawingKmlObjMock = function(kml) {
+		this.kml = kml;
+		this.getKml = function() {return this.kml;}
+	}
 	
 	var drawing;
-	var submitDrawingCallbackMock = function(lat, lng, alt, aspect, angle, kml) {}
 	
 	describe('Starting and clearing a drawing', function() {
 		beforeEach(function() {
@@ -97,9 +111,9 @@ define(['jquery', 'gearth', 'geplugin', 'ae-draw'],
 			expect(polyStyle.colorMode).toEqual(geplugin.COLOR_NORMAL);
 			
 			var coords = lineString.getCoordinates();
-			expect(coords.lat).toEqual(eventLat);
-			expect(coords.lng).toEqual(eventLng);
-			expect(coords.alt).toEqual(eventAlt);
+			expect(coords.get(0).lat).toEqual(eventLat);
+			expect(coords.get(0).lng).toEqual(eventLng);
+			expect(coords.get(0).alt).toEqual(eventAlt);
 			
 			// MOUSE UP
 			drawing.onMouseDown(new mouseEventMock());
@@ -117,15 +131,67 @@ define(['jquery', 'gearth', 'geplugin', 'ae-draw'],
 			
 			drawing.isMouseDown = false;
 			drawing.onMouseMove(new mouseEventMock());
-			expect(drawing.coords.lat).toBeUndefined();
-			expect(drawing.coords.lng).toBeUndefined();
-			expect(drawing.coords.alt).toBeUndefined();
+			expect(drawing.coords.get(0)).toBeUndefined();
 			
 			drawing.isMouseDown = true;
 			drawing.onMouseMove(new mouseEventMock());
-			expect(drawing.coords.lat).toEqual(eventLat);
-			expect(drawing.coords.lng).toEqual(eventLng);
-			expect(drawing.coords.alt).toEqual(eventAlt);
+			expect(drawing.coords.get(0).lat).toEqual(eventLat);
+			expect(drawing.coords.get(0).lng).toEqual(eventLng);
+			expect(drawing.coords.get(0).alt).toEqual(eventAlt);
+		});
+	}) ;
+	
+	describe('Complete the drawing', function() {
+		it('Does all necessary operations to complete a report drawing', function() {
+			spyOn(gearth, 'addEventListener');
+			spyOn(gefeatures, 'appendChild');
+			
+			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
+			drawing.startAvyDraw();
+			
+			spyOn(geplugin, 'createPolygon').andCallThrough();
+			spyOn(geplugin, 'createLinearRing').andCallThrough();
+
+			var highestCoordLat = 39.18738953399846;
+			var highestCoordLng = -106.7985430418609;
+			var highestCoordAlt = 2664.465388286975;
+			
+			var lineString = geplugin.createLineString('');
+			lineString.getCoordinates().pushLatLngAlt(39.1878171317089, -106.7994083904971, 2656.033783100885);
+			lineString.getCoordinates().pushLatLngAlt(39.18531355425417, -106.8007093577329, 2529.879913995753);
+			lineString.getCoordinates().pushLatLngAlt(39.18575752359928, -106.798308756752, 2630.662674342588);
+			lineString.getCoordinates().pushLatLngAlt(highestCoordLat, highestCoordLng, highestCoordAlt);
+			
+			drawing.lineStringPlacemark = geplugin.createPlacemark('');
+			drawing.lineStringPlacemark.setGeometry(lineString);
+			var testKml = '<kml>some coords n stuff</kml>';
+			drawing.drawingKmlObj = new DrawingKmlObjMock(testKml);
+			
+			window.geo._heading = 123.43953; // South east
+			window.geo._distance = 4554.3922;
+			drawing.convertLineStringToPolygon();
+			
+			expect(geplugin.createPolygon).toHaveBeenCalled();
+			expect(geplugin.createLinearRing).toHaveBeenCalled();
+			
+			expect(callbackLat).toEqual(highestCoordLat);
+			expect(callbackLng).toEqual(highestCoordLng);
+			expect(callbackAlt).toEqual(Math.round(highestCoordAlt * 3.28084)); // meter to ft conversion
+			expect(callbackAspect).toEqual('SE');
+			expect(callbackKml).toEqual(testKml);
+		});
+		
+		it('Translates heading to compass direction correctly', function() {
+			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
+
+			expect(drawing.headingToDirection(22.6)).toEqual('NE');
+			expect(drawing.headingToDirection(112.5)).toEqual('E');
+			expect(drawing.headingToDirection(112.6)).toEqual('SE');
+			expect(drawing.headingToDirection(157.6)).toEqual('S');
+			expect(drawing.headingToDirection(202.6)).toEqual('SW');
+			expect(drawing.headingToDirection(247.6)).toEqual('W');
+			expect(drawing.headingToDirection(292.6)).toEqual('NW');
+			expect(drawing.headingToDirection(0)).toEqual('N');
 		});
 	});
 });
