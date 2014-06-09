@@ -1,6 +1,6 @@
 define(['ae-report', 'jquery-ui', 'jquery-geocomplete'], function(AvyReport) {
 
-function AvyEyesView(gearthInst, gmapsInst) {
+function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	var self = this;
 	var gearth = gearthInst;
 	var gmaps = gmapsInst;
@@ -258,6 +258,7 @@ function AvyEyesView(gearthInst, gmapsInst) {
 	    ge.getLayerRoot().enableLayerById(ge.LAYER_ROADS, true);
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
 	    
+	    $('#loadingDiv').fadeOut(500);	    
 	    self.init();
 	}
 		    

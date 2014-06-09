@@ -12,13 +12,12 @@
 		<link rel="stylesheet" type="text/css" href="/css/ae-report.css">
 	    <link rel="stylesheet" type="text/css" href="/css/ae-jquery-mods.css">
 	</head>
-	<body style="margin:0px; overflow:hidden; font-size:100%">	
+	<body style="margin:0px; overflow:hidden; font-size:100%">
+	    <div id="loadingDiv"><div id="loadingMsgDiv"><img src="/images/infinity.gif"><p>Loading Avy Eyes</p></div></div>
 		<div id="map3d" style="height:100%; width:100%;"></div>
 		
 		<div id="liftContent" class="lift:surround?with=default&at=content">
-		
 		<div id="multiDialog" class="avyReportDialog"></div>
-		
 		<div id="aeControlContainer">
             <div id="aeTitleContainer">
                 <p>Avy Eyes</p>
@@ -122,14 +121,12 @@
 			</div>
 			</form> <!-- END LIFT FORM -->
 		</div>
-		
 	   <div id="avyReportInitDialog" class="avyReportDialog" title="Avalanche Report">
 		  <p>Click the link below to begin an avalanche report.</p>
 		  <p>You may optionally enter a nearby location to prime the Google Earth view.</p>
 		      <label for='avyReportInitLocation'>Nearby location</label>
 		      <input id='avyReportInitLocation' class='avyLocation' type='text'/>
 	   </div>
-	   
 	   <div id="avyReportBeginDialog" class="avyReportDialog" title="Avalanche Report">
 	       <p>Use the Google Earth controls in the upper right hand corner to zoom in on the avalanche path.</p> 
 	       <p>Zoom in and tilt the view as much as possible to get a complete view of the slide path while 
@@ -137,13 +134,11 @@
 	       <p>When you have the best view of the entire path click Begin Drawing to trace the avalanche path with the mouse. 
 	       Click once to begin the trace, move the mouse around the perimeter of the path, and click a second time to complete the drawing.<p>
        </div>
-       
        <div id="avyReportDrawConfirmDialog" class="avyReportDialog" title="Avalanche Report">
             <p>Are you satisfied with the drawing?</p>
             <p>Click Accept Drawing to keep the current drawing and continue on to enter information about this avalanche. 
             Click Redraw to erase the current drawing and try again.</p>       
        </div>
-	   
 	   <div id="avyReportDetailsDialog" class="avyReportDialog" title="Avalanche Report">
 	   <form class="lift:form.ajax">
 	   <div class="lift:AvyReport">
@@ -297,7 +292,6 @@
 	   </div>   
 	   </form> <!-- END LIFT FORM -->
 	   </div> <!-- END DIALOG DIV -->
-	   
 	   </div> <!-- END LIFT CONTENT -->
 	   
 	   <iframe id='aeControlIframe' frameBorder='0' scrolling='no' src='javascript:void(0);'/>

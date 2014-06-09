@@ -31,13 +31,16 @@ define(['jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 			spyOn(view, 'setGE').andCallThrough();
 			spyOn(view, 'setGeocoder');
 			spyOn(view, 'init');
-			
+			var jqFadeOut = spyOn($.fn, 'fadeOut');
+
 			view.initCB(geplugin);
-			
+
 			expect(view.setGE).toHaveBeenCalledWith(geplugin);
 			expect(view.setGeocoder).toHaveBeenCalled();
 			expect(gearth.addEventListener).toHaveBeenCalledWith(
 					geplugin.getView(), 'viewchangeend', view.viewChangeEndTimeout);
+
+			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
 			expect(view.init).toHaveBeenCalled();
 		});
 		
