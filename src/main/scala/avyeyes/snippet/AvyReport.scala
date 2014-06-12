@@ -58,10 +58,11 @@ object AvyReport {
   
   def doReport() = {
       try {
-    	  val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
-
+    	 val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
+    	 var newExtId = ""
          transaction {
-    	      val newAvalanche = new Avalanche(Some(generateExtId), false,
+    	      newExtId = generateExtId
+    	      val newAvalanche = new Avalanche(Some(newExtId), false,
     	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, areaName,
     	          parseDateStr(dateStr), Sky.withCode(sky), Precip.withCode(precip), 
     	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
@@ -75,7 +76,8 @@ object AvyReport {
 	    	  avalanches.insert(newAvalanche)
 	      }
 	      
-	      JsDialog.info("Avalanche inserted")
+	      JsDialog.info("Avalanche inserted. When the avalanche is approved it will show up in"
+	          + " avalanche search results and also be directly viewable at<br><br>" + AE_BASE_URL + newExtId)
       } catch {
         case e: Exception => JsDialog.error("An error occured while processing the avalanche data"
             + " and the avalanche was not saved.", "Exception message: " + e.getMessage())

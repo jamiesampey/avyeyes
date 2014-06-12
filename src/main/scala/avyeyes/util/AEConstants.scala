@@ -3,6 +3,8 @@ package avyeyes.util
 import java.util.Date
 
 object AEConstants {
+    def AE_BASE_URL = "http://localhost:8080/"
+
 	def earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	def humanNumberUnknown: Int = -1
 

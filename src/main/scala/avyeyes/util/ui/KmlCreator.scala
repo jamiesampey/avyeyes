@@ -2,6 +2,7 @@ package avyeyes.util.ui
 
 import avyeyes.model.Avalanche
 import avyeyes.util.AEHelpers._
+import avyeyes.util.AEConstants._
 import scala.xml.Elem
 import scala.xml.Unparsed
 import scala.xml.NodeSeq
@@ -46,6 +47,7 @@ class KmlCreator {
                   <tr><td>&nbsp;</td></tr>
                   <tr><td colspan="2"><u>comments</u>:</td></tr>
                   <tr><td colspan="2">{if (!avalanche.comments.isEmpty) avalanche.comments.get}</td></tr>
+                  <tr><td colspan="2">{if (!avalanche.extId.isEmpty) "External URL: " + AE_BASE_URL + avalanche.extId.get}</td></tr>
           </table>
 	}
 	
