@@ -30,6 +30,7 @@ libraryDependencies ++= {
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "org.squeryl" %% "squeryl" % "0.9.5-6", 
     "postgresql" % "postgresql" % "8.4-701.jdbc4",
+    "org.apache.commons" % "commons-lang3" % "3.3.2",
     "org.slf4j" % "slf4j-api" % "1.7.5",
   	"org.slf4j" % "slf4j-simple" % "1.7.5",
     "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",

@@ -15,4 +15,7 @@ object AEConstants {
 	def JQAC_VALUE = "value"
 	def UNKNOWN_CODE = "U"
 	def UNKNOWN_LABEL = "Unknown"
+
+	def EXT_ID_LENGTH = 8
+	def EXT_ID_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 }

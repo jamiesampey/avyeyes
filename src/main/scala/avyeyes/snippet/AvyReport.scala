@@ -1,22 +1,25 @@
 package avyeyes.snippet
 
 import avyeyes.model.Avalanche
-import avyeyes.model.AvalancheDb
+import avyeyes.model.AvalancheDb._
 import avyeyes.model.enums._
 import avyeyes.util.AEHelpers._
+import avyeyes.util.AEConstants._
 import avyeyes.util.ui.JsDialog
+
 import net.liftweb.http._
 import net.liftweb.http.js._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.JE._
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
+
 import org.squeryl.PrimitiveTypeMode._
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.sql.Timestamp
 import scala.xml.XML
-import avyeyes.util.ui.JsDialog
+import org.apache.commons.lang3.RandomStringUtils 
 
 object AvyReport {
   var lat = ""; var lng = ""; var areaName = ""
@@ -57,19 +60,19 @@ object AvyReport {
       try {
     	  val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
 
-	      val newAvalanche = new Avalanche(None, false,
-	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, areaName,
-	          parseDateStr(dateStr), Sky.withCode(sky), Precip.withCode(precip), 
-	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
-	    	  AvalancheType.withCode(avyType), AvalancheTrigger.withCode(trigger), 
-	    	  AvalancheInterface.withCode(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
-	    	  asInt(caught) openOr -1, asInt(partiallyBuried) openOr -1, asInt(fullyBuried) openOr -1, 
-	    	  asInt(injured) openOr -1, asInt(killed) openOr -1, 
-	    	  ModeOfTravel.withCode(modeOfTravel), Some(comments), None, 
-	    	  kmlCoordsNode.text.trim)
+         transaction {
+    	      val newAvalanche = new Avalanche(Some(generateExtId), false,
+    	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, areaName,
+    	          parseDateStr(dateStr), Sky.withCode(sky), Precip.withCode(precip), 
+    	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
+    	    	  AvalancheType.withCode(avyType), AvalancheTrigger.withCode(trigger), 
+    	    	  AvalancheInterface.withCode(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
+    	    	  asInt(caught) openOr -1, asInt(partiallyBuried) openOr -1, asInt(fullyBuried) openOr -1, 
+    	    	  asInt(injured) openOr -1, asInt(killed) openOr -1, 
+    	    	  ModeOfTravel.withCode(modeOfTravel), Some(comments), None, 
+    	    	  kmlCoordsNode.text.trim)
     	  
-	      transaction {
-	    	  AvalancheDb.avalanches.insert(newAvalanche)
+	    	  avalanches.insert(newAvalanche)
 	      }
 	      
 	      JsDialog.info("Avalanche inserted")
@@ -77,5 +80,14 @@ object AvyReport {
         case e: Exception => JsDialog.error("An error occured while processing the avalanche data"
             + " and the avalanche was not saved.", "Exception message: " + e.getMessage())
       }
+  }
+  
+  private def generateExtId: String = {
+    var extIdAttempt = ""
+    do {
+        extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARSET)
+    } while (!avalanches.where(a => a.extId === Some(extIdAttempt)).headOption.isEmpty)
+    
+    extIdAttempt
   }
 }
