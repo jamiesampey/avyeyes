@@ -19,5 +19,5 @@ object AEConstants {
 	def UNKNOWN_LABEL = "Unknown"
 
 	def EXT_ID_LENGTH = 8
-	def EXT_ID_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	def EXT_ID_CHARSET = "0123456789abcdefghijklmnopqrstuvwxyz"
 }
