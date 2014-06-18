@@ -131,13 +131,15 @@ define(['jquery', 'jasmine-jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 			var lng = '96.324552';
 			var range = '20000';
 			var tilt = '35.2';
+			var heading = '25';
 			
-			view.flyTo(lat, lng, range, tilt);
+			view.flyTo(lat, lng, range, tilt, heading);
 			
 			expect(geViewMock.setAbstractView.mostRecentCall.args[0].lat).toEqual(lat);
 			expect(geViewMock.setAbstractView.mostRecentCall.args[0].lng).toEqual(lng);
 			expect(geViewMock.setAbstractView.mostRecentCall.args[0].range).toEqual(range);
 			expect(geViewMock.setAbstractView.mostRecentCall.args[0].tilt).toEqual(tilt);
+			expect(geViewMock.setAbstractView.mostRecentCall.args[0].heading).toEqual(heading);
 		});
 		
 		it('geocodes address', function() {

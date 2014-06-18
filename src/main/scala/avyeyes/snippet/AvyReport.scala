@@ -87,7 +87,7 @@ object AvyReport {
   private def generateExtId: String = {
     var extIdAttempt = ""
     do {
-        extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARSET)
+        extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARS)
     } while (!avalanches.where(a => a.extId === Some(extIdAttempt)).headOption.isEmpty)
     
     extIdAttempt

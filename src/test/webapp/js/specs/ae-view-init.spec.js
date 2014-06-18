@@ -45,8 +45,6 @@ define(['jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 		});
 		
 		it('should init AE view', function() {
-			window.CustomEvent = function(name, options) {}
-
 			var jquiAutocomplete = spyOn($.fn, 'autocomplete');
 			var jquiMenu = spyOn($.fn, 'menu');
 			var jquiDatepicker = spyOn($.fn, 'datepicker');
@@ -54,10 +52,7 @@ define(['jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 			var jquiSpinner = spyOn($.fn, 'spinner').andCallThrough(); 
 			var jquiButton = spyOn($.fn, 'button');
 			var jqGeocomplete = spyOn($.fn, 'geocomplete');
-			
-			spyOn(view, 'flyTo');
-			spyOn(window, 'CustomEvent');
-			spyOn(document, 'dispatchEvent');
+			var jqSubmit = spyOn($.fn, 'submit');
 			
 			view.init();
 			
@@ -69,12 +64,10 @@ define(['jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'],
 			expect(jquiSpinner.calls[0].object.selector).toEqual('.avyHumanNumber');
 			expect(jquiSpinner.calls[1].object.selector).toEqual('.avySlopeAngle');
 			expect(jquiButton.mostRecentCall.object.selector).toEqual('.avyButton');
+
 			expect(jqGeocomplete.mostRecentCall.object.selector).toEqual('.avyLocation');
 			
-			expect(view.flyTo).toHaveBeenCalledWith(44.0, -115.0, 2700000.0, 0);
-			
-			expect(document.dispatchEvent).toHaveBeenCalled();
-			expect(window.CustomEvent).toHaveBeenCalledWith("avyEyesViewInit", {});
+			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 		});
 	});
 });

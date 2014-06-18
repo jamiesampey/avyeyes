@@ -2,6 +2,12 @@ package bootstrap.liftweb
 
 import net.liftweb.http.{Html5Properties, LiftRules, Req, ResourceServer}
 import net.liftweb.sitemap.{Menu, SiteMap}
+import avyeyes.model.Avalanche
+import avyeyes.snippet.AvySearch
+import net.liftweb.sitemap.Loc.EarlyResponse
+import net.liftweb.common.Full
+import net.liftweb.http.PlainTextResponse
+import net.liftweb.http.PageName
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -12,15 +18,14 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("avyeyes")
     
-    // Build SiteMap
-    def sitemap(): SiteMap = SiteMap(
+    LiftRules.setSiteMap(SiteMap(
       Menu.i("Home") / "index"
-    )
+    ))
 
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))
-      
+
     initDb
   }
   
@@ -29,7 +34,7 @@ class Boot {
   	case "css" :: _ => true
   }
 
-  def initDb = {
+  private def initDb = {
     import org.squeryl.SessionFactory
     import org.squeryl.Session
     import org.squeryl.adapters.PostgreSqlAdapter
@@ -39,11 +44,5 @@ class Boot {
 	Session.create(
 		java.sql.DriverManager.getConnection("jdbc:postgresql://localhost:5432/avyeyes_db"),
 		new PostgreSqlAdapter))
-			
-	import org.squeryl.PrimitiveTypeMode._
-	import avyeyes.model.AvalancheDb
-	transaction {
-      AvalancheDb.printDdl
-    }
   }
 }

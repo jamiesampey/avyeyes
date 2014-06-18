@@ -7,10 +7,6 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	var ge = null;
 	var geocoder = null;
 	
-	var INIT_LAT = 44.0;
-	var INIT_LNG = -115.0;
-	var INIT_ALT_METERS = 2700000.0;
-	
 	this.currentReport = null;
 	this.avySearchResultKmlObj = null;
 	this.aeFirstImpression = true;
@@ -91,13 +87,14 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		}
 	}
 		
-	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees) {
+	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
 		var lookAt = ge.createLookAt('');
 	    lookAt.setLatitude(lat);
 	    lookAt.setLongitude(lng);
 	    lookAt.setRange(rangeMeters);
 	    lookAt.setAltitudeMode(ge.ALTITUDE_RELATIVE_TO_GROUND);
 	    lookAt.setTilt(tiltDegrees);
+	    lookAt.setHeading(headingDegrees);
 	    ge.getView().setAbstractView(lookAt);
 	}
 	    
@@ -105,7 +102,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	  geocoder.geocode( {'address': address}, function(results, status) {
 	    if (status == gmaps.GeocoderStatus.OK && results.length) {
 			var latLng = results[0].geometry.location;
-	    	self.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees);
+	    	self.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
 	    } else {
 	      self.showModalDialog('Error', 'Geocode was not successful.', status);
 	    }
@@ -241,8 +238,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 9400.0, 40.0);
 		});
 		
-		self.flyTo(INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0.0);
-		document.dispatchEvent(new CustomEvent("avyEyesViewInit", {}));
+		$('#avyInitLiftCallback').submit();
 	}
 
 	this.initCB = function(instance) {

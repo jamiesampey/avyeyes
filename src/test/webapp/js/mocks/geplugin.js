@@ -124,11 +124,13 @@ define([], function() {
 		this.range;
 		this.altMode;
 		this.tilt;
+		this.heading;
 		this.setLatitude = function(lat) {this.lat = lat;}
 		this.setLongitude = function(lng) {this.lng = lng;}
 		this.setRange = function(range) {this.range = range;}
 	    this.setAltitudeMode = function(altMode) {this.altMode = altMode;}
-	    this.setTilt = function(tilt) {this.tilt = tilt;} 
+	    this.setTilt = function(tilt) {this.tilt = tilt;}
+	    this.setHeading = function(heading) {this.heading = heading;} 
 	}
 	
 	function GEPlacemark(name) {

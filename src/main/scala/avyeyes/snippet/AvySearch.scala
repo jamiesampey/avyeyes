@@ -1,38 +1,33 @@
 package avyeyes.snippet
 
-import avyeyes.model.Avalanche
-import avyeyes.model.AvalancheDb._
-import avyeyes.model.enums._
-import avyeyes.util.AEHelpers._
-import avyeyes.util.AEConstants._
-import avyeyes.util.ui.KmlCreator
-import avyeyes.util.ui.JsDialog
-
-import net.liftweb.http._
-import net.liftweb.http.js._
-import net.liftweb.http.js.JsCmds._
-import net.liftweb.http.js.JE._
-import net.liftweb.http.js.jquery.JqJE.JqAttr
-import net.liftweb.common._
-import net.liftweb.util.Helpers._
-
 import scala.math._
 
 import org.squeryl.PrimitiveTypeMode._
 
+import avyeyes.model.Avalanche
+import avyeyes.model.AvalancheDb._
+import avyeyes.model.enums._
+import avyeyes.util.AEConstants._
+import avyeyes.util.AEHelpers._
+import avyeyes.util.ui.JsDialog
+import avyeyes.util.ui.KmlCreator
+import net.liftweb.common._
+import net.liftweb.http._
+import net.liftweb.http.js._
+import net.liftweb.http.js.JE._
+import net.liftweb.http.js.JsCmds._
+import net.liftweb.util.Helpers._
 
 object AvySearch {
-    val kmlCreator = new KmlCreator
-    
+    private val kmlCreator = new KmlCreator
+
     var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
     var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 
     var fromDateStr = ""; var toDateStr = ""
     var avyType = ""; var trigger = ""; var rSize = ""; var dSize = ""
     var numCaught = ""; var numKilled = ""
-        
+    
 	def render = {
-		S.appendJs(populateAutoCompletes)
-		
 		"#avySearchNorthLimit" #> SHtml.hidden(northLimit = _, northLimit) &
 		"#avySearchEastLimit" #> SHtml.hidden(eastLimit = _, eastLimit) &
 		"#avySearchSouthLimit" #> SHtml.hidden(southLimit = _, southLimit) &
@@ -56,7 +51,7 @@ object AvySearch {
       if (strToDbl(camAlt) > CAM_REL_ALT_LIMIT_METERS)
           JsDialog.error("Eye altitude is too high. Eye must be less than 15,000 feet above the ground.")
       else {
-        val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange)
+        val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange:_*)
         
         Call("view.overlaySearchResultKml", kml.toString).cmd &
         JsDialog.info("Found " + matchingAvalanchesInRange.size 
@@ -107,15 +102,4 @@ object AvySearch {
       val c = 2 * asin(sqrt(ax))
       EARTH_RADIUS_MILES * c
   	}
-  	 
-    private def populateAutoCompletes = JsRaw("""
-        document.addEventListener('avyEyesViewInit', function(e) {
-                $('.avyTypeAutoComplete').autocomplete('option', 'source', """ + AvalancheType.toJsonArray  + """);
-                $('.avyTriggerAutoComplete').autocomplete('option', 'source', """ + AvalancheTrigger.toJsonArray  + """);
-                $('.avySkyAutoComplete').autocomplete('option', 'source', """ + Sky.toJsonArray  + """);
-                $('.avyPrecipAutoComplete').autocomplete('option', 'source', """ + Precip.toJsonArray  + """);
-                $('.avyInterfaceAutoComplete').autocomplete('option', 'source', """ + AvalancheInterface.toJsonArray  + """);
-                $('.avyAspectAutoComplete').autocomplete('option', 'source', """ + Aspect.toJsonArray  + """);
-                $('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', """ + ModeOfTravel.toJsonArray  + """);
-            });""")
 }
