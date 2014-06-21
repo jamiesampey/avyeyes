@@ -24,7 +24,7 @@ class Boot {
     LiftRules.addToPackages("avyeyes")
     
     LiftRules.statelessRewrite.prepend {
-        case RewriteRequest(ParsePath(extId :: Nil, _, _, false), GetRequest, _) => 
+        case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 
             RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(EXT_ID_URL_PARAM -> extId))
     }
 

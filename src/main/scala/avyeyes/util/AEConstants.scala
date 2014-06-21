@@ -8,10 +8,6 @@ object AEConstants {
 	def earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	def humanNumberUnknown: Int = -1
 
-	def INIT_LAT = 44.0
-	def INIT_LNG = -115.0
-	def INIT_ALT_METERS = 2700000.0
-
 	def CAM_TILT_RANGE_CUTOFF = 45.0
 	def CAM_REL_ALT_LIMIT_METERS = 9500.0
 	def AVY_DIST_RANGE_MILES = 10.0

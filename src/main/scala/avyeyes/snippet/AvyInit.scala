@@ -1,20 +1,30 @@
 package avyeyes.snippet
 
-import net.liftweb.common._
-import net.liftweb.http._
-import net.liftweb.http.js._
-import net.liftweb.http.js.JE._
-import net.liftweb.http.js.JsCmds._
-import net.liftweb.util.Helpers._
-import avyeyes.model.AvalancheDb._
+import avyeyes.model.AvalancheDb.getAvalancheByExtId
 import avyeyes.model.enums._
-import avyeyes.util.AEHelpers._
-import avyeyes.util.AEConstants._
+import avyeyes.util.AEConstants.EXT_ID_URL_PARAM
+import avyeyes.util.AEHelpers.getLookAtHeadingForAspect
 import avyeyes.util.ui.KmlCreator
-import scala.collection.mutable.ListBuffer
+import net.liftweb.http.S
+import net.liftweb.http.SHtml
+import net.liftweb.http.js.JE.Call
+import net.liftweb.http.js.JE.JsRaw
+import net.liftweb.http.js.JsCmd
+import net.liftweb.http.js.JsExp._
+import net.liftweb.util.Helpers._
+import avyeyes.util.AEHelpers
 
 
 object AvyInit {
+    private val INIT_VIEW_LAT = 44
+    private val INIT_VIEW_LNG = -115
+    private val INIT_VIEW_ALT_METERS = 2700000
+    private val INIT_VIEW_CAM_TILT = 0
+    private val INIT_VIEW_HEADING = 0
+    
+    private val INIT_AVY_ALT_METERS = 2000
+    private val INIT_AVY_CAM_TILT = 75
+    
     private var extId: Option[String] = None
       
     def render = {
@@ -29,10 +39,11 @@ object AvyInit {
         if (initAvalanche.isDefined) {
             val kml = new KmlCreator().createCompositeKml(initAvalanche.get)
             Call("view.overlaySearchResultKml", kml.toString).cmd &
-            Call("view.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, 2000, 70, 
-                    getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd
+            Call("view.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, INIT_AVY_ALT_METERS, 
+                INIT_AVY_CAM_TILT, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd
         } else {
-            Call("view.flyTo", INIT_LAT, INIT_LNG, INIT_ALT_METERS, 0, 0).cmd
+            Call("view.flyTo", INIT_VIEW_LAT, INIT_VIEW_LNG, INIT_VIEW_ALT_METERS, 
+                INIT_VIEW_CAM_TILT, INIT_VIEW_HEADING).cmd
         }
     }
     

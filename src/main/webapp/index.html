@@ -13,18 +13,21 @@
 	    <link rel="stylesheet" type="text/css" href="/css/ae-jquery-mods.css">
 	</head>
 	<body style="margin:0px; overflow:hidden; font-size:100%">
-		<div id="map3d" style="height:100%; width:100%;"></div>
-		
+        <div id="loadingDiv">
+          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><p>Loading Avy Eyes</p></div>
+        </div>
+        <div id="map3d" style="height:100%; width:100%;"></div>
+
 		<div id="liftContent" class="lift:surround?with=default&at=content">
 		
 		<form class="lift:form.ajax">
-			<div id="loadingDiv" class="lift:AvyInit?form.post">
-	            <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><p>Loading Avy Eyes</p></div>
+			<div id="aeInit" class="lift:AvyInit?form.post">
 	            <input id="avyInitLiftCallback" style="display:none;" type="submit" />
 	        </div>
         </form>
         
 		<div id="multiDialog" class="avyReportDialog"></div>
+
 		<div id="aeControlContainer">
             <div id="aeTitleContainer">
                 <p>Avy Eyes</p>

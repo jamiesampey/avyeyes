@@ -8,6 +8,8 @@ import scala.xml.NodeSeq
 import scala.xml.NodeSeq.seqToNodeSeq
 import scala.xml.Utility
 import scala.xml.Node
+import avyeyes.util.AEHelpers
+import avyeyes.util.AEConstants
 
 class KmlCreator {
 	def createCompositeKml(avalanches: Avalanche*): Node = {
@@ -50,7 +52,7 @@ class KmlCreator {
                   <tr><td>&nbsp;</td></tr>
                   <tr><td colspan="2"><u>comments</u>:</td></tr>
                   <tr><td colspan="2">{if (!avalanche.comments.isEmpty) avalanche.comments.get}</td></tr>
-                  <tr><td colspan="2">{if (!avalanche.extId.isEmpty) "External URL: " + AE_BASE_URL + "?a=" + avalanche.extId.get}</td></tr>
+                  <tr><td colspan="2">{if (!avalanche.extId.isEmpty) "External URL: " + AEConstants.AE_BASE_URL + avalanche.extId.get}</td></tr>
           </table>
 	    )
 	}
