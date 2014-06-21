@@ -22,7 +22,7 @@ object AvyInit {
     private val INIT_VIEW_CAM_TILT = 0
     private val INIT_VIEW_HEADING = 0
     
-    private val INIT_AVY_ALT_METERS = 2000
+    private val INIT_AVY_ALT_METERS = 1300
     private val INIT_AVY_CAM_TILT = 75
     
     private var extId: Option[String] = None

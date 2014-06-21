@@ -56,12 +56,13 @@ function AvyDraw(gearthInst, gePlugin, submitDrawing) {
 	  
 	  var highPoint = new geo.Point(highestCoord);
 	  var lowPoint = new geo.Point(lowestCoord);
+	  var midPoint = highPoint.midpoint(lowPoint);
 	  var heading = highPoint.heading(lowPoint);
 	  var hDist = highPoint.distance(lowPoint);
 	  var vDist = highPoint.altitude() - lowPoint.altitude();  
 	  var angleRadians = Math.asin(vDist/hDist);
 	  
-	  submitDrawing(highPoint.lat(), highPoint.lng(), 
+	  submitDrawing(midPoint.lat(), midPoint.lng(), 
 			  Math.round(highPoint.altitude() * FEET_PER_METER), 
 			  self.headingToDirection(heading.toFixed(1)),
 			  Math.round(angleRadians * (180/Math.PI)),

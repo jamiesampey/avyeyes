@@ -56,7 +56,7 @@ object AvyReport {
     "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
   }
   
-  def doReport() = {
+  private def doReport() = {
       try {
     	 val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
     	 var newExtId = ""

@@ -152,30 +152,34 @@ define(['jquery', 'gearth', 'geplugin', 'ae-draw'],
 			spyOn(geplugin, 'createPolygon').andCallThrough();
 			spyOn(geplugin, 'createLinearRing').andCallThrough();
 
-			var highestCoordLat = 39.18738953399846;
-			var highestCoordLng = -106.7985430418609;
 			var highestCoordAlt = 2664.465388286975;
 			
 			var lineString = geplugin.createLineString('');
 			lineString.getCoordinates().pushLatLngAlt(39.1878171317089, -106.7994083904971, 2656.033783100885);
 			lineString.getCoordinates().pushLatLngAlt(39.18531355425417, -106.8007093577329, 2529.879913995753);
 			lineString.getCoordinates().pushLatLngAlt(39.18575752359928, -106.798308756752, 2630.662674342588);
-			lineString.getCoordinates().pushLatLngAlt(highestCoordLat, highestCoordLng, highestCoordAlt);
+			lineString.getCoordinates().pushLatLngAlt(39.18738953399846, -106.7985430418609, highestCoordAlt);
 			
 			drawing.lineStringPlacemark = geplugin.createPlacemark('');
 			drawing.lineStringPlacemark.setGeometry(lineString);
 			var testKml = '<kml>some coords n stuff</kml>';
 			drawing.drawingKmlObj = new DrawingKmlObjMock(testKml);
 			
-			window.geo._heading = 123.43953; // South east
+			window.geo._heading = 123.43953; // South east aspect
 			window.geo._distance = 4554.3922;
+			
+			var midpointCoord = geplugin.createCoord();
+			midpointCoord.lat = 39.745313;
+			midpointCoord.lng = 106.90370;
+			window.geo._midpointCoord = midpointCoord;
+			
 			drawing.convertLineStringToPolygon();
 			
 			expect(geplugin.createPolygon).toHaveBeenCalled();
 			expect(geplugin.createLinearRing).toHaveBeenCalled();
 			
-			expect(callbackLat).toEqual(highestCoordLat);
-			expect(callbackLng).toEqual(highestCoordLng);
+			expect(callbackLat).toEqual(window.geo._midpointCoord.getLatitude());
+			expect(callbackLng).toEqual(window.geo._midpointCoord.getLongitude());
 			expect(callbackAlt).toEqual(Math.round(highestCoordAlt * 3.28084)); // meter to ft conversion
 			expect(callbackAspect).toEqual('SE');
 			expect(callbackKml).toEqual(testKml);
