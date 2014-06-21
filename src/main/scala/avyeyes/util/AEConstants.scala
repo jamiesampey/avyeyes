@@ -22,7 +22,7 @@ object AEConstants {
 	def UNKNOWN_CODE = "U"
 	def UNKNOWN_LABEL = "Unknown"
 
-	def EXT_ID_URL_PARAM = "a"
+	def EXT_ID_URL_PARAM = "extId"
 	def EXT_ID_LENGTH = 8
 	def EXT_ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 }

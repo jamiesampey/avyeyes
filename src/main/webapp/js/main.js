@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: 'js',
+	baseUrl: '/js',
     paths: {
     	'gearth': 'lib/require/gearth-loader',
     	'gmaps': 'lib/require/gmaps-loader',
