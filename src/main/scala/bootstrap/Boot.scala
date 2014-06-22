@@ -1,18 +1,10 @@
 package bootstrap.liftweb
 
-import net.liftweb.http.{Html5Properties, LiftRules, Req, ResourceServer}
+import net.liftweb.http._
 import net.liftweb.sitemap.{Menu, SiteMap}
-import avyeyes.model.Avalanche
-import avyeyes.snippet.AvySearch
-import avyeyes.util.AEConstants._
-import net.liftweb.sitemap.Loc.EarlyResponse
 import net.liftweb.common.Full
-import net.liftweb.http.PlainTextResponse
-import net.liftweb.http.PageName
-import net.liftweb.http.RewriteRequest
-import net.liftweb.http.ParsePath
-import net.liftweb.http.GetRequest
-import net.liftweb.http.RewriteResponse
+import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
+
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -21,7 +13,7 @@ import net.liftweb.http.RewriteResponse
 class Boot {
   def boot {
     // where to search snippet
-    LiftRules.addToPackages("avyeyes")
+    LiftRules.addToPackages("com.avyeyes")
     
     LiftRules.statelessRewrite.prepend {
         case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 

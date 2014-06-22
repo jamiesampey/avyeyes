@@ -1,9 +1,9 @@
-package avyeyes.model
+package com.avyeyes.model
 
 import org.squeryl.Schema
 import org.squeryl.PrimitiveTypeMode._
 
-import avyeyes.util.AEHelpers._
+import com.avyeyes.util.AEHelpers._
 
 object AvalancheDb extends Schema {
 	val avalanches = table[Avalanche]("avalanche")

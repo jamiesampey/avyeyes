@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object AvalancheInterface extends DataCodeEnum {
   val STORM_SNOW = new DataCodeVal(1, "S", "Layer of recent storm snow") 

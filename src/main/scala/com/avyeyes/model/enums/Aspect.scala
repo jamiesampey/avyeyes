@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object Aspect extends DataCodeEnum {
 	val N = new DataCodeVal(1, "N")

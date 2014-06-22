@@ -1,10 +1,10 @@
-package avyeyes.snippet
+package com.avyeyes.snippet
 
-import avyeyes.model.AvalancheDb.getAvalancheByExtId
-import avyeyes.model.enums._
-import avyeyes.util.AEConstants.EXT_ID_URL_PARAM
-import avyeyes.util.AEHelpers.getLookAtHeadingForAspect
-import avyeyes.util.ui.KmlCreator
+import com.avyeyes.model.AvalancheDb.getAvalancheByExtId
+import com.avyeyes.model.enums._
+import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
+import com.avyeyes.util.AEHelpers.getLookAtHeadingForAspect
+import com.avyeyes.util.ui.KmlCreator
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
@@ -12,7 +12,6 @@ import net.liftweb.http.js.JE.JsRaw
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
-import avyeyes.util.AEHelpers
 
 
 object AvyInit {

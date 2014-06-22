@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object AvalancheType extends DataCodeEnum {
   val LOOSE_SNOW = new DataCodeVal(1, "L", "Loose-snow avalanche")

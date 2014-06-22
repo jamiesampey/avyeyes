@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object Sky extends DataCodeEnum {
   val CLEAR = new DataCodeVal(1, "Clear", "No clouds")

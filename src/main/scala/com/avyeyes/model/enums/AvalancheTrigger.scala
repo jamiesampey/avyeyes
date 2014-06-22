@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object AvalancheTrigger extends DataCodeEnum {
   val NATURAL = new DataCodeVal(1, "N", "Natural trigger")

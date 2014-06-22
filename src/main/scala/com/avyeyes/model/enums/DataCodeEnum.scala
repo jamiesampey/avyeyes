@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 import scala.collection.mutable.ListBuffer
 
@@ -11,7 +11,7 @@ import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JsObj
 import net.liftweb.http.js.JE.JsArray
 
-import avyeyes.util.AEConstants._
+import com.avyeyes.util.AEConstants._
 
 abstract class DataCodeEnum extends Enumeration {
 	case class DataCodeVal(idx: Int, code: String, desc: String) extends Val(idx, code) {

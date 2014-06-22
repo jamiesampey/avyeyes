@@ -1,6 +1,6 @@
-package avyeyes.model
+package com.avyeyes.model
 
-import avyeyes.model.enums._
+import com.avyeyes.model.enums._
 import java.util.Date
 import scala.xml.Elem
 import scala.xml.Null

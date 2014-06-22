@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object ModeOfTravel extends DataCodeEnum {
   val SKIER = new DataCodeVal(1, "Skier")

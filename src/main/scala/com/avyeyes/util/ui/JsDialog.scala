@@ -1,4 +1,4 @@
-package avyeyes.util.ui
+package com.avyeyes.util.ui
 
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JE.Call

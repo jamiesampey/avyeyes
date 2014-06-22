@@ -1,4 +1,4 @@
-package avyeyes.model.enums
+package com.avyeyes.model.enums
 
 object Precip extends DataCodeEnum {
   val NO_PRECIP = new DataCodeVal(1, "NO", "No precipitation") 

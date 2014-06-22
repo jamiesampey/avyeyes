@@ -1,4 +1,4 @@
-package avyeyes.util
+package com.avyeyes.util
 
 import java.util.Date
 

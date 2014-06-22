@@ -1,17 +1,13 @@
-package avyeyes.util
+package com.avyeyes.util
 
-import avyeyes.util.AEConstants._
+import com.avyeyes.util.AEConstants._
+import com.avyeyes.model.enums.Aspect
+import com.avyeyes.model.enums._
+
 import java.text.SimpleDateFormat
-import java.util.Date
 import net.liftweb.util.Helpers._
-import org.apache.commons.lang3.StringUtils
-import avyeyes.model.enums.Aspect
-import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST._
-import net.liftweb.json.JsonDSL
-import net.liftweb.json.Printer
-import scala.collection.mutable.ListBuffer
-import avyeyes.model.enums._
+
 
 object AEHelpers {
 	// Date helpers

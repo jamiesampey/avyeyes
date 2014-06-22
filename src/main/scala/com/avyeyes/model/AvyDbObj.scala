@@ -1,4 +1,4 @@
-package avyeyes.model
+package com.avyeyes.model
 
 import java.sql.Timestamp
 import org.squeryl.KeyedEntity

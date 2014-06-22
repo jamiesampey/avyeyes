@@ -1,16 +1,16 @@
-package avyeyes.snippet
+package com.avyeyes.snippet
 
 import scala.math._
 
 import org.squeryl.PrimitiveTypeMode._
 
-import avyeyes.model.Avalanche
-import avyeyes.model.AvalancheDb._
-import avyeyes.model.enums._
-import avyeyes.util.AEConstants._
-import avyeyes.util.AEHelpers._
-import avyeyes.util.ui.JsDialog
-import avyeyes.util.ui.KmlCreator
+import com.avyeyes.model.Avalanche
+import com.avyeyes.model.AvalancheDb._
+import com.avyeyes.model.enums._
+import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.ui.JsDialog
+import com.avyeyes.util.ui.KmlCreator
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.http.js._
