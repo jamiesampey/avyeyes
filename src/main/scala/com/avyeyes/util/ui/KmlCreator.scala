@@ -4,6 +4,7 @@ import com.avyeyes.model.Avalanche
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
 import scala.xml._
+import net.liftweb.util.Props
 
 class KmlCreator {
 	def createCompositeKml(avalanches: Avalanche*): Node = {
@@ -46,7 +47,10 @@ class KmlCreator {
                   <tr><td>&nbsp;</td></tr>
                   <tr><td colspan="2"><u>comments</u>:</td></tr>
                   <tr><td colspan="2">{if (!avalanche.comments.isEmpty) avalanche.comments.get}</td></tr>
-                  <tr><td colspan="2">{if (!avalanche.extId.isEmpty) "External URL: " + AE_BASE_URL + avalanche.extId.get}</td></tr>
+                  { if (Props.get("base.url").isDefined && avalanche.extId.isDefined) {
+                      <tr><td colspan="2">External URL: {Props.get("base.url").get + avalanche.extId.get}</td></tr>
+                    }
+                  }
           </table>
 	    )
 	}

@@ -6,20 +6,19 @@ import com.avyeyes.model.enums._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.ui.JsDialog
-
 import net.liftweb.http._
 import net.liftweb.http.js._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.http.js.JE._
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
-
 import org.squeryl.PrimitiveTypeMode._
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.sql.Timestamp
 import scala.xml.XML
 import org.apache.commons.lang3.RandomStringUtils 
+import net.liftweb.util.Props
 
 object AvyReport {
   var lat = ""; var lng = ""; var areaName = ""
@@ -77,7 +76,7 @@ object AvyReport {
 	      }
 	      
 	      JsDialog.info("Avalanche inserted. When the avalanche is approved it will show up in"
-	          + " avalanche search results and also be directly viewable at<br><br>" + AE_BASE_URL + newExtId)
+	          + " avalanche search results and also be directly viewable at<br><br>" + Props.get("base.url").get + newExtId)
       } catch {
         case e: Exception => JsDialog.error("An error occured while processing the avalanche data"
             + " and the avalanche was not saved.", "Exception message: " + e.getMessage())

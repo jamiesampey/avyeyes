@@ -1,19 +1,20 @@
 package com.avyeyes.model.enums
 
 import scala.collection.mutable.ListBuffer
-
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL
 import net.liftweb.json.Printer
-
 import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JsObj
 import net.liftweb.http.js.JE.JsArray
-
-import com.avyeyes.util.AEConstants._
+import net.liftweb.util.Props
 
 abstract class DataCodeEnum extends Enumeration {
+    private val JQAC_LABEL = "label"
+    private val JQAC_VALUE = "value"
+    private val UNKNOWN_CODE = "U"
+      
 	case class DataCodeVal(idx: Int, code: String, desc: String) extends Val(idx, code) {
 	  def this(idx: Int, code: String) = this(idx, code, "")
 	  override def toString = if (desc.isEmpty()) code else code + " - " + desc
@@ -30,7 +31,7 @@ abstract class DataCodeEnum extends Enumeration {
 		Printer.compact(JsonAST.render(JArray(listBuffer.toList)))
 	}
 	   
-	val UNKNOWN = new DataCodeVal(0, UNKNOWN_CODE, UNKNOWN_LABEL)
+	val UNKNOWN = new DataCodeVal(0, UNKNOWN_CODE, Props.get("label.unknown").get)
 	
 	def withCode(c: String): DataCodeVal = Option(c) match {
 		case Some(c) if (!c.isEmpty) => values.find(_.code == c).get

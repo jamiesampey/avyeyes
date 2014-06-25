@@ -3,16 +3,17 @@ package com.avyeyes.util
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.model.enums.Aspect
 import com.avyeyes.model.enums._
-
 import java.text.SimpleDateFormat
 import net.liftweb.util.Helpers._
 import net.liftweb.json.JsonAST._
+import net.liftweb.util.Props
 
 
 object AEHelpers {
-	// Date helpers
+    private val UNKNOWN_LABEL = Props.get("label.unknown").get
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
-	def parseDateStr(str: String) = df.parse(str)
+
+    def parseDateStr(str: String) = df.parse(str)
 	
 	// Snippet helpers
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
