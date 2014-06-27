@@ -1,5 +1,7 @@
-define(['jquery', 'gearth', 'geplugin', 'ae-draw'], 
-		function($, gearthMock, gePluginMock, AvyDraw) {
+define(['gearth', 
+        'geplugin', 
+        'ae-draw'], 
+        function(gearthMock, gePluginMock, AvyDraw) {
 	
 	var gearth = new gearthMock();
 	var geplugin = new gePluginMock();

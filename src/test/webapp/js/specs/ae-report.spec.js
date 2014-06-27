@@ -1,5 +1,11 @@
-define(['jquery', 'jasmine-jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view', 'ae-report', 'ae-draw'], 
-		function($, jas$, gearthMock, gmapsMock, gePluginMock, AvyEyesView, AvyReport, AvyDraw) {
+define(['jasmine-jquery', 
+        'gearth', 
+        'gmaps', 
+        'geplugin', 
+        'ae-view', 
+        'ae-report', 
+        'ae-draw'], 
+        function(jas$, gearthMock, gmapsMock, gePluginMock, AvyEyesView, AvyReport, AvyDraw) {
 	
 	var gearth = new gearthMock();
 	var geplugin = new gePluginMock();

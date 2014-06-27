@@ -3,9 +3,10 @@ require.config({
     paths: {
         'specs': EnvJasmine.specsDir,
         'mocks': EnvJasmine.mocksDir,
-    	'jquery': EnvJasmine.libDir + 'jquery',
-        'jquery-ui': EnvJasmine.libDir + 'jquery-ui.custom.min',
+        'jquery-ui': EnvJasmine.libDir + 'jquery-ui',
         'jquery-geocomplete': EnvJasmine.libDir + 'jquery.geocomplete.min',
+        'jquery-fileupload': EnvJasmine.libDir + 'jquery.fileupload',
+        'jquery-iframe-transport': EnvJasmine.libDir + 'jquery.iframe-transport',
     	'jasmine-jquery': EnvJasmine.libDir + 'jasmine-jquery',
         'geojs': EnvJasmine.mocksDir + 'geo',
     	'geplugin': EnvJasmine.mocksDir + 'geplugin',

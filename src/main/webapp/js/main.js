@@ -3,8 +3,10 @@ require.config({
     paths: {
     	'gearth': 'lib/require/gearth-loader',
     	'gmaps': 'lib/require/gmaps-loader',
-        'jquery-ui': 'lib/jquery-ui.custom.min',
+        'jquery-ui': 'lib/jquery-ui',
         'jquery-geocomplete': 'lib/jquery.geocomplete.min',
+        'jquery-fileupload': 'lib/jquery.fileupload',
+        'jquery-iframe-transport': 'lib/jquery.iframe-transport',
         'geojs': 'lib/geo.min',
     	'async': 'lib/require/async',
         'goog': 'lib/require/goog',

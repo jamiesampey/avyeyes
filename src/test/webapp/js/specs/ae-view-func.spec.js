@@ -1,5 +1,8 @@
-define(['jquery', 'gearth', 'gmaps', 'geplugin', 'ae-view'], 
-		function($, gearthMock, gmapsMock, gePluginMock, AvyEyesView) {
+define(['gearth', 
+        'gmaps', 
+        'geplugin', 
+        'ae-view'], 
+        function(gearthMock, gmapsMock, gePluginMock, AvyEyesView) {
 	
 	var gearth = new gearthMock();
 	var geplugin = new gePluginMock();
