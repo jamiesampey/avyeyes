@@ -3,7 +3,8 @@ package bootstrap.liftweb
 import net.liftweb.http._
 import net.liftweb.sitemap.{Menu, SiteMap}
 import net.liftweb.common.Full
-import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
+import com.avyeyes.util.AEConstants._
+import com.avyeyes.rest.ImageResource
 
 
 /**
@@ -24,6 +25,10 @@ class Boot {
       Menu.i("Home") / "index"
     ))
 
+    LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE
+    LiftRules.maxMimeSize = MAX_IMAGE_SIZE
+    LiftRules.statelessDispatchTable.append(ImageResource)
+    
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))
@@ -43,8 +48,6 @@ class Boot {
 
 	Class.forName("org.postgresql.Driver")
 	SessionFactory.concreteFactory = Some(()=>
-	Session.create(
-		java.sql.DriverManager.getConnection("jdbc:postgresql://localhost:5432/avyeyes_db"),
-		new PostgreSqlAdapter))
+	Session.create(java.sql.DriverManager.getConnection(JDBC_CONNECT_STR), new PostgreSqlAdapter))
   }
 }

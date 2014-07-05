@@ -47,8 +47,8 @@ class KmlCreator {
                   <tr><td>&nbsp;</td></tr>
                   <tr><td colspan="2"><u>comments</u>:</td></tr>
                   <tr><td colspan="2">{if (!avalanche.comments.isEmpty) avalanche.comments.get}</td></tr>
-                  { if (Props.get("base.url").isDefined && avalanche.extId.isDefined) {
-                      <tr><td colspan="2">External URL: {Props.get("base.url").get + avalanche.extId.get}</td></tr>
+                  { if (Props.get("base.url").isDefined) {
+                      <tr><td colspan="2">External URL: {Props.get("base.url").get + avalanche.extId}</td></tr>
                     }
                   }
           </table>

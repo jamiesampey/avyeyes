@@ -1,7 +1,7 @@
-create table "avalanche" (
+CREATE TABLE "avalanche" (
     "id" bigint primary key,
     "createTime" timestamp not null,
-    "extId" varchar(8),
+    "extId" varchar(8) not null,
     "viewable" boolean not null,
     "lat" double precision not null,
     "lng" double precision not null,
@@ -39,3 +39,19 @@ CREATE UNIQUE INDEX idx2f5d05cf
   ON avalanche
   USING btree
   ("extId");
+  
+CREATE TABLE "avalanche_img" (
+    "id" bigint primary key,
+    "createTime" timestamp not null,
+    "avyExtId" varchar(8) not null,
+    "filename" varchar(255) not null,
+    "mimeType" varchar(20) not null,
+    "bytes" bytea not null
+);
+
+CREATE SEQUENCE s_avalanche_img_id
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;

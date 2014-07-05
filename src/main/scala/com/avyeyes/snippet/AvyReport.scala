@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.model.AvalancheDb._
+import com.avyeyes.model.AvalancheDb
 import com.avyeyes.model.enums._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
@@ -17,10 +17,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.sql.Timestamp
 import scala.xml.XML
-import org.apache.commons.lang3.RandomStringUtils 
+import org.apache.commons.lang3.RandomStringUtils
 import net.liftweb.util.Props
 
-object AvyReport {
+class AvyReport {
+  var extId = AvalancheDb.reserveNewExtId
+  
   var lat = ""; var lng = ""; var areaName = ""
   var dateStr = ""; var sky = ""; var precip = ""
   var elevation = ""; var aspect = ""; var angle = ""    
@@ -29,6 +31,7 @@ object AvyReport {
   var modeOfTravel = ""; var submitterEmail = ""; var comments = ""; var kmlStr = ""
       
   def render = {
+    "#avyReportExtId" #> SHtml.hidden(extId = _, extId) &
     "#avyReportLat" #> SHtml.hidden(lat = _, "") &
     "#avyReportLng" #> SHtml.hidden(lng = _, "") &
     "#avyReportAreaName" #> SHtml.text("", areaName = _) &
@@ -58,12 +61,9 @@ object AvyReport {
   private def doReport() = {
       try {
     	 val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
-    	 var newExtId = ""
          transaction {
-    	      newExtId = generateExtId
-    	      val newAvalanche = new Avalanche(Some(newExtId), false,
-    	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, areaName,
-    	          parseDateStr(dateStr), Sky.withCode(sky), Precip.withCode(precip), 
+    	      val newAvalanche = new Avalanche(extId, false, asDouble(lat) openOr 0, asDouble(lng) openOr 0, 
+    	          areaName, parseDateStr(dateStr), Sky.withCode(sky), Precip.withCode(precip), 
     	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
     	    	  AvalancheType.withCode(avyType), AvalancheTrigger.withCode(trigger), 
     	    	  AvalancheInterface.withCode(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
@@ -72,23 +72,16 @@ object AvyReport {
     	    	  ModeOfTravel.withCode(modeOfTravel), Some(comments), None, 
     	    	  kmlCoordsNode.text.trim)
     	  
-	    	  avalanches.insert(newAvalanche)
+	    	  AvalancheDb.avalanches insert newAvalanche
 	      }
 	      
 	      JsDialog.info("Avalanche inserted. When the avalanche is approved it will show up in"
-	          + " avalanche search results and also be directly viewable at<br><br>" + Props.get("base.url").get + newExtId)
+	          + " avalanche search results and be directly viewable at<br><br>" + Props.get("base.url").get + extId)
       } catch {
         case e: Exception => JsDialog.error("An error occured while processing the avalanche data"
             + " and the avalanche was not saved.", "Exception message: " + e.getMessage())
+      } finally {
+        AvalancheDb.unreserveExtId(extId)
       }
-  }
-  
-  private def generateExtId: String = {
-    var extIdAttempt = ""
-    do {
-        extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARS)
-    } while (!avalanches.where(a => a.extId === Some(extIdAttempt)).headOption.isEmpty)
-    
-    extIdAttempt
   }
 }

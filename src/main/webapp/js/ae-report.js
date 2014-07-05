@@ -26,7 +26,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 
 	this.clearAllFields = function() {
 		self.clearAvyDrawing();
-		$('#avyReportDetailsDialog').find('input:text, input:hidden, textarea').val('');
+		$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
 	}
 	
 	this.doAvyDrawing = function() {
@@ -39,17 +39,46 @@ function AvyReport(avyEyesView, submitReportCallback) {
 		self.currentDrawing.startAvyDraw();
 	}
 	
+	this.initAvyReport = function() {
+		view.hideSearchMenu();
+		$('#avyReportGeocodeDialog').dialog('open');
+	}
+
 	this.beginReportWithGeocode = function() {
 		view.initialGeocodeForReport = true;
 		view.geocodeAndFlyToLocation($('#avyReportInitLocation').val(), 8000.0, 65.0);
 	}
 	
-	this.initAvyReport = function() {
-		view.hideSearchMenu();
+	this.beginReport = function() {
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		$('#avyReportBeginDrawDialog').dialog('open');
+		view.navControlBlink(50);
+	}
 	
+	this.confirmDrawing = function() {
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		$('#avyReportConfirmDrawDialog').dialog('open');
+	}
+	
+	this.enterAvyDetail = function() {
+		var extId = $('#avyReportExtId').val();
+		var imgUploadUrl = '/imgupload/' + extId;
+		$("#imgUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImgDropZone'),
+	        done: function(e, data) {
+	        	for (var i=0; i<data.result.filenames.length; i++) {
+	        		$('#avyReportImgDropZone').append("<img src='/imgserve/" + extId + "/" + data.result.filenames[i] + "' height='480' width='640' />");
+	        	}
+	        }
+	    });
+		
+		$.ui.dialog.prototype._focusTabbable = function(){};
+		$('#avyReportDialog').dialog('open');
+	}
+
+	this.initAvyReportDialogs = function() {
 		$('#avyReportInitLocation').keydown(function (e){    
 			  if (e.keyCode == 13) {
-			    $('#avyReportInitDialog').dialog('close');
+			    $('#avyReportGeocodeDialog').dialog('close');
 			    if ($('#avyReportInitLocation').val()) {
 			    	self.beginReportWithGeocode();
 			    } else {
@@ -58,8 +87,9 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  }
 		});
 		
-		$('#avyReportInitDialog').dialog({
+		$('#avyReportGeocodeDialog').dialog({
 			  minWidth: 500,
+			  autoOpen: false,
 			  modal: true,
 			  draggable: false,
 			  closeOnEscape: false,
@@ -86,12 +116,10 @@ function AvyReport(avyEyesView, submitReportCallback) {
 				}
 			  ]
 			});
-	}
-	
-	this.beginReport = function() {
-		$.ui.dialog.prototype._focusTabbable = function(){};
-		$('#avyReportBeginDialog').dialog({
+		
+		$('#avyReportBeginDrawDialog').dialog({
 			  minWidth: 500,
+			  autoOpen: false,
 			  modal: true,
 			  draggable: false,
 			  closeOnEscape: false,
@@ -116,13 +144,9 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  ]
 			});
 		
-		view.navControlBlink(50);
-	}
-	
-	this.confirmDrawing = function() {
-		$.ui.dialog.prototype._focusTabbable = function(){};
-		$('#avyReportDrawConfirmDialog').dialog({
+		$('#avyReportConfirmDrawDialog').dialog({
 			  minWidth: 500,
+			  autoOpen: false,
 			  modal: true,
 			  draggable: true,
 			  closeOnEscape: false,
@@ -146,19 +170,52 @@ function AvyReport(avyEyesView, submitReportCallback) {
 				}
 			  ]
 			});
-	}
-	
-	this.enterAvyDetail = function() {
-		$.ui.dialog.prototype._focusTabbable = function(){};
-		$('#avyReportDetailsDialog').dialog({
+		
+		$('#avyReportImgDialog').dialog({
 			  minWidth: 750,
 			  minHeight: 500,
+			  autoOpen: false,
 			  modal: true,
 			  draggable: false,
+			  resizable: false,
 			  closeOnEscape: false,
-			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "noclose",
+			  dialogClass: "avyReportDetailsDialog",
+			  show: { effect: "slide", duration: 500 },
+			  hide: { effect: "slide", duration: 500 },
 			  buttons: [
+			    {
+			      text: "Done with Images",
+			      click: function(event, ui) {
+			    	  $(this).dialog('close');
+			      }
+			    }
+			    ]
+		});
+		
+		$('#avyReportDialog').dialog({
+			  minWidth: 750,
+			  minHeight: 500,
+			  autoOpen: false,
+			  modal: true,
+			  draggable: false,
+			  resizable: false,
+			  closeOnEscape: false,
+			  dialogClass: "avyReportDetailsDialog",
+			  open: function(ev, ui) {
+			      $('.ui-widget-overlay').css({opacity: .80});
+                  $(this).parent().find('.ui-dialog-buttonset').css({'width':'100%','text-align':'right'});
+				  $(this).parent().find('button:contains("Image")').css({'float':'left'});
+			  },
+			  close: function(ev, ui) {
+			      $('.ui-widget-overlay').css({opacity: .40});
+			  },
+			  buttons: [
+			    {
+			      text: "Image Attachment",
+			      click: function(event, ui) {
+			    	  $('#avyReportImgDialog').dialog('open');
+			      }
+			    },
 			    {
 			      text: "Submit",
 			      click: function(event, ui) {
@@ -176,7 +233,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  ]
 	    });	
 	}
-}
+	
+    } // end AvyReport function
 
 return AvyReport;
 });

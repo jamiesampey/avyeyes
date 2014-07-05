@@ -18,7 +18,7 @@ import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
 
-object AvySearch {
+class AvySearch {
     private val kmlCreator = new KmlCreator
 
     var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
@@ -84,7 +84,8 @@ object AvySearch {
 		val latBounds = List(strToDbl(northLimit), strToDbl(southLimit))
 		val lngBounds = List(strToDbl(eastLimit), strToDbl(westLimit))
 
-		from(avalanches)(a => where(a.lat.between(latBounds.min, latBounds.max)
+		from(avalanches)(a => where(a.viewable === true 
+		    and a.lat.between(latBounds.min, latBounds.max)
 			and a.lng.between(lngBounds.min, lngBounds.max)) select(a))
   	}
   	

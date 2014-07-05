@@ -1,19 +1,25 @@
 package com.avyeyes.util
 
 import java.util.Date
+import net.liftweb.util.Props
 
 object AEConstants {
-	def earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
-	def humanNumberUnknown: Int = -1
+    val JDBC_CONNECT_STR = new StringBuilder("jdbc:postgresql://")
+        .append(Props.get("db.host").get).append(":")
+        .append(Props.get("db.port").get).append("/")
+        .append(Props.get("db.name").get).toString
+      
+	val earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
+	val humanNumberUnknown: Int = -1
 
-	def CAM_TILT_RANGE_CUTOFF = 45.0
-	def CAM_REL_ALT_LIMIT_METERS = 9500.0
-	def AVY_DIST_RANGE_MILES = 10.0
-	def EARTH_RADIUS_MILES = 3959.0
+	val CAM_TILT_RANGE_CUTOFF = 45.0
+	val CAM_REL_ALT_LIMIT_METERS = 9500.0
+	val AVY_DIST_RANGE_MILES = 10.0
+	val EARTH_RADIUS_MILES = 3959.0
 	
+	val MAX_IMAGE_SIZE = 30000000L
 
-
-	def EXT_ID_URL_PARAM = "extId"
-	def EXT_ID_LENGTH = 8
-	def EXT_ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
+	val EXT_ID_URL_PARAM = "extId"
+	val EXT_ID_LENGTH = 8
+	val EXT_ID_CHARS = "0123456789abcdefghijklmnopqrstuvwxyz"
 }

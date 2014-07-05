@@ -2,12 +2,8 @@ package com.avyeyes.model
 
 import com.avyeyes.model.enums._
 import java.util.Date
-import scala.xml.Elem
-import scala.xml.Null
-import scala.xml.TopScope
-import org.squeryl.KeyedEntity
 
-class Avalanche(val extId: Option[String], val viewable: Boolean, /* metadata */
+class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
     val lat: Double, val lng: Double, val areaName: String, /* location */
     val avyDate: Date, val sky: Sky.Value, val precip: Precip.Value, /* temporal */
     val elevation: Int, val aspect: Aspect.Value, val angle: Int, /* slope characteristics */
@@ -18,8 +14,8 @@ class Avalanche(val extId: Option[String], val viewable: Boolean, /* metadata */
     val comments: Option[String], val submitterEmail: Option[String], 
     val kmlCoords: String) extends AvyDbObj {
   
-  def this() = this(None, false, 0.0, 0.0, "", 
-      new Date(), Sky.UNKNOWN, Precip.UNKNOWN, 0, Aspect.UNKNOWN, 0, 
+  def this() = this("", false, 0.0, 0.0, "", new Date(), 
+      Sky.UNKNOWN, Precip.UNKNOWN, 0, Aspect.UNKNOWN, 0, 
       AvalancheType.UNKNOWN, AvalancheTrigger.UNKNOWN, AvalancheInterface.UNKNOWN, 0.0, 0.0, 
       -1, -1, -1, -1, -1, ModeOfTravel.UNKNOWN, 
       None, None, "")

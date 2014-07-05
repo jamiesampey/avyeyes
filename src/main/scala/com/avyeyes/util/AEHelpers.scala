@@ -24,7 +24,7 @@ object AEHelpers {
 	def isValidExtId(extId: Option[String]): Boolean = extId match {
 	  case None => false
 	  case Some(s) if s.length != EXT_ID_LENGTH => false
-	  case Some(s) if (s intersect EXT_ID_CHARS).length != EXT_ID_LENGTH => false
+	  case Some(s) if s exists (c => !EXT_ID_CHARS.contains(c)) => false
 	  case _ => true
 	}
 

@@ -1,4 +1,9 @@
-define(['ae-report', 'jquery-ui', 'jquery-geocomplete'], function(AvyReport) {
+define(['ae-report',
+        'jquery-ui', 
+        'jquery-geocomplete', 
+        'jquery-fileupload', 
+        'jquery-iframe-transport'
+        ], function(AvyReport) {
 
 function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	var self = this;
@@ -8,6 +13,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	var geocoder = null;
 	
 	this.currentReport = null;
+	this.isFirstReport = true;
 	this.avySearchResultKmlObj = null;
 	this.aeFirstImpression = true;
 	this.initialGeocodeForReport = false;
@@ -47,9 +53,14 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	
 	this.doReport = function() {
 		self.currentReport = new AvyReport(self, function() {
-			$("#avyReportDetailsDialog").children('form').submit();
+			$("#avyReportDialog").children('form').submit();
 			self.currentReport = null;
 		});
+		
+		if (self.isFirstReport) {
+			self.currentReport.initAvyReportDialogs();
+			self.isFirstReport = false;
+		}
 		
 		self.currentReport.initAvyReport();
 	}
@@ -177,8 +188,18 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	  $('#aboutMenuItem').click(function(){
 		 aeMenuList.slideToggle(200);
 		 self.showModalDialog('Info', '...about the project');
-			});
+	  });
 		
+	  $('#debugReportForm').click(function(){
+			 aeMenuList.slideToggle(200);
+			 self.currentReport = new AvyReport(self, function() {
+					$("#avyReportDialog").children('form').submit();
+					self.currentReport = null;
+				});
+			 self.currentReport.initAvyReportDialogs();
+			 self.currentReport.enterAvyDetail();
+		  });
+	  
 		$('.avyDate').datepicker({
 			dateFormat: "mm-dd-yy",
 			constrainInput: true,
@@ -240,7 +261,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		
 		$('#avyInitLiftCallback').submit();
 	}
-
+	
 	this.initCB = function(instance) {
 		self.setGE(instance);
 	    self.setGeocoder(new gmaps.Geocoder());

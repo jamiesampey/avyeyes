@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.model.AvalancheDb.getAvalancheByExtId
+import com.avyeyes.model.AvalancheDb
 import com.avyeyes.model.enums._
 import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
 import com.avyeyes.util.AEHelpers.getLookAtHeadingForAspect
@@ -14,7 +14,7 @@ import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
 
 
-object AvyInit {
+class AvyInit {
     private val INIT_VIEW_LAT = 44
     private val INIT_VIEW_LNG = -115
     private val INIT_VIEW_ALT_METERS = 2700000
@@ -34,7 +34,7 @@ object AvyInit {
     private def initJsCalls(): JsCmd = autoCompleteSourcesCmd & initialFlyToCmd
     
     private def initialFlyToCmd: JsCmd = {
-        val initAvalanche = getAvalancheByExtId(extId)
+        val initAvalanche = AvalancheDb.getAvalancheByExtId(extId)
         if (initAvalanche.isDefined) {
             val kml = new KmlCreator().createCompositeKml(initAvalanche.get)
             Call("view.overlaySearchResultKml", kml.toString).cmd &
