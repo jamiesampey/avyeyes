@@ -12,7 +12,7 @@ class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
     val caught: Int, val partiallyBuried: Int, val fullyBuried: Int, val injured: Int, val killed: Int, /* human numbers */
     val modeOfTravel: ModeOfTravel.Value,
     val comments: Option[String], val submitterEmail: Option[String], 
-    val kmlCoords: String) extends AvyDbObj {
+    val kmlCoords: String) extends AvalancheObj {
   
   def this() = this("", false, 0.0, 0.0, "", new Date(), 
       Sky.UNKNOWN, Precip.UNKNOWN, 0, Aspect.UNKNOWN, 0, 
