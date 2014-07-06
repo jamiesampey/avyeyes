@@ -22,6 +22,22 @@ define(['jasmine-jquery',
 			report = new AvyReport(view, submitReportCallbackMock);
 		});
 		
+		it('Initializes report dialogs', function() {
+			var jqKeydown = spyOn($.fn, 'keydown');
+			var jquiDialog = spyOn($.fn, 'dialog');
+
+			report.initAvyReportDialogs()
+			
+			expect(jqKeydown.mostRecentCall.object.selector).toEqual('#avyReportInitLocation');
+			
+			expect(jquiDialog.callCount).toEqual(5);
+			expect(jquiDialog.calls[0].object.selector).toEqual('#avyReportGeocodeDialog');
+			expect(jquiDialog.calls[1].object.selector).toEqual('#avyReportBeginDrawDialog');
+			expect(jquiDialog.calls[2].object.selector).toEqual('#avyReportConfirmDrawDialog');
+			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportImgDialog');
+			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportDialog');
+		});
+		
 		it('Starts a new avy drawing', function() {
 			spyOn(geplugin, 'createDocument');
 			spyOn(gearth, 'addEventListener');

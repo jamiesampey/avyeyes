@@ -1,12 +1,9 @@
 package com.avyeyes.rest
 
 import java.io.ByteArrayInputStream
-
 import org.squeryl.PrimitiveTypeMode._
-
 import com.avyeyes.model.AvalancheDb
 import com.avyeyes.model.AvalancheImg
-
 import net.liftweb.http.BadResponse
 import net.liftweb.http.FileParamHolder
 import net.liftweb.http.InMemoryResponse
@@ -20,13 +17,13 @@ object ImageResource extends RestHelper {
   
   serve {
     case "imgupload" :: avyExtId :: Nil Post req => {
+         val fph = req.uploadedFiles(0)
          transaction {
-             req.uploadedFiles foreach (fph => AvalancheDb.avalancheImages insert
-               new AvalancheImg(avyExtId, parseFilename(fph), fph.mimeType, fph.file))
+             AvalancheDb.avalancheImageDropbox insert
+               new AvalancheImg(avyExtId, fph.fileName.split("\\.")(0), fph.mimeType, fph.file)
          }
 
-        val ret = ("extId" -> avyExtId) ~ 
-            ("filenames" -> List[JArray](req.uploadedFiles map (fph => parseFilename(fph))))
+        val ret = ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
 
         val jr = JsonResponse(ret).toResponse.asInstanceOf[InMemoryResponse]
         InMemoryResponse(jr.data, ("Content-Length", jr.data.length.toString) ::
@@ -49,6 +46,4 @@ object ImageResource extends RestHelper {
     }
     
   }
-  
-  private def parseFilename(fph: FileParamHolder) = fph.fileName.split("\\.")(0)
 }

@@ -21,8 +21,10 @@ define(['gearth',
 			spyOn(view, 'hideSearchMenu');
 			
 			expect(view.currentReport).toBeNull();
+			expect(view.isFirstReport).toBe(true);
 			view.doReport();
 			expect(view.currentReport).not.toBeNull();
+			expect(view.isFirstReport).toBe(false);
 			
 			expect(view.hideSearchMenu).toHaveBeenCalled();
 		});

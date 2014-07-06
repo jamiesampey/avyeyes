@@ -295,13 +295,20 @@
 	   </form> <!-- END LIFT FORM -->
 
        <div id="avyReportImgDialog">
-	      <div id="avyReportImgDropZone">
-	           <div id="avyReportImgDropZoneMsg"><p>Drop images here<br>or use this button</p>
-			       <form id="imgUploadForm" action="/imgupload" method="POST" enctype="multipart/form-data">
-			            <input type="file" name="file[]" multiple />
-			       </form>
-		       </div>
-	      </div>
+          <table id="avyReportImgTable">
+	          <tr><td>
+			      <div id="avyReportImgDropZone">
+			           <div id="avyReportImgDropZoneMsg"><p>Drop images here</p></div>
+		               <table id="avyReportFinishedImgsTable"></table>
+			      </div>
+		      </td></tr>
+		      <tr><td>
+	              <form id="imgUploadForm" action="/imgupload" method="POST" enctype="multipart/form-data">
+	                   <input type="file" name="file[]" multiple />
+	              </form>
+	          </td></tr>
+          </table>
+       </div>
        </div>
        
 	   </div> <!-- END REPORT DIALOG DIV -->

@@ -12,6 +12,7 @@ object AvalancheDb extends Schema {
     
 	val avalanches = table[Avalanche]("avalanche")
 	val avalancheImages = table[AvalancheImg]("avalanche_img")
+	val avalancheImageDropbox = table[AvalancheImg]("avalanche_img_dropbox")
 	
 	on(avalanches)(a => declare(
 		a.id is(primaryKey, autoIncremented),
@@ -19,6 +20,10 @@ object AvalancheDb extends Schema {
 	))
 	
     on(avalancheImages)(img => declare(
+        img.id is(primaryKey, autoIncremented)
+    ))
+    
+    on(avalancheImageDropbox)(img => declare(
         img.id is(primaryKey, autoIncremented)
     ))
     

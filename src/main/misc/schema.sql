@@ -55,3 +55,19 @@ CREATE SEQUENCE s_avalanche_img_id
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
+  
+CREATE TABLE "avalanche_img_dropbox" (
+    "id" bigint primary key,
+    "createTime" timestamp not null,
+    "avyExtId" varchar(8) not null,
+    "filename" varchar(255) not null,
+    "mimeType" varchar(20) not null,
+    "bytes" bytea not null
+);
+
+CREATE SEQUENCE s_avalanche_img_dropbox_id
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
