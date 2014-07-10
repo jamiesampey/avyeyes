@@ -1,3 +1,79 @@
+#loadingDiv {
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 200000;
+  background-color: white;
+}
+
+#loadingMsgDiv {
+    position: absolute;
+    margin: auto;
+    height: 200px;
+    top: -100px; left: 0; bottom: 0; right: 0;
+    text-align: center;
+    font-size: 2.5em;
+}
+
+#loadingMsgDiv p {
+    color: #000000;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#aeControlIframe {
+    position: absolute;
+    zIndex: 9;
+}
+
+#aeControlContainer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 300px;
+    height: 60px;
+    zIndex: 10;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+#aeTitleContainer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: inherit;
+    height: 60px;
+    margin: 0px;
+    padding: 0px;
+    box-sizing:border-box;
+}
+
+#aeTitleContainer img {
+    width: inherit;
+    padding: 0px;
+    margin: 0px 0px 0px 25px;
+}
+
+#aeMenuButtonContainer {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: auto;
+    height: auto;
+    margin: 0px;
+    padding: 0px;
+}
+    
+#aeMenuButtonContainer #aeMenuList {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    margin: 0px;
+    font-size: 1em;
+}
+
 #aeSearchControlContainer {
     display: none;
     position: absolute;
@@ -6,7 +82,7 @@
     width: 100%;
     margin: 0px;
     padding: 0px;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 #aeSearchControlContainer hr {

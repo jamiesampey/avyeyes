@@ -245,7 +245,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		$.extend($.ui.autocomplete.prototype, {
 		    _renderItem: function( ul, item ) {
 		        var re = new RegExp('(' + this.element.val() + ')', 'gi'),
-		            html = item.label.replace( re, '<span style="background-color: #FFFF00">$&</span>');
+		            html = item.label.replace( re, '<span style="background-color: #1978AB">$&</span>');
 		        return $( "<li></li>" )
 		            .data( "item.autocomplete", item )
 		            .append( $("<a></a>").html(html) )

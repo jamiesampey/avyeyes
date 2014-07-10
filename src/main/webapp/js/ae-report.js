@@ -201,7 +201,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  closeOnEscape: false,
 			  dialogClass: "avyReportDetailsDialog",
 			  open: function(ev, ui) {
-			      $('.ui-widget-overlay').css({opacity: .80});
+			      $('.ui-widget-overlay').css({opacity: .60});
                   $(this).parent().find('.ui-dialog-buttonset').css({'width':'100%','text-align':'right'});
 				  $(this).parent().find('button:contains("Image")').css({'float':'left'});
 			  },

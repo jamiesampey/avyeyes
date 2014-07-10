@@ -79,13 +79,25 @@
 .avyReportDetailsSubTable {
     padding: 0px;
     margin: 0px;
-	border:1px solid black;
+	border:1px solid #555555;
 	border-radius: 10px;
 }
  
 .avyReportSectionHeader {
 	font-weight: bold;
 	padding: 0px;
+}
+
+#avyReportAreaName {
+	background: transparent;
+    color: white;
+    border: 1px solid #555555;
+}
+
+#avyReportElevation {
+	background: transparent;
+    color: white;
+    border: 1px solid #555555;
 }
 
 #avyReportSlopeElevation {
