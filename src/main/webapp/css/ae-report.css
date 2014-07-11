@@ -1,9 +1,9 @@
 .avyReportDrawDialog {
-    font-size: .8em;
+    font: normal 1em times,serif !important;
 }
 
 .avyReportDetailsDialog {
-	font-size: .8em;
+	font: normal 1em times,serif !important;
 	padding: 0px;
     margin: 0px;    
 }
@@ -41,7 +41,7 @@
 #avyReportImgDropZone {
 	display: block;
 	background-color: #000000;
-	font-color: white;
+	color: white;
 	width: 700px;
 	height: 400px;
 }
@@ -58,9 +58,6 @@
 }
 
 #avyReportDetailsMainTable td {
-    padding: 0px;
-    margin: 0px;
-    border-spacing: 0px;
     vertical-align: top;
 }
 
@@ -76,13 +73,22 @@
     border-spacing: 0px;
 }
 
-.avyReportDetailsSubTable {
-    padding: 0px;
+.avyReportSubTable {
+	margin: 0px 0px 10px 0px;
+}
+
+.avyReportInputsSubTable {
+    padding: 5px;
     margin: 0px;
 	border:1px solid #555555;
 	border-radius: 10px;
 }
- 
+
+.avyReportInputsSubTable td {
+    padding-top: 5px;
+    margin: 0px;
+}
+
 .avyReportSectionHeader {
 	font-weight: bold;
 	padding: 0px;

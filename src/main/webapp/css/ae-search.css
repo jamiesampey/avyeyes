@@ -65,13 +65,13 @@
     padding: 0px;
 }
     
-#aeMenuButtonContainer #aeMenuList {
+#aeMenuList {
     display: none;
     position: absolute;
     top: 100%;
     left: 100%;
     margin: 0px;
-    font-size: 1em;
+    font: normal 1em times,serif !important;
 }
 
 #aeSearchControlContainer {

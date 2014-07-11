@@ -13,7 +13,7 @@
 
 	    <link rel="shortcut icon" href="/favicon.ico" />
 	</head>
-	<body style="margin:0px; overflow:hidden; font-size:100%">
+	<body>
         <div id="loadingDiv">
           <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><p>Loading Avy Eyes</p></div>
         </div>
@@ -133,21 +133,22 @@
 		</div> <!--  END SEARCH DIV -->
 		
 	   <div id="avyReportGeocodeDialog" class="avyReportDrawDialog" title="Avalanche Report">
-		  <p>Click the link below to begin an avalanche report.</p>
-		  <p>You may optionally enter a nearby location to prime the Google Earth view.</p>
-		      <label for='avyReportInitLocation'>Nearby location</label>
+	      <p>Start the report by flying to the general area of the avalanche. Good locations to use are nearby towns, mountain passes, or well-known mountains (Mt. Elbert, Mt. Rainier, etc).</p>
+	      <p>Click 'Begin Report' to zoom in to the specified location and begin the avalanche report.</p>
+		      <label for='avyReportInitLocation'>Nearby location:</label>
 		      <input id='avyReportInitLocation' class='avyLocation' type='text'/>
 	   </div>
 	   <div id="avyReportBeginDrawDialog" class="avyReportDrawDialog" title="Avalanche Report">
 	       <p>Use the Google Earth controls in the upper right hand corner to zoom in on the avalanche path.</p> 
 	       <p>Zoom in and tilt the view as much as possible to get a complete view of the slide path while 
-	       still keeping the <i>entire</i> path visible in the window. <a href="#">See Example</a></p>
-	       <p>When you have the best view of the entire path click Begin Drawing to trace the avalanche path with the mouse. 
+	       still keeping the <i>entire</i> path visible in the window.</p>
+	       <p><a href="#">See Example</a></p>
+	       <p>When you have the best view of the entire path click 'Begin Drawing' to trace the avalanche path with your mouse. 
 	       Click once to begin the trace, move the mouse around the perimeter of the path, and click a second time to complete the drawing.<p>
        </div>
        <div id="avyReportConfirmDrawDialog" class="avyReportDrawDialog" title="Avalanche Report">
-            <p>Are you satisfied with the drawing?</p>
-            <p>Click Accept Drawing to keep the current drawing and continue on to enter information about this avalanche. 
+            <p>Are you satisfied with the avalanche drawing?</p>
+            <p>Click 'Accept Drawing' to keep the current drawing and continue on to enter information about this avalanche. 
             Click Redraw to erase the current drawing and try again.</p>       
        </div>
        
@@ -157,33 +158,41 @@
 	       <table id="avyReportDetailsMainTable">
 	           <tr><td>
 	             <table id="avyReportDetailsLeftColumnTable">
-	               <tr><td class="avyReportSectionHeader">Scene Description</td></tr>
-	               <tr><td><table id="avyReportSceneDescriptionTable" class="avyReportDetailsSubTable">
-	                     <tr>
-	                        <td><label for="avyReportAreaName">Area name</label></td>
-	                        <td><input id="avyReportAreaName" type="text"/></td>
-	                     </tr>	             
-		                 <tr>
-		                   <td><label for="avyReportDate">Date</label></td>
-	                       <td><input id="avyReportDate" class="avyDate" type="text"/></td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="avyReportWeather">Sky</label></td>
-	                       <td>
-	                         <input class="avyAutoComplete avySkyAutoComplete" type="text"/>
-	                         <input id="avyReportSky" type="hidden"/>
-	                       </td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="avyReportPrecip">Precip</label></td>
-	                        <td>
-	                          <input class="avyAutoComplete avyPrecipAutoComplete" type="text"/>
-	                          <input id="avyReportPrecip" type="hidden"/>
-	                        </td>
-		                 </tr>
-	                 </table></td></tr>
-	                 <tr><td class="avyReportSectionHeader">Avalanche Description</td></tr>
-	                 <tr><td><table id="avyReportAvyDescriptionTable" class="avyReportDetailsSubTable">
+	               <tr><td>
+	                 <table class="avyReportSubTable">
+	                   <tr><td class="avyReportSectionHeader">Scene Description</td></tr>
+		               <tr><td>
+		                 <table class="avyReportInputsSubTable">
+		                     <tr>
+		                        <td><label for="avyReportAreaName">Area name</label></td>
+		                        <td><input id="avyReportAreaName" type="text"/></td>
+		                     </tr>	             
+			                 <tr>
+			                   <td><label for="avyReportDate">Date</label></td>
+		                       <td><input id="avyReportDate" class="avyDate" type="text"/></td>
+			                 </tr>
+			                 <tr>
+			                   <td><label for="avyReportWeather">Sky</label></td>
+		                       <td>
+		                         <input class="avyAutoComplete avySkyAutoComplete" type="text"/>
+		                         <input id="avyReportSky" type="hidden"/>
+		                       </td>
+			                 </tr>
+			                 <tr>
+			                   <td><label for="avyReportPrecip">Precip</label></td>
+		                        <td>
+		                          <input class="avyAutoComplete avyPrecipAutoComplete" type="text"/>
+		                          <input id="avyReportPrecip" type="hidden"/>
+		                        </td>
+			                 </tr>
+		                 </table>
+		               </td></tr>
+		             </table>
+	               </td></tr>
+	               <tr><td>
+	                 <table class="avyReportSubTable">
+	                   <tr><td class="avyReportSectionHeader">Avalanche Description</td></tr>
+	                   <tr><td><table class="avyReportInputsSubTable">
 		                 <tr>
 		                   <td><label for="avyReportType">Type</label></td>
 	                       <td>
@@ -223,34 +232,39 @@
 	                         </div>
 	                       </td>
 		                 </tr>
-	                 </table></td></tr>
+	                   </table></td></tr>
 	                 </table>
-	             
-	             <!-- LEFT COLUMN -->
+	               </td></tr>
+	               </table>
+	             <!-- END LEFT COLUMN -->
 	             </td><td>
-	             <!-- RIGHT COLUMN -->
-	             
+	             <!-- BEGIN RIGHT COLUMN -->
 				<table id="avyReportDetailsRightColumnTable">
-                    <tr><td class="avyReportSectionHeader">Site Description</td></tr>
-				    <tr><td><table id="avyReportSiteDescriptionTable" class="avyReportDetailsSubTable">
-				      <tr>
-				        <td><label for="avyReportElevation">Slope Elevation</label></td>
-				        <td><input id="avyReportElevation" type="text" readonly />ft</td>
-				      </tr>
-				      <tr>
-				        <td><label for="avyReportAspect">Slope Aspect</label></td>
-				        <td>
-				          <input id="avyReportAspectAC" class="avyAutoComplete avyAspectAutoComplete" type="text" />
-				          <input id="avyReportAspect" type="hidden"/>
-				        </td>
-				      </tr>
-				      <tr>
-				        <td><label for="avyReportAngle">Slope Angle</label></td>
-				        <td><input id="avyReportAngle" class="avySlopeAngle" />degrees</td>
-				      </tr>
-				     </table></td></tr>
+				    <tr><td><table class="avyReportSubTable">
+                      <tr><td class="avyReportSectionHeader">Site Description</td></tr>
+	  			      <tr><td><table class="avyReportInputsSubTable">
+				        <tr>
+				          <td><label for="avyReportElevation">Slope Elevation (ft)</label></td>
+				          <td><input id="avyReportElevation" type="text" readonly /></td>
+				        </tr>
+				        <tr>
+				          <td><label for="avyReportAspect">Slope Aspect</label></td>
+				          <td>
+				            <input id="avyReportAspectAC" class="avyAutoComplete avyAspectAutoComplete" type="text" />
+				            <input id="avyReportAspect" type="hidden"/>
+				          </td>
+				        </tr>
+				        <tr>
+				          <td><label for="avyReportAngle">Slope Angle</label></td>
+				          <td><input id="avyReportAngle" class="avySlopeAngle" /></td>
+				        </tr>
+				      </table>
+				    </td></tr>
+				  </table>
+				  </td></tr>
+				  <tr><td><table class="avyReportSubTable">
 				     <tr><td class="avyReportSectionHeader">Human Numbers</td></tr>
-				     <tr><td><table id="avyReportHumanNumbersTable" class="avyReportDetailsSubTable">
+				     <tr><td><table class="avyReportInputsSubTable">
 				      <tr>
 				        <td><label for="avyReportNumCaught">Caught</label></td>
 				        <td><input id="avyReportNumCaught" class="avyHumanNumber"/></td>
@@ -280,6 +294,8 @@
 				      </tr>
 				     </table></td></tr>
 				  </table>
+				  </td></tr>
+				</table>  
              </td>
            </tr>  
            <tr><td class="avyReportSectionHeader" colspan="2">Comments</td></tr>
