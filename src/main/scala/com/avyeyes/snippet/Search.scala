@@ -18,7 +18,7 @@ import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
 
-class AvySearch {
+class Search {
     private val kmlCreator = new KmlCreator
 
     var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""

@@ -20,7 +20,7 @@ import scala.xml.XML
 import org.apache.commons.lang3.RandomStringUtils
 import net.liftweb.util.Props
 
-class AvyReport {
+class Report {
   var extId = AvalancheDb.reserveNewExtId
   
   var lat = ""; var lng = ""; var areaName = ""

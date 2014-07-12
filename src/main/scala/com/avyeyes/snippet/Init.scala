@@ -14,7 +14,7 @@ import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
 
 
-class AvyInit {
+class Init {
     private val INIT_VIEW_LAT = 44
     private val INIT_VIEW_LNG = -115
     private val INIT_VIEW_ALT_METERS = 2700000

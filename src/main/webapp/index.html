@@ -13,16 +13,16 @@
 
 	    <link rel="shortcut icon" href="/favicon.ico" />
 	</head>
-	<body>
+	<body class="lift:surround?with=default&at=content">
         <div id="loadingDiv">
           <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><p>Loading Avy Eyes</p></div>
         </div>
         <div id="map3d" style="height:100%; width:100%;"></div>
 
-		<div id="liftContent" class="lift:surround?with=default&at=content">
+		<div id="liftContent" class="lift:Content">
 		
 		<form class="lift:form.ajax">
-			<div id="aeInit" class="lift:AvyInit?form.post">
+			<div id="aeInit" class="lift:Init?form.post">
 	            <input id="avyInitLiftCallback" style="display:none;" type="submit" />
 	        </div>
         </form>
@@ -43,7 +43,7 @@
 		    </div>
 		
 		    <form class="lift:form.ajax">
-			<div id="aeSearchControlContainer" class="lift:AvySearch?form.post">
+			<div id="aeSearchControlContainer" class="lift:Search?form.post">
 			  <hr>
 			  <div class="avySearchHeaderContainer">
 			     <div id="avySearchTitle" class="avySearchHeader">Avalanche Search</div>
@@ -52,36 +52,36 @@
 			  
 			  <table id="avySearchDetailsTable">
                  <tr>			         
-			         <td class="avySearchTableLabel"><label for="avySearchLocation">Location</label></td>
+			         <td class="avySearchTableLabel"><label for="avySearchLocation"></label></td>
 			         <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation" type="text"/></td>
 			      </tr>
 			      <tr>
-    			      <td class="avySearchTableLabel"><label for="avySearchFromDate">From</label></td>
+    			      <td class="avySearchTableLabel"><label for="avySearchFromDate"></label></td>
     			      <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate" type="text" /></td>
     			  </tr>
     			  <tr>
-			         <td class="avySearchTableLabel"><label for="avySearchToDate">To</label></td>
+			         <td class="avySearchTableLabel"><label for="avySearchToDate"></label></td>
 			         <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
 			      </tr>
                   <tr>
                     <td class="avySearchSubHeader" colspan="2">Additional Criteria</td>
                   </tr>  
 		         <tr>
-		             <td class="avySearchTableLabel"><label for="avySearchType">Type</label></td>
+		             <td class="avySearchTableLabel"><label for="avySearchType"></label></td>
                      <td class="avySearchTableInput">
                         <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
                         <input id="avySearchType" type="hidden"/>
                      </td>
                  </tr>
                  <tr>
-                  <td class="avySearchTableLabel"><label for="avySearchTrigger">Trigger</label></td>
+                  <td class="avySearchTableLabel"><label for="avySearchTrigger"></label></td>
                   <td class="avySearchTableInput">
                     <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
                     <input id="avySearchTrigger" type="hidden"/>
                   </td>
                  </tr>
                  <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchRsizeValue">R size</label></td>
+                    <td class="avySearchTableLabel"><label for="avySearchRsizeValue"></label></td>
                     <td class="avySearchTableInput">
                            <div class="avyRDSliderContainer">
 	                        <input id="avySearchRsizeValue" class="avyRDSliderValue" type="text"/>
@@ -90,7 +90,7 @@
                     </td>
                  </tr>
                  <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchDsizeValue">D size</label></td>
+                    <td class="avySearchTableLabel"><label for="avySearchDsizeValue"></label></td>
                     <td class="avySearchTableInput">
                        <div class="avyRDSliderContainer">
 	                       <input id="avySearchDsizeValue" class="avyRDSliderValue" type="text"/>
@@ -105,9 +105,9 @@
                     <td colspan="2">
                         <table id="avySearchHumanNumbersTable">
                             <tr>
-			                    <td><label for="avySearchNumCaught">Caught</label></td>
+			                    <td><label for="avySearchNumCaught"></label></td>
 			                    <td><input id="avySearchNumCaught" class="avyHumanNumber"/></td>
-                                <td><label for="avySearchNumKilled">Killed</label></td>
+                                <td><label for="avySearchNumKilled"></label></td>
                                 <td><input id="avySearchNumKilled" class="avyHumanNumber"/></td>
 			                 </tr>
 			             </table>
@@ -135,8 +135,8 @@
 	   <div id="avyReportGeocodeDialog" class="avyReportDrawDialog" title="Avalanche Report">
 	      <p>Start the report by flying to the general area of the avalanche. Good locations to use are nearby towns, mountain passes, or well-known mountains (Mt. Elbert, Mt. Rainier, etc).</p>
 	      <p>Click 'Begin Report' to zoom in to the specified location and begin the avalanche report.</p>
-		      <label for='avyReportInitLocation'>Nearby location:</label>
-		      <input id='avyReportInitLocation' class='avyLocation' type='text'/>
+		  <label for='avyReportInitLocation'></label>
+		  <input id='avyReportInitLocation' class='avyLocation' type='text'/>
 	   </div>
 	   <div id="avyReportBeginDrawDialog" class="avyReportDrawDialog" title="Avalanche Report">
 	       <p>Use the Google Earth controls in the upper right hand corner to zoom in on the avalanche path.</p> 
@@ -154,7 +154,7 @@
        
 	   <div id="avyReportDialog" class="avyReportDetailsDialog" title="Avalanche Report">
 	   <form class="lift:form.ajax">
-	   <div class="lift:AvyReport">
+	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">
 	           <tr><td>
 	             <table id="avyReportDetailsLeftColumnTable">
@@ -164,22 +164,22 @@
 		               <tr><td>
 		                 <table class="avyReportInputsSubTable">
 		                     <tr>
-		                        <td><label for="avyReportAreaName">Area name</label></td>
+		                        <td><label for="avyReportAreaName"></label></td>
 		                        <td><input id="avyReportAreaName" type="text"/></td>
 		                     </tr>	             
 			                 <tr>
-			                   <td><label for="avyReportDate">Date</label></td>
+			                   <td><label for="avyReportDate"></label></td>
 		                       <td><input id="avyReportDate" class="avyDate" type="text"/></td>
 			                 </tr>
 			                 <tr>
-			                   <td><label for="avyReportWeather">Sky</label></td>
+			                   <td><label for="avyReportWeather"></label></td>
 		                       <td>
 		                         <input class="avyAutoComplete avySkyAutoComplete" type="text"/>
 		                         <input id="avyReportSky" type="hidden"/>
 		                       </td>
 			                 </tr>
 			                 <tr>
-			                   <td><label for="avyReportPrecip">Precip</label></td>
+			                   <td><label for="avyReportPrecip"></label></td>
 		                        <td>
 		                          <input class="avyAutoComplete avyPrecipAutoComplete" type="text"/>
 		                          <input id="avyReportPrecip" type="hidden"/>
@@ -194,28 +194,28 @@
 	                   <tr><td class="avyReportSectionHeader">Avalanche Description</td></tr>
 	                   <tr><td><table class="avyReportInputsSubTable">
 		                 <tr>
-		                   <td><label for="avyReportType">Type</label></td>
+		                   <td><label for="avyReportType"></label></td>
 	                       <td>
 	                         <input class="avyAutoComplete avyTypeAutoComplete" type="text">
 	                         <input id="avyReportType" type="hidden"/>
 	                       </td>
 		                 </tr>
 		                 <tr>
-		                   <td><label for="avyReportTrigger">Trigger</label></td>
+		                   <td><label for="avyReportTrigger"></label></td>
 	                       <td>
 	                         <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
 	                         <input id="avyReportTrigger" type="hidden" />
 	                       </td>
 		                 </tr>
 		                 <tr>
-		                   <td><label for="avyReportBedSurface">Bed surface</label></td>
+		                   <td><label for="avyReportBedSurface"></label></td>
 	                       <td>
 	                         <input class="avyAutoComplete avyInterfaceAutoComplete" type="text"/>
 	                         <input id="avyReportBedSurface" type="hidden"/>
 	                       </td>
 		                 </tr>
 		                 <tr>
-		                   <td><label for="avyReportRsizeValue">R size</label></td>
+		                   <td><label for="avyReportRsizeValue"></label></td>
 	                       <td>
 	                         <div class="avyRDSliderContainer">
 	                            <input id="avyReportRsizeValue" class="avyRDSliderValue" type="text"/>
@@ -224,7 +224,7 @@
 	                       </td>
 		                 </tr>
 		                 <tr>
-		                   <td><label for="avyReportDsizeValue">D size</label></td>
+		                   <td><label for="avyReportDsizeValue"></label></td>
 	                       <td>
 	                         <div class="avyRDSliderContainer">
 	                            <input id="avyReportDsizeValue" class="avyRDSliderValue" type="text"/>
@@ -244,18 +244,18 @@
                       <tr><td class="avyReportSectionHeader">Site Description</td></tr>
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
-				          <td><label for="avyReportElevation">Slope Elevation (ft)</label></td>
+				          <td><label for="avyReportElevation"></label></td>
 				          <td><input id="avyReportElevation" type="text" readonly /></td>
 				        </tr>
 				        <tr>
-				          <td><label for="avyReportAspect">Slope Aspect</label></td>
+				          <td><label for="avyReportAspect"></label></td>
 				          <td>
 				            <input id="avyReportAspectAC" class="avyAutoComplete avyAspectAutoComplete" type="text" />
 				            <input id="avyReportAspect" type="hidden"/>
 				          </td>
 				        </tr>
 				        <tr>
-				          <td><label for="avyReportAngle">Slope Angle</label></td>
+				          <td><label for="avyReportAngle"></label></td>
 				          <td><input id="avyReportAngle" class="avySlopeAngle" /></td>
 				        </tr>
 				      </table>
@@ -266,27 +266,27 @@
 				     <tr><td class="avyReportSectionHeader">Human Numbers</td></tr>
 				     <tr><td><table class="avyReportInputsSubTable">
 				      <tr>
-				        <td><label for="avyReportNumCaught">Caught</label></td>
+				        <td><label for="avyReportNumCaught"></label></td>
 				        <td><input id="avyReportNumCaught" class="avyHumanNumber"/></td>
 				      </tr>
 				      <tr>
-				        <td><label for="avyReportNumPartiallyBuried">Partially Buried</label></td>
+				        <td><label for="avyReportNumPartiallyBuried"></label></td>
 				        <td><input id="avyReportNumPartiallyBuried" class="avyHumanNumber"/></td>
 				      </tr>
 				      <tr>
-				        <td><label for="avyReportNumFullyBuried">Fully Buried</label></td>
+				        <td><label for="avyReportNumFullyBuried"></label></td>
 				        <td><input id="avyReportNumFullyBuried" class="avyHumanNumber"/></td>
 				      </tr>
 				      <tr>
-				        <td><label for="avyReportNumInjured">Injured</label></td>
+				        <td><label for="avyReportNumInjured"></label></td>
 				        <td><input id="avyReportNumInjured" class="avyHumanNumber"/></td>
 				      </tr>
 				      <tr>
-				        <td><label for="avyReportNumKilled">Killed</label></td>
+				        <td><label for="avyReportNumKilled"></label></td>
 				        <td><input id="avyReportNumKilled" class="avyHumanNumber"/></td>
 				      </tr>
 				      <tr>
-				        <td><label for="avyReportModeOfTravel">Mode of travel</label></td>
+				        <td><label for="avyReportModeOfTravel"></label></td>
 				        <td>
 				          <input class="avyAutoComplete avyModeOfTravelAutoComplete" type="text"/>
 				          <input id="avyReportModeOfTravel" type="hidden"/>
