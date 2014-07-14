@@ -2,6 +2,10 @@
     font: normal 1em times,serif !important;
 }
 
+.avyReportDrawDialog .ui-dialog-titlebar-close {
+    display: none;
+}
+
 .avyReportDetailsDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
@@ -87,6 +91,7 @@
 .avyReportInputsSubTable td {
     padding-top: 5px;
     margin: 0px;
+    vertical-align: middle;
 }
 
 .avyReportSectionHeader {

@@ -33,7 +33,7 @@ class Boot {
     LiftRules.htmlProperties.default.set((r: Req) =>
       new Html5Properties(r.userAgent))
 
-    LiftRules.resourceNames = "labels" :: Nil
+    LiftRules.resourceNames = "text" :: Nil
       
     initDb
   }

@@ -26,10 +26,6 @@ textarea:focus, input:focus {
     z-index: 3;
 }
 
-.noclose .ui-dialog-titlebar-close {
-    display: none;
-}
-
 .ui-widget-overlay {
    background: black;
    opacity: .40;

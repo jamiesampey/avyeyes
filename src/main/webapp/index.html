@@ -35,8 +35,8 @@
             </div>
 		    <div id="aeMenuButtonContainer">
 		      <ul id="aeMenuList">
-		          <li><a id="reportMenuItem" href="#">Report</a></li>
-		          <li><a id="aboutMenuItem" href="#">About</a></li>
+		          <li><a id="reportMenuItem" href="#"></a></li>
+		          <li><a id="aboutMenuItem" href="#"></a></li>
 		          <li><a id="debugReportForm" href="#">Report form</a></li>
 		      </ul>
 		      <a id="aeMenuButton" href="#"><img src="/images/menu.png"></a>
@@ -46,8 +46,8 @@
 			<div id="aeSearchControlContainer" class="lift:Search?form.post">
 			  <hr>
 			  <div class="avySearchHeaderContainer">
-			     <div id="avySearchTitle" class="avySearchHeader">Avalanche Search</div>
-			     <div id="avySearchHelpLink"><a href="#">how it works</a></div>
+			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
+			     <div id="avySearchHelpLinkDiv"><a id="avySearchHelpLink" href="#"></a></div>
 			  </div>
 			  
 			  <table id="avySearchDetailsTable">
@@ -64,7 +64,7 @@
 			         <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
 			      </tr>
                   <tr>
-                    <td class="avySearchSubHeader" colspan="2">Additional Criteria</td>
+                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchAdditionalCriteria" class="avyHeader"></span></td>
                   </tr>  
 		         <tr>
 		             <td class="avySearchTableLabel"><label for="avySearchType"></label></td>
@@ -85,7 +85,7 @@
                     <td class="avySearchTableInput">
                            <div class="avyRDSliderContainer">
 	                        <input id="avySearchRsizeValue" class="avyRDSliderValue" type="text"/>
-	                        <div id="avyRSearchRsizeSlider" class="avyRDSlider"/>
+	                        <div id="avyRSearchRsizeSlider" class="avyRDSlider"></div>
                         </div>  
                     </td>
                  </tr>
@@ -94,12 +94,12 @@
                     <td class="avySearchTableInput">
                        <div class="avyRDSliderContainer">
 	                       <input id="avySearchDsizeValue" class="avyRDSliderValue" type="text"/>
-	                       <div id="avySearchDsizeSlider" class="avyRDSlider"/>
+	                       <div id="avySearchDsizeSlider" class="avyRDSlider"></div>
                        </div>
                     </td>
                  </tr>
                  <tr>
-                    <td class="avySearchSubHeader" colspan="2">Human Numbers</td>
+                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchHumanNumbersHeader" class="avyHeader"></span></td>
                   </tr>
                  <tr>
                     <td colspan="2">
@@ -125,34 +125,26 @@
                 <input id="avySearchCameraLng" type="hidden"/>
              </div>
 		     <div id="avySearchButtonContainer">
-		          <input id="avySearchButton" type="submit" class="avyButton" value="Search" />
+		          <input id="avySearchButton" type="submit" class="avyButton" />
 		          <input id="avySearchSubmitBinding" type="hidden"/>
 		     </div>
 			</div>
 			</form> <!-- END LIFT FORM -->
 		</div> <!--  END SEARCH DIV -->
 		
-	   <div id="avyReportGeocodeDialog" class="avyReportDrawDialog" title="Avalanche Report">
-	      <p>Start the report by flying to the general area of the avalanche. Good locations to use are nearby towns, mountain passes, or well-known mountains (Mt. Elbert, Mt. Rainier, etc).</p>
-	      <p>Click 'Begin Report' to zoom in to the specified location and begin the avalanche report.</p>
+	   <div id="avyReportGeocodeDialog" class="avyReportDrawDialog">
+	      <span id='avyReportGeocodeInstr' class='avyText'></span>
 		  <label for='avyReportInitLocation'></label>
 		  <input id='avyReportInitLocation' class='avyLocation' type='text'/>
 	   </div>
-	   <div id="avyReportBeginDrawDialog" class="avyReportDrawDialog" title="Avalanche Report">
-	       <p>Use the Google Earth controls in the upper right hand corner to zoom in on the avalanche path.</p> 
-	       <p>Zoom in and tilt the view as much as possible to get a complete view of the slide path while 
-	       still keeping the <i>entire</i> path visible in the window.</p>
-	       <p><a href="#">See Example</a></p>
-	       <p>When you have the best view of the entire path click 'Begin Drawing' to trace the avalanche path with your mouse. 
-	       Click once to begin the trace, move the mouse around the perimeter of the path, and click a second time to complete the drawing.<p>
+	   <div id="avyReportBeginDrawDialog" class="avyReportDrawDialog">
+	       <span id='avyReportDrawInstr' class='avyText'></span>
        </div>
-       <div id="avyReportConfirmDrawDialog" class="avyReportDrawDialog" title="Avalanche Report">
-            <p>Are you satisfied with the avalanche drawing?</p>
-            <p>Click 'Accept Drawing' to keep the current drawing and continue on to enter information about this avalanche. 
-            Click Redraw to erase the current drawing and try again.</p>       
+       <div id="avyReportConfirmDrawDialog" class="avyReportDrawDialog">
+           <span id='avyReportConfirmDrawInstr' class='avyText'></span>
        </div>
        
-	   <div id="avyReportDialog" class="avyReportDetailsDialog" title="Avalanche Report">
+	   <div id="avyReportDialog" class="avyReportDetailsDialog">
 	   <form class="lift:form.ajax">
 	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">
@@ -160,7 +152,9 @@
 	             <table id="avyReportDetailsLeftColumnTable">
 	               <tr><td>
 	                 <table class="avyReportSubTable">
-	                   <tr><td class="avyReportSectionHeader">Scene Description</td></tr>
+	                   <tr><td class="avyReportSectionHeader">
+	                       <span id="avyReportSceneDesc" class="avyHeader"></span>
+	                   </td></tr>
 		               <tr><td>
 		                 <table class="avyReportInputsSubTable">
 		                     <tr>
@@ -191,7 +185,9 @@
 	               </td></tr>
 	               <tr><td>
 	                 <table class="avyReportSubTable">
-	                   <tr><td class="avyReportSectionHeader">Avalanche Description</td></tr>
+	                   <tr><td class="avyReportSectionHeader">
+	                       <span id="avyReportAvalancheDesc" class="avyHeader"></span>
+	                   </td></tr>
 	                   <tr><td><table class="avyReportInputsSubTable">
 		                 <tr>
 		                   <td><label for="avyReportType"></label></td>
@@ -241,7 +237,9 @@
 	             <!-- BEGIN RIGHT COLUMN -->
 				<table id="avyReportDetailsRightColumnTable">
 				    <tr><td><table class="avyReportSubTable">
-                      <tr><td class="avyReportSectionHeader">Site Description</td></tr>
+                      <tr><td class="avyReportSectionHeader">
+                        <span id="avyReportSiteDesc" class="avyHeader"></span>
+                      </td></tr>
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
 				          <td><label for="avyReportElevation"></label></td>
@@ -263,7 +261,9 @@
 				  </table>
 				  </td></tr>
 				  <tr><td><table class="avyReportSubTable">
-				     <tr><td class="avyReportSectionHeader">Human Numbers</td></tr>
+				     <tr><td class="avyReportSectionHeader">
+				        <span id="avyReportHumanNumbers" class="avyHeader"></span>
+				     </td></tr>
 				     <tr><td><table class="avyReportInputsSubTable">
 				      <tr>
 				        <td><label for="avyReportNumCaught"></label></td>
@@ -298,7 +298,9 @@
 				</table>  
              </td>
            </tr>  
-           <tr><td class="avyReportSectionHeader" colspan="2">Comments</td></tr>
+           <tr><td class="avyReportSectionHeader" colspan="2">
+                <span id="avyReportComments" class="avyHeader"></span>
+           </td></tr>
            <tr><td colspan="2"><textarea id="avyReportComments" rows="4" cols="80"></textarea></td></tr>
 	   </table>
 	   <input id="avyReportExtId" type="hidden"/>

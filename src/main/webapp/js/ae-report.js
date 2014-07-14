@@ -93,7 +93,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "noclose",
+			  dialogClass: "avyReportDrawDialog",
+			  title: "Avalanche Report",
 			  buttons: [
 			    {
 			      text: "Begin Report",
@@ -123,7 +124,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "noclose",
+			  dialogClass: "avyReportDrawDialog",
+			  title: "Avalanche Report",
 			  buttons: [
 			    {
 			      text: "Begin Drawing",
@@ -150,7 +152,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: true,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "noclose",
+			  dialogClass: "avyReportDrawDialog",
+			  title: "Avalanche Report",
 			  buttons: [
 			    {
 			      text: "Accept Drawing",
