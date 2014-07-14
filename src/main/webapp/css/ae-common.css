@@ -105,3 +105,11 @@ textarea:focus, input:focus {
     width: 200px;
     height: 20px;
 }
+
+.avyDialog {
+    font: normal 1em times,serif !important;
+}
+
+.avyDialog .ui-dialog-titlebar-close {
+    display: none;
+}

@@ -49,13 +49,12 @@ class Search {
 
     private def doSearch(): JsCmd =
       if (strToDbl(camAlt) > CAM_REL_ALT_LIMIT_METERS)
-          JsDialog.error("Eye altitude is too high. Eye must be less than 15,000 feet above the ground.")
+          JsDialog.error("eyeTooHigh")
       else {
         val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange:_*)
         
         Call("view.overlaySearchResultKml", kml.toString).cmd &
-        JsDialog.info("Found " + matchingAvalanchesInRange.size 
-            + " avalanches within the current view that match the search criteria. Click on an avalanche for details.")
+        JsDialog.info("avySearchSuccess", matchingAvalanchesInRange.size)
       }
     
     private def matchingAvalanchesInRange: List[Avalanche] = transaction {

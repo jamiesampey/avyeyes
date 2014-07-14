@@ -75,13 +75,11 @@ class Report {
 	    	  AvalancheDb.avalanches insert newAvalanche
 	      }
 	      
-	      JsDialog.info("Avalanche inserted. When the avalanche is approved it will show up in"
-	          + " avalanche search results and be directly viewable at<br><br>" + Props.get("base.url").get + extId)
+	      JsDialog.info("avyReportSuccess", Props.get("base.url").get + extId)
       } catch {
-        case e: Exception => JsDialog.error("An error occured while processing the avalanche data"
-            + " and the avalanche was not saved.", "Exception message: " + e.getMessage())
+          case e: Exception => JsDialog.error("avyReportError")
       } finally {
-        AvalancheDb.unreserveExtId(extId)
+          AvalancheDb.unreserveExtId(extId)
       }
   }
 }

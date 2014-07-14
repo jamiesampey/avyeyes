@@ -1,11 +1,16 @@
 package com.avyeyes.util.ui
 
+import com.avyeyes.util.AEHelpers._
+
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JE.Call
-import net.liftweb.http.js.JsExp.strToJsExp
+import net.liftweb.http.S
 
 object JsDialog {
-	def info(msg: String): JsCmd = Call("view.showModalDialog", "Info", msg).cmd
-    def error(msg: String): JsCmd = error(msg, null)
-	def error(msg: String, details: String): JsCmd = Call("view.showModalDialog", "Error", msg, details).cmd
+	def info(msgId: String, params: Any*) = getDialogJsCmd("title.infoDialog", msgId, params:_*)
+	def error(msgId: String, params: Any*) = getDialogJsCmd("title.errorDialog", msgId, params:_*)
+
+	private def getDialogJsCmd(titleId: String, msgId: String, params: Any*): JsCmd = {
+	  Call("view.showModalDialog", S.?(titleId), getMessage(msgId, params:_*).toString).cmd
+	}
 }

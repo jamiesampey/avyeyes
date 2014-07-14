@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat
 import net.liftweb.util.Helpers._
 import net.liftweb.json.JsonAST._
 import net.liftweb.util.Props
+import scala.xml.Unparsed
+import net.liftweb.http.S
 
 
 object AEHelpers {
@@ -15,6 +17,8 @@ object AEHelpers {
 
     def parseDateStr(str: String) = df.parse(str)
 	
+    def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
+    
 	// Snippet helpers
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
 	def sizeToStr(size: Double): String = if (size == 0) UNKNOWN_LABEL else size.toString

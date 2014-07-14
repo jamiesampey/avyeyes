@@ -14,12 +14,13 @@
 	    <link rel="shortcut icon" href="/favicon.ico" />
 	</head>
 	<body class="lift:surround?with=default&at=content">
-        <div id="loadingDiv">
-          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><p>Loading Avy Eyes</p></div>
-        </div>
         <div id="map3d" style="height:100%; width:100%;"></div>
 
 		<div id="liftContent" class="lift:Content">
+        
+        <div id="loadingDiv">
+          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><span id="loadingText" class="avyMsg"></span></div>
+        </div>		
 		
 		<form class="lift:form.ajax">
 			<div id="aeInit" class="lift:Init?form.post">
@@ -27,7 +28,7 @@
 	        </div>
         </form>
         
-		<div id="multiDialog" class="avyReportDialog"></div>
+		<div id="multiDialog" class="avyDialog"></div>
 
 		<div id="aeControlContainer">
             <div id="aeTitleContainer">
@@ -132,19 +133,19 @@
 			</form> <!-- END LIFT FORM -->
 		</div> <!--  END SEARCH DIV -->
 		
-	   <div id="avyReportGeocodeDialog" class="avyReportDrawDialog">
-	      <span id='avyReportGeocodeInstr' class='avyText'></span>
-		  <label for='avyReportInitLocation'></label>
-		  <input id='avyReportInitLocation' class='avyLocation' type='text'/>
+	   <div id="avyReportGeocodeDialog">
+	      <span id="avyReportGeocodeInstr" class="avyMsg"></span>
+		  <label for="avyReportInitLocation"></label>
+		  <input id="avyReportInitLocation" class="avyLocation" type="text"/>
 	   </div>
-	   <div id="avyReportBeginDrawDialog" class="avyReportDrawDialog">
-	       <span id='avyReportDrawInstr' class='avyText'></span>
+	   <div id="avyReportBeginDrawDialog">
+	       <span id="avyReportDrawInstr" class="avyMsg"></span>
        </div>
-       <div id="avyReportConfirmDrawDialog" class="avyReportDrawDialog">
-           <span id='avyReportConfirmDrawInstr' class='avyText'></span>
+       <div id="avyReportConfirmDrawDialog">
+           <span id="avyReportConfirmDrawInstr" class="avyMsg"></span>
        </div>
        
-	   <div id="avyReportDialog" class="avyReportDetailsDialog">
+	   <div id="avyReportDialog">
 	   <form class="lift:form.ajax">
 	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">

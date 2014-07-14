@@ -93,7 +93,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "avyReportDrawDialog",
+			  dialogClass: "avyDialog",
 			  title: "Avalanche Report",
 			  buttons: [
 			    {
@@ -124,7 +124,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "avyReportDrawDialog",
+			  dialogClass: "avyDialog",
 			  title: "Avalanche Report",
 			  buttons: [
 			    {
@@ -152,7 +152,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			  draggable: true,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: "avyReportDrawDialog",
+			  dialogClass: "avyDialog",
 			  title: "Avalanche Report",
 			  buttons: [
 			    {

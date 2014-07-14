@@ -40,7 +40,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
-			  dialogClass: 'noclose',
+			  dialogClass: 'avyDialog',
 			  buttons: [{
 			      text: 'OK',
 			      click: function(event, ui) {
