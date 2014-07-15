@@ -1,12 +1,15 @@
 package com.avyeyes.model.enums
 
 object Aspect extends DataCodeEnum {
-	val N = new DataCodeVal(1, "N")
-	val NE = new DataCodeVal(2, "NE")
-	val E = new DataCodeVal(3, "E")
-	val SE = new DataCodeVal(4, "SE")
-	val S = new DataCodeVal(5, "S")
-	val SW = new DataCodeVal(6, "SW")
-	val W = new DataCodeVal(7, "W")
-	val NW = new DataCodeVal(8, "NW")
+    type Aspect = Value
+    
+    val U = Value(0)
+	val N = Value(1)
+	val NE = Value(2)
+	val E = Value(3)
+	val SE = Value(4)
+	val S = Value(5)
+	val SW = Value(6)
+	val W = Value(7)
+	val NW = Value(8)
 }

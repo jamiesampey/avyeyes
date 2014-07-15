@@ -9,32 +9,43 @@ import net.liftweb.http.js.JsExp
 import net.liftweb.http.js.JsObj
 import net.liftweb.http.js.JE.JsArray
 import net.liftweb.util.Props
+import net.liftweb.http.S
 
 abstract class DataCodeEnum extends Enumeration {
     private val JQAC_LABEL = "label"
     private val JQAC_VALUE = "value"
-    private val UNKNOWN_CODE = "U"
       
-	case class DataCodeVal(idx: Int, code: String, desc: String) extends Val(idx, code) {
-	  def this(idx: Int, code: String) = this(idx, code, "")
-	  override def toString = if (desc.isEmpty()) code else code + " - " + desc
-	}
-	
-	implicit def valueToDataCodeVal(v: Value): DataCodeVal = v.asInstanceOf[DataCodeVal]
-	
+    private val UNKNOWN_CODE = "U"
+    val U: Value
+    
 	def toJsonArray(): String = {
 		val listBuffer = new ListBuffer[JObject]()
-		values.foreach(dc => 
-		    listBuffer.append(JObject(
-		        List(JField(JQAC_LABEL, JString(dc.toString)), JField(JQAC_VALUE, JString(dc.code)))))
-		    )
+		values.foreach(v => 
+		    listBuffer.append(JObject(List(
+		        JField(JQAC_LABEL, JString(getEnumLabel(v.toString.toUpperCase))), 
+		        JField(JQAC_VALUE, JString(v.toString)))
+		    ))
+		)
 		Printer.compact(JsonAST.render(JArray(listBuffer.toList)))
 	}
-	   
-	val UNKNOWN = new DataCodeVal(0, UNKNOWN_CODE, Props.get("label.unknown").get)
 	
-	def withCode(c: String): DataCodeVal = Option(c) match {
-		case Some(c) if (!c.isEmpty) => values.find(_.code == c).get
-		case _ => UNKNOWN
+	def withCode(c: String): Value = Option(c) match {
+		case Some(c) if (!c.isEmpty) => values.find(_.toString == c).get
+		case _ => U
 	}
+	
+	def getEnumLabel(code: String): String = {
+        if (code == UNKNOWN_CODE)
+            S.?("enum.U")
+        else
+            getClass.getSimpleName match {
+                case "AvalancheType$" => S.?(s"enum.type.$code")
+                case "AvalancheTrigger$" => S.?(s"enum.trigger.$code")
+                case "AvalancheInterface$" => S.?(s"enum.interface.$code")
+                case "Aspect$" => S.?(s"enum.aspect.$code")
+                case "Sky$" => S.?(s"enum.sky.$code")
+                case "Precip$" => S.?(s"enum.precip.$code")
+                case "ModeOfTravel$" => S.?(s"enum.travel.$code")
+            }
+    }
 }

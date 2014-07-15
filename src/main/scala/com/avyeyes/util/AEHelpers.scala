@@ -12,7 +12,7 @@ import net.liftweb.http.S
 
 
 object AEHelpers {
-    private val UNKNOWN_LABEL = Props.get("label.unknown").get
+    private val UNKNOWN_LABEL = S.?("enum.U")
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
 
     def parseDateStr(str: String) = df.parse(str)
@@ -30,16 +30,5 @@ object AEHelpers {
 	  case Some(s) if s.length != EXT_ID_LENGTH => false
 	  case Some(s) if s exists (c => !EXT_ID_CHARS.contains(c)) => false
 	  case _ => true
-	}
-
-	def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {
-	  case Aspect.N => 180
-	  case Aspect.NE => 225
-	  case Aspect.E => 270
-	  case Aspect.SE => 315
-	  case Aspect.S => 0
-	  case Aspect.SW => 45
-	  case Aspect.W => 90
-	  case Aspect.NW => 135
 	}
 }

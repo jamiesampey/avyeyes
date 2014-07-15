@@ -3,7 +3,6 @@ package com.avyeyes.snippet
 import com.avyeyes.model.AvalancheDb
 import com.avyeyes.model.enums._
 import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
-import com.avyeyes.util.AEHelpers.getLookAtHeadingForAspect
 import com.avyeyes.util.ui.KmlCreator
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
@@ -55,5 +54,16 @@ class Init {
                $('.avyAspectAutoComplete').autocomplete('option', 'source', """ + Aspect.toJsonArray + """);
                $('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', """ + ModeOfTravel.toJsonArray + """);
             """).cmd
+    }
+    
+    private def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {
+      case Aspect.N => 180
+      case Aspect.NE => 225
+      case Aspect.E => 270
+      case Aspect.SE => 315
+      case Aspect.S => 0
+      case Aspect.SW => 45
+      case Aspect.W => 90
+      case Aspect.NW => 135
     }
 }

@@ -15,8 +15,6 @@ class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
     val kmlCoords: String) extends AvalancheObj {
   
   def this() = this("", false, 0.0, 0.0, "", new Date(), 
-      Sky.UNKNOWN, Precip.UNKNOWN, 0, Aspect.UNKNOWN, 0, 
-      AvalancheType.UNKNOWN, AvalancheTrigger.UNKNOWN, AvalancheInterface.UNKNOWN, 0.0, 0.0, 
-      -1, -1, -1, -1, -1, ModeOfTravel.UNKNOWN, 
-      None, None, "")
+      Sky.U, Precip.U, 0, Aspect.U, 0, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
+      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, None, None, "")
 }
