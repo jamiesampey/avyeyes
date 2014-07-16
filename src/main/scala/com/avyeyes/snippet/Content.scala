@@ -11,7 +11,7 @@ import scala.xml.Text
 
 class Content {
     def render = {
-      "label" #> ((ns:NodeSeq) => setupLabel(ns)) &
+      "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text)) &
       ".avyHeader" #> ((n:NodeSeq) => getHeader((n\"@id").text)) &
       ".avyMsg" #> ((n:NodeSeq) => getMessage((n\"@id").text)) &
       ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text)) &
@@ -20,8 +20,7 @@ class Content {
       "#aboutMenuItem *" #> S.?("link.aboutMenuItem") 
     }
 
-    private def setupLabel(ns: NodeSeq): NodeSeq = {
-      val id = (ns\"@for").text
+    private def setupLabel(id: String): NodeSeq = {
       <label for={id} data-help={S.?(s"help.$id")}>{S.?(s"label.$id")}</label>
     }
 
