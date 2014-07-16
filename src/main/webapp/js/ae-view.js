@@ -154,7 +154,16 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	}
 
 	this.init = function() {
-		$(".avyAutoComplete").autocomplete({
+		$('label').each(function() {
+			$(this).tooltip({
+				items: '[data-help]',
+				content: $(this).data('help'),
+				tooltipClass: 'avyTooltip',
+				position: {my: "right-10 center", collision: "flipfit"}
+			});
+		});
+		
+		$('.avyAutoComplete').autocomplete({
 			minLength: 0,
 			delay: 0,
 			select: function(event, ui) {
@@ -164,12 +173,12 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			}
 		});
 		
-		$(".avyAutoComplete").change(function() {
+		$('.avyAutoComplete').change(function() {
 			$(this).val('');
 			$(this).siblings(':hidden').val('');
 		});
 		
-		$(".avyAutoComplete").focus(function(){            
+		$('.avyAutoComplete').focus(function(){            
 			$(this).autocomplete("search");
 	    });
 		

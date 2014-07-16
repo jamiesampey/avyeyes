@@ -5,6 +5,7 @@ body {
 }
 
 label {
+    cursor: help;
 	font: normal 1em times,serif !important;
 }
 
@@ -112,4 +113,8 @@ textarea:focus, input:focus {
 
 .avyDialog .ui-dialog-titlebar-close {
     display: none;
+}
+
+.avyTooltip {
+	font: normal 1em times,serif !important;
 }
