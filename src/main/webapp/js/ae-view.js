@@ -26,10 +26,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		$('#aeSearchControlContainer').slideUp("slow");
 	}
 	
-	this.showModalDialog = function(dialogTitle, msg, details) {
-		if (details) {
-			msg = msg.concat("<br><br><u>Details:</u><p>" + details + "</p>");
-		}
+	this.showModalDialog = function(dialogTitle, msg) {
 		$('#multiDialog').html(msg);
 		
 		$.ui.dialog.prototype._focusTabbable = function(){};
