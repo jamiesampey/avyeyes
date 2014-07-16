@@ -12,7 +12,7 @@ import scala.xml.Text
 class Content {
     def render = {
       "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text)) &
-      ".avyHeader" #> ((n:NodeSeq) => getHeader((n\"@id").text)) &
+      ".avyHeader" #> ((n:NodeSeq) => setupHeader((n\"@id").text)) &
       ".avyMsg" #> ((n:NodeSeq) => getMessage((n\"@id").text)) &
       ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text)) &
       "#avySearchHelpLink *" #> S.?("link.avySearchHelpLink") & 
@@ -21,10 +21,12 @@ class Content {
     }
 
     private def setupLabel(id: String): NodeSeq = {
-      <label for={id} data-help={S.?(s"help.$id")}>{S.?(s"label.$id")}</label>
+      <label for={id} data-help={Unparsed(S.?(s"help.$id"))}>{S.?(s"label.$id")}</label>
     }
 
-    private def getHeader(id: String) = S.?(s"header.$id")
+    private def setupHeader(id: String): NodeSeq = {
+      <span id={id} class="avyHeader">{S.?(s"header.$id")}</span>
+    }
     
     private def getButton(id: String) = S.?(s"button.$id")
 }

@@ -118,3 +118,7 @@ textarea:focus, input:focus {
 .avyTooltip {
 	font: normal 1em times,serif !important;
 }
+
+.avyTooltip br {
+    line-height:32px;
+}
