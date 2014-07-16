@@ -13,7 +13,7 @@ class Content {
     def render = {
       "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text)) &
       ".avyHeader" #> ((n:NodeSeq) => setupHeader((n\"@id").text)) &
-      ".avyMsg" #> ((n:NodeSeq) => getMessage((n\"@id").text)) &
+      ".avyMsg" #> ((n:NodeSeq) => setupMessage((n\"@id").text)) &
       ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text)) &
       "#avySearchHelpLink *" #> S.?("link.avySearchHelpLink") & 
       "#reportMenuItem *" #> S.?("link.reportMenuItem") &
@@ -26,6 +26,10 @@ class Content {
 
     private def setupHeader(id: String): NodeSeq = {
       <span id={id} class="avyHeader">{S.?(s"header.$id")}</span>
+    }
+    
+    private def setupMessage(id: String): NodeSeq = {
+      <span id={id} class="avyMsg">{getMessage(id)}</span>
     }
     
     private def getButton(id: String) = S.?(s"button.$id")
