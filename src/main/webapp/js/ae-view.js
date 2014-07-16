@@ -301,6 +301,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		});
 		
 		$('#avyInitLiftCallback').submit();
+	    $('#loadingDiv').fadeOut(500);
 	}
 	
 	this.initCB = function(instance) {
@@ -316,7 +317,6 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	    ge.getLayerRoot().enableLayerById(ge.LAYER_ROADS, true);
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
 	    
-	    $('#loadingDiv').fadeOut(500);	    
 	    self.init();
 	}
 		    
