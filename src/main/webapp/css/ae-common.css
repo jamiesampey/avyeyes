@@ -22,6 +22,15 @@ textarea:focus, input:focus {
     font-size: 1em;
 }
 
+.ui-menu {
+	width: 185px;
+}
+
+.ui-menu a {
+    text-decoration: none;
+    font: normal 1em times,serif !important;
+}
+
 .ui-datepicker{
     font-size: .8em;
     z-index: 3;

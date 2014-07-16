@@ -18,20 +18,18 @@ define(['gearth',
 		});
 		
 		it('Creates and initializes a new report', function() {
-			spyOn(view, 'hideSearchMenu');
+			spyOn(view, 'hideSearchDiv');
 			
 			expect(view.currentReport).toBeNull();
 			expect(view.isFirstReport).toBe(true);
 			view.doReport();
 			expect(view.currentReport).not.toBeNull();
 			expect(view.isFirstReport).toBe(false);
-			
-			expect(view.hideSearchMenu).toHaveBeenCalled();
 		});
 
 		it('Cancels an existing report', function() {
 			spyOn(view, 'stopNavControlBlink');
-			spyOn(view, 'showSearchMenu');
+			spyOn(view, 'showSearchDiv');
 			
 			view.doReport();
 			expect(view.currentReport).not.toBeNull();
@@ -39,7 +37,6 @@ define(['gearth',
 			view.cancelReport();
 			expect(view.currentReport).toBeNull();
 			expect(view.stopNavControlBlink).toHaveBeenCalled();
-			expect(view.showSearchMenu).toHaveBeenCalled();
 		});
 	});
 
@@ -64,6 +61,7 @@ define(['gearth',
 		});
 		
 		it('Clears search results KML', function() {
+			spyOn(geFeaturesMock, 'hasChildNodes').andReturn(true);
 			spyOn(geFeaturesMock, 'removeChild');
 			var kmlStr = '<kml>some data</kml>';
 			view.overlaySearchResultKml(kmlStr);
@@ -71,6 +69,7 @@ define(['gearth',
 			
 			view.clearSearchResultKml();
 			
+			expect(geFeaturesMock.hasChildNodes).toHaveBeenCalled();
 			expect(geFeaturesMock.removeChild).toHaveBeenCalled();
 			expect(view.avySearchResultKmlObj).toBeNull();
 		});

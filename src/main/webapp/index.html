@@ -29,26 +29,27 @@
         </form>
         
 		<div id="multiDialog" class="avyDialog"></div>
-
+              
 		<div id="aeControlContainer">
             <div id="aeTitleContainer">
                 <img src="/images/ae-title.png"/>
+			    <div id="aeMenuButtonContainer">
+			      <a id="aeMenuButton" href="#"><img src="/images/menu.png"></a>
+			    </div>
+       	        <ul id="aeMenu">
+                  <li><a id="searchMenuItem" class="avyMenuItem" href="#"></a></li>
+                  <li><a id="reportMenuItem" class="avyMenuItem" href="#"></a></li>
+                  <li><a id="aboutMenuItem" class="avyMenuItem" href="#"></a></li>
+                  <li><a id="debugReportForm" href="#">Report form</a></li>
+                </ul>
             </div>
-		    <div id="aeMenuButtonContainer">
-		      <ul id="aeMenuList">
-		          <li><a id="reportMenuItem" href="#"></a></li>
-		          <li><a id="aboutMenuItem" href="#"></a></li>
-		          <li><a id="debugReportForm" href="#">Report form</a></li>
-		      </ul>
-		      <a id="aeMenuButton" href="#"><img src="/images/menu.png"></a>
-		    </div>
 		
 		    <form class="lift:form.ajax">
 			<div id="aeSearchControlContainer" class="lift:Search?form.post">
 			  <hr>
 			  <div class="avySearchHeaderContainer">
 			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
-			     <div id="avySearchHelpLinkDiv"><a id="avySearchHelpLink" href="#"></a></div>
+			     <div id="avySearchHowItWorksDiv"><a id="avySearchHowItWorks" href="#"></a></div>
 			  </div>
 			  
 			  <table id="avySearchDetailsTable">
@@ -300,7 +301,7 @@
              </td>
            </tr>  
            <tr><td class="avyReportSectionHeader" colspan="2">
-                <span id="avyReportComments" class="avyHeader"></span>
+                <label for="avyReportComments"></label>
            </td></tr>
            <tr><td colspan="2"><textarea id="avyReportComments" rows="4" cols="80"></textarea></td></tr>
 	   </table>

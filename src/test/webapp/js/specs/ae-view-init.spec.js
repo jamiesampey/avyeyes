@@ -48,8 +48,12 @@ define(['gearth',
 		});
 		
 		it('should init AE view', function() {
+			var menuMock = function(){
+				this.position = function(options){}
+			}
+			
 			var jquiAutocomplete = spyOn($.fn, 'autocomplete');
-			var jquiMenu = spyOn($.fn, 'menu');
+			var jquiMenu = spyOn($.fn, 'menu').andReturn(new menuMock);
 			var jquiDatepicker = spyOn($.fn, 'datepicker');
 			var jquiSlider = spyOn($.fn, 'slider');
 			var jquiSpinner = spyOn($.fn, 'spinner').andCallThrough(); 
@@ -60,7 +64,7 @@ define(['gearth',
 			view.init();
 			
 			expect(jquiAutocomplete.mostRecentCall.object.selector).toEqual('.avyAutoComplete');
-			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenuList');
+			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenu');
 			expect(jquiDatepicker.mostRecentCall.object.selector).toEqual('.avyDate');
 			expect(jquiSlider.mostRecentCall.object.selector).toEqual('.avyRDSlider');
 			expect(jquiSpinner.callCount).toEqual(2);

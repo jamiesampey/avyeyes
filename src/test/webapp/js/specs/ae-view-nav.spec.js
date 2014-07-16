@@ -87,16 +87,16 @@ define(['jasmine-jquery',
 		});
 		
 		it('shows search menu on initial page load', function() {
-			spyOn(view, 'showSearchMenu');
+			spyOn(view, 'showSearchDiv');
 			view.viewChangeEnd();
-			expect(view.showSearchMenu).toHaveBeenCalled();
+			expect(view.showSearchDiv).toHaveBeenCalled();
 		});
 		
 		it('does not show search menu if not initial page load', function() {
-			spyOn(view, 'showSearchMenu');
+			spyOn(view, 'showSearchDiv');
 			view.aeFirstImpression = false;
 			view.viewChangeEnd();
-			expect(view.showSearchMenu).not.toHaveBeenCalled();
+			expect(view.showSearchDiv).not.toHaveBeenCalled();
 		});
 		
 		it('begins report if initial geocode for report', function() {

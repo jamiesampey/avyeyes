@@ -40,7 +40,6 @@ function AvyReport(avyEyesView, submitReportCallback) {
 	}
 	
 	this.initAvyReport = function() {
-		view.hideSearchMenu();
 		$('#avyReportGeocodeDialog').dialog('open');
 	}
 
@@ -110,7 +109,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			    {
 			      text: "Cancel",
 			      click: function(event, ui) {
-			    	view.cancelReport();
+			    	view.resetView();
 			        $(this).dialog('close');
 			      }
 				}
@@ -138,7 +137,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			    {
 			      text: "Cancel",
 			      click: function(event, ui) {
-			    	view.cancelReport();
+				    view.resetView();
 			        $(this).dialog('close');
 			      }
 				}
@@ -228,7 +227,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 			    {
 			      text: "Cancel",
 			      click: function(event, ui) {
-			    	  view.cancelReport();
+			    	  view.resetView();
 				      $(this).dialog('close');
 			      }
 				}

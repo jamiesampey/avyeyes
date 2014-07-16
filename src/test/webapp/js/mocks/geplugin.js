@@ -113,6 +113,7 @@ define([], function() {
 	function GEFeatures() {
 		this.appendChild = function(child){}
 		this.removeChild = function(child){}
+		this.hasChildNodes = function(){}
 	}
 	
 	function GEGlobe() {}
