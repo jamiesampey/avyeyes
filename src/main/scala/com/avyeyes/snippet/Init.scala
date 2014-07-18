@@ -53,6 +53,7 @@ class Init {
                $('.avyInterfaceAutoComplete').autocomplete('option', 'source', """ + AvalancheInterface.toJsonArray + """);
                $('.avyAspectAutoComplete').autocomplete('option', 'source', """ + Aspect.toJsonArray + """);
                $('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', """ + ModeOfTravel.toJsonArray + """);
+               $('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', """ + ExperienceLevel.toJsonArray + """);
             """).cmd
     }
     

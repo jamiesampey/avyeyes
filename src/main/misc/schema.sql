@@ -1,8 +1,19 @@
+CREATE DATABASE avyeyes_db
+  WITH OWNER = jamie
+  ENCODING = 'UTF8'
+  TABLESPACE = pg_default
+  LC_COLLATE = 'en_US.UTF-8'
+  LC_CTYPE = 'en_US.UTF-8'
+  CONNECTION LIMIT = -1;
+
 CREATE TABLE "avalanche" (
     "id" bigint primary key,
     "createTime" timestamp not null,
     "extId" varchar(8) not null,
     "viewable" boolean not null,
+    "submitterEmail" varchar(256) not null,
+    "submitterExp" integer not null,
+    "submitterYearsExp" integer not null,
     "lat" double precision not null,
     "lng" double precision not null,
     "areaName" varchar(256) not null,
@@ -24,7 +35,6 @@ CREATE TABLE "avalanche" (
     "killed" integer not null,
     "modeOfTravel" integer not null,
     "comments" text,
-    "submitterEmail" varchar(256),
     "kmlCoords" text not null
   );
 

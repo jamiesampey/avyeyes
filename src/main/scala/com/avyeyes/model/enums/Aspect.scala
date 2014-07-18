@@ -1,15 +1,14 @@
 package com.avyeyes.model.enums
 
-object Aspect extends DataCodeEnum {
+object Aspect extends Enumeration with UISelectableEnum {
     type Aspect = Value
     
-    val U = Value(0)
-	val N = Value(1)
-	val NE = Value(2)
-	val E = Value(3)
-	val SE = Value(4)
-	val S = Value(5)
-	val SW = Value(6)
-	val W = Value(7)
-	val NW = Value(8)
+	val N = Value(0)
+	val NE = Value(1)
+	val E = Value(2)
+	val SE = Value(3)
+	val S = Value(4)
+	val SW = Value(5)
+	val W = Value(6)
+	val NW = Value(7)
 }

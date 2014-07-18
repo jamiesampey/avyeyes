@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object Precip extends DataCodeEnum {
+object Precip extends Enumeration with UISelectableEnum {
   type Precip = Value
   
   val U = Value(0)

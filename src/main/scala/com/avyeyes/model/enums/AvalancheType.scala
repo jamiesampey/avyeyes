@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object AvalancheType extends DataCodeEnum {
+object AvalancheType extends Enumeration with UISelectableEnum {
   type AvalancheType = Value
   
   val U = Value(0)

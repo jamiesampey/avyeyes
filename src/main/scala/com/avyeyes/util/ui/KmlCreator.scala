@@ -1,6 +1,7 @@
 package com.avyeyes.util.ui
 
 import com.avyeyes.model.Avalanche
+import com.avyeyes.model.enums._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
 import scala.xml._
@@ -28,9 +29,9 @@ class KmlCreator {
                   <tr><td colspan="2"><u>{avalanche.avyDate}:&nbsp;{avalanche.areaName}</u></td></tr>               
                   <tr><td>
                       <table>
-                          <tr><td>Type:</td><td>{avalanche.avyType}</td></tr>
-                          <tr><td>Trigger:</td><td>{avalanche.trigger}</td></tr>
-                          <tr><td>Interface:</td><td>{avalanche.bedSurface}</td></tr>
+                          <tr><td>Type:</td><td>{getEnumLabel(AvalancheType, avalanche.avyType.toString)}</td></tr>
+                          <tr><td>Trigger:</td><td>{getEnumLabel(AvalancheTrigger, avalanche.trigger.toString)}</td></tr>
+                          <tr><td>Interface:</td><td>{getEnumLabel(AvalancheInterface, avalanche.bedSurface.toString)}</td></tr>
                           <tr><td>R Size:</td><td>{sizeToStr(avalanche.rSize)}</td></tr>
                           <tr><td>D Size:</td><td>{sizeToStr(avalanche.dSize)}</td></tr>
                       </table>

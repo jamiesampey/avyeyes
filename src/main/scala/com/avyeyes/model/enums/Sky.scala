@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object Sky extends DataCodeEnum {
+object Sky extends Enumeration with UISelectableEnum {
   type Sky = Value
   
   val U = Value(0)

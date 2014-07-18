@@ -70,8 +70,8 @@ class Search {
 	  
         from(avalanchesInView)(a => where(
             a.avyDate.between(fromDate, toDate)
-        	and (a.avyType === AvalancheType.withCode(avyType)).inhibitWhen(avyType.isEmpty)
-        	and (a.trigger === AvalancheTrigger.withCode(trigger)).inhibitWhen(trigger.isEmpty)
+        	and (a.avyType === AvalancheType.withName(avyType)).inhibitWhen(avyType.isEmpty)
+        	and (a.trigger === AvalancheTrigger.withName(trigger)).inhibitWhen(trigger.isEmpty)
         	and (a.rSize gte getAvySizeQueryVal(rSize).?)
         	and (a.dSize gte getAvySizeQueryVal(dSize).?)
         	and (a.caught gte getHumanNumberQueryVal(numCaught).?)

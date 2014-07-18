@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object AvalancheTrigger extends DataCodeEnum {
+object AvalancheTrigger extends Enumeration with UISelectableEnum {
   type AvalancheTrigger = Value
   
   val U = Value(0)

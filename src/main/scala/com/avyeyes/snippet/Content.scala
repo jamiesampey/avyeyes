@@ -11,7 +11,7 @@ import scala.xml.Text
 
 class Content {
     def render = {
-      "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text)) &
+      "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text, asBoolean((ns\"@data-required").text) openOr false)) &
       ".avyHeader" #> ((n:NodeSeq) => setupHeader((n\"@id").text)) &
       ".avyMsg" #> ((n:NodeSeq) => setupMessage((n\"@id").text)) &
       ".avyMenuItem" #> ((n:NodeSeq) => setupMenuItem((n\"@id").text)) &
@@ -19,8 +19,10 @@ class Content {
       "#avySearchHowItWorks *" #> S.?("link.avySearchHowItWorks")
     }
 
-    private def setupLabel(id: String): NodeSeq = {
-      <label for={id} data-help={Unparsed(S.?(s"help.$id"))}>{S.?(s"label.$id")}:</label>
+    private def setupLabel(id: String, required: Boolean): NodeSeq = {
+      <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
+          {S.?(s"label.$id")}:{if (required) " *"}
+      </label>
     }
 
     private def setupHeader(id: String): NodeSeq = {

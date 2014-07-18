@@ -12,6 +12,7 @@ import net.liftweb.http.S
 
 
 object AEHelpers {
+    private val UNKNOWN_CODE = "U"
     private val UNKNOWN_LABEL = S.?("enum.U")
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
 
@@ -19,10 +20,21 @@ object AEHelpers {
 	
     def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
     
-	// Snippet helpers
+    def getEnumLabel(enum: Enumeration, name: String) = {
+        if (name == UNKNOWN_CODE)
+            UNKNOWN_LABEL
+        else {
+          val enumClass = enum.getClass.getSimpleName filterNot(c => c == '$')
+          S.?(s"enum.$enumClass.$name")
+        }
+    }
+    
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
+
 	def sizeToStr(size: Double): String = if (size == 0) UNKNOWN_LABEL else size.toString
+	
 	def strToHumanNumber(str: String): Int = asInt(str) openOr -1
+	
 	def humanNumberToStr(hn: Int): String = if (hn == -1) UNKNOWN_LABEL else hn.toString
 
 	def isValidExtId(extId: Option[String]): Boolean = extId match {

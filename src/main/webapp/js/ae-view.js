@@ -301,7 +301,6 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		});
 		
 		$('#avyInitLiftCallback').submit();
-	    $('#loadingDiv').fadeOut(500);
 	}
 	
 	this.initCB = function(instance) {
@@ -318,6 +317,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
 	    
 	    self.init();
+	    $('#loadingDiv').fadeOut(500);
 	}
 		    
 	this.failureCB = function(errorCode) {
