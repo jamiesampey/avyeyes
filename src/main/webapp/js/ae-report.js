@@ -64,7 +64,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 		var imgUploadUrl = '/imgupload/' + extId;
 		$("#imgUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImgDropZone'),
 	        done: function(e, data) {
-	        	$('#avyReportImgDropZoneMsg').html('');
+	        	$('#avyReportFinishedImgsTable').show();
 	        	$('#avyReportFinishedImgsTable').append('<tr><td>' + data.result.fileName + '</td><td>' + data.result.fileSize + '</td></tr>');
 	        }
 	    });

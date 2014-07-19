@@ -55,12 +55,10 @@ textarea:focus, input:focus {
 }
 
 .ui-autocomplete {
-    font-size: .9em;
     background: #1D1D1D;
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 10000;
 }
 
 .ui-autocomplete-input {
@@ -90,6 +88,14 @@ textarea:focus, input:focus {
     background: transparent;
 }
 
+.avyRawTextInput {
+	width: 200px;
+    height: 20px;
+    background: transparent;
+    color: white;
+    border: 1px solid #555555;
+}
+
 .avyRDSliderContainer {
     position: relative;
     width: 200px
@@ -110,14 +116,6 @@ textarea:focus, input:focus {
     float: right;
     width: 170px;
     margin-top: 5px;
-}
-
-.avyLocation {
-    background: transparent;
-    color: white;
-    border: 1px solid #555555;
-    width: 200px;
-    height: 20px;
 }
 
 .avyDialog {

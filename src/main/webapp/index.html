@@ -55,7 +55,7 @@
 			  <table id="avySearchDetailsTable">
                  <tr>			         
 			         <td class="avySearchTableLabel"><label for="avySearchLocation"></label></td>
-			         <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation" type="text"/></td>
+			         <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation avyRawTextInput" type="text"/></td>
 			      </tr>
 			      <tr>
     			      <td class="avySearchTableLabel"><label for="avySearchFromDate"></label></td>
@@ -137,7 +137,7 @@
 	   <div id="avyReportGeocodeDialog">
 	      <span id="avyReportGeocodeInstr" class="avyMsg"></span>
 		  <label for="avyReportInitLocation"></label>
-		  <input id="avyReportInitLocation" class="avyLocation" type="text"/>
+		  <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text"/>
 	   </div>
 	   <div id="avyReportBeginDrawDialog">
 	       <span id="avyReportDrawInstr" class="avyMsg"></span>
@@ -161,7 +161,7 @@
 		                 <table class="avyReportInputsSubTable">
 		                     <tr>
 		                        <td><label for="avyReportAreaName" data-required="true"></label></td>
-		                        <td><input id="avyReportAreaName" class="avyReportRawTextInput" type="text"/></td>
+		                        <td><input id="avyReportAreaName" class="avyRawTextInput" type="text"/></td>
 		                     </tr>	             
 			                 <tr>
 			                   <td><label for="avyReportDate" data-required="true"></label></td>
@@ -245,7 +245,7 @@
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
 				          <td><label for="avyReportElevation" data-required="true"></label></td>
-				          <td><input id="avyReportElevation" class="avyReportRawTextInput" type="text" readonly /></td>
+				          <td><input id="avyReportElevation" class="avyRawTextInput" type="text" readonly /></td>
 				        </tr>
 				        <tr>
 				          <td><label for="avyReportAspect" data-required="true"></label></td>
@@ -312,7 +312,7 @@
 	                 <table class="avyReportInputsSubTable">
 	                    <tr>
 		                  <td><label for="avyReportSubmitterEmail" data-required="true"></label></td>
-			              <td><input id="avyReportSubmitterEmail" class="avyReportRawTextInput" type="text"/></td>
+			              <td colspan="3"><input id="avyReportSubmitterEmail" class="avyRawTextInput" type="text"/></td>
 	                    </tr>
 	                    <tr>
 		                    <td><label for="avyReportSubmitterExp" data-required="true"></label></td>
@@ -320,7 +320,7 @@
 		                        <input class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
 		                        <input id="avyReportSubmitterExp" type="hidden"/>
 		                    </td>
-		                    <td><label for="avyReportSubmitterYearsExp" data-required="true"></label></td>
+		                    <td id="avyReportSubmitterYearsExpCol"><label for="avyReportSubmitterYearsExp" data-required="true"></label></td>
 			                <td><input id="avyReportSubmitterYearsExp" class="avyHumanNumber"/></td>
 	                    </tr>
 	                 </table>
@@ -341,20 +341,18 @@
 	   </form> <!-- END LIFT FORM -->
 
        <div id="avyReportImgDialog">
-          <table id="avyReportImgTable">
-	          <tr><td>
-			      <div id="avyReportImgDropZone">
-			           <div id="avyReportImgDropZoneMsg"><p>Drop images here</p></div>
-		               <table id="avyReportFinishedImgsTable"></table>
-			      </div>
-		      </td></tr>
-		      <tr><td>
-	              <form id="imgUploadForm" action="/imgupload" method="POST" enctype="multipart/form-data">
-	                   <input type="file" name="file[]" multiple />
-	              </form>
-	          </td></tr>
-          </table>
-       </div>
+          <div id="avyReportImgDropZoneMsgDiv"><span id="avyReportImgDropZoneMsg" class="avyMsg"></span></div>
+          <div id="avyReportImgDropZone">
+               <table id="avyReportFinishedImgsTable">
+               <tr><th><span id="avyReportImgFilename" class="avyHeader"></span></th>
+               <th><span id="avyReportImgSize" class="avyHeader"></span></th></tr>
+               </table>
+	      </div>
+		  <div id="avyReportImgOldSchoolLoad">
+              <form id="imgUploadForm" action="/imgupload" method="POST" enctype="multipart/form-data">
+                   <input type="file" name="file[]" multiple />
+              </form>
+          </div>
        </div>
        
 	   </div> <!-- END REPORT DIALOG DIV -->

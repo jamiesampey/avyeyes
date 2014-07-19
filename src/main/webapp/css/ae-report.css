@@ -1,11 +1,6 @@
 #avyReportDialog {
-	margin: 5px;
+	margin: 5px 5px 0px 5px;
 	padding: 0px;
-}
-
-#avyReportImgDialog {
-    margin: 5px;
-    padding: 0px;
 }
 
 .avyReportDetailsDialog {
@@ -18,18 +13,20 @@
 	display: none;
 }
 
-#avyReportImgTable {
+#avyReportFinishedImgsTable {
+	display: none;
 	width: 100%;
-    height: 100%;
+	vertical-align: top;
 }
 
-#avyReportFinishedImgsTable {
-	width: 100%;
+#avyReportFinishedImgsTable th {
+    text-align: left;
 }
  
 #avyReportFinishedImgsTable tr {
+	width: 100%;
     height: 30px;
-    padding: 0px;
+    padding: 0px 0px 0px 5px;
     margin: 0px;
     vertical-align: top;
 }
@@ -39,18 +36,26 @@
     border-bottom: 1px solid #555555;
 }
 
-#avyReportImgDropZone {
-	display: block;
-	background-color: #000000;
-	color: white;
-	width: 700px;
-	height: 400px;
+#avyReportImgDropZoneMsgDiv {
+    width: 100%;
 }
 
-#avyReportImgDropZoneMsg {
-    text-align: center;
+#avyReportImgDropZoneMsgDiv > span {
+	margin: 0 auto;
     font-size: 1.5em;
 }
+
+#avyReportImgDropZone {
+	display: block;
+	margin: 0 auto;
+	background-color: transparent;
+	border: 1px solid #555555;
+	color: white;
+	width: 650px;
+	height: 500px;
+}
+
+
 
 #avyReportImgDropZoneMsg p {
     color: #FFFFFF;
@@ -60,6 +65,10 @@
 
 #avyReportDetailsMainTable > tbody > tr > td {
     vertical-align: top;
+}
+
+#avyReportImgOldSchoolLoad {
+	width: 100%;
 }
 
 #avyReportDetailsLeftColumnTable {
@@ -95,6 +104,10 @@
 	width: 100%;
 }
 
+#avyReportSubmitterYearsExpCol {
+    padding: 0px 0px 0px 10px;
+}
+
 #avyReportRequiredFieldsMsgRow {
 	height: 100%;
 	vertical-align: bottom;
@@ -106,23 +119,12 @@
 	padding: 0px;
 }
 
-.avyReportRawTextInput {
-	background: transparent;
-    color: white;
-    border: 1px solid #555555;
+#avyReportElevation {
+    border: none;
 }
 
-#avyReportSlopeElevation {
-    border: 0px;
-    width: 60px;
-}
-
-.avySlopeAspectAutoComplete {
-    width: 30px;
-}
-
-.avySlopeAngle {
-	width: 30px;
+#avyReportAspectAC {
+    width: 35px;
 }
 
 #avyReportComments {
