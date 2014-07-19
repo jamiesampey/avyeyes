@@ -1,3 +1,13 @@
+#avyReportDialog {
+	margin: 5px;
+	padding: 0px;
+}
+
+#avyReportImgDialog {
+    margin: 5px;
+    padding: 0px;
+}
+
 .avyReportDetailsDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
@@ -8,12 +18,6 @@
 	display: none;
 }
 
-#avyReportImgDialog {
-	display: none;
-	width: 750px;
-	height: 500px;
-}
-
 #avyReportImgTable {
 	width: 100%;
     height: 100%;
@@ -22,7 +26,7 @@
 #avyReportFinishedImgsTable {
 	width: 100%;
 }
-
+ 
 #avyReportFinishedImgsTable tr {
     height: 30px;
     padding: 0px;
@@ -32,6 +36,7 @@
 
 #avyReportFinishedImgsTable td {
     vertical-align: middle;
+    border-bottom: 1px solid #555555;
 }
 
 #avyReportImgDropZone {
@@ -76,7 +81,7 @@
 .avyReportInputsSubTable {
     padding: 5px;
     margin: 0px;
-	border:1px solid #555555;
+	border: 1px solid #555555;
 	border-radius: 10px;
 }
 
@@ -86,18 +91,22 @@
     vertical-align: middle;
 }
 
+#avyReportSubmitterWrapperTable {
+	width: 100%;
+}
+
+#avyReportRequiredFieldsMsgRow {
+	height: 100%;
+	vertical-align: bottom;
+	text-align: right;
+}
+
 .avyReportSectionHeader {
 	font-weight: bold;
 	padding: 0px;
 }
 
-#avyReportAreaName {
-	background: transparent;
-    color: white;
-    border: 1px solid #555555;
-}
-
-#avyReportElevation {
+.avyReportRawTextInput {
 	background: transparent;
     color: white;
     border: 1px solid #555555;
@@ -114,4 +123,8 @@
 
 .avySlopeAngle {
 	width: 30px;
+}
+
+#avyReportComments {
+	width: 95%;
 }

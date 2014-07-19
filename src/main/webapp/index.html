@@ -161,7 +161,7 @@
 		                 <table class="avyReportInputsSubTable">
 		                     <tr>
 		                        <td><label for="avyReportAreaName" data-required="true"></label></td>
-		                        <td><input id="avyReportAreaName" type="text"/></td>
+		                        <td><input id="avyReportAreaName" class="avyReportRawTextInput" type="text"/></td>
 		                     </tr>	             
 			                 <tr>
 			                   <td><label for="avyReportDate" data-required="true"></label></td>
@@ -244,18 +244,18 @@
                       </td></tr>
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
-				          <td><label for="avyReportElevation"></label></td>
-				          <td><input id="avyReportElevation" type="text" readonly /></td>
+				          <td><label for="avyReportElevation" data-required="true"></label></td>
+				          <td><input id="avyReportElevation" class="avyReportRawTextInput" type="text" readonly /></td>
 				        </tr>
 				        <tr>
-				          <td><label for="avyReportAspect"></label></td>
+				          <td><label for="avyReportAspect" data-required="true"></label></td>
 				          <td>
 				            <input id='avyReportAspectAC' class="avyAutoComplete avyAspectAutoComplete" type="text" />
 				            <input id="avyReportAspect" type="hidden"/>
 				          </td>
 				        </tr>
 				        <tr>
-				          <td><label for="avyReportAngle"></label></td>
+				          <td><label for="avyReportAngle" data-required="true"></label></td>
 				          <td><input id="avyReportAngle" class="avySlopeAngle" /></td>
 				        </tr>
 				      </table>
@@ -301,29 +301,36 @@
              </td>
            </tr>  
            <tr><td colspan="2"><label for="avyReportComments"></label></td></tr>
-           <tr><td colspan="2"><textarea id="avyReportComments" rows="4" cols="80"></textarea></td></tr>
-           <tr><td colspan="2"><table class="avyReportSubTable">
-              <tr><td class="avyReportSectionHeader">
-                 <span id="avyReportSubmitterInfo" class="avyHeader"></span>
-              </td></tr>
-              <tr><td>
-                 <table class="avyReportInputsSubTable"><tr>
-                  <td>
-	                  <label for="avyReportSubmitterEmail" data-required="true"></label>
-	                  <input id="avyReportSubmitterEmail" type="text"/>
-                  </td>
-                  <td>
-                    <label for="avyReportSubmitterExp" data-required="true"></label>
-                    <input class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
-                    <input id="avyReportSubmitterExp" type="hidden"/>
-                  </td>
-                  <td>
-                    <label for="avyReportSubmitterYearsExp" data-required="true"></label>
-                    <input id="avyReportSubmitterYearsExp" class="avyHumanNumber"/>
-                  </td>
-                 </tr></table>
-              </td></tr></table>
-           </td></tr>
+           <tr><td colspan="2"><textarea id="avyReportComments" rows="5"></textarea></td></tr>
+           <tr><td colspan="2">
+           <table id="avyReportSubmitterWrapperTable"><tr><td>
+	           <table class="avyReportSubTable">
+	              <tr><td class="avyReportSectionHeader">
+	                 <span id="avyReportSubmitterInfo" class="avyHeader"></span>
+	              </td></tr>
+	              <tr><td>
+	                 <table class="avyReportInputsSubTable">
+	                    <tr>
+		                  <td><label for="avyReportSubmitterEmail" data-required="true"></label></td>
+			              <td><input id="avyReportSubmitterEmail" class="avyReportRawTextInput" type="text"/></td>
+	                    </tr>
+	                    <tr>
+		                    <td><label for="avyReportSubmitterExp" data-required="true"></label></td>
+		                    <td>
+		                        <input class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
+		                        <input id="avyReportSubmitterExp" type="hidden"/>
+		                    </td>
+		                    <td><label for="avyReportSubmitterYearsExp" data-required="true"></label></td>
+			                <td><input id="avyReportSubmitterYearsExp" class="avyHumanNumber"/></td>
+	                    </tr>
+	                 </table>
+	              </td></tr></table>
+	           </td>
+	           <td id="avyReportRequiredFieldsMsgRow">
+	               <span style="color: red;">*&nbsp;</span><span id="avyReportRequiredFields" class="avyMsg"></span>
+	           </td>
+	       </tr></table>
+           </tr>
 	   </table>
 	   <input id="avyReportExtId" type="hidden"/>
        <input id="avyReportLat" type="hidden"/>

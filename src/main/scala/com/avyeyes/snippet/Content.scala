@@ -6,8 +6,6 @@ import net.liftweb.http.S
 import scala.xml.NodeSeq
 import scala.xml.Unparsed
 import com.avyeyes.util.AEHelpers._
-import scala.xml.Attribute
-import scala.xml.Text
 
 class Content {
     def render = {
@@ -21,7 +19,7 @@ class Content {
 
     private def setupLabel(id: String, required: Boolean): NodeSeq = {
       <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
-          {S.?(s"label.$id")}:{if (required) " *"}
+          {S.?(s"label.$id")}:{if (required) Unparsed("<span style='color: red;'>&nbsp;*</span>")}
       </label>
     }
 
