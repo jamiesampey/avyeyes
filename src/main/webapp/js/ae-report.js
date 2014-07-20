@@ -3,7 +3,7 @@ define(['ae-draw', 'jquery-ui'], function(AvyDraw) {
 function AvyReport(avyEyesView, submitReportCallback) {
 	var self = this;
 	var view = avyEyesView;
-	
+
 	this.currentDrawing = null;
 	
 	this.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect, angle, kmlStr) {
@@ -25,10 +25,25 @@ function AvyReport(avyEyesView, submitReportCallback) {
 	}
 
 	this.clearAllFields = function() {
-		self.clearAvyDrawing();
+		var myExtId = $('#avyReportExtId').val();
+		if (myExtId) {
+			$.post('/rest/unreserveExtId/' + myExtId);
+		}
+		
 		$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
 		$('#avyReportFinishedImgsTable > tbody').empty();
 		$('#avyReportFinishedImgsTable').hide();
+	}
+	
+	this.reserveExtId = function() {
+		$.getJSON('/rest/reserveExtId', function(data) {
+			$('#avyReportExtId').val(data.extId);
+		})
+		.fail(function(jqxhr, textStatus, error) {
+			var err = textStatus + ", " + error;
+		    console.log("Avy Eyes failed to reserve an ExtId for the report:" + err);
+		    view.resetView();
+		});
 	}
 	
 	this.doAvyDrawing = function() {
@@ -42,6 +57,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 	}
 	
 	this.initAvyReport = function() {
+		self.reserveExtId();
 		$('#avyReportGeocodeDialog').dialog('open');
 	}
 
@@ -62,8 +78,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 	}
 	
 	this.enterAvyDetail = function() {
-		var extId = $('#avyReportExtId').val();
-		var imgUploadUrl = '/imgupload/' + extId;
+		var imgUploadUrl = '/rest/imgupload/' + $('#avyReportExtId').val();
 		$("#imgUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImgDropZone'),
 	        done: function(e, data) {
 	        	$('#avyReportFinishedImgsTable').show();

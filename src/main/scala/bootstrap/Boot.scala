@@ -4,7 +4,7 @@ import net.liftweb.http._
 import net.liftweb.sitemap.{Menu, SiteMap}
 import net.liftweb.common.Full
 import com.avyeyes.util.AEConstants._
-import com.avyeyes.rest.ImageResource
+import com.avyeyes.rest._
 
 
 /**
@@ -27,7 +27,10 @@ class Boot {
 
     LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE
     LiftRules.maxMimeSize = MAX_IMAGE_SIZE
-    LiftRules.statelessDispatchTable.append(ImageResource)
+    
+    LiftRules.statelessDispatchTable.append(ImageUpload)
+    LiftRules.statelessDispatchTable.append(ImageServe)
+    LiftRules.statelessDispatchTable.append(ExtIdVendor)
     
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>

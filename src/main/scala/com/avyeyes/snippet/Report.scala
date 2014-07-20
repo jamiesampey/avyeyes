@@ -14,9 +14,7 @@ import scala.xml.XML
 import org.apache.commons.lang3.StringUtils.isBlank
 
 class Report {
-  var extId = AvalancheDb.reserveNewExtId
-  
-  var submitterEmail = ""; var submitterExp = ""; var submitterYearsExp = ""
+  var extId = ""; var submitterEmail = ""; var submitterExp = ""; var submitterYearsExp = ""
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
   var elevation = ""; var aspect = ""; var angle = ""    
