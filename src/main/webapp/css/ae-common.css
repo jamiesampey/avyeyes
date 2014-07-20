@@ -37,7 +37,7 @@ textarea:focus, input:focus {
 
 .ui-datepicker{
     font-size: .8em;
-    z-index: 3;
+    z-index: 1000 !important;
 }
 
 .ui-widget-overlay {
@@ -59,6 +59,7 @@ textarea:focus, input:focus {
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 1000 !important;
 }
 
 .ui-autocomplete-input {
