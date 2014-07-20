@@ -31,6 +31,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 		}
 		
 		$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
+		$('#avyReportDialog').find('.avyRDSliderValue').val('0');
+		$('#avyReportDialog').find('.avyRDSlider').slider('value', 0);
 		$('#avyReportFinishedImgsTable > tbody').empty();
 		$('#avyReportFinishedImgsTable').hide();
 	}

@@ -32,6 +32,8 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	
 	this.clearSearchFields = function() {
 		$('#aeSearchControlContainer').find('input:text').val('');
+		$('#aeSearchControlContainer').find('.avyRDSliderValue').val('0');
+		$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
 	}
 	
 	this.showModalDialog = function(title, msg) {
