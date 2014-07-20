@@ -102,12 +102,14 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	}
 	    
 	this.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
+	  if (!address) {
+		  return;
+	  }
+	  
 	  geocoder.geocode( {'address': address}, function(results, status) {
 	    if (status == gmaps.GeocoderStatus.OK && results.length) {
 			var latLng = results[0].geometry.location;
 	    	self.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
-	    } else {
-	      self.showModalDialog('Error', 'Geocode was not successful.', status);
 	    }
 	  });
 	}
