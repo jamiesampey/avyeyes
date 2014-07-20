@@ -209,7 +209,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	  
 	  $('#reportMenuItem').click(function(){
 		  $('#aeMenu').toggle('slide', 400);
-		  self.cancelReport();
+		  self.resetView();
 		  self.hideSearchDiv();
 		  self.doReport();
 		});
