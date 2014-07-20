@@ -34,7 +34,14 @@ define(['gearth',
 			view.doReport();
 			expect(view.currentReport).not.toBeNull();
 			
+			var report = view.currentReport;
+			spyOn(report, 'clearAllFields');
+			spyOn(report, 'clearAvyDrawing');
+			
 			view.cancelReport();
+			
+			expect(report.clearAllFields).toHaveBeenCalled();
+			expect(report.clearAvyDrawing).toHaveBeenCalled();
 			expect(view.currentReport).toBeNull();
 			expect(view.stopNavControlBlink).toHaveBeenCalled();
 		});

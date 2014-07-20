@@ -44,7 +44,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	this.doReport = function() {
 		self.currentReport = new AvyReport(self, function() {
 			$("#avyReportDialog").children('form').submit();
-			self.currentReport = null;
+			self.cancelReport();
 		});
 		
 		if (self.isFirstReport) {
@@ -58,6 +58,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	this.cancelReport = function() {
 		if (self.currentReport) {
 			self.currentReport.clearAllFields();
+			self.currentReport.clearAvyDrawing();
 			self.currentReport = null;
 		}
 		self.stopNavControlBlink();
