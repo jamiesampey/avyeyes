@@ -33,7 +33,7 @@
 
 #avyReportFinishedImgsTable td {
     vertical-align: middle;
-    border-bottom: 1px solid #555555;
+    border-top: 1px solid #555555;
 }
 
 #avyReportImgDropZoneMsgDiv {
@@ -41,34 +41,36 @@
 }
 
 #avyReportImgDropZoneMsgDiv > span {
+	display: block;
 	margin: 0 auto;
+    padding: 10px 0px 20px 0px;
+	width: 400px;
     font-size: 1.5em;
 }
 
 #avyReportImgDropZone {
 	display: block;
 	margin: 0 auto;
+	padding: 5px;
 	background-color: transparent;
-	border: 1px solid #555555;
+	border: 3px solid #555555;
 	color: white;
 	width: 650px;
 	height: 500px;
 }
 
+#avyReportImgOldSchoolImgUpload {
+	width: 100%;
+	padding-top: 20px;
+}
 
-
-#avyReportImgDropZoneMsg p {
-    color: #FFFFFF;
-    margin-top: 0px;
-    margin-bottom: 0px;
+#avyReportImgOldSchoolImgUpload > form {
+	display: inline;
+    width: 200px;
 }
 
 #avyReportDetailsMainTable > tbody > tr > td {
     vertical-align: top;
-}
-
-#avyReportImgOldSchoolLoad {
-	width: 100%;
 }
 
 #avyReportDetailsLeftColumnTable {

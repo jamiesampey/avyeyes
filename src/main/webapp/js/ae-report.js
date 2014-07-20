@@ -27,6 +27,8 @@ function AvyReport(avyEyesView, submitReportCallback) {
 	this.clearAllFields = function() {
 		self.clearAvyDrawing();
 		$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
+		$('#avyReportFinishedImgsTable > tbody').empty();
+		$('#avyReportFinishedImgsTable').hide();
 	}
 	
 	this.doAvyDrawing = function() {
