@@ -2,13 +2,14 @@ package com.avyeyes.model
 
 import org.squeryl.Schema
 import org.squeryl.PrimitiveTypeMode._
-import scala.collection.mutable.HashSet
+import scala.collection.mutable.HashMap
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
 import org.apache.commons.lang3.RandomStringUtils
+import java.util.Date
 
 object AvalancheDb extends Schema {
-    private val reservedExtIds: HashSet[String] = HashSet.empty
+    private val reservedExtIds: HashMap[String, Date] = HashMap.empty
     
 	val avalanches = table[Avalanche]("avalanche")
 	val avalancheImages = table[AvalancheImg]("avalanche_img")
@@ -45,7 +46,7 @@ object AvalancheDb extends Schema {
                 || avalanches.where(a => a.extId === extIdAttempt).headOption.isDefined)
 	    }
 	    
-        reservedExtIds += extIdAttempt
+        reservedExtIds += (extIdAttempt -> new Date())
         extIdAttempt
 	}
 	
