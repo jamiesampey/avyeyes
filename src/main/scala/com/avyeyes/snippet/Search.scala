@@ -1,9 +1,7 @@
 package com.avyeyes.snippet
 
 import scala.math._
-
 import org.squeryl.PrimitiveTypeMode._
-
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.AvalancheDb._
 import com.avyeyes.model.enums._
@@ -17,6 +15,7 @@ import net.liftweb.http.js._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
+import org.apache.commons.lang3.StringUtils.isNotBlank
 
 class Search {
     private val kmlCreator = new KmlCreator
@@ -67,11 +66,14 @@ class Search {
     private def matchingAvalanches = {
         val fromDate = if (!fromDateStr.isEmpty) parseDateStr(fromDateStr) else earliestAvyDate
 	    val toDate = if (!toDateStr.isEmpty) parseDateStr(toDateStr) else today.getTime
-	  
+	    
+	    val avyTypeEnum = if (isNotBlank(avyType)) AvalancheType.withName(avyType) else AvalancheType.U
+	    val avyTriggerEnum = if (isNotBlank(trigger)) AvalancheTrigger.withName(trigger) else AvalancheTrigger.U
+	    
         from(avalanchesInView)(a => where(
             a.avyDate.between(fromDate, toDate)
-        	and (a.avyType === AvalancheType.withName(avyType)).inhibitWhen(avyType.isEmpty)
-        	and (a.trigger === AvalancheTrigger.withName(trigger)).inhibitWhen(trigger.isEmpty)
+        	and (a.avyType === avyTypeEnum).inhibitWhen(avyType.isEmpty)
+        	and (a.trigger === avyTriggerEnum).inhibitWhen(trigger.isEmpty)
         	and (a.rSize gte getAvySizeQueryVal(rSize).?)
         	and (a.dSize gte getAvySizeQueryVal(dSize).?)
         	and (a.caught gte getHumanNumberQueryVal(numCaught).?)
