@@ -90,6 +90,36 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		}
 	}
 		
+	this.avyBalloonClick = function(event) {
+	    var placemark = event.getTarget();
+	    if (placemark.getType() != 'KmlPlacemark') {
+	    	return;
+	    }
+		event.preventDefault();
+
+		var extId = null;
+		var balloonDOM = $.parseHTML(placemark.getBalloonHtml());
+		$.each(balloonDOM, function(i, el) {
+			if (el.id === 'avyExtId') {
+				extId = el.innerText;
+			}
+		});
+		
+		var balloon = ge.createHtmlStringBalloon('');
+		$.getJSON('/rest/avydetails/' + extId, function(data) {
+			balloon.setContentString('<html>area=' + data.areaName 
+					+ '<br/>date=' + data.avyDate 
+					+ '<br/>type=' + data.avyType + '</html>');
+		})
+		.fail(function(jqxhr, textStatus, error) {
+			var err = textStatus + ", " + error;
+		    balloon.setContentString('<html>err=' + err + '<\html>');
+		});
+
+		balloon.setFeature(placemark);
+		ge.setBalloon(balloon);
+	}
+	    
 	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
 		var lookAt = ge.createLookAt('');
 	    lookAt.setLatitude(lat);
@@ -320,6 +350,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	    ge.getLayerRoot().enableLayerById(ge.LAYER_BORDERS, true);
 	    ge.getLayerRoot().enableLayerById(ge.LAYER_ROADS, true);
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
+	    gearth.addEventListener(ge.getGlobe(), 'click', self.avyBalloonClick);
 	    
 	    self.init();
 	    $('#loadingDiv').fadeOut(500);

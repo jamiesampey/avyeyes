@@ -8,8 +8,6 @@ object AEConstants {
         .append(Props.get("db.host").get).append(":")
         .append(Props.get("db.port").get).append("/")
         .append(Props.get("db.name").get).toString
-    
-    val JSON_MIME_TYPE = "application/json"
         
 	val earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val humanNumberUnknown: Int = -1

@@ -28,9 +28,11 @@ class Boot {
     LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE
     LiftRules.maxMimeSize = MAX_IMAGE_SIZE
     
+    // setup REST endpoints
     LiftRules.statelessDispatchTable.append(ImageUpload)
     LiftRules.statelessDispatchTable.append(ImageServe)
     LiftRules.statelessDispatchTable.append(ExtIdVendor)
+    LiftRules.statelessDispatchTable.append(AvyDetails)
     
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>

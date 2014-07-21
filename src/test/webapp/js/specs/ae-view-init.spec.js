@@ -42,6 +42,8 @@ define(['gearth',
 			expect(view.setGeocoder).toHaveBeenCalled();
 			expect(gearth.addEventListener).toHaveBeenCalledWith(
 					geplugin.getView(), 'viewchangeend', view.viewChangeEndTimeout);
+			expect(gearth.addEventListener).toHaveBeenCalledWith(
+					geplugin.getGlobe(), 'click', view.avyBalloonClick);
 
 			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
 			expect(view.init).toHaveBeenCalled();

@@ -12,22 +12,12 @@ import net.liftweb.http.S
 
 
 object AEHelpers {
-    private val UNKNOWN_CODE = "U"
     private val UNKNOWN_LABEL = S.?("enum.U")
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
 
     def parseDateStr(str: String) = df.parse(str)
 	
     def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
-    
-    def getEnumLabel(enum: Enumeration, name: String) = {
-        if (name == UNKNOWN_CODE)
-            UNKNOWN_LABEL
-        else {
-          val enumClass = enum.getClass.getSimpleName filterNot(c => c == '$')
-          S.?(s"enum.$enumClass.$name")
-        }
-    }
     
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
 

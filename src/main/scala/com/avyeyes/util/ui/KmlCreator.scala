@@ -16,22 +16,23 @@ class KmlCreator {
 	}
 	
 	private def createPlacemark(avalanche: Avalanche): Node = {
-	  <Placemark>
-	    <description>{Unparsed("<![CDATA[%s]]>".format(getHtmlDesc(avalanche)))}</description>
-	    <Style>{getStyle}</Style>
-	    <Polygon>{getPolygon(avalanche)}</Polygon>
-	  </Placemark>
+	  Utility.trim(
+    	  <Placemark>
+	          <description><div id="avyExtId">{avalanche.extId}</div></description>
+	          <Style>{getStyle}</Style>
+	          <Polygon>{getPolygon(avalanche)}</Polygon>
+	      </Placemark>
+	  )
 	}
 	
-	private def getHtmlDesc(avalanche: Avalanche): Node = {
-	  Utility.trim(
+	private def getHtmlXXXDesc(avalanche: Avalanche): Node = {
 	        <table>
                   <tr><td colspan="2"><u>{avalanche.avyDate}:&nbsp;{avalanche.areaName}</u></td></tr>               
                   <tr><td>
                       <table>
-                          <tr><td>Type:</td><td>{getEnumLabel(AvalancheType, avalanche.avyType.toString)}</td></tr>
-                          <tr><td>Trigger:</td><td>{getEnumLabel(AvalancheTrigger, avalanche.trigger.toString)}</td></tr>
-                          <tr><td>Interface:</td><td>{getEnumLabel(AvalancheInterface, avalanche.bedSurface.toString)}</td></tr>
+                          <tr><td>Type:</td><td>{AvalancheType.getEnumLabel(avalanche.avyType)}</td></tr>
+                          <tr><td>Trigger:</td><td>{AvalancheTrigger.getEnumLabel(avalanche.trigger)}</td></tr>
+                          <tr><td>Interface:</td><td>{AvalancheInterface.getEnumLabel(avalanche.bedSurface)}</td></tr>
                           <tr><td>R Size:</td><td>{sizeToStr(avalanche.rSize)}</td></tr>
                           <tr><td>D Size:</td><td>{sizeToStr(avalanche.dSize)}</td></tr>
                       </table>
@@ -53,7 +54,6 @@ class KmlCreator {
                     }
                   }
           </table>
-	    )
 	}
 	
 	private def getStyle: NodeSeq = {
