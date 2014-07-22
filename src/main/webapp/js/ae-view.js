@@ -97,29 +97,30 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	    }
 		event.preventDefault();
 
-		var extId = null;
-		var balloonDOM = $.parseHTML(placemark.getBalloonHtml());
-		$.each(balloonDOM, function(i, el) {
-			if (el.id === 'avyExtId') {
-				extId = el.innerText;
-			}
-		});
+		var kmlDoc = $.parseXML(placemark.getKml());
+		var extId = $(kmlDoc).find('Placemark').attr('id');
 		
-		var balloon = ge.createHtmlStringBalloon('');
+		var balloon = ge.createHtmlDivBalloon('');
 		$.getJSON('/rest/avydetails/' + extId, function(data) {
-			balloon.setContentString('<html>area=' + data.areaName 
-					+ '<br/>date=' + data.avyDate 
-					+ '<br/>type=' + data.avyType + '</html>');
+			balloon.setContentDiv(self.createAvyDetailsDiv(data));
 		})
 		.fail(function(jqxhr, textStatus, error) {
 			var err = textStatus + ", " + error;
-		    balloon.setContentString('<html>err=' + err + '<\html>');
+			console.log("Avy Eyes error: " + err);
 		});
 
 		balloon.setFeature(placemark);
 		ge.setBalloon(balloon);
 	}
-	    
+	
+	this.createAvyDetailsDiv = function(a) {
+		var avyDetails = $('#avyDetails');
+		avyDetails.find('#avyDetailsTitle').text(a.avyDate + ': ' + a.areaName);
+		avyDetails.find('#avyDetailsExtLink').text('http://avyeyes.com/' + a.extId);
+
+		return avyDetails.get(0);
+	}
+	
 	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
 		var lookAt = ge.createLookAt('');
 	    lookAt.setLatitude(lat);
