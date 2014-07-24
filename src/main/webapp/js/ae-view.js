@@ -116,8 +116,17 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	this.displayAvyDetails = function(kmlClickEvent, a) {
 		$('#avyDetailsTitle').text(a.avyDate + ': ' + a.areaName);
 		$('#avyDetailsExtLink').text('http://avyeyes.com/' + a.extId);
+		
 		$('#avyDetailsType').text(a.avyType);
+		$('#avyDetailsTrigger').text(a.trigger);
+		$('#avyDetailsInterface').text(a.bedSurface);
+		$('#avyDetailsRSize').text(a.rSize);
+		$('#avyDetailsDSize').text(a.dSize);
 
+		$('#avyDetailsElevation').text(a.elevation);
+		$('#avyDetailsAspect').text(a.aspect);
+		$('#avyDetailsAngle').text(a.angle);
+		
 		kmlClickEvent.pageX = kmlClickEvent.getClientX();
 		kmlClickEvent.pageY = kmlClickEvent.getClientY();
 		$('#avyDetailsDialog').dialog('option', 'position', {

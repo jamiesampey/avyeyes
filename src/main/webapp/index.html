@@ -28,26 +28,61 @@
         
         <div id="map3d" style="height:100%; width:100%;"></div>
         
-		<div id="multiDialog" class="avyDialog"></div>
+		<div id="multiDialog"></div>
         
         <div id="avyDetailsDialog">
-           <div class="avyDetailsTable">
-               <div class="avyDetailsTableHeader">
-                   <div class="avyDetailsTableRow">
-                       <div id="avyDetailsTitle" class="avyDetailsTableCell"></div>
-                       <div id="avyDetailsExtLink" class="avyDetailsTableCell"></div>
-                   </div>
-               </div>
-               <div class="avyDetailsTableBody">
-                   <div class="avyDetailsTableRow">
-                        <div class="avyDetailsTable">
-                            <div class="avyDetailsTableRow">
-                               <div id="avyDetailsType" class="avyDetailsTableCell"></div>
-                            </div>
-                        </div>
-                   </div>
-               </div>
-           </div>
+           <table>
+               <thead>
+                   <tr>
+                       <td><span id="avyDetailsTitle" class="avySearchHeader"></span></td>
+                       <td><span id="avyDetailsExtLink"></span></td>
+                   </tr>
+               </thead>
+               <tbody>
+                   <tr>
+                      <td>
+                        <table class="avyDetailsSubTable">
+                            <tr>
+                               <td><label for="avyDetailsType"></label></td>
+                               <td><span id="avyDetailsType"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsTrigger"></label></td>
+                               <td><span id="avyDetailsTrigger"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsInterface"></label></td>
+                               <td><span id="avyDetailsInterface"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsRSize"></label></td>
+                               <td><span id="avyDetailsRSize"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsDSize"></label></td>
+                               <td><span id="avyDetailsDSize"></span></td>
+                            </tr>
+                        </table>
+                      </td>
+                      <td>
+                        <table class="avyDetailsSubTable">
+                            <tr>
+                               <td><label for="avyDetailsElevation"></label></td>
+                               <td><span id="avyDetailsElevation"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsAspect"></label></td>
+                               <td><span id="avyDetailsAspect"></span></td>
+                            </tr>
+                            <tr>
+                               <td><label for="avyDetailsAngle"></label></td>
+                               <td><span id="avyDetailsAngle"></span></td>
+                            </tr>
+                        </table>
+                      </td>
+                   </tr>
+               </tbody>
+           </table>
        </div>
        
 		<div id="aeControlContainer">

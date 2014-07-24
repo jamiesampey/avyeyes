@@ -153,22 +153,9 @@
     margin: 20px 10px 20px 0px;
 }
 
-.avyDetailsTable {
-	display: table;
-}
-
-.avyDetailsTableHeader {
-    display: table-header-group;
-}
-
-.avyDetailsTableBody {
-	display: table-row-group;
-}
-
-.avyDetailsTableRow {
-	display: table-row;
-}
-
-.avyDetailsTableCell {
-    display: table-cell;
+.avyDetailsSubTable {
+	padding: 5px;
+    margin: 0px;
+    border: 1px solid #555555;
+    border-radius: 10px;
 }
