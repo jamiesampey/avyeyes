@@ -29,7 +29,27 @@
         <div id="map3d" style="height:100%; width:100%;"></div>
         
 		<div id="multiDialog" class="avyDialog"></div>
-              
+        
+        <div id="avyDetailsDialog">
+           <div class="avyDetailsTable">
+               <div class="avyDetailsTableHeader">
+                   <div class="avyDetailsTableRow">
+                       <div id="avyDetailsTitle" class="avyDetailsTableCell"></div>
+                       <div id="avyDetailsExtLink" class="avyDetailsTableCell"></div>
+                   </div>
+               </div>
+               <div class="avyDetailsTableBody">
+                   <div class="avyDetailsTableRow">
+                        <div class="avyDetailsTable">
+                            <div class="avyDetailsTableRow">
+                               <div id="avyDetailsType" class="avyDetailsTableCell"></div>
+                            </div>
+                        </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+       
 		<div id="aeControlContainer">
             <div id="aeTitleContainer">
                 <img src="/images/ae-title.png"/>
@@ -361,18 +381,6 @@
 	   </div> <!-- END REPORT DIALOG DIV -->
 	   
 	   </div> <!-- END LIFT CONTENT -->
-	   
-	   <div id="avyDetails">
-	       <div class="avyDetailsHeader">
-	           <div class="avyDetailsRow">
-	               <div id="avyDetailsTitle" class="avyDetailsCell"></div>
-	               <div id="avyDetailsExtLink" class="avyDetailsCell"></div>
-	           </div>
-	       </div>
-	       <div class="avyDetailsBody">
-	           
-	       </div>
-	   </div>
 	   
 	   <iframe id='aeControlIframe' frameBorder='0' scrolling='no' src='javascript:void(0);'/>
   </body>

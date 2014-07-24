@@ -153,22 +153,22 @@
     margin: 20px 10px 20px 0px;
 }
 
-#avyDetails {
+.avyDetailsTable {
 	display: table;
 }
 
-.avyDetailsHeader {
+.avyDetailsTableHeader {
     display: table-header-group;
 }
 
-.avyDetailsBody {
+.avyDetailsTableBody {
 	display: table-row-group;
 }
 
-.avyDetailsRow {
+.avyDetailsTableRow {
 	display: table-row;
 }
 
-.avyDetailsCell {
+.avyDetailsTableCell {
     display: table-cell;
 }
