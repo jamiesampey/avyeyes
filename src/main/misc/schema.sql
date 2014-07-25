@@ -65,6 +65,11 @@ CREATE SEQUENCE s_avalanche_img_id
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
+
+CREATE INDEX idx644c089b 
+  ON "avalanche_img"
+  USING btree
+  ("avyExtId");
   
 CREATE TABLE "avalanche_img_dropbox" (
     "id" bigint primary key,

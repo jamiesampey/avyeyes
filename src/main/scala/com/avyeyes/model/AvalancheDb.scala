@@ -21,7 +21,8 @@ object AvalancheDb extends Schema {
 	))
 	
     on(avalancheImages)(img => declare(
-        img.id is(primaryKey, autoIncremented)
+        img.id is(primaryKey, autoIncremented),
+        img.avyExtId is(indexed)
     ))
     
     on(avalancheImageDropbox)(img => declare(
