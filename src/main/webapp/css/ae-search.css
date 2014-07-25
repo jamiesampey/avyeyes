@@ -159,3 +159,13 @@
     border: 1px solid #555555;
     border-radius: 10px;
 }
+
+#avyDetailsImageDiv {
+	width: 600px;
+}
+
+#avyDetailsImageDiv img {
+	display: inline-block;
+	width: 100px;
+	padding-right: 10px;
+}

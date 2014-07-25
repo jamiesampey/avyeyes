@@ -2,7 +2,8 @@ define(['ae-report',
         'jquery-ui', 
         'jquery-geocomplete', 
         'jquery-fileupload', 
-        'jquery-iframe-transport'
+        'jquery-iframe-transport',
+        'lightbox'
         ], function(AvyReport) {
 
 function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
@@ -92,7 +93,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		
 	this.handleMapClick = function(event) {
 		if ($('#avyDetailsDialog').is(':visible')) {
-			$('#avyDetailsDialog').dialog('close');
+			self.hideAvyDetails();
 		}
 
 	    var placemark = event.getTarget();
@@ -127,6 +128,12 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		$('#avyDetailsAspect').text(a.aspect);
 		$('#avyDetailsAngle').text(a.angle);
 		
+		$.each(a.images, function(i) {
+			var imgUrl = '/rest/imgserve/' + a.extId + '/' + a.images[i];
+			$('#avyDetailsImageDiv').append('<a href="' + imgUrl 
+				+ '" data-lightbox="avyDetailImages"><img src="' + imgUrl + '" /></a>');
+		});
+		
 		kmlClickEvent.pageX = kmlClickEvent.getClientX();
 		kmlClickEvent.pageY = kmlClickEvent.getClientY();
 		$('#avyDetailsDialog').dialog('option', 'position', {
@@ -136,6 +143,11 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		  });
 
 		$('#avyDetailsDialog').dialog('open');
+	}
+	
+	this.hideAvyDetails = function() {
+		$('#avyDetailsImageDiv').empty();
+		$('#avyDetailsDialog').dialog('close');
 	}
 	
 	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
@@ -337,11 +349,11 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		});
 		
 		$('#avyDetailsDialog').dialog({
-			  minWidth: 500,
+			  minWidth: 600,
 			  autoOpen: false,
 			  modal: false,
 			  draggable: false,
-			  closeOnEscape: true,
+			  closeOnEscape: false,
 			  dialogClass: 'avyReportDetailsDialog'
 		});
 		

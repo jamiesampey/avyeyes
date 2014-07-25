@@ -1,6 +1,7 @@
 package com.avyeyes.rest
 
-import com.avyeyes.model.AvalancheDb
+import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.model.AvalancheDb._
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.util.AEHelpers._
@@ -8,12 +9,13 @@ import net.liftweb.json.JsonDSL._
 import net.liftweb.http.BadResponse
 import net.liftweb.http.rest.RestHelper
 import com.avyeyes.model.enums.AvalancheType
+import net.liftweb.json.JsonAST._
 
 
 object AvyDetails extends RestHelper with JsonResponder {
     serve {
       case "rest" :: "avydetails" :: extId :: Nil Get req => {
-        val avalancheOption = AvalancheDb.getAvalancheByExtId(Some(extId))
+        val avalancheOption = getAvalancheByExtId(Some(extId))
         
         if (avalancheOption.isDefined) {
             sendJsonResponse(getJSON(avalancheOption.get))
@@ -36,6 +38,15 @@ object AvyDetails extends RestHelper with JsonResponder {
       ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ ("fullyBuried" -> a.fullyBuried) ~ 
       ("injured" -> a.injured) ~ ("killed" -> a.killed) ~  
       ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
-      ("comments" -> a.comments)
+      ("comments" -> a.comments) ~ ("images" -> getImageFilenames(a.extId))
+    }
+    
+    private def getImageFilenames(extId: String): JArray = {
+      transaction {
+        val filenames = from(avalancheImageDropbox)(img => 
+          where(img.avyExtId === extId)
+          select(img.filename)).toList
+        JArray(filenames map (s => JString(s)))
+      }
     }
 }

@@ -11,7 +11,7 @@ object ImageServe extends RestHelper {
     serve {
           case "rest" :: "imgserve" :: avyExtId :: filename :: Nil Get req => {
               val returnedImg = transaction {
-                 from(AvalancheDb.avalancheImages)(img => 
+                 from(AvalancheDb.avalancheImageDropbox)(img => 
                    where(img.avyExtId === avyExtId and img.filename === filename) 
                    select(img)).headOption
               }

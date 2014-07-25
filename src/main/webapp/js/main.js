@@ -8,6 +8,7 @@ require.config({
         'jquery-fileupload': 'lib/jquery.fileupload',
         'jquery-iframe-transport': 'lib/jquery.iframe-transport',
         'geojs': 'lib/geo.min',
+        'lightbox': 'lib/lightbox.min',
     	'async': 'lib/require/async',
         'goog': 'lib/require/goog',
         'propertyParser': 'lib/require/propertyParser'
