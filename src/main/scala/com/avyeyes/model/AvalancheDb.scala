@@ -30,22 +30,15 @@ object AvalancheDb extends Schema {
     ))
     
 	def getAvalancheByExtId(extId: Option[String]): Option[Avalanche] = {
-      if (isValidExtId(extId)) {
-          transaction {
-            avalanches.where(a => a.viewable === true and a.extId === extId.get).headOption
-          }
-      } else
-        None
+        avalanches.where(a => a.viewable === true and a.extId === extId.get).headOption
     }
 	
 	def reserveNewExtId: String = {
 	    var extIdAttempt = ""
-	    transaction {
-            do {
-                extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARS)
-            } while (reservedExtIds.contains(extIdAttempt) 
-                || avalanches.where(a => a.extId === extIdAttempt).headOption.isDefined)
-	    }
+        do {
+            extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARS)
+        } while (reservedExtIds.contains(extIdAttempt) 
+            || avalanches.where(a => a.extId === extIdAttempt).headOption.isDefined)
 	    
         reservedExtIds += (extIdAttempt -> new Date())
         extIdAttempt

@@ -15,10 +15,15 @@ import net.liftweb.json.JsonAST._
 object AvyDetails extends RestHelper with JsonResponder {
     serve {
       case "rest" :: "avydetails" :: extId :: Nil Get req => {
-        val avalancheOption = getAvalancheByExtId(Some(extId))
+        val avyJsonOption = transaction {
+            val avalancheOption = getAvalancheByExtId(Some(extId))
+            if (avalancheOption.isDefined) {
+                Some(getJSON(avalancheOption.get))
+            } else None
+        }
         
-        if (avalancheOption.isDefined) {
-            sendJsonResponse(getJSON(avalancheOption.get))
+        if (avyJsonOption.isDefined) {
+            sendJsonResponse(avyJsonOption.get)
         } else {
             new BadResponse
         }
@@ -42,11 +47,8 @@ object AvyDetails extends RestHelper with JsonResponder {
     }
     
     private def getImageFilenames(extId: String): JArray = {
-      transaction {
         val filenames = from(avalancheImageDropbox)(img => 
-          where(img.avyExtId === extId)
-          select(img.filename)).toList
+          where(img.avyExtId === extId) select(img.filename)).toList
         JArray(filenames map (s => JString(s)))
-      }
     }
 }

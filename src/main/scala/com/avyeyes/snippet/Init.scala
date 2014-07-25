@@ -1,7 +1,9 @@
 package com.avyeyes.snippet
 
+import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.AvalancheDb
 import com.avyeyes.model.enums._
+import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants.EXT_ID_URL_PARAM
 import com.avyeyes.util.ui.KmlCreator
 import net.liftweb.http.S
@@ -33,7 +35,12 @@ class Init {
     private def initJsCalls(): JsCmd = autoCompleteSourcesCmd & initialFlyToCmd
     
     private def initialFlyToCmd: JsCmd = {
-        val initAvalanche = AvalancheDb.getAvalancheByExtId(extId)
+        val initAvalanche = if (isValidExtId(extId)) {
+            transaction {
+                AvalancheDb.getAvalancheByExtId(extId)
+            }
+        } else None
+        
         if (initAvalanche.isDefined) {
             val kml = new KmlCreator().createCompositeKml(initAvalanche.get)
             Call("view.overlaySearchResultKml", kml.toString).cmd &
