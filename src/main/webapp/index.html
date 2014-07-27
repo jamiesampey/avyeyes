@@ -31,63 +31,107 @@
         
 		<div id="multiDialog"></div>
         
-        <div id="avyDetailsDialog">
-           <table>
-               <thead>
-                   <tr>
-                       <td><span id="avyDetailsTitle" class="avySearchHeader"></span></td>
-                       <td><span id="avyDetailsExtLink"></span></td>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr>
-                      <td>
-                        <table class="avyDetailsSubTable">
-                            <tr>
-                               <td><label for="avyDetailsType"></label></td>
-                               <td><span id="avyDetailsType"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsTrigger"></label></td>
-                               <td><span id="avyDetailsTrigger"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsInterface"></label></td>
-                               <td><span id="avyDetailsInterface"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsRSize"></label></td>
-                               <td><span id="avyDetailsRSize"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsDSize"></label></td>
-                               <td><span id="avyDetailsDSize"></span></td>
-                            </tr>
-                        </table>
-                      </td>
-                      <td>
-                        <table class="avyDetailsSubTable">
-                            <tr>
-                               <td><label for="avyDetailsElevation"></label></td>
-                               <td><span id="avyDetailsElevation"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsAspect"></label></td>
-                               <td><span id="avyDetailsAspect"></span></td>
-                            </tr>
-                            <tr>
-                               <td><label for="avyDetailsAngle"></label></td>
-                               <td><span id="avyDetailsAngle"></span></td>
-                            </tr>
-                        </table>
-                      </td>
-                   </tr>
-                   <tr>
+        <div id="avyDetailDialog">
+           <table id="avyDetailTable">
+               <tr>
+                   <td colspan="2"><span id="avyDetailTitle" class="avySearchHeader"></span><a id="avyDetailExtLink"></a></td>
+               </tr>
+               <tr><td colspan="2"><hr/></td></tr>
+               <tr>
+               <td>
+                  <table class="avyDetailSubTable">
+                       <tr><td class="avyDetailSectionHeader">
+                           <span id="avyDetailSlopeCharacter" class="avyHeader"></span>
+                       </td></tr>
+                       <tr><td>
+                            <table class="avyDetailFieldsSubTable">
+                                <tr>
+                                   <td><label for="avyDetailElevation"></label></td>
+                                   <td><span id="avyDetailElevation"></span></td>
+                                </tr>
+                                <tr>
+                                   <td><label for="avyDetailAspect"></label></td>
+                                   <td><span id="avyDetailAspect"></span></td>
+                                </tr>
+                                <tr>
+                                   <td><label for="avyDetailAngle"></label></td>
+                                   <td><span id="avyDetailAngle"></span></td>
+                                </tr>
+                            </table>
+                        </td></tr>
+                    </table>
+                  </td>
+                  <td>
+                   <table class="avyDetailSubTable">
+                        <tr><td class="avyDetailSectionHeader">
+                            <span id="avyDetailAvyCharacter" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                       <table class="avyDetailFieldsSubTable">
+                           <tr>
+                              <td><label for="avyDetailType"></label></td>
+                              <td><span id="avyDetailType"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailTrigger"></label></td>
+                              <td><span id="avyDetailTrigger"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailInterface"></label></td>
+                              <td><span id="avyDetailInterface"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailRSize"></label></td>
+                              <td><span id="avyDetailRSize"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailDSize"></label></td>
+                              <td><span id="avyDetailDSize"></span></td>
+                           </tr>
+                       </table>
+                  </td></tr>
+                  </table>
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                    <table class="avyDetailSubTable">
+                        <tr><td class="avyDetailSectionHeader">
+                            <span id="avyDetailConditions" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                       <table class="avyDetailFieldsSubTable">
+                           <tr>
+                              <td><label for="avyDetailSky"></label></td>
+                              <td><span id="avyDetailSky"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailPrecip"></label></td>
+                              <td><span id="avyDetailPrecip"></span></td>
+                           </tr>
+                       </table>
+                  </td></tr>
+                  </table>
+                </td>
+               </tr>
+               <tr id="avyDetailCommentsRow">
                     <td colspan="2">
-                        <div id="avyDetailsImageDiv"></div>
+                        <table id="avyDetailCommentsTable" class="avyDetailSubTable">
+                            <tr><td class="avyDetailSectionHeader">
+                                <span id="avyDetailCommentsHeader" class="avyHeader"></span>
+                            </td></tr>
+                            <tr><td>
+                                <table class="avyDetailFieldsSubTable">
+                                    <tr><td><div id="avyDetailComments"></div></td></tr></table>
+                            </td></tr>
+                        </table>
                     </td>
-                   </tr>
-               </tbody>
+               </tr>
+               <tr id="avyDetailImageRow">
+                    <td colspan="2">
+                        <div id="avyDetailImageDiv"><ul id="avyDetailImageList"></ul></div>
+                    </td>
+               </tr>
            </table>
        </div>
        

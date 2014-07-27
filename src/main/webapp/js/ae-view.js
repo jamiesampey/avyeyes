@@ -92,7 +92,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	}
 		
 	this.handleMapClick = function(event) {
-		if ($('#avyDetailsDialog').is(':visible')) {
+		if ($('#avyDetailDialog').is(':visible')) {
 			self.hideAvyDetails();
 		}
 
@@ -106,7 +106,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		var extId = $(kmlDoc).find('Placemark').attr('id');
 		
 		$.getJSON('/rest/avydetails/' + extId, function(data) {
-			self.displayAvyDetails(event, data);
+			self.showAvyDetails(event, data);
 		})
 		.fail(function(jqxhr, textStatus, error) {
 			var err = textStatus + ", " + error;
@@ -114,40 +114,56 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		});
 	}
 	
-	this.displayAvyDetails = function(kmlClickEvent, a) {
-		$('#avyDetailsTitle').text(a.avyDate + ': ' + a.areaName);
-		$('#avyDetailsExtLink').text('http://avyeyes.com/' + a.extId);
+	this.showAvyDetails = function(kmlClickEvent, a) {
+		$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
+		var extUrl = 'http://avyeyes.com/' + a.extId;
+		$('#avyDetailExtLink').attr('href', extUrl);
+		$('#avyDetailExtLink').text(extUrl);
 		
-		$('#avyDetailsType').text(a.avyType);
-		$('#avyDetailsTrigger').text(a.trigger);
-		$('#avyDetailsInterface').text(a.bedSurface);
-		$('#avyDetailsRSize').text(a.rSize);
-		$('#avyDetailsDSize').text(a.dSize);
+		$('#avyDetailType').text(a.avyType);
+		$('#avyDetailTrigger').text(a.trigger);
+		$('#avyDetailInterface').text(a.bedSurface);
+		$('#avyDetailRSize').text(a.rSize);
+		$('#avyDetailDSize').text(a.dSize);
 
-		$('#avyDetailsElevation').text(a.elevation);
-		$('#avyDetailsAspect').text(a.aspect);
-		$('#avyDetailsAngle').text(a.angle);
+		$('#avyDetailElevation').text(a.elevation);
+		$('#avyDetailAspect').text(a.aspect);
+		$('#avyDetailAngle').text(a.angle);
 		
-		$.each(a.images, function(i) {
-			var imgUrl = '/rest/imgserve/' + a.extId + '/' + a.images[i];
-			$('#avyDetailsImageDiv').append('<a href="' + imgUrl 
-				+ '" data-lightbox="avyDetailImages"><img src="' + imgUrl + '" /></a>');
-		});
+		$('#avyDetailSky').text(a.sky);
+		$('#avyDetailPrecip').text(a.precip);
 		
-		kmlClickEvent.pageX = kmlClickEvent.getClientX();
-		kmlClickEvent.pageY = kmlClickEvent.getClientY();
-		$('#avyDetailsDialog').dialog('option', 'position', {
+		if (a.comments.length > 0) {
+			$('#avyDetailCommentsRow').show();
+			$('#avyDetailComments').text(a.comments);			
+		}
+
+		if (a.images.length > 0) {
+			$('#avyDetailImageRow').show();
+            $.each(a.images, function(i) {
+				var imgUrl = '/rest/imgserve/' + a.extId + '/' + a.images[i];
+				$('#avyDetailImageList').append('<li class="avyDetailImageListItem"><a href="' + imgUrl 
+					+ '" data-lightbox="avyDetailImages"><img src="' + imgUrl + '" /></a></li>');
+			});
+		}
+		
+		kmlClickEvent['pageX'] = kmlClickEvent.getClientX();
+		kmlClickEvent['pageY'] = kmlClickEvent.getClientY();
+		$('#avyDetailDialog').dialog('option', 'position', {
 			  my: 'center bottom-20', 
 			  at: 'center top', 
-			  of: kmlClickEvent
+			  of: kmlClickEvent,
+			  collision: 'fit'
 		  });
 
-		$('#avyDetailsDialog').dialog('open');
+		$('#avyDetailDialog').dialog('open');
 	}
 	
 	this.hideAvyDetails = function() {
-		$('#avyDetailsImageDiv').empty();
-		$('#avyDetailsDialog').dialog('close');
+		$('#avyDetailCommentsRow').hide();
+		$('#avyDetailImageList').empty();
+		$('#avyDetailImageRow').hide();
+		$('#avyDetailDialog').dialog('close');
 	}
 	
 	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
@@ -348,8 +364,8 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			  }]
 		});
 		
-		$('#avyDetailsDialog').dialog({
-			  minWidth: 600,
+		$('#avyDetailDialog').dialog({
+			  minWidth: 750,
 			  autoOpen: false,
 			  modal: false,
 			  draggable: false,

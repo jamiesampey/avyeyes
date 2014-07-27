@@ -153,19 +153,86 @@
     margin: 20px 10px 20px 0px;
 }
 
-.avyDetailsSubTable {
+#avyDetailDialog {
+    margin: 5px 5px 0px 5px;
+    padding: 0px;
+}
+
+#avyDetailTable {
+    width: 730px;
+}
+
+#avyDetailTitle {
+    width: 530px;
+    height: auto;
+}
+
+#avyDetailExtLink {
+    display: inline-block;
+    float: right;
+    text-decoration: none;
+}
+
+#avyDetailTable > tbody > tr > td {
+    vertical-align: top;
+}
+
+.avyDetailSubTable {
+	margin: 10px 0px 0px 0px;
+}
+
+.avyDetailFieldsSubTable {
 	padding: 5px;
     margin: 0px;
     border: 1px solid #555555;
     border-radius: 10px;
 }
 
-#avyDetailsImageDiv {
-	width: 600px;
+#avyDetailCommentsRow {
+	display: none;
 }
 
-#avyDetailsImageDiv img {
-	display: inline-block;
-	width: 100px;
-	padding-right: 10px;
+#avyDetailCommentsRow table {
+	width: 100%;
+}
+
+#avyDetailComments {
+	width: 100%;
+	max-height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#avyDetailImageRow {
+    display: none;
+}
+
+#avyDetailImageDiv {
+	width: 720px;
+    padding: 5px;
+    margin: 0px;
+    border: 1px solid #555555;
+    border-radius: 10px;
+}
+
+#avyDetailImageList {
+	max-height: 90px;
+	margin: 0px;
+	padding: 0px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    list-style: none;
+    white-space: nowrap;
+}
+
+.avyDetailImageListItem {
+    max-width: 110px;
+    max-height: 110px;
+    display: inline-block;
+    margin: 0px 5px 0px 0px;
+}
+
+.avyDetailImageListItem img {
+    max-width: 100px;
+    max-height: 70px;
 }

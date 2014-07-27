@@ -79,7 +79,7 @@ define(['gearth',
 
 			expect(jquiDialog.callCount).toEqual(2);
 			expect(jquiDialog.calls[0].object.selector).toEqual('#multiDialog');
-			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailsDialog');
+			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailDialog');
 
 			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 		});
