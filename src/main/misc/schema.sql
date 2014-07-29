@@ -13,7 +13,6 @@ CREATE TABLE "avalanche" (
     "viewable" boolean not null,
     "submitterEmail" varchar(256) not null,
     "submitterExp" integer not null,
-    "submitterYearsExp" integer not null,
     "lat" double precision not null,
     "lng" double precision not null,
     "areaName" varchar(256) not null,

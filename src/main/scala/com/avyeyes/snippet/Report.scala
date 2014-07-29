@@ -14,7 +14,7 @@ import scala.xml.XML
 import org.apache.commons.lang3.StringUtils.isBlank
 
 class Report {
-  var extId = ""; var submitterEmail = ""; var submitterExp = ""; var submitterYearsExp = ""
+  var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
   var elevation = ""; var aspect = ""; var angle = ""    
@@ -47,7 +47,6 @@ class Report {
     "#avyReportComments" #> SHtml.textarea("", comments = _) &
     "#avyReportSubmitterEmail" #> SHtml.text("", submitterEmail = _) &
     "#avyReportSubmitterExp" #> SHtml.hidden(submitterExp = _, "") &
-    "#avyReportSubmitterYearsExp" #> SHtml.text("", submitterYearsExp = _) &
     "#avyReportKml" #> SHtml.hidden(kmlStr = _, "") &
     "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
   }
@@ -59,7 +58,7 @@ class Report {
     	 
          transaction {
     	      val newAvalanche = new Avalanche(extId, false, 
-    	          submitterEmail, ExperienceLevel.withName(submitterExp), asInt(submitterYearsExp) openOr 0,
+    	          submitterEmail, ExperienceLevel.withName(submitterExp), 
     	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, 
     	          areaName, parseDateStr(dateStr), Sky.withName(sky), Precip.withName(precip), 
     	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 

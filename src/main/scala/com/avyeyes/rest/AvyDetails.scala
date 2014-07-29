@@ -33,7 +33,6 @@ object AvyDetails extends RestHelper with JsonResponder {
     private def getJSON(a: Avalanche) = {
       ("extId" -> a.extId) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
       ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 
-      ("submitterYearsExp" -> a.submitterYearsExp) ~
       ("sky" -> Sky.getEnumLabel(a.sky)) ~ ("precip" -> Precip.getEnumLabel(a.precip)) ~
       ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.getEnumLabel(a.aspect)) ~ ("angle" -> a.angle) ~
       ("avyType" -> AvalancheType.getEnumLabel(a.avyType)) ~

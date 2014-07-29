@@ -214,7 +214,7 @@ function AvyReport(avyEyesView, submitReportCallback) {
 		
 		$('#avyReportDialog').dialog({
 			  minWidth: 750,
-			  minHeight: 760,
+			  minHeight: 700,
 			  autoOpen: false,
 			  modal: true,
 			  draggable: false,

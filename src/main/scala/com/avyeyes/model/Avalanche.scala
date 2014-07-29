@@ -4,7 +4,7 @@ import com.avyeyes.model.enums._
 import java.util.Date
 
 class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
-    val submitterEmail: String, val submitterExp: ExperienceLevel.Value, val submitterYearsExp: Int, 
+    val submitterEmail: String, val submitterExp: ExperienceLevel.Value, 
     val lat: Double, val lng: Double, val areaName: String, /* location */
     val avyDate: Date, val sky: Sky.Value, val precip: Precip.Value, /* temporal */
     val elevation: Int, val aspect: Aspect.Value, val angle: Int, /* slope characteristics */
@@ -14,7 +14,7 @@ class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
     val modeOfTravel: ModeOfTravel.Value, val comments: Option[String], 
     val kmlCoords: String) extends AvalancheObj {
   
-  def this() = this("", false, "", ExperienceLevel.A0, 0, 
+  def this() = this("", false, "", ExperienceLevel.A0, 
       0.0, 0.0, "", new Date(), 
       Sky.U, Precip.U, 0, Aspect.N, 0, 
       AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
