@@ -39,9 +39,9 @@ object AvyDetails extends RestHelper with JsonResponder {
       ("trigger" -> AvalancheTrigger.getEnumLabel(a.trigger)) ~
       ("bedSurface" -> AvalancheInterface.getEnumLabel(a.bedSurface)) ~
       ("rSize" -> a.rSize) ~ ("dSize" -> a.dSize) ~
-      ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ ("fullyBuried" -> a.fullyBuried) ~ 
-      ("injured" -> a.injured) ~ ("killed" -> a.killed) ~  
-      ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
+      ("caught" -> humanNumberToStr(a.caught)) ~ ("partiallyBuried" -> humanNumberToStr(a.partiallyBuried)) ~ 
+      ("fullyBuried" -> humanNumberToStr(a.fullyBuried)) ~ ("injured" -> humanNumberToStr(a.injured)) ~ 
+      ("killed" -> humanNumberToStr(a.killed)) ~ ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
       ("comments" -> a.comments) ~ ("images" -> getImageFilenames(a.extId))
     }
     

@@ -116,6 +116,8 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	
 	this.showAvyDetails = function(kmlClickEvent, a) {
 		$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
+		$('#avyDetailSubmitterExp').text(a.submitterExp);
+		
 		var extUrl = 'http://avyeyes.com/' + a.extId;
 		$('#avyDetailExtLink').attr('href', extUrl);
 		$('#avyDetailExtLink').text(extUrl);
@@ -132,6 +134,13 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		
 		$('#avyDetailSky').text(a.sky);
 		$('#avyDetailPrecip').text(a.precip);
+		
+		$('#avyDetailNumCaught').text(a.caught);
+		$('#avyDetailNumPartiallyBuried').text(a.partiallyBuried);
+		$('#avyDetailNumFullyBuried').text(a.fullyBuried);
+		$('#avyDetailNumInjured').text(a.injured);
+		$('#avyDetailNumKilled').text(a.killed);
+		$('#avyDetailModeOfTravel').text(a.modeOfTravel);
 		
 		if (a.comments.length > 0) {
 			$('#avyDetailCommentsRow').show();
@@ -351,6 +360,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			  minWidth: 500,
 			  autoOpen: false,
 			  modal: true,
+			  resizable: false,
 			  draggable: false,
 			  closeOnEscape: false,
 			  beforeclose: function (event, ui) { return false; },
@@ -365,9 +375,10 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		});
 		
 		$('#avyDetailDialog').dialog({
-			  minWidth: 750,
+			  minWidth: 650,
 			  autoOpen: false,
 			  modal: false,
+			  resizable: false,
 			  draggable: false,
 			  closeOnEscape: false,
 			  dialogClass: 'avyReportDetailsDialog'

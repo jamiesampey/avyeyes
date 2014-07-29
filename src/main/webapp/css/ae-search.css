@@ -159,11 +159,11 @@
 }
 
 #avyDetailTable {
-    width: 730px;
+    width: 640px;
 }
 
 #avyDetailTitle {
-    width: 530px;
+    width: 500px;
     height: auto;
 }
 
@@ -173,12 +173,20 @@
     text-decoration: none;
 }
 
-#avyDetailTable > tbody > tr > td {
+#avyDetailTitleRow {
+	padding-bottom: 5px;
+}
+
+#avyDetailSubmitterExpRow {
+	font: italic .8em times,serif !important;
+}
+
+#avyDetailTable  tbody  tr  td {
     vertical-align: top;
 }
 
 .avyDetailSubTable {
-	margin: 10px 0px 0px 0px;
+	margin: 0px;
 }
 
 .avyDetailFieldsSubTable {
@@ -186,6 +194,7 @@
     margin: 0px;
     border: 1px solid #555555;
     border-radius: 10px;
+    text-align: left;
 }
 
 #avyDetailCommentsRow {
@@ -197,7 +206,7 @@
 }
 
 #avyDetailComments {
-	width: 100%;
+	width: 100%; 
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -208,7 +217,7 @@
 }
 
 #avyDetailImageDiv {
-	width: 720px;
+	width: 620px;
     padding: 5px;
     margin: 0px;
     border: 1px solid #555555;
