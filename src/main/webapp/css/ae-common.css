@@ -1,7 +1,25 @@
+html {
+	height: 100%; 
+    width: 100%;
+}
+
 body {
+	height: 100%; 
+    width: 100%;
 	margin:0px; 
 	overflow:hidden; 
 	font-size:100%;
+}
+
+#liftContent {
+	height: 100%; 
+    width: 100%;
+}
+
+#map3d {
+	display: inline-block;
+	height: 100%; 
+	width: 100%;
 }
 
 label {

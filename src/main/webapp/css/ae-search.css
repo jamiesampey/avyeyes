@@ -124,8 +124,6 @@
     padding: 0px 10px 0px 10px;
     margin: 0px;
     width: 100%;
-    cellspacing: 0px;
-    cellpadding: 0px;
 }
 
 .avySearchSubHeader {
@@ -135,8 +133,6 @@
 #avySearchHumanNumbersTable {
 	float: left;
 	width: 100%;
-	cellspacing: 0px;
-    cellpadding: 0px;
     padding: 0px;
     margin: 0px;
     border-spacing: 0px;
