@@ -156,12 +156,10 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			});
 		}
 		
-		Object.defineProperty(kmlClickEvent, "pageX", {value: kmlClickEvent.getClientX()});
-		Object.defineProperty(kmlClickEvent, "pageY", {value: kmlClickEvent.getClientY()});
 		$('#avyDetailDialog').dialog('option', 'position', {
 			  my: 'center bottom-20', 
 			  at: 'center top', 
-			  of: kmlClickEvent,
+			  of: $.Event('click', {pageX: kmlClickEvent.getClientX(), pageY: kmlClickEvent.getClientY()}),
 			  collision: 'fit'
 		  });
 
