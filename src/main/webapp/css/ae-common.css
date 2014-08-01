@@ -170,6 +170,6 @@ textarea:focus, input:focus {
 	font: normal 1em times,serif !important;
 }
 
-.avyTooltip br {
+.avyTooltip br, #helpDialog br {
     line-height:32px;
 }
