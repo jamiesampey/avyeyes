@@ -145,6 +145,27 @@ textarea:focus, input:focus {
     display: none;
 }
 
+#helpDialog {
+	font: normal 1em times,serif !important;
+	padding: 0px;
+}
+
+#helpDialog .ui-tabs-anchor {
+	padding: 3px 20px;
+}
+
+#helpDialog .ui-tabs-panel {
+    padding: 20px 10px;
+}
+
+#helpDialog li:focus, a:focus {
+	outline: 0;
+}
+
+#helpDialog .ui-widget-header {
+    background: transparent;
+}
+
 .avyTooltip {
 	font: normal 1em times,serif !important;
 }

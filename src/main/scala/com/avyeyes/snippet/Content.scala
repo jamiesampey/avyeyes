@@ -12,9 +12,8 @@ class Content {
       "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text, asBoolean((ns\"@data-required").text) openOr false)) &
       ".avyHeader" #> ((n:NodeSeq) => setupHeader((n\"@id").text)) &
       ".avyMsg" #> ((n:NodeSeq) => setupMessage((n\"@id").text)) &
-      ".avyMenuItem" #> ((n:NodeSeq) => setupMenuItem((n\"@id").text)) &
-      ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text)) &
-      "#avySearchHowItWorks *" #> S.?("link.avySearchHowItWorks")
+      ".avyLink" #> ((n:NodeSeq) => setupLink((n\"@id").text)) &
+      ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text))
     }
 
     private def setupLabel(id: String, required: Boolean): NodeSeq = {
@@ -31,8 +30,8 @@ class Content {
       <span id={id} class="avyMsg">{getMessage(id)}</span>
     }
     
-    private def setupMenuItem(id: String): NodeSeq = {
-      <a id={id} class="avyMenuItem">{S.?(s"link.$id")}</a>
+    private def setupLink(id: String): NodeSeq = {
+      <a id={id} class="avyLink">{S.?(s"link.$id")}</a>
     }
     
     private def getButton(id: String) = S.?(s"button.$id")

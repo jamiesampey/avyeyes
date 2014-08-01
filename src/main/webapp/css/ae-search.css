@@ -90,6 +90,10 @@
     padding: 0px;
 }
 
+#howItWorks :link, :visited {
+    color: white;
+}
+
 .avySearchHeaderContainer {
     position: relative;
     padding: 15px 0px 25px 10px;

@@ -77,10 +77,11 @@ define(['gearth',
 			expect(jquiSpinner.calls[0].object.selector).toEqual('.avyHumanNumber');
 			expect(jquiSpinner.calls[1].object.selector).toEqual('.avySlopeAngle');
 
-			expect(jquiDialog.callCount).toEqual(2);
+			expect(jquiDialog.callCount).toEqual(3);
 			expect(jquiDialog.calls[0].object.selector).toEqual('#multiDialog');
 			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailDialog');
-
+			expect(jquiDialog.calls[2].object.selector).toEqual('#helpDialog');
+			
 			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 		});
 	});

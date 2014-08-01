@@ -173,6 +173,15 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		$('#avyDetailDialog').dialog('close');
 	}
 	
+	this.showHelp = function(tab) {
+		$('#helpDialog').tabs("option", "active", tab);
+		$('#helpDialog').dialog('open');
+	}
+	
+	this.toggleMenu = function() {
+		$('#aeMenu').toggle('slide', 400);
+	}
+	
 	this.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
 		var lookAt = ge.createLookAt('');
 	    lookAt.setLatitude(lat);
@@ -282,34 +291,38 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	  $('#aeMenu').hide();
 	  
 	  $('#aeMenuButton').click(function(){
-		  $('#aeMenu').toggle('slide', 400);
+		  self.toggleMenu();
 		});
 	  
 	  $('#searchMenuItem').click(function(){
-		  $('#aeMenu').toggle('slide', 400);
-			 self.resetView();
-		});
+		  self.toggleMenu();
+		  self.resetView();
+	  });
 	  
 	  $('#reportMenuItem').click(function(){
-		  $('#aeMenu').toggle('slide', 400);
+		  self.toggleMenu();
 		  self.resetView();
 		  self.hideSearchDiv();
 		  self.doReport();
 		});
 	  
 	  $('#aboutMenuItem').click(function(){
-		  $('#aeMenu').toggle('slide', 400);
-		 self.showModalDialog('Info', '...about the project');
+		  self.toggleMenu();
+		  self.showHelp(2);
 	  });
-		
+
+	  $('#howItWorks').click(function(){
+		  self.showHelp(0);
+	  });
+	  
 	  $('#debugReportForm').click(function(){
-		  $('#aeMenu').toggle('slide', 400);
-			 self.currentReport = new AvyReport(self, function() {
-					$("#avyReportDialog").children('form').submit();
-					self.currentReport = null;
-				});
-			 self.currentReport.initAvyReportDialogs();
-			 self.currentReport.enterAvyDetail();
+		  self.toggleMenu();
+		 self.currentReport = new AvyReport(self, function() {
+				$("#avyReportDialog").children('form').submit();
+				self.currentReport = null;
+			});
+		 self.currentReport.initAvyReportDialogs();
+		 self.currentReport.enterAvyDetail();
 	  });
 	  
 		$('.avyDate').datepicker({
@@ -381,6 +394,25 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 			  closeOnEscape: false,
 			  dialogClass: 'avyReportDetailsDialog'
 		});
+
+		$('#helpDialog').dialog({
+			  minWidth: 750,
+			  minHeight: 700,
+			  autoOpen: false,
+			  modal: true,
+			  resizable: false,
+			  draggable: false,
+			  closeOnEscape: true,
+			  dialogClass: "avyReportDetailsDialog",
+			  buttons: [{
+			      text: 'Close',
+			      click: function(event, ui) {
+			    	$(this).dialog('close');
+			      }
+			  }]
+		});
+		
+		$('#helpDialog').tabs();
 		
 		$.extend($.ui.autocomplete.prototype, {
 		    _renderItem: function( ul, item ) {

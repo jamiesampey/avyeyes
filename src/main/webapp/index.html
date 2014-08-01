@@ -31,6 +31,17 @@
         
 		<div id="multiDialog"></div>
         
+        <div id="helpDialog">
+            <ul>
+			    <li><a id="searchHelpTab" class="avyLink" href="#searchHelpDiv"></a></li>
+			    <li><a id="reportHelpTab" class="avyLink" href="#reportHelpDiv"></a></li>
+			    <li><a id="aboutHelpTab" class="avyLink" href="#aboutHelpDiv"></a></li>
+		    </ul>
+	        <div id="searchHelpDiv"><span id="searchHelpContent" class="avyMsg"></span></div>
+	        <div id="reportHelpDiv"><span id="reportHelpContent" class="avyMsg"></span></div>
+	        <div id="aboutHelpDiv"><span id="aboutHelpContent" class="avyMsg"></span></div>
+        </div>
+        
         <div id="avyDetailDialog">
            <table id="avyDetailTable">
                <tr id="avyDetailTitleRow"><td colspan="2">
@@ -172,9 +183,9 @@
 			      <a id="aeMenuButton" href="#"><img src="/images/menu.png"></a>
 			    </div>
        	        <ul id="aeMenu">
-                  <li><a id="searchMenuItem" class="avyMenuItem" href="#"></a></li>
-                  <li><a id="reportMenuItem" class="avyMenuItem" href="#"></a></li>
-                  <li><a id="aboutMenuItem" class="avyMenuItem" href="#"></a></li>
+                  <li><a id="searchMenuItem" class="avyLink" href="#"></a></li>
+                  <li><a id="reportMenuItem" class="avyLink" href="#"></a></li>
+                  <li><a id="aboutMenuItem" class="avyLink" href="#"></a></li>
                   <li><a id="debugReportForm" href="#">Report form</a></li>
                 </ul>
             </div>
@@ -184,7 +195,7 @@
 			  <hr>
 			  <div class="avySearchHeaderContainer">
 			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
-			     <div id="avySearchHowItWorksDiv"><a id="avySearchHowItWorks" href="#"></a></div>
+			     <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#"></a></div>
 			  </div>
 			  
 			  <table id="avySearchDetailsTable">
