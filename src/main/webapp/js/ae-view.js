@@ -453,7 +453,8 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	}
 		    
 	this.failureCB = function(errorCode) {
-	    self.showModalDialog("Error", "failureCB: " + errorCode);
+		alert("Failed to load Google Earth plugin. Error code: " + errorCode);
+		console.log("Failed to load Google Earth plugin. Error code: " + errorCode);
 	}
 
 	this.viewChangeEndTimeout = function() {

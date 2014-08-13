@@ -22,7 +22,8 @@ class Boot {
     }
 
     LiftRules.setSiteMap(SiteMap(
-      Menu.i("Home") / "index"
+      Menu.i("Home") / "index",
+      Menu.i("Not Supported") / "notsupported"
     ))
 
     LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE

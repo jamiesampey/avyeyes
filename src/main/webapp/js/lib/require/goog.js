@@ -28,7 +28,7 @@ define(['async', 'propertyParser'], function (async, propertyParser) {
 
                 settings.callback = onLoad;
                 
-                req(['async!https://www.google.com/jsapi'], function(){
+                req(['async!http://www.google.com/jsapi'], function(){
                     google.load(data.moduleName, data.version, settings);
                 });
             }

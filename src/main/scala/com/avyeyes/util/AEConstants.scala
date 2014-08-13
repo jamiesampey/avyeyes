@@ -8,7 +8,12 @@ object AEConstants {
         .append(Props.get("db.host").get).append(":")
         .append(Props.get("db.port").get).append("/")
         .append(Props.get("db.name").get).toString
-        
+    
+    val ChromeSupportedVersion = 35.0
+    val FirefoxSupportedVersion = 30.0
+    val SafariSupportedVersion = 5.1
+    val IeSupportedVersion = 9.0
+    
 	val earliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val humanNumberUnknown: Int = -1
 
