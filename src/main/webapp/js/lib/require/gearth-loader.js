@@ -1,3 +1,11 @@
-define(['goog!earth,1,other_params:sensor=true'], function() {
-	return window.google.earth;
+define(['http://www.google.com/jsapi?key=' + GOOGLE_API_KEY], function() {
+  function EarthAsyncLoader(callbackFunc) {
+	var options = {
+  	  'sensor': true,
+	  'callback': callbackFunc
+	};  
+    google.load('earth', 1, options);
+  }
+ 
+  return EarthAsyncLoader;
 });

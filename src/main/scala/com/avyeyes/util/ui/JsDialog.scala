@@ -11,6 +11,6 @@ object JsDialog {
 	def error(msgId: String, params: Any*) = getDialogJsCmd("title.errorDialog", msgId, params:_*)
 
 	private def getDialogJsCmd(titleId: String, msgId: String, params: Any*): JsCmd = {
-	  Call("view.showModalDialog", S.?(titleId), getMessage(msgId, params:_*).toString).cmd
+	  Call("avyeyes.showModalDialog", S.?(titleId), getMessage(msgId, params:_*).toString).cmd
 	}
 }

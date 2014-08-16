@@ -6,7 +6,7 @@ define(['ae-report',
         'lightbox'
         ], function(AvyReport) {
 
-function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
+function AvyEyesView(gearthInst, gmapsInst) {
 	var self = this;
 	var gearth = gearthInst;
 	var gmaps = gmapsInst;
@@ -248,7 +248,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		self.showSearchDiv();
 	}
 	
-	this.init = function() {
+	this.wireUI = function() {
 		$('label').each(function() {
 			$(this).tooltip({
 				items: '[data-help]',
@@ -434,7 +434,7 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 		$('#avyInitLiftCallback').submit();
 	}
 	
-	this.initCB = function(instance) {
+	this.initEarthCB = function(instance) {
 		self.setGE(instance);
 	    self.setGeocoder(new gmaps.Geocoder());
 	    
@@ -448,15 +448,20 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
 	    gearth.addEventListener(ge.getGlobe(), 'click', self.handleMapClick);
 	    
-	    self.init();
+	    self.wireUI();
 	    $('#loadingDiv').fadeOut(500);
 	}
 		    
-	this.failureCB = function(errorCode) {
-		alert("Failed to load Google Earth plugin. Error code: " + errorCode);
+	this.failureEarthCB = function(errorCode) {
+		alert("Failed to load Google Earth plugin. Error code: " + errorCode 
+				+ "\n\nPlease make sure the Google Earth Plugin is installed by visiting http://earth.google.com/plugin");
 		console.log("Failed to load Google Earth plugin. Error code: " + errorCode);
 	}
 
+	this.init = function() {
+	  gearth.createInstance('map3d', self.initEarthCB, self.failureEarthCB, { 'language': 'en' });
+	}
+	
 	this.viewChangeEndTimeout = function() {
 		var viewChangeEndTimer;
 		if(viewChangeEndTimer){
@@ -480,8 +485,6 @@ function AvyEyesView(gearthInst, gmapsInst, loadingSpinner) {
 	this.setGeocoder = function(instance) {
 		geocoder = instance;
 	}
-	
-	gearth.createInstance('map3d', self.initCB, self.failureCB, { 'language': 'en' });
 }
 
 return AvyEyesView;

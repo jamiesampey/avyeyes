@@ -52,7 +52,7 @@ class Search {
       else {
         val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange:_*)
         
-        Call("view.overlaySearchResultKml", kml.toString).cmd &
+        Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
         JsDialog.info("avySearchSuccess", matchingAvalanchesInRange.size)
       }
     

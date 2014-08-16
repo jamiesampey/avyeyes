@@ -19,7 +19,8 @@ define(['gearth',
 	    
 	    it('should have called gearth.createInstance()', function() {
 	    	spyOn(gearth, 'createInstance');
-			new AvyEyesView(gearth, gmaps);
+			view = new AvyEyesView(gearth, gmaps);
+			view.init();
 	    	expect(gearth.createInstance).toHaveBeenCalled();
 	    });
 	});
@@ -33,10 +34,10 @@ define(['gearth',
 			spyOn(gearth, 'addEventListener');
 			spyOn(view, 'setGE').andCallThrough();
 			spyOn(view, 'setGeocoder');
-			spyOn(view, 'init');
+			spyOn(view, 'wireUI');
 			var jqFadeOut = spyOn($.fn, 'fadeOut');
 
-			view.initCB(geplugin);
+			view.initEarthCB(geplugin);
 
 			expect(view.setGE).toHaveBeenCalledWith(geplugin);
 			expect(view.setGeocoder).toHaveBeenCalled();
@@ -46,10 +47,10 @@ define(['gearth',
 					geplugin.getGlobe(), 'click', view.handleMapClick);
 
 			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
-			expect(view.init).toHaveBeenCalled();
+			expect(view.wireUI).toHaveBeenCalled();
 		});
 		
-		it('should init AE view', function() {
+		it('should wire AE view UI', function() {
 			var menuMock = function(){
 				this.position = function(options){}
 			}
@@ -64,7 +65,7 @@ define(['gearth',
 			var jqGeocomplete = spyOn($.fn, 'geocomplete');
 			var jqSubmit = spyOn($.fn, 'submit');
 			
-			view.init();
+			view.wireUI();
 			
 			expect(jquiAutocomplete.mostRecentCall.object.selector).toEqual('.avyAutoComplete');
 			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenu');

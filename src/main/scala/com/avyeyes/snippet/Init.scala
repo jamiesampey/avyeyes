@@ -43,11 +43,11 @@ class Init {
         
         if (initAvalanche.isDefined) {
             val kml = new KmlCreator().createCompositeKml(initAvalanche.get)
-            Call("view.overlaySearchResultKml", kml.toString).cmd &
-            Call("view.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, INIT_AVY_ALT_METERS, 
+            Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
+            Call("avyeyes.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, INIT_AVY_ALT_METERS, 
                 INIT_AVY_CAM_TILT, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd
         } else {
-            Call("view.flyTo", INIT_VIEW_LAT, INIT_VIEW_LNG, INIT_VIEW_ALT_METERS, 
+            Call("avyeyes.flyTo", INIT_VIEW_LAT, INIT_VIEW_LNG, INIT_VIEW_ALT_METERS, 
                 INIT_VIEW_CAM_TILT, INIT_VIEW_HEADING).cmd
         }
     }
