@@ -5,6 +5,7 @@ import net.liftweb.sitemap.{Menu, SiteMap}
 import net.liftweb.common.Full
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.rest._
+import net.liftweb.common.Box
 
 
 /**
@@ -16,16 +17,21 @@ class Boot {
     // where to search snippet
     LiftRules.addToPackages("com.avyeyes")
     
-    LiftRules.statelessRewrite.prepend {
-        case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 
-            RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(EXT_ID_URL_PARAM -> extId))
-    }
-
     LiftRules.setSiteMap(SiteMap(
       Menu.i("Home") / "index",
       Menu.i("Not Supported") / "notsupported"
     ))
 
+    LiftRules.dispatch.prepend {
+      case Req(path, _, _) if (path != List("notsupported") && !browserSupported(S.request)) => 
+        () => {Full(RedirectResponse("/notsupported.html"))}
+    }
+    
+    LiftRules.statelessRewrite.prepend {
+        case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 
+            RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(EXT_ID_URL_PARAM -> extId))
+    }
+    
     LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE
     LiftRules.maxMimeSize = MAX_IMAGE_SIZE
     
@@ -57,5 +63,13 @@ class Boot {
 	Class.forName("org.postgresql.Driver")
 	SessionFactory.concreteFactory = Some(()=>
 	Session.create(java.sql.DriverManager.getConnection(JDBC_CONNECT_STR), new PostgreSqlAdapter))
+  }
+  
+  private def browserSupported(reqBox: Box[Req]): Boolean = reqBox match {
+    case isDefined if reqBox.get.chromeVersion.isDefined && reqBox.get.chromeVersion.get >= ChromeSupportedVersion => true
+    case isDefined if reqBox.get.firefoxVersion.isDefined && reqBox.get.firefoxVersion.get >= FirefoxSupportedVersion => true
+    case isDefined if reqBox.get.safariVersion.isDefined && reqBox.get.safariVersion.get >= SafariSupportedVersion => true
+    case isDefined if reqBox.get.ieVersion.isDefined && reqBox.get.ieVersion.get >= IeSupportedVersion => true
+    case _ => false
   }
 }
