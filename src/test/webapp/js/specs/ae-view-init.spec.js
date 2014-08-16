@@ -18,9 +18,14 @@ define(['gearth',
 	    });
 	    
 	    it('should have called gearth.createInstance()', function() {
+	    	view = new AvyEyesView(gearth, gmaps);
+	    	
+	    	spyOn(view, 'wireUI');
 	    	spyOn(gearth, 'createInstance');
-			view = new AvyEyesView(gearth, gmaps);
+			
 			view.init();
+			
+			expect(view.wireUI).toHaveBeenCalled();
 	    	expect(gearth.createInstance).toHaveBeenCalled();
 	    });
 	});
@@ -34,7 +39,7 @@ define(['gearth',
 			spyOn(gearth, 'addEventListener');
 			spyOn(view, 'setGE').andCallThrough();
 			spyOn(view, 'setGeocoder');
-			spyOn(view, 'wireUI');
+			var jqSubmit = spyOn($.fn, 'submit');
 			var jqFadeOut = spyOn($.fn, 'fadeOut');
 
 			view.initEarthCB(geplugin);
@@ -46,8 +51,8 @@ define(['gearth',
 			expect(gearth.addEventListener).toHaveBeenCalledWith(
 					geplugin.getGlobe(), 'click', view.handleMapClick);
 
+			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
-			expect(view.wireUI).toHaveBeenCalled();
 		});
 		
 		it('should wire AE view UI', function() {
@@ -63,8 +68,7 @@ define(['gearth',
 			var jquiButton = spyOn($.fn, 'button');
 			var jquiDialog = spyOn($.fn, 'dialog');
 			var jqGeocomplete = spyOn($.fn, 'geocomplete');
-			var jqSubmit = spyOn($.fn, 'submit');
-			
+		
 			view.wireUI();
 			
 			expect(jquiAutocomplete.mostRecentCall.object.selector).toEqual('.avyAutoComplete');
@@ -82,8 +86,6 @@ define(['gearth',
 			expect(jquiDialog.calls[0].object.selector).toEqual('#multiDialog');
 			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailDialog');
 			expect(jquiDialog.calls[2].object.selector).toEqual('#helpDialog');
-			
-			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 		});
 	});
 });

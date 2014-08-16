@@ -430,8 +430,6 @@ function AvyEyesView(gearthInst, gmapsInst) {
 		$('#avySearchLocation').blur(function (event) {
 			self.geocodeAndFlyToLocation($('#avySearchLocation').val(), 9400.0, 40.0);
 		});
-		
-		$('#avyInitLiftCallback').submit();
 	}
 	
 	this.initEarthCB = function(instance) {
@@ -448,18 +446,19 @@ function AvyEyesView(gearthInst, gmapsInst) {
 	    gearth.addEventListener(ge.getView(), 'viewchangeend', self.viewChangeEndTimeout);
 	    gearth.addEventListener(ge.getGlobe(), 'click', self.handleMapClick);
 	    
-	    self.wireUI();
+		$('#avyInitLiftCallback').submit();
 	    $('#loadingDiv').fadeOut(500);
 	}
 		    
 	this.failureEarthCB = function(errorCode) {
-		alert('Failed to load Google Earth. Error code: ' + errorCode 
-				+ '\n\nPlease ensure that the Google Earth plugin is installed by visiting ' 
-				+ 'https://www.google.com/earth/explore/products/plugin.html');
-		console.log('Failed to load Google Earth. Error code: ' + errorCode);
+		self.showModalDialog('Error', 'Failed to create an instance of Google Earth. Error code: ' + errorCode 
+				+ '<br/><br/>Is the Google Earth Plug-in installed? Find out here:&nbsp;' 
+				+ '<a href="https://www.google.com/earth/explore/products/plugin.html">Google Earth Plug-in</a>');
+		console.log('Failed to create an instance of Google Earth. Error code: ' + errorCode);
 	}
 
 	this.init = function() {
+	  self.wireUI();
 	  gearth.createInstance('map3d', self.initEarthCB, self.failureEarthCB, { 'language': 'en' });
 	}
 	
