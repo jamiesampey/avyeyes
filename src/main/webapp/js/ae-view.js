@@ -453,9 +453,10 @@ function AvyEyesView(gearthInst, gmapsInst) {
 	}
 		    
 	this.failureEarthCB = function(errorCode) {
-		alert("Failed to load Google Earth plugin. Error code: " + errorCode 
-				+ "\n\nPlease make sure the Google Earth Plugin is installed by visiting http://earth.google.com/plugin");
-		console.log("Failed to load Google Earth plugin. Error code: " + errorCode);
+		alert('Failed to load Google Earth. Error code: ' + errorCode 
+				+ '\n\nPlease ensure that the Google Earth plugin is installed by visiting ' 
+				+ 'https://www.google.com/earth/explore/products/plugin.html');
+		console.log('Failed to load Google Earth. Error code: ' + errorCode);
 	}
 
 	this.init = function() {
