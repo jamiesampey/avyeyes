@@ -9,10 +9,12 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.util.Props
 import scala.xml.Unparsed
 import net.liftweb.http.S
+import net.liftweb.common.Box
+import net.liftweb.http.provider.HTTPRequest
 
 
 object AEHelpers {
-    private val UNKNOWN_LABEL = S.?("enum.U")
+    private val UnknownLabel = S.?("enum.U")
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
 
     def parseDateStr(str: String) = df.parse(str)
@@ -21,16 +23,18 @@ object AEHelpers {
     
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
 
-	def sizeToStr(size: Double): String = if (size == 0) UNKNOWN_LABEL else size.toString
+	def sizeToStr(size: Double): String = if (size == 0) UnknownLabel else size.toString
 	
 	def strToHumanNumber(str: String): Int = asInt(str) openOr -1
 	
-	def humanNumberToStr(hn: Int): String = if (hn == -1) UNKNOWN_LABEL else hn.toString
+	def humanNumberToStr(hn: Int): String = if (hn == -1) UnknownLabel else hn.toString
 
 	def isValidExtId(extId: Option[String]): Boolean = extId match {
 	  case None => false
-	  case Some(s) if s.length != EXT_ID_LENGTH => false
-	  case Some(s) if s exists (c => !EXT_ID_CHARS.contains(c)) => false
+	  case Some(s) if s.length != ExtIdLength => false
+	  case Some(s) if s exists (c => !ExtIdChars.contains(c)) => false
 	  case _ => true
 	}
+    
+    def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(UnknownLabel)
 }

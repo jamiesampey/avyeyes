@@ -6,14 +6,17 @@ import net.liftweb.common.Full
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.rest._
 import net.liftweb.common.Box
+import net.liftweb.common.Loggable
 
 
 /**
  * A class that's instantiated early and run.  It allows the application
  * to modify lift's environment
  */
-class Boot {
+class Boot extends Loggable {
   def boot {
+    logger.info("Lift booting")
+    
     // where to search snippet
     LiftRules.addToPackages("com.avyeyes")
     
@@ -29,11 +32,11 @@ class Boot {
     
     LiftRules.statelessRewrite.prepend {
         case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 
-            RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(EXT_ID_URL_PARAM -> extId))
+            RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(ExtIdUrlParam -> extId))
     }
     
-    LiftRules.maxMimeFileSize = MAX_IMAGE_SIZE
-    LiftRules.maxMimeSize = MAX_IMAGE_SIZE
+    LiftRules.maxMimeFileSize = MaxImageSize
+    LiftRules.maxMimeSize = MaxImageSize
     
     // setup REST endpoints
     LiftRules.statelessDispatchTable.append(ImageUpload)
@@ -56,13 +59,15 @@ class Boot {
   }
 
   private def initDb = {
+    logger.info("Initializing DB connection")
+    
     import org.squeryl.SessionFactory
     import org.squeryl.Session
     import org.squeryl.adapters.PostgreSqlAdapter
 
 	Class.forName("org.postgresql.Driver")
 	SessionFactory.concreteFactory = Some(()=>
-	Session.create(java.sql.DriverManager.getConnection(JDBC_CONNECT_STR), new PostgreSqlAdapter))
+	Session.create(java.sql.DriverManager.getConnection(JdbcConnectionString), new PostgreSqlAdapter))
   }
   
   private def browserSupported(reqBox: Box[Req]): Boolean = reqBox match {

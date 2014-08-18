@@ -12,8 +12,9 @@ import net.liftweb.util.Props
 import org.squeryl.PrimitiveTypeMode._
 import scala.xml.XML
 import org.apache.commons.lang3.StringUtils.isBlank
+import net.liftweb.common.Loggable
 
-class Report {
+class Report extends Loggable {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
@@ -72,11 +73,11 @@ class Report {
 	      }
 	      
 	      JsDialog.info("avyReportSuccess", Props.get("base.url").get + extId)
+	      logger.info("Avalanche " + extId + " created successfully")
       } catch {
-
           case e: Exception => {
             JsDialog.error("avyReportError", e.getMessage())
-            System.out.println(e.printStackTrace)
+            logger.error("Error creating avalanche " + extId, e)
           }
       } finally {
           AvalancheDb.unreserveExtId(extId)

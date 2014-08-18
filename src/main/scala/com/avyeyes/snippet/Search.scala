@@ -17,7 +17,7 @@ import net.liftweb.http.js.JsCmds._
 import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils.isNotBlank
 
-class Search {
+class Search extends Loggable {
     private val kmlCreator = new KmlCreator
 
     var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
@@ -47,24 +47,28 @@ class Search {
 	}
 
     private def doSearch(): JsCmd =
-      if (strToDbl(camAlt) > CAM_REL_ALT_LIMIT_METERS)
+      if (strToDbl(camAlt) > CamRelAltLimitMeters)
           JsDialog.error("eyeTooHigh")
       else {
         val kml = kmlCreator.createCompositeKml(matchingAvalanchesInRange:_*)
         
+        logger.debug(s"Found ${matchingAvalanchesInRange.size} avalanches matching criteria "
+            + s" [From: $fromDateStr | To: $toDateStr | Type: $avyType | Trigger: $trigger"
+            + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
+
         Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
         JsDialog.info("avySearchSuccess", matchingAvalanchesInRange.size)
       }
     
     private def matchingAvalanchesInRange: List[Avalanche] = transaction {
-        if (strToDbl(camTilt) < CAM_TILT_RANGE_CUTOFF) 
+        if (strToDbl(camTilt) < CamTiltRangeCutoff) 
           matchingAvalanches.toList 
         else
-          matchingAvalanches.toList filter (a => haversineDist(a) < AVY_DIST_RANGE_MILES)
+          matchingAvalanches.toList filter (a => haversineDist(a) < AvyDistRangeMiles)
     }
 	
     private def matchingAvalanches = {
-        val fromDate = if (!fromDateStr.isEmpty) parseDateStr(fromDateStr) else earliestAvyDate
+        val fromDate = if (!fromDateStr.isEmpty) parseDateStr(fromDateStr) else EarliestAvyDate
 	    val toDate = if (!toDateStr.isEmpty) parseDateStr(toDateStr) else today.getTime
 	    
 	    val avyTypeEnum = if (isNotBlank(avyType)) AvalancheType.withName(avyType) else AvalancheType.U
@@ -102,6 +106,6 @@ class Search {
 
       val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDbl(camLat).toRadians) * cos(a.lat.toRadians)
       val c = 2 * asin(sqrt(ax))
-      EARTH_RADIUS_MILES * c
+      EarthRadiusMiles * c
   	}
 }

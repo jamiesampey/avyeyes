@@ -31,8 +31,7 @@ libraryDependencies ++= {
     "org.squeryl" %% "squeryl" % "0.9.5-6", 
     "org.postgresql" % "postgresql" % "9.3-1100-jdbc41",
     "org.apache.commons" % "commons-lang3" % "3.3.2",
-    "org.slf4j" % "slf4j-api" % "1.7.5",
-  	"org.slf4j" % "slf4j-simple" % "1.7.5",
+  	"ch.qos.logback" % "logback-classic" % "1.1.2",
     "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
   )

@@ -1,0 +1,26 @@
+<configuration>
+  <appender name="LIFT-FILE" class="ch.qos.logback.core.FileAppender">
+     <file>logs/lift.log</file>
+     <encoder>
+       <pattern>%date - [%level] - %logger [%thread]: %message%n%xException</pattern>
+     </encoder>
+   </appender>
+  <appender name="AVYEYES-FILE" class="ch.qos.logback.core.FileAppender">
+     <file>logs/avyeyes.log</file>
+     <encoder>
+       <pattern>%date - [%level] - %logger: %message%n%xException</pattern>
+     </encoder>
+   </appender>
+
+  <logger name="net.liftweb" level="INFO" additivity="false">
+    <appender-ref ref="LIFT-FILE" />
+  </logger>
+  
+  <logger name="com.avyeyes" level="INFO">
+    <appender-ref ref="AVYEYES-FILE" />
+  </logger>
+  
+  <root level="ERROR">
+    <appender-ref ref="AVYEYES-FILE" />
+  </root>
+</configuration>

@@ -7,8 +7,9 @@ import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.AEConstants._
 import org.apache.commons.lang3.RandomStringUtils
 import java.util.Date
+import net.liftweb.common.Loggable
 
-object AvalancheDb extends Schema {
+object AvalancheDb extends Schema with Loggable {
     private val reservedExtIds: HashMap[String, Date] = HashMap.empty
     
 	val avalanches = table[Avalanche]("avalanche")
@@ -36,15 +37,17 @@ object AvalancheDb extends Schema {
 	def reserveNewExtId: String = {
 	    var extIdAttempt = ""
         do {
-            extIdAttempt = RandomStringUtils.random(EXT_ID_LENGTH, EXT_ID_CHARS)
+            extIdAttempt = RandomStringUtils.random(ExtIdLength, ExtIdChars)
         } while (reservedExtIds.contains(extIdAttempt) 
             || avalanches.where(a => a.extId === extIdAttempt).headOption.isDefined)
 	    
         reservedExtIds += (extIdAttempt -> new Date())
+        logger.info("Reserved new extId " + extIdAttempt + ". Current reserved extIds: " + reservedExtIds.keySet)
         extIdAttempt
 	}
 	
 	def unreserveExtId(extId: String) {
 	  reservedExtIds -= extId
+	  logger.info("Unreserved extId " + extId)
 	}
 }
