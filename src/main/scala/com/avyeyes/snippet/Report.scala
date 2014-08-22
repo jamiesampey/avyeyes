@@ -13,6 +13,7 @@ import org.squeryl.PrimitiveTypeMode._
 import scala.xml.XML
 import org.apache.commons.lang3.StringUtils.isBlank
 import net.liftweb.common.Loggable
+import net.liftweb.http.js.JsCmd
 
 class Report extends Loggable {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
@@ -52,7 +53,7 @@ class Report extends Loggable {
     "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
   }
   
-  private def doReport() = {
+  private def doReport(): JsCmd = {
       try {
          checkAutoCompleteValues
          val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
@@ -72,12 +73,12 @@ class Report extends Loggable {
 	    	  AvalancheDb.avalanches insert newAvalanche
 	      }
 	      
-	      JsDialog.info("avyReportSuccess", Props.get("base.url").get + extId)
-	      logger.info("Avalanche " + extId + " created successfully")
+	      logger.info("Avalanche " + extId + " successfully inserted")
+          JsDialog.info("avyReportSuccess", Props.get("base.url").get + extId)
       } catch {
           case e: Exception => {
-            JsDialog.error("avyReportError", e.getMessage())
             logger.error("Error creating avalanche " + extId, e)
+            JsDialog.error("avyReportError", e.getMessage())
           }
       } finally {
           AvalancheDb.unreserveExtId(extId)
