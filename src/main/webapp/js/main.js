@@ -1,8 +1,8 @@
 require.config({
 	baseUrl: '/js',
     paths: {
-    	'earthAsyncLoader': 'lib/require/gearth-loader',
-    	'mapsAsyncLoader': 'lib/require/gmaps-loader',
+    	'earthAsyncLoad': 'lib/require/gearth-loader',
+    	'mapsAsyncLoad': 'lib/require/gmaps-loader',
         'jquery-ui': 'lib/jquery-ui',
         'jquery-geocomplete': 'lib/jquery.geocomplete.min',
         'jquery-fileupload': 'lib/jquery.fileupload',
@@ -34,10 +34,11 @@ function mapsLoadCB() {
 }
 
 //Start the main app logic.
-requirejs(['earthAsyncLoader', 'mapsAsyncLoader', 'ae-view'], 
-		function (EarthAsyncLoader, MapsAsyncLoader, AvyEyesView) {
-	new EarthAsyncLoader(earthLoadCB);
-	new MapsAsyncLoader("mapsLoadCB");
+requirejs(['earthAsyncLoad', 'mapsAsyncLoad', 'ae-view'], 
+		function (earthAsyncLoad, mapsAsyncLoad, AvyEyesView) {
+	earthAsyncLoad(earthLoadCB);
+	mapsAsyncLoad("mapsLoadCB");
+	
 	avyeyesInitGate.done(function() {
 	  avyeyes = new AvyEyesView(google.earth, google.maps);
 	  avyeyes.init();

@@ -1,37 +1,37 @@
-define(['gearth', 
-        'geplugin', 
+define(['gearth',
+        'gmaps',
+        'geplugin',
+        'ae-view',
+        'ae-report',
         'ae-draw'], 
-        function(gearthMock, gePluginMock, AvyDraw) {
+        function(GearthMock, GmapsMock, GePluginMock, AvyEyesView, AvyReport, AvyDraw) {
 	
-	var gearth = new gearthMock();
-	var geplugin = new gePluginMock();
+	var gearth = new GearthMock();
+	var geplugin = new GePluginMock();
 	var gefeatures = geplugin.getFeatures(); 
-
+	var gmaps = new GmapsMock();
+	
+	var view = new AvyEyesView(gearth, gmaps);
+	view.ge = geplugin;
+	
+	var report = new AvyReport(view);
+	var drawing;
+	
 	var callbackLat, callbackLng, callbackAlt, callbackAspect, callbackAngle, callbackKml;
-	var submitDrawingCallbackMock = function(lat, lng, alt, aspect, angle, kml) {
-		callbackLat = lat;
-		callbackLng = lng;
-		callbackAlt = alt;
-		callbackAspect = aspect;
-		callbackAngle = angle;
-		callbackKml = kml;
-	}
 	
 	var DrawingKmlObjMock = function(kml) {
 		this.kml = kml;
 		this.getKml = function() {return this.kml;}
 	}
 	
-	var drawing;
-	
 	describe('Starting and clearing a drawing', function() {
 		beforeEach(function() {
 			spyOn(geplugin, 'createDocument').andCallThrough();
 			spyOn(gearth, 'addEventListener');
 			spyOn(gefeatures, 'appendChild');
-			spyOn(gefeatures, 'removeChild');
+			spyOn(view, 'clearKmlOverlay');
 
-			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
+			drawing = new AvyDraw(report);
 		});
 		
 		it('Starts a drawing correctly', function() {
@@ -45,8 +45,8 @@ define(['gearth',
 			expect(gefeatures.appendChild).toHaveBeenCalledWith(drawing.drawingKmlObj);
 			
 			expect(gearth.addEventListener.callCount).toEqual(2);
-			expect(gearth.addEventListener).toHaveBeenCalledWith(geplugin.getGlobe(), 'mousemove', drawing.onMouseMove);
-			expect(gearth.addEventListener).toHaveBeenCalledWith(geplugin.getGlobe(), 'mousedown', drawing.onMouseDown);
+			expect(gearth.addEventListener.calls[0].args[1]).toEqual('mousemove');
+			expect(gearth.addEventListener.calls[1].args[1]).toEqual('mousedown');
 		});
 		
 		it('Clears a drawing correctly', function() {
@@ -56,7 +56,7 @@ define(['gearth',
 			
 			drawing.clearDrawing();
 			expect(drawing.drawingKmlObj).toBeNull();
-			expect(gefeatures.removeChild).toHaveBeenCalledWith(kmlObj);
+			expect(view.clearKmlOverlay).toHaveBeenCalled();
 		});
 	});
 
@@ -78,7 +78,7 @@ define(['gearth',
 			spyOn(gearth, 'addEventListener');
 			spyOn(gearth, 'removeEventListener');
 			
-			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
+			drawing = new AvyDraw(report);
 			drawing.startAvyDraw();
 		});
 		
@@ -147,8 +147,9 @@ define(['gearth',
 		it('Does all necessary operations to complete a report drawing', function() {
 			spyOn(gearth, 'addEventListener');
 			spyOn(gefeatures, 'appendChild');
+			spyOn(report, 'setAvyDrawingHiddenInputs');
 			
-			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
+			drawing = new AvyDraw(report);
 			drawing.startAvyDraw();
 			
 			spyOn(geplugin, 'createPolygon').andCallThrough();
@@ -167,29 +168,28 @@ define(['gearth',
 			var testKml = '<kml>some coords n stuff</kml>';
 			drawing.drawingKmlObj = new DrawingKmlObjMock(testKml);
 			
-			window.geo._heading = 123.43953; // South east aspect
-			window.geo._distance = 4554.3922;
+			geo._heading = 123.43953; // South east aspect
+			geo._distance = 4554.3922;
 			
 			var midpointCoord = geplugin.createCoord();
 			midpointCoord.lat = 39.745313;
 			midpointCoord.lng = 106.90370;
-			window.geo._midpointCoord = midpointCoord;
+			geo._midpointCoord = midpointCoord;
 			
 			drawing.convertLineStringToPolygon();
 			
 			expect(geplugin.createPolygon).toHaveBeenCalled();
 			expect(geplugin.createLinearRing).toHaveBeenCalled();
 			
-			expect(callbackLat).toEqual(window.geo._midpointCoord.getLatitude());
-			expect(callbackLng).toEqual(window.geo._midpointCoord.getLongitude());
-			expect(callbackAlt).toEqual(Math.round(highestCoordAlt * 3.28084)); // meter to ft conversion
-			expect(callbackAspect).toEqual('SE');
-			expect(callbackKml).toEqual(testKml);
+			expect(report.setAvyDrawingHiddenInputs).toHaveBeenCalled();
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[0]).toEqual(geo._midpointCoord.getLatitude());
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[1]).toEqual(geo._midpointCoord.getLongitude());
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[2]).toEqual(Math.round(highestCoordAlt * drawing.FEET_PER_METER));
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[3]).toEqual('SE');
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[5]).toEqual(testKml);
 		});
 		
 		it('Translates heading to compass direction correctly', function() {
-			drawing = new AvyDraw(gearth, geplugin, submitDrawingCallbackMock);
-
 			expect(drawing.headingToDirection(22.6)).toEqual('NE');
 			expect(drawing.headingToDirection(112.5)).toEqual('E');
 			expect(drawing.headingToDirection(112.6)).toEqual('SE');

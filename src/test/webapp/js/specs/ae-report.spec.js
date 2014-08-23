@@ -13,29 +13,12 @@ define(['jasmine-jquery',
 	
 	var view;
 	var report;
-	var submitReportCallbackMock = function() {}
 	
 	describe('Init and clear the avy drawing', function() {
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGE(geplugin);
-			report = new AvyReport(view, submitReportCallbackMock);
-		});
-		
-		it('Initializes report dialogs', function() {
-			var jqKeydown = spyOn($.fn, 'keydown');
-			var jquiDialog = spyOn($.fn, 'dialog');
-
-			report.initAvyReportDialogs()
-			
-			expect(jqKeydown.mostRecentCall.object.selector).toEqual('#avyReportInitLocation');
-			
-			expect(jquiDialog.callCount).toEqual(5);
-			expect(jquiDialog.calls[0].object.selector).toEqual('#avyReportGeocodeDialog');
-			expect(jquiDialog.calls[1].object.selector).toEqual('#avyReportBeginDrawDialog');
-			expect(jquiDialog.calls[2].object.selector).toEqual('#avyReportConfirmDrawDialog');
-			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportImgDialog');
-			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportDialog');
+			view.ge = geplugin;
+			report = new AvyReport(view);
 		});
 		
 		it('Starts a new avy drawing', function() {
@@ -50,17 +33,19 @@ define(['jasmine-jquery',
 		});
 		
 		it('Begins report with geocode correctly', function() {
+			spyOn(window, 'setTimeout');
+			
 			var address = 'some mtn somewhere';
 			setFixtures('<input id="avyReportInitLocation" value="' + address + '">');
 			
 			spyOn(view, 'geocodeAndFlyToLocation');
 			
-			expect(view.initialGeocodeForReport).toEqual(false);
 			report.beginReportWithGeocode();
-			expect(view.initialGeocodeForReport).toEqual(true);
-			expect(view.geocodeAndFlyToLocation).toHaveBeenCalledWith(address, 8000.0, 65.0);			
+			
+			expect(view.geocodeAndFlyToLocation).toHaveBeenCalledWith(address, 8000.0, 65.0);
+			expect(window.setTimeout).toHaveBeenCalled();
 		});
-		
+
 		it('Clears an avy drawing', function() {
 			var geFeatures = geplugin.getFeatures();
 			

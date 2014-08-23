@@ -111,9 +111,19 @@ define([], function() {
 	}
 	
 	function GEFeatures() {
-		this.appendChild = function(child){}
-		this.removeChild = function(child){}
-		this.hasChildNodes = function(){}
+		this.child = null;
+		this.appendChild = function(c){
+			this.child = c;
+		}
+		this.removeChild = function(c){
+			this.child = null;
+		}
+		this.hasChildNodes = function(){
+			return !(this.child == null);
+		}
+		this.getFirstChild = function(){
+			return this.child;
+		}
 	}
 	
 	function GEGlobe() {}

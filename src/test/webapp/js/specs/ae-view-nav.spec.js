@@ -26,7 +26,7 @@ define(['jasmine-jquery',
 		
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGE(geplugin);
+			view.ge = geplugin;
 	
 			reportMock = function(){
 				this.beginReport = function(){}
@@ -98,33 +98,12 @@ define(['jasmine-jquery',
 			view.viewChangeEnd();
 			expect(view.showSearchDiv).not.toHaveBeenCalled();
 		});
-		
-		it('begins report if initial geocode for report', function() {
-			spyOn(window, 'setTimeout');
-
-			view.currentReport = new reportMock();
-			view.initialGeocodeForReport = true;
-			view.viewChangeEnd();
-
-			expect(window.setTimeout).toHaveBeenCalledWith(view.currentReport.beginReport, 2000);
-			expect(view.initialGeocodeForReport).toEqual(false);
-		});
-		
-		it('does not begin report if not initial geocode for report', function() {
-			spyOn(window, 'setTimeout');
-			
-			view.currentReport = new reportMock();
-			view.initialGeocodeForReport = false;
-			view.viewChangeEnd();
-			
-			expect(window.setTimeout).not.toHaveBeenCalled();
-		});
 	});
 	
 	describe('Geocode and fly to functionality', function() {
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGE(geplugin);
+			view.ge = geplugin;
 			spyOn(geplugin, 'getView').andReturn(geViewMock);
 		});
 		
@@ -149,7 +128,7 @@ define(['jasmine-jquery',
 		it('geocodes address', function() {
 			var geocoderMock = new gmaps.Geocoder();
 			spyOn(geocoderMock, 'geocode');
-			view.setGeocoder(geocoderMock);
+			view.geocoder = geocoderMock;
 			
 			var address = 'aspen, co';
 			view.geocodeAndFlyToLocation(address, 13000, 65.5);

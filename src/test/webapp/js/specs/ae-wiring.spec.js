@@ -1,56 +1,14 @@
 define(['gearth', 
-        'gmaps', 
-        'geplugin', 
-        'ae-view'], 
-        function(gearthMock, gmapsMock, gePluginMock, AvyEyesView) {
-	
+        'gmaps',
+        'ae-view',
+        'ae-wiring'], function(gearthMock, gmapsMock, AvyEyesView, wireUI) {
+
 	var gearth = new gearthMock();
-	var geplugin = new gePluginMock();
 	var gmaps = new gmapsMock();
+	var view = new AvyEyesView(gearth, gmaps); 
 	
-	var view; 
-
-	describe('AvyEyesView instantiation', function() {
-		it('should set state booleans to correct initial values', function() {
-			view = new AvyEyesView(gearth, gmaps);
-	    	expect(view.aeFirstImpression).toEqual(true);
-	    	expect(view.initialGeocodeForReport).toEqual(false);
-	    });
-	    
-	    it('should have called gearth.createInstance()', function() {
-	    	view = new AvyEyesView(gearth, gmaps);
-	    	spyOn(gearth, 'createInstance');
-			view.init();
-	    	expect(gearth.createInstance).toHaveBeenCalled();
-	    });
-	});
-
-	describe('AvyEyesView initialization', function() {
-		beforeEach(function() {
-			view = new AvyEyesView(gearth, gmaps);
-		});
-		
-		it('should init GE plugin and geocoder', function() {
-	    	spyOn(view, 'wireUI');
-			spyOn(gearth, 'addEventListener');
-			spyOn(view, 'setGE').andCallThrough();
-			spyOn(view, 'setGeocoder');
-			var jqFadeOut = spyOn($.fn, 'fadeOut');
-
-			view.initEarthCB(geplugin);
-
-			expect(view.setGE).toHaveBeenCalledWith(geplugin);
-			expect(view.setGeocoder).toHaveBeenCalled();
-			expect(gearth.addEventListener).toHaveBeenCalledWith(
-					geplugin.getView(), 'viewchangeend', view.viewChangeEndTimeout);
-			expect(gearth.addEventListener).toHaveBeenCalledWith(
-					geplugin.getGlobe(), 'click', view.handleMapClick);
-
-			expect(view.wireUI).toHaveBeenCalled();
-			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
-		});
-		
-		it('should wire AE view UI', function() {
+	describe('AvyEyes view UI wiring', function() {
+		it('should wire jQuery UI fields', function() {
 			var menuMock = function(){
 				this.position = function(options){}
 			}
@@ -66,7 +24,7 @@ define(['gearth',
 			var jqCss = spyOn($.fn, 'css');
 			var jqSubmit = spyOn($.fn, 'submit');
 			
-			view.wireUI();
+			wireUI(view);
 			
 			expect(jquiAutocomplete.mostRecentCall.object.selector).toEqual('.avyAutoComplete');
 			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenu');
@@ -79,13 +37,19 @@ define(['gearth',
 			expect(jquiSpinner.calls[0].object.selector).toEqual('.avyHumanNumber');
 			expect(jquiSpinner.calls[1].object.selector).toEqual('.avySlopeAngle');
 
-			expect(jquiDialog.callCount).toEqual(3);
+			expect(jquiDialog.callCount).toEqual(8);
 			expect(jquiDialog.calls[0].object.selector).toEqual('#multiDialog');
 			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailDialog');
 			expect(jquiDialog.calls[2].object.selector).toEqual('#helpDialog');
+			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportGeocodeDialog');
+			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportBeginDrawDialog');
+			expect(jquiDialog.calls[5].object.selector).toEqual('#avyReportConfirmDrawDialog');
+			expect(jquiDialog.calls[6].object.selector).toEqual('#avyReportImgDialog');
+			expect(jquiDialog.calls[7].object.selector).toEqual('#avyReportDialog');
 			
 			expect(jqCss.mostRecentCall.object.selector).toEqual("#aeControlContainer");
 			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
 		});
 	});
+	
 });

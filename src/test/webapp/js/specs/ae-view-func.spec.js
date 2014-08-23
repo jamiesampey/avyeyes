@@ -11,20 +11,63 @@ define(['gearth',
 	var view;
 	var geFeaturesMock = geplugin.getFeatures();
 	
-	describe('Create and cancel a report', function() {
+	describe('AvyEyesView creation', function() {
+		it('should set state booleans to correct initial values', function() {
+			view = new AvyEyesView(gearth, gmaps);
+	    	expect(view.aeFirstImpression).toEqual(true);
+	    });
+	});
+
+	describe('AvyEyesView initialization', function() {
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGE(geplugin);
+		});
+		
+	    it('init should call gearth.createInstance()', function() {
+	    	spyOn(gearth, 'createInstance');
+			view.init();
+	    	expect(gearth.createInstance).toHaveBeenCalled();
+	    });
+	    
+		it('initEarthCB should init GE plugin and geocoder', function() {
+			spyOn(gearth, 'addEventListener');
+			spyOn(view, 'wireUI');
+			var jqFadeOut = spyOn($.fn, 'fadeOut');
+
+			expect(view.ge).toBeNull();
+			expect(view.geocoder).toBeNull();
+			
+			view.initEarthCB(geplugin);
+
+			expect(view.ge).toEqual(geplugin);
+			expect(view.geocoder).not.toBeNull();
+			
+			expect(gearth.addEventListener.callCount).toEqual(2);
+			expect(gearth.addEventListener.calls[0].args[1]).toEqual('viewchangeend');
+			expect(gearth.addEventListener.calls[1].args[1]).toEqual('click');
+
+			expect(view.wireUI).toHaveBeenCalledWith(view);
+			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
+		});
+
+	});
+	
+	describe('Create and cancel a report', function() {
+		var mockExtIdResponse = {fail: function(callback){}}
+		
+		beforeEach(function() {
+			view = new AvyEyesView(gearth, gmaps);
+			view.ge = geplugin;
+			
+			spyOn($, 'getJSON').andReturn(mockExtIdResponse);
 		});
 		
 		it('Creates and initializes a new report', function() {
 			spyOn(view, 'hideSearchDiv');
 			
 			expect(view.currentReport).toBeNull();
-			expect(view.isFirstReport).toBe(true);
 			view.doReport();
 			expect(view.currentReport).not.toBeNull();
-			expect(view.isFirstReport).toBe(false);
 		});
 
 		it('Cancels an existing report', function() {
@@ -50,35 +93,37 @@ define(['gearth',
 	describe('Show and remove search results', function() {
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
-			view.setGE(geplugin);
+			view.ge = geplugin;
 		});
 		
 		it('Shows search results KML', function() {
+			spyOn(view, 'clearKmlOverlay');
 			spyOn(geplugin, 'parseKml');
 			spyOn(geFeaturesMock, 'appendChild');
 			var kmlStr = '<kml>some data</kml>';
 			
-			expect(view.avySearchResultKmlObj).toBeNull();
-			
 			view.overlaySearchResultKml(kmlStr);
 			
+			expect(view.clearKmlOverlay).toHaveBeenCalled();
 			expect(geplugin.parseKml).toHaveBeenCalledWith(kmlStr);
-			expect(view.avySearchResultKmlObj).not.toBeNull();
 			expect(geFeaturesMock.appendChild).toHaveBeenCalled();
 		});
 		
 		it('Clears search results KML', function() {
-			spyOn(geFeaturesMock, 'hasChildNodes').andReturn(true);
-			spyOn(geFeaturesMock, 'removeChild');
-			var kmlStr = '<kml>some data</kml>';
-			view.overlaySearchResultKml(kmlStr);
-			expect(view.avySearchResultKmlObj).not.toBeNull();
+			var appendChild = spyOn(geFeaturesMock, 'appendChild').andCallThrough();
+			var hasChildNodes = spyOn(geFeaturesMock, 'hasChildNodes').andCallThrough();
+			var getFirstChild = spyOn(geFeaturesMock, 'getFirstChild').andCallThrough();
+			var removeChild = spyOn(geFeaturesMock, 'removeChild').andCallThrough();
 			
-			view.clearSearchResultKml();
+			view.overlaySearchResultKml('<kml>some data</kml>');
+
+			expect(appendChild.callCount).toEqual(1);
 			
-			expect(geFeaturesMock.hasChildNodes).toHaveBeenCalled();
-			expect(geFeaturesMock.removeChild).toHaveBeenCalled();
-			expect(view.avySearchResultKmlObj).toBeNull();
+			view.clearKmlOverlay();
+			
+			expect(hasChildNodes.callCount).toEqual(3);
+			expect(getFirstChild.callCount).toEqual(1);
+			expect(removeChild.callCount).toEqual(1);
 		});
 	});
 });

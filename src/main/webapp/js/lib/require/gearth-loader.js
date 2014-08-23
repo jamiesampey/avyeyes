@@ -1,5 +1,5 @@
 define(['http://www.google.com/jsapi?key=' + GOOGLE_API_KEY], function() {
-  function EarthAsyncLoader(callbackFunc) {
+  var earthAsyncLoad = function(callbackFunc) {
 	var options = {
   	  'sensor': true,
 	  'callback': callbackFunc
@@ -7,5 +7,5 @@ define(['http://www.google.com/jsapi?key=' + GOOGLE_API_KEY], function() {
     google.load('earth', 1, options);
   }
  
-  return EarthAsyncLoader;
+  return earthAsyncLoad;
 });
