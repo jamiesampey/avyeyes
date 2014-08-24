@@ -1,16 +1,25 @@
 package com.avyeyes.model
 
-import org.squeryl.Schema
-import org.squeryl.PrimitiveTypeMode._
-import scala.collection.mutable.HashMap
-import com.avyeyes.util.AEHelpers._
-import com.avyeyes.util.AEConstants._
-import org.apache.commons.lang3.RandomStringUtils
 import java.util.Date
+import java.util.concurrent.TimeUnit
+
+import org.apache.commons.lang3.RandomStringUtils
+import org.squeryl.PrimitiveTypeMode.__thisDsl
+import org.squeryl.PrimitiveTypeMode.bool2ScalarBoolean
+import org.squeryl.PrimitiveTypeMode.long2ScalarLong
+import org.squeryl.PrimitiveTypeMode.string2ScalarString
+import org.squeryl.Schema
+
+import com.avyeyes.util.AEConstants.ExtIdChars
+import com.avyeyes.util.AEConstants.ExtIdLength
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
+
 import net.liftweb.common.Loggable
 
 object AvalancheDb extends Schema with Loggable {
-    private val reservedExtIds: HashMap[String, Date] = HashMap.empty
+  private val reservedExtIds: Cache[String, Date] = 
+    CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.DAYS).build()
     
 	val avalanches = table[Avalanche]("avalanche")
 	val avalancheImages = table[AvalancheImg]("avalanche_img")
@@ -38,16 +47,17 @@ object AvalancheDb extends Schema with Loggable {
 	    var extIdAttempt = ""
         do {
             extIdAttempt = RandomStringUtils.random(ExtIdLength, ExtIdChars)
-        } while (reservedExtIds.contains(extIdAttempt) 
+        } while (reservedExtIds.getIfPresent(extIdAttempt) != null
             || avalanches.where(a => a.extId === extIdAttempt).headOption.isDefined)
 	    
-        reservedExtIds += (extIdAttempt -> new Date())
-        logger.info("Reserved new extId " + extIdAttempt + ". Current reserved extIds: " + reservedExtIds.keySet)
+        reservedExtIds.put(extIdAttempt, new Date())
+        logger.info("Reserved new extId " + extIdAttempt + ". Current extIds reserve cache size is " 
+          + reservedExtIds.size)
         extIdAttempt
 	}
 	
 	def unreserveExtId(extId: String) {
-	  reservedExtIds -= extId
+	  reservedExtIds.invalidate(extId)
 	  logger.info("Unreserved extId " + extId)
 	}
 }
