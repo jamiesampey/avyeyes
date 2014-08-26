@@ -4,15 +4,10 @@ import java.util.Date
 import net.liftweb.util.Props
 
 object AEConstants {
-    val JdbcConnectionString = new StringBuilder("jdbc:postgresql://")
-        .append(Props.get("db.host").get).append(":")
-        .append(Props.get("db.port").get).append("/")
-        .append(Props.get("db.name").get).toString
-    
-    val ChromeSupportedVersion = 35.0
-    val FirefoxSupportedVersion = 30.0
-    val SafariSupportedVersion = 5.1
-    val IeSupportedVersion = 9.0
+    val ChromeSupportedVersion: Double = 35.0
+    val FirefoxSupportedVersion: Double = 30.0
+    val SafariSupportedVersion: Int = 6
+    val IeSupportedVersion: Int = 9
     
 	val EarliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val HumanNumberUnknown: Int = -1

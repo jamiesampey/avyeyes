@@ -1,22 +1,26 @@
 package com.avyeyes.util
 
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.model.enums.Aspect
-import com.avyeyes.model.enums._
 import java.text.SimpleDateFormat
-import net.liftweb.util.Helpers._
-import net.liftweb.json.JsonAST._
-import net.liftweb.util.Props
+
 import scala.xml.Unparsed
-import net.liftweb.http.S
+
+import com.avyeyes.util.AEConstants._
+
 import net.liftweb.common.Box
+import net.liftweb.http.S
 import net.liftweb.http.provider.HTTPRequest
+import net.liftweb.util.Helpers.asDouble
+import net.liftweb.util.Helpers.asInt
+import net.liftweb.util.Props
 
 
 object AEHelpers {
     private val UnknownLabel = S.?("enum.U")
+    
 	private val df = new SimpleDateFormat("MM-dd-yyyy")
 
+    def getProp(prop: String) = Props.get(prop) openOr(prop)
+    
     def parseDateStr(str: String) = df.parse(str)
 	
     def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))

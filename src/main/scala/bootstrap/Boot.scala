@@ -1,12 +1,18 @@
 package bootstrap.liftweb
 
-import net.liftweb.http._
-import net.liftweb.sitemap.{Menu, SiteMap}
-import net.liftweb.common.Full
-import com.avyeyes.util.AEConstants._
+import org.squeryl.Session
+import org.squeryl.SessionFactory
+import org.squeryl.adapters.PostgreSqlAdapter
 import com.avyeyes.rest._
-import net.liftweb.common.Box
-import net.liftweb.common.Loggable
+import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.AEHelpers._
+import net.liftweb.common._
+import net.liftweb.http._
+import net.liftweb.sitemap.LocPath.stringToLocPath
+import net.liftweb.sitemap.Menu
+import net.liftweb.sitemap.SiteMap
+import net.liftweb.util.Vendor.valToVendor
+import net.liftweb.util.Props
 
 
 /**
@@ -14,7 +20,7 @@ import net.liftweb.common.Loggable
  * to modify lift's environment
  */
 class Boot extends Loggable {
-  def boot {
+  def boot() = {
     logger.info("Lift booting")
     
     // where to search snippet
@@ -39,10 +45,10 @@ class Boot extends Loggable {
     LiftRules.maxMimeSize = MaxImageSize
     
     // setup REST endpoints
-    LiftRules.statelessDispatchTable.append(ImageUpload)
-    LiftRules.statelessDispatchTable.append(ImageServe)
-    LiftRules.statelessDispatchTable.append(ExtIdVendor)
-    LiftRules.statelessDispatchTable.append(AvyDetails)
+    LiftRules.statelessDispatch.append(ImageUpload)
+    LiftRules.statelessDispatch.append(ImageServe)
+    LiftRules.statelessDispatch.append(ExtIdVendor)
+    LiftRules.statelessDispatch.append(AvyDetails)
     
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
@@ -58,23 +64,40 @@ class Boot extends Loggable {
   	case "css" :: _ => true
   }
 
-  private def initDb = {
+  private def initDb() = {
     logger.info("Initializing DB connection")
     
     import org.squeryl.SessionFactory
     import org.squeryl.Session
     import org.squeryl.adapters.PostgreSqlAdapter
 
+    def jdbcConnectionString =  {
+      new StringBuilder("jdbc:postgresql://")
+       .append(getProp("db.host")).append(":")
+       .append(getProp("db.port")).append("/")
+       .append(getProp("db.name")).toString
+    }
+    
 	Class.forName("org.postgresql.Driver")
 	SessionFactory.concreteFactory = Some(()=>
-	Session.create(java.sql.DriverManager.getConnection(JdbcConnectionString), new PostgreSqlAdapter))
+	Session.create(java.sql.DriverManager.getConnection(jdbcConnectionString), new PostgreSqlAdapter))
   }
   
   private def browserSupported(reqBox: Box[Req]): Boolean = reqBox match {
-    case isDefined if reqBox.get.chromeVersion.isDefined && reqBox.get.chromeVersion.get >= ChromeSupportedVersion => true
-    case isDefined if reqBox.get.firefoxVersion.isDefined && reqBox.get.firefoxVersion.get >= FirefoxSupportedVersion => true
-    case isDefined if reqBox.get.safariVersion.isDefined && reqBox.get.safariVersion.get >= SafariSupportedVersion => true
-    case isDefined if reqBox.get.ieVersion.isDefined && reqBox.get.ieVersion.get >= IeSupportedVersion => true
-    case _ => false
+      case Empty => false
+      case Failure(_ ,_ ,_) => false
+      case Full(request) => { 
+        if (unboxBrowserVersion(request.chromeVersion) >= ChromeSupportedVersion
+            || unboxBrowserVersion(request.firefoxVersion) >= FirefoxSupportedVersion
+            || unboxBrowserVersion(request.safariVersion) >= SafariSupportedVersion
+            || unboxBrowserVersion(request.ieVersion) >= IeSupportedVersion) {
+          true
+        } else {
+          false
+        }
+      }
   }
+  
+  private def unboxBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
+  private def unboxBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
 }

@@ -74,7 +74,7 @@ class Report extends Loggable {
 	      }
 	      
 	      logger.info("Avalanche " + extId + " successfully inserted")
-          JsDialog.info("avyReportSuccess", Props.get("base.url").get + extId)
+          JsDialog.info("avyReportSuccess", getProp("base.url") + extId)
       } catch {
           case e: Exception => {
             logger.error("Error creating avalanche " + extId, e)
@@ -85,14 +85,14 @@ class Report extends Loggable {
       }
   }
   
-  private def checkAutoCompleteValues = {
-         if (isBlank(aspect)) aspect = Aspect.N.toString
-         if (isBlank(submitterExp)) submitterExp = ExperienceLevel.A0.toString
-         if (isBlank(sky)) sky = Sky.U.toString
-         if (isBlank(precip)) precip = Precip.U.toString
-         if (isBlank(avyType)) avyType = AvalancheType.U.toString
-         if (isBlank(trigger)) trigger = AvalancheTrigger.U.toString
-         if (isBlank(bedSurface)) bedSurface = AvalancheInterface.U.toString
-         if (isBlank(modeOfTravel)) modeOfTravel = ModeOfTravel.U.toString
+  private def checkAutoCompleteValues() = {
+     if (isBlank(aspect)) aspect = Aspect.N.toString
+     if (isBlank(submitterExp)) submitterExp = ExperienceLevel.A0.toString
+     if (isBlank(sky)) sky = Sky.U.toString
+     if (isBlank(precip)) precip = Precip.U.toString
+     if (isBlank(avyType)) avyType = AvalancheType.U.toString
+     if (isBlank(trigger)) trigger = AvalancheTrigger.U.toString
+     if (isBlank(bedSurface)) bedSurface = AvalancheInterface.U.toString
+     if (isBlank(modeOfTravel)) modeOfTravel = ModeOfTravel.U.toString
   }
 }
