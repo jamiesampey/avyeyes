@@ -4,10 +4,11 @@ import java.util.Date
 import net.liftweb.util.Props
 
 object AEConstants {
-    val ChromeSupportedVersion: Double = 35.0
-    val FirefoxSupportedVersion: Double = 30.0
-    val SafariSupportedVersion: Int = 6
-    val IeSupportedVersion: Int = 9
+    val ChromeVersion: Double = 35.0
+    val FirefoxVersion: Double = 30.0
+    val OperaVersion: Double = 22.0
+    val SafariVersion: Double = 6.0
+    val IeVersion: Double = 9.0
     
 	val EarliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val HumanNumberUnknown: Int = -1

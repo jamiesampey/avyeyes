@@ -8,6 +8,6 @@ import com.avyeyes.util.AEConstants._
 class NotSupported {
     def render = {
       "#browserNotSupportedMsg" #> getMessage("browserNotSupported", 
-          ChromeSupportedVersion, FirefoxSupportedVersion, SafariSupportedVersion, IeSupportedVersion)
+          ChromeVersion, FirefoxVersion, OperaVersion, SafariVersion, IeVersion)
     }
 }

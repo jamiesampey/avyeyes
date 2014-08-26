@@ -28,12 +28,12 @@ class Boot extends Loggable {
     
     LiftRules.setSiteMap(SiteMap(
       Menu.i("Home") / "index",
-      Menu.i("Not Supported") / "notsupported"
+      Menu.i("Browser Not Supported") / "whawha"
     ))
 
     LiftRules.dispatch.prepend {
-      case Req(path, _, _) if (path != List("notsupported") && !browserSupported(S.request)) => 
-        () => {Full(RedirectResponse("/notsupported.html"))}
+      case Req(path, _, _) if (path != List("whawha") && !browserSupported(S.request)) => 
+        () => {Full(RedirectResponse("/whawha.html"))}
     }
     
     LiftRules.statelessRewrite.prepend {
@@ -51,8 +51,7 @@ class Boot extends Loggable {
     LiftRules.statelessDispatch.append(AvyDetails)
     
     // Use HTML5 for rendering
-    LiftRules.htmlProperties.default.set((r: Req) =>
-      new Html5Properties(r.userAgent))
+    LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
 
     LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
       
@@ -87,10 +86,10 @@ class Boot extends Loggable {
       case Empty => false
       case Failure(_ ,_ ,_) => false
       case Full(request) => { 
-        if (unboxBrowserVersion(request.chromeVersion) >= ChromeSupportedVersion
-            || unboxBrowserVersion(request.firefoxVersion) >= FirefoxSupportedVersion
-            || unboxBrowserVersion(request.safariVersion) >= SafariSupportedVersion
-            || unboxBrowserVersion(request.ieVersion) >= IeSupportedVersion) {
+        if (unboxedBrowserVersion(request.chromeVersion) >= ChromeVersion
+            || unboxedBrowserVersion(request.firefoxVersion) >= FirefoxVersion
+            || unboxedBrowserVersion(request.safariVersion) >= SafariVersion
+            || unboxedBrowserVersion(request.ieVersion) >= IeVersion) {
           true
         } else {
           false
@@ -98,6 +97,6 @@ class Boot extends Loggable {
       }
   }
   
-  private def unboxBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
-  private def unboxBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
+  private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
+  private def unboxedBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
 }
