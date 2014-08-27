@@ -1,11 +1,11 @@
 package com.avyeyes.util
 
-import com.avyeyes.test.LiftBootMock
 import com.avyeyes.test.WebSpec2
 import com.avyeyes.util.ui.JsDialog
 import net.liftweb.http.S
+import bootstrap.liftweb.Boot
 
-class JsDialogTest extends WebSpec2(LiftBootMock.boot _) {
+class JsDialogTest extends WebSpec2(Boot().boot _) {
     "Info dialog" should {
       "Use the correct dialog title" withSFor("/") in {
         val cmd = JsDialog.info("avySearchSuccess").toJsCmd

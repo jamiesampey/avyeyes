@@ -4,10 +4,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 
 import org.apache.commons.lang3.RandomStringUtils
-import org.squeryl.PrimitiveTypeMode.__thisDsl
-import org.squeryl.PrimitiveTypeMode.bool2ScalarBoolean
-import org.squeryl.PrimitiveTypeMode.long2ScalarLong
-import org.squeryl.PrimitiveTypeMode.string2ScalarString
+import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.Schema
 
 import com.avyeyes.util.AEConstants.ExtIdChars
