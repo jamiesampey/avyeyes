@@ -7,14 +7,9 @@ import java.util.Calendar
 import scala.xml.NodeSeq
 import com.avyeyes.util.AEConstants._
 import org.apache.commons.lang3.RandomStringUtils
+import com.avyeyes.test.LiftBootMock
 
-object Boot {
-  def boot() = {
-    LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
-  }
-}
-
-class AEHelpersTest extends WebSpec2(Boot.boot _) {
+class AEHelpersTest extends WebSpec2(LiftBootMock.boot _) {
     "Date parsing" should {
       "Parse a normal date correctly" withSFor("/") in {
           val parsedDate = AEHelpers.parseDateStr("08-26-2014")
