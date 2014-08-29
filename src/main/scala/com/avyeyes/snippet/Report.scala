@@ -8,16 +8,15 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.AvalancheService
-import com.avyeyes.util.AEHelpers.getProp
-import com.avyeyes.util.AEHelpers.parseDateStr
-import com.avyeyes.util.ui.JsDialog
+import com.avyeyes.service.PersistenceService
+import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.JsDialog
 
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JsCmd
 import net.liftweb.util.Helpers._
 
-class Report extends AvalancheService with SquerylPersistence {
+class Report extends PersistenceService with SquerylPersistence {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""

@@ -5,13 +5,13 @@ import java.io.ByteArrayInputStream
 import org.squeryl.PrimitiveTypeMode._
 
 import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.AvalancheService
+import com.avyeyes.service.PersistenceService
 
 import net.liftweb.http.BadResponse
 import net.liftweb.http.StreamingResponse
 import net.liftweb.http.rest.RestHelper
 
-object ImageServe extends RestHelper with AvalancheService with SquerylPersistence {
+object ImageServe extends RestHelper with PersistenceService with SquerylPersistence {
   serve {
     case "rest" :: "imgserve" :: avyExtId :: filename :: Nil Get req => {
       val returnedImg = transaction { 

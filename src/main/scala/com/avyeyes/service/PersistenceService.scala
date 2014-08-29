@@ -11,7 +11,7 @@ import com.avyeyes.util.AEConstants._
 import net.liftweb.common.Loggable
 import net.liftweb.http.FileParamHolder
 
-trait AvalancheService extends Loggable {
+trait PersistenceService extends Loggable {
   this: PersistenceContext =>
   
   def findAvalanche(extId: String): Option[Avalanche] = selectAvalanche(extId)

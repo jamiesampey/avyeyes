@@ -1,18 +1,14 @@
 package com.avyeyes.snippet
 
 import scala.math._
-
 import org.squeryl.PrimitiveTypeMode.transaction
 
-import com.avyeyes.model.Avalanche
 import com.avyeyes.model._
-import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.AvalancheSearchCriteria
-import com.avyeyes.service.AvalancheService
+import com.avyeyes.persist._
+import com.avyeyes.service._
 import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers.strToDbl
-import com.avyeyes.util.ui.JsDialog
-import com.avyeyes.util.ui.KmlCreator
+import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.JsDialog
 
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
@@ -20,9 +16,7 @@ import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.util.Helpers.strToCssBindPromoter
 
-class Search extends AvalancheService with SquerylPersistence {
-  private val kmlCreator = new KmlCreator
-
+class Search extends KmlCreator with PersistenceService with SquerylPersistence {
   var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
   var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 
   var fromDate = ""; var toDate = ""
@@ -54,7 +48,7 @@ class Search extends AvalancheService with SquerylPersistence {
         JsDialog.error("eyeTooHigh")
     else {
       val avyList = matchingAvalanchesInRange
-      val kml = kmlCreator.createCompositeKml(avyList:_*)
+      val kml = createCompositeKml(avyList:_*)
       
       logger.debug(s"Found ${avyList.size} avalanches matching criteria "
           + s" [From: $fromDate | To: $toDate | Type: $avyType | Trigger: $avyTrigger"

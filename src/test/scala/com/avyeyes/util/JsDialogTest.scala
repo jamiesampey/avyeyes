@@ -1,7 +1,6 @@
 package com.avyeyes.util
 
 import com.avyeyes.test.WebSpec2
-import com.avyeyes.util.ui.JsDialog
 import net.liftweb.http.S
 import bootstrap.liftweb.Boot
 

@@ -4,10 +4,9 @@ import org.squeryl.PrimitiveTypeMode.transaction
 
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.AvalancheService
+import com.avyeyes.service._
 import com.avyeyes.util.AEConstants.ExtIdUrlParam
 import com.avyeyes.util.AEHelpers.isValidExtId
-import com.avyeyes.util.ui.KmlCreator
 
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
@@ -17,7 +16,7 @@ import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
 
 
-class Init extends AvalancheService with SquerylPersistence {
+class Init extends KmlCreator with PersistenceService with SquerylPersistence {
     private val InitViewLat = 44
     private val InitViewLng = -115
     private val InitViewAltMeters = 2700000
@@ -45,8 +44,7 @@ class Init extends AvalancheService with SquerylPersistence {
         
         if (initAvalanche.isDefined) {
           logger.debug("Initial page view with init avy " + extId)
-          val kml = new KmlCreator().createCompositeKml(initAvalanche.get)
-          Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
+          Call("avyeyes.overlaySearchResultKml", createCompositeKml(initAvalanche.get).toString).cmd &
           Call("avyeyes.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, InitAvyAltMeters, 
               InitAvyCamTilt, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd
         } else {
@@ -57,15 +55,14 @@ class Init extends AvalancheService with SquerylPersistence {
     }
     
     private def autoCompleteSourcesCmd: JsCmd = {
-      JsRaw("""$('.avyTypeAutoComplete').autocomplete('option', 'source', """ + AvalancheType.toJsonArray + """);
-               $('.avyTriggerAutoComplete').autocomplete('option', 'source', """ + AvalancheTrigger.toJsonArray + """);
-               $('.avySkyAutoComplete').autocomplete('option', 'source', """ + Sky.toJsonArray + """);
-               $('.avyPrecipAutoComplete').autocomplete('option', 'source', """ + Precip.toJsonArray + """);
-               $('.avyInterfaceAutoComplete').autocomplete('option', 'source', """ + AvalancheInterface.toJsonArray + """);
-               $('.avyAspectAutoComplete').autocomplete('option', 'source', """ + Aspect.toJsonArray + """);
-               $('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', """ + ModeOfTravel.toJsonArray + """);
-               $('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', """ + ExperienceLevel.toJsonArray + """);
-            """).cmd
+      JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${AvalancheType.toJsonArray});"
+        + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${AvalancheTrigger.toJsonArray});"
+        + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${Sky.toJsonArray});"
+        + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${Precip.toJsonArray});"
+        + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${AvalancheInterface.toJsonArray});"
+        + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${Aspect.toJsonArray});"
+        + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${ModeOfTravel.toJsonArray});"
+        + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toJsonArray});").cmd
     }
     
     private def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {

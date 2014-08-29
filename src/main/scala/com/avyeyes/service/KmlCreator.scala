@@ -1,9 +1,9 @@
-package com.avyeyes.util.ui
+package com.avyeyes.service
 
 import com.avyeyes.model.Avalanche
 import scala.xml._
 
-class KmlCreator {
+trait KmlCreator {
 	def createCompositeKml(avalanches: Avalanche*): Node = {
 	  Utility.trim(
 	      <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" 

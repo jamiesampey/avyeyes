@@ -1,20 +1,18 @@
 package com.avyeyes.rest
 
 import org.squeryl.PrimitiveTypeMode.transaction
-
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.AvalancheService
 import com.avyeyes.util.AEHelpers.humanNumberToStr
-
 import net.liftweb.http.BadResponse
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
+import com.avyeyes.service.PersistenceService
 
 
-object AvyDetails extends RestHelper with JsonResponder with AvalancheService with SquerylPersistence {
+object AvyDetails extends RestHelper with JsonResponder with PersistenceService with SquerylPersistence {
   serve {
     case "rest" :: "avydetails" :: extId :: Nil Get req => {
       val avyJsonOption = transaction {

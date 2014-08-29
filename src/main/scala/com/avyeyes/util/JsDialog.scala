@@ -1,4 +1,4 @@
-package com.avyeyes.util.ui
+package com.avyeyes.util
 
 import com.avyeyes.util.AEHelpers._
 
