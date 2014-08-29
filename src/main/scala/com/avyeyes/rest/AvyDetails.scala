@@ -1,56 +1,53 @@
 package com.avyeyes.rest
 
-import org.squeryl.PrimitiveTypeMode._
-import com.avyeyes.model.AvalancheDb._
+import org.squeryl.PrimitiveTypeMode.transaction
+
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
-import com.avyeyes.util.AEHelpers._
-import net.liftweb.json.JsonDSL._
+import com.avyeyes.persist.SquerylPersistence
+import com.avyeyes.service.AvalancheService
+import com.avyeyes.util.AEHelpers.humanNumberToStr
+
 import net.liftweb.http.BadResponse
 import net.liftweb.http.rest.RestHelper
-import com.avyeyes.model.enums.AvalancheType
 import net.liftweb.json.JsonAST._
-import net.liftweb.common.Loggable
+import net.liftweb.json.JsonDSL._
 
 
-object AvyDetails extends RestHelper with JsonResponder with Loggable {
-    serve {
-      case "rest" :: "avydetails" :: extId :: Nil Get req => {
-        val avyJsonOption = transaction {
-            val avalancheOption = getAvalancheByExtId(Some(extId))
-            if (avalancheOption.isDefined) {
-                Some(getJSON(avalancheOption.get))
-            } else None
-        }
-        
-        if (avyJsonOption.isDefined) {
-            logger.debug("Serving details for avy " + extId)
-            sendJsonResponse(avyJsonOption.get)
-        } else {
-            logger.warn("Avy details request failed. Could not serve details for avy " + extId)
-            new BadResponse
-        }
+object AvyDetails extends RestHelper with JsonResponder with AvalancheService with SquerylPersistence {
+  serve {
+    case "rest" :: "avydetails" :: extId :: Nil Get req => {
+      val avyJsonOption = transaction {
+          val avalancheOption = findViewableAvalanche(extId)
+          if (avalancheOption.isDefined) {
+              Some(getJSON(avalancheOption.get))
+          } else None
+      }
+      
+      if (avyJsonOption.isDefined) {
+          logger.debug("Serving details for avy " + extId)
+          sendJsonResponse(avyJsonOption.get)
+      } else {
+          logger.warn("Avy details request failed. Could not serve details for avy " + extId)
+          new BadResponse
       }
     }
+  }
+
+  private def getJSON(a: Avalanche) = {
+    val imgFilenames = findAvalancheImageFilenames(a.extId).toList
     
-    private def getJSON(a: Avalanche) = {
-      ("extId" -> a.extId) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
-      ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 
-      ("sky" -> Sky.getEnumLabel(a.sky)) ~ ("precip" -> Precip.getEnumLabel(a.precip)) ~
-      ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.getEnumLabel(a.aspect)) ~ ("angle" -> a.angle) ~
-      ("avyType" -> AvalancheType.getEnumLabel(a.avyType)) ~
-      ("trigger" -> AvalancheTrigger.getEnumLabel(a.trigger)) ~
-      ("bedSurface" -> AvalancheInterface.getEnumLabel(a.bedSurface)) ~
-      ("rSize" -> a.rSize) ~ ("dSize" -> a.dSize) ~
-      ("caught" -> humanNumberToStr(a.caught)) ~ ("partiallyBuried" -> humanNumberToStr(a.partiallyBuried)) ~ 
-      ("fullyBuried" -> humanNumberToStr(a.fullyBuried)) ~ ("injured" -> humanNumberToStr(a.injured)) ~ 
-      ("killed" -> humanNumberToStr(a.killed)) ~ ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
-      ("comments" -> a.comments) ~ ("images" -> getImageFilenames(a.extId))
-    }
-    
-    private def getImageFilenames(extId: String): JArray = {
-        val filenames = from(avalancheImageDropbox)(img => 
-          where(img.avyExtId === extId) select(img.filename)).toList
-        JArray(filenames map (s => JString(s)))
-    }
+    ("extId" -> a.extId) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
+    ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 
+    ("sky" -> Sky.getEnumLabel(a.sky)) ~ ("precip" -> Precip.getEnumLabel(a.precip)) ~
+    ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.getEnumLabel(a.aspect)) ~ ("angle" -> a.angle) ~
+    ("avyType" -> AvalancheType.getEnumLabel(a.avyType)) ~
+    ("trigger" -> AvalancheTrigger.getEnumLabel(a.trigger)) ~
+    ("bedSurface" -> AvalancheInterface.getEnumLabel(a.bedSurface)) ~
+    ("rSize" -> a.rSize) ~ ("dSize" -> a.dSize) ~
+    ("caught" -> humanNumberToStr(a.caught)) ~ ("partiallyBuried" -> humanNumberToStr(a.partiallyBuried)) ~ 
+    ("fullyBuried" -> humanNumberToStr(a.fullyBuried)) ~ ("injured" -> humanNumberToStr(a.injured)) ~ 
+    ("killed" -> humanNumberToStr(a.killed)) ~ ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
+    ("comments" -> a.comments) ~ ("images" -> JArray(imgFilenames map (s => JString(s))))
+  }
 }

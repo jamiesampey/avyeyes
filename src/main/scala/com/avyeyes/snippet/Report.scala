@@ -1,21 +1,23 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.model.Avalanche
-import com.avyeyes.model.AvalancheDb
-import com.avyeyes.model.enums._
-import com.avyeyes.util.AEHelpers._
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.ui.JsDialog
-import net.liftweb.http._
-import net.liftweb.util.Helpers._
-import net.liftweb.util.Props
-import org.squeryl.PrimitiveTypeMode._
 import scala.xml.XML
-import org.apache.commons.lang3.StringUtils.isBlank
-import net.liftweb.common.Loggable
-import net.liftweb.http.js.JsCmd
 
-class Report extends Loggable {
+import org.apache.commons.lang3.StringUtils._
+import org.squeryl.PrimitiveTypeMode.transaction
+
+import com.avyeyes.model.Avalanche
+import com.avyeyes.model.enums._
+import com.avyeyes.persist.SquerylPersistence
+import com.avyeyes.service.AvalancheService
+import com.avyeyes.util.AEHelpers.getProp
+import com.avyeyes.util.AEHelpers.parseDateStr
+import com.avyeyes.util.ui.JsDialog
+
+import net.liftweb.http.SHtml
+import net.liftweb.http.js.JsCmd
+import net.liftweb.util.Helpers._
+
+class Report extends AvalancheService with SquerylPersistence {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
@@ -56,32 +58,33 @@ class Report extends Loggable {
   private def doReport(): JsCmd = {
       try {
          checkAutoCompleteValues
+         
          val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
-    	 
-         transaction {
-    	      val newAvalanche = new Avalanche(extId, false, 
-    	          submitterEmail, ExperienceLevel.withName(submitterExp), 
-    	          asDouble(lat) openOr 0, asDouble(lng) openOr 0, 
-    	          areaName, parseDateStr(dateStr), Sky.withName(sky), Precip.withName(precip), 
-    	          asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
-    	    	  AvalancheType.withName(avyType), AvalancheTrigger.withName(trigger), 
-    	    	  AvalancheInterface.withName(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
-    	    	  asInt(caught) openOr -1, asInt(partiallyBuried) openOr -1, asInt(fullyBuried) openOr -1, 
-    	    	  asInt(injured) openOr -1, asInt(killed) openOr -1, 
-    	    	  ModeOfTravel.withName(modeOfTravel), Some(comments), kmlCoordsNode.text.trim)
-    	  
-	    	  AvalancheDb.avalanches insert newAvalanche
+
+         val newAvalanche = new Avalanche(extId, false, 
+           submitterEmail, ExperienceLevel.withName(submitterExp), 
+           asDouble(lat) openOr 0, asDouble(lng) openOr 0, 
+           areaName, parseDateStr(dateStr), Sky.withName(sky), Precip.withName(precip), 
+           asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
+           AvalancheType.withName(avyType), AvalancheTrigger.withName(trigger), 
+           AvalancheInterface.withName(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
+           asInt(caught) openOr -1, asInt(partiallyBuried) openOr -1, asInt(fullyBuried) openOr -1, 
+           asInt(injured) openOr -1, asInt(killed) openOr -1, 
+           ModeOfTravel.withName(modeOfTravel), Some(comments), kmlCoordsNode.text.trim)
+
+        transaction {
+          insertAvalanche(newAvalanche)
 	      }
 	      
 	      logger.info("Avalanche " + extId + " successfully inserted")
-          JsDialog.info("avyReportSuccess", getProp("base.url") + extId)
+        JsDialog.info("avyReportSuccess", getProp("base.url") + extId)
       } catch {
-          case e: Exception => {
-            logger.error("Error creating avalanche " + extId, e)
-            JsDialog.error("avyReportError", e.getMessage())
-          }
+        case e: Exception => {
+          logger.error("Error creating avalanche " + extId, e)
+          JsDialog.error("avyReportError", e.getMessage())
+        }
       } finally {
-          AvalancheDb.unreserveExtId(extId)
+        unreserveExtId(extId)
       }
   }
   

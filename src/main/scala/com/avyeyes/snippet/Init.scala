@@ -1,22 +1,23 @@
 package com.avyeyes.snippet
 
 import org.squeryl.PrimitiveTypeMode.transaction
-import com.avyeyes.model.AvalancheDb
+
 import com.avyeyes.model.enums._
-import com.avyeyes.util.AEHelpers._
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.persist.SquerylPersistence
+import com.avyeyes.service.AvalancheService
+import com.avyeyes.util.AEConstants.ExtIdUrlParam
+import com.avyeyes.util.AEHelpers.isValidExtId
 import com.avyeyes.util.ui.KmlCreator
+
 import net.liftweb.http.S
 import net.liftweb.http.SHtml
-import net.liftweb.http.js.JE.Call
-import net.liftweb.http.js.JE.JsRaw
+import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
-import net.liftweb.common.Loggable
 
 
-class Init extends Loggable {
+class Init extends AvalancheService with SquerylPersistence {
     private val InitViewLat = 44
     private val InitViewLng = -115
     private val InitViewAltMeters = 2700000
@@ -37,9 +38,9 @@ class Init extends Loggable {
     
     private def initialFlyToCmd: JsCmd = {
         val initAvalanche = if (isValidExtId(extId)) {
-            transaction {
-                AvalancheDb.getAvalancheByExtId(extId)
-            }
+          transaction {
+            findViewableAvalanche(extId.get)
+          }
         } else None
         
         if (initAvalanche.isDefined) {
