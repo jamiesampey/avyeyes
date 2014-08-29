@@ -1,22 +1,20 @@
 package com.avyeyes.snippet
 
 import scala.xml.XML
-
 import org.apache.commons.lang3.StringUtils._
 import org.squeryl.PrimitiveTypeMode.transaction
-
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.SquerylPersistence
 import com.avyeyes.service.PersistenceService
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
-
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JsCmd
 import net.liftweb.util.Helpers._
+import com.avyeyes.service.ExternalIdService
 
-class Report extends PersistenceService with SquerylPersistence {
+class Report extends PersistenceService with SquerylPersistence with ExternalIdService {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
