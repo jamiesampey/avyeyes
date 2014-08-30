@@ -31,9 +31,7 @@
     <appender-ref ref="LIFT-DAILY-ROLLING-FILE" />
   </logger>
   
-  <logger name="com.avyeyes" level="INFO" additivity="false">
-    <appender-ref ref="AVYEYES-DAILY-ROLLING-FILE" />
-  </logger>
+  <logger name="com.avyeyes" level="INFO" />
   
   <logger name="bootstrap" level="INFO"/>
   
