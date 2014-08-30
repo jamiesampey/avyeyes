@@ -1,10 +1,9 @@
 package com.avyeyes.util
 
-import com.avyeyes.test.WebSpec2
+import com.avyeyes.test.AvyEyesSpec
 import net.liftweb.http.S
-import bootstrap.liftweb.Boot
 
-class JsDialogTest extends WebSpec2(Boot().boot _) {
+class JsDialogTest extends AvyEyesSpec {
     "Info dialog" should {
       "Use the correct dialog title" withSFor("/") in {
         val cmd = JsDialog.info("avySearchSuccess").toJsCmd

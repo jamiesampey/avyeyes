@@ -1,15 +1,14 @@
 package com.avyeyes.util
 
-import com.avyeyes.test.WebSpec2
+import com.avyeyes.test.AvyEyesSpec
 import net.liftweb.http.LiftRules
 import net.liftweb.http.S
 import java.util.Calendar
 import scala.xml.NodeSeq
 import com.avyeyes.util.AEConstants._
 import org.apache.commons.lang3.RandomStringUtils
-import bootstrap.liftweb.Boot
 
-class AEHelpersTest extends WebSpec2(Boot().boot _) {
+class AEHelpersTest extends AvyEyesSpec {
     "Date parsing" should {
       "Parse a normal date correctly" withSFor("/") in {
           val parsedDate = AEHelpers.parseDateStr("08-26-2014")
