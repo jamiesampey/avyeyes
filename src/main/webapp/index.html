@@ -6,19 +6,19 @@
         <script type="text/javascript" src="/js/lib/jquery.js"></script>
  	    <script type="text/javascript" data-main="/js/main" src="/js/lib/require/require.min.js"></script>
         	           
-	    <link rel="stylesheet" type="text/css" href="/css/jquery-ui.css">
-        <link rel="stylesheet" type="text/css" href="/css/lightbox.css">
-		<link rel="stylesheet" type="text/css" href="/css/ae-common.css">
-		<link rel="stylesheet" type="text/css" href="/css/ae-search.css">
-		<link rel="stylesheet" type="text/css" href="/css/ae-report.css">
+	    <link rel="stylesheet" type="text/css" href="/css/jquery-ui.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/lightbox.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/ae-common.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/ae-search.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/ae-report.css"/>
 
-	    <link rel="shortcut icon" href="/favicon.ico" />
+	    <link rel="shortcut icon" href="/favicon.ico"/>
 	</head>
-	<body class="lift:surround?with=default&at=content">
+	<body class="lift:surround?with=default&amp;at=content">
 		<div id="liftContent" class="lift:Content">
         
         <div id="loadingDiv">
-          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"><span id="loadingText" class="avyMsg"></span></div>
+          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"/><span id="loadingText" class="avyMsg"></span></div>
         </div>		
 		
 		<form class="lift:form.ajax">
@@ -180,7 +180,7 @@
             <div id="aeTitleContainer">
                 <img src="/images/ae-title.png"/>
 			    <div id="aeMenuButtonContainer">
-			      <a id="aeMenuButton" href="#"><img src="/images/menu.png"></a>
+			      <a id="aeMenuButton" href="#"><img src="/images/menu.png"/></a>
 			    </div>
        	        <ul id="aeMenu">
                   <li><a id="searchMenuItem" class="avyLink" href="#"></a></li>
@@ -192,7 +192,7 @@
 		
 		    <form class="lift:form.ajax">
 			<div id="aeSearchControlContainer" class="lift:Search?form.post">
-			  <hr>
+			  <hr/>
 			  <div class="avySearchHeaderContainer">
 			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
 			     <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#"></a></div>
@@ -340,7 +340,7 @@
 		                 <tr>
 		                   <td><label for="avyReportType"></label></td>
 	                       <td>
-	                         <input class="avyAutoComplete avyTypeAutoComplete" type="text">
+	                         <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
 	                         <input id="avyReportType" type="hidden"/>
 	                       </td>
 		                 </tr>
@@ -391,7 +391,7 @@
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
 				          <td><label for="avyReportElevation" data-required="true"></label></td>
-				          <td><input id="avyReportElevation" class="avyRawTextInput" type="text" readonly /></td>
+				          <td><input id="avyReportElevation" class="avyRawTextInput" type="text" readonly="readonly" /></td>
 				        </tr>
 				        <tr>
 				          <td><label for="avyReportAspect" data-required="true"></label></td>
@@ -469,10 +469,10 @@
 	              </td></tr></table>
 	           </td>
 	       </tr></table>
-           </tr>
+           </td></tr>
            <tr>
                <td colspan="2" id="avyReportRequiredFieldsMsgRow">
-                   <span style="color: red;">*&nbsp;</span><span id="avyReportRequiredFields" class="avyMsg"></span>
+                   <span style="color: red;">* </span><span id="avyReportRequiredFields" class="avyMsg"></span>
                </td>
            </tr>
 	   </table>
@@ -495,9 +495,9 @@
                </table>
 	      </div>
 		  <div id="avyReportImgOldSchoolImgUpload">
-		      <span id="avyReportOldSchoolImgUploadMsg" class="avyMsg"></span>&nbsp;
+		      <span id="avyReportOldSchoolImgUploadMsg" class="avyMsg"></span>
               <form id="imgUploadForm" action="/imgupload" method="POST" enctype="multipart/form-data">
-                   <input type="file" multiple />
+                   <input type="file" multiple="multiple" />
               </form>
           </div>
        </div>
