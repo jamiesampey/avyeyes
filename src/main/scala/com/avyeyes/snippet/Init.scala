@@ -3,20 +3,20 @@ package com.avyeyes.snippet
 import org.squeryl.PrimitiveTypeMode.transaction
 
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service._
+import com.avyeyes.persist._
+import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.AEConstants.ExtIdUrlParam
 import com.avyeyes.util.AEHelpers.isValidExtId
 
-import net.liftweb.http.S
-import net.liftweb.http.SHtml
+import net.liftweb.common.Loggable
+import net.liftweb.http._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
 import net.liftweb.util.Helpers._
 
 
-class Init extends KmlCreator with PersistenceService with SquerylPersistence {
+class Init extends KmlCreator with Loggable {
     private val InitViewLat = 44
     private val InitViewLng = -115
     private val InitViewAltMeters = 2700000
@@ -27,6 +27,8 @@ class Init extends KmlCreator with PersistenceService with SquerylPersistence {
     private val InitAvyCamTilt = 75
     
     private var extId: Option[String] = None
+    
+    val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
       
     def render = {
       extId = S.param(ExtIdUrlParam).toOption
@@ -38,7 +40,7 @@ class Init extends KmlCreator with PersistenceService with SquerylPersistence {
     private def initialFlyToCmd: JsCmd = {
         val initAvalanche = if (isValidExtId(extId)) {
           transaction {
-            findViewableAvalanche(extId.get)
+            dao.selectViewableAvalanche(extId.get)
           }
         } else None
         

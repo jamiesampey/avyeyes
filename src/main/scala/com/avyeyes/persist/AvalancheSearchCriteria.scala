@@ -1,4 +1,4 @@
-package com.avyeyes.service
+package com.avyeyes.persist
 
 case class AvalancheSearchCriteria(
   northLimit: String, eastLimit: String, southLimit: String, westLimit: String, 

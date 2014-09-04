@@ -3,20 +3,22 @@ package com.avyeyes.rest
 import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.SquerylPersistence
+import com.avyeyes.persist._
 import com.avyeyes.util.AEHelpers.humanNumberToStr
 import net.liftweb.http.BadResponse
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
-import com.avyeyes.service.PersistenceService
+import net.liftweb.common.Loggable
 
 
-object AvyDetails extends RestHelper with JsonResponder with PersistenceService with SquerylPersistence {
+object AvyDetails extends RestHelper with JsonResponder with Loggable {
+  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  
   serve {
     case "rest" :: "avydetails" :: extId :: Nil Get req => {
       val avyJsonOption = transaction {
-          val avalancheOption = findViewableAvalanche(extId)
+          val avalancheOption = dao.selectViewableAvalanche(extId)
           if (avalancheOption.isDefined) {
               Some(getJSON(avalancheOption.get))
           } else None
@@ -33,7 +35,7 @@ object AvyDetails extends RestHelper with JsonResponder with PersistenceService 
   }
 
   private def getJSON(a: Avalanche) = {
-    val imgFilenames = findAvalancheImageFilenames(a.extId).toList
+    val imgFilenames = dao.selectAvalancheImageFilenames(a.extId).toList
     
     ("extId" -> a.extId) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
     ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 

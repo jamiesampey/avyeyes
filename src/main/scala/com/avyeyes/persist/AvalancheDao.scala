@@ -2,7 +2,6 @@ package com.avyeyes.persist
 
 import com.avyeyes.model._
 import net.liftweb.http.FileParamHolder
-import com.avyeyes.service.AvalancheSearchCriteria
 
 trait AvalancheDao {
   def initSession(): Unit

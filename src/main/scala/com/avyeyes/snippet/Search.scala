@@ -1,22 +1,26 @@
 package com.avyeyes.snippet
 
 import scala.math._
+
 import org.squeryl.PrimitiveTypeMode.transaction
 
 import com.avyeyes.model._
 import com.avyeyes.persist._
-import com.avyeyes.service._
+import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.AEHelpers.strToDbl
 import com.avyeyes.util.JsDialog
 
+import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp.strToJsExp
-import net.liftweb.util.Helpers.strToCssBindPromoter
+import net.liftweb.util.Helpers._
 
-class Search extends KmlCreator with PersistenceService with SquerylPersistence {
+class Search extends KmlCreator with Loggable {
+  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  
   var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
   var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 
   var fromDate = ""; var toDate = ""
@@ -43,7 +47,7 @@ class Search extends KmlCreator with PersistenceService with SquerylPersistence 
 		"#avySearchSubmitBinding" #> SHtml.hidden(doSearch)
 	}
 
-  private def doSearch(): JsCmd = {
+  def doSearch(): JsCmd = {
     if (strToDbl(camAlt) > CamRelAltLimitMeters)
         JsDialog.error("eyeTooHigh")
     else {
@@ -65,7 +69,7 @@ class Search extends KmlCreator with PersistenceService with SquerylPersistence 
       
     var matchingAvalanches: List[Avalanche] = Nil
     transaction {
-      matchingAvalanches = findAvalanches(criteria)
+      matchingAvalanches = dao.selectAvalanches(criteria)
     }
     
     if (strToDbl(camTilt) < CamTiltRangeCutoff) 

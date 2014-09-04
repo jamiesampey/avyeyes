@@ -1,20 +1,20 @@
 package com.avyeyes.snippet
 
 import scala.xml.XML
-import org.apache.commons.lang3.StringUtils._
+import org.apache.commons.lang3.StringUtils.isBlank
 import org.squeryl.PrimitiveTypeMode.transaction
-import com.avyeyes.model.Avalanche
+import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.PersistenceService
+import com.avyeyes.persist._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
+import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JsCmd
 import net.liftweb.util.Helpers._
 import com.avyeyes.service.ExternalIdService
 
-class Report extends PersistenceService with SquerylPersistence with ExternalIdService {
+class Report extends ExternalIdService with Loggable {
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
@@ -22,7 +22,9 @@ class Report extends PersistenceService with SquerylPersistence with ExternalIdS
   var avyType = ""; var trigger = ""; var bedSurface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
   var modeOfTravel = ""; var comments = ""; var kmlStr = ""
-      
+  
+  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+    
   def render = {
     "#avyReportExtId" #> SHtml.hidden(extId = _, extId) &
     "#avyReportLat" #> SHtml.hidden(lat = _, "") &
@@ -70,7 +72,7 @@ class Report extends PersistenceService with SquerylPersistence with ExternalIdS
            ModeOfTravel.withName(modeOfTravel), Some(comments), kmlCoordsNode.text.trim)
 
         transaction {
-          insertAvalanche(newAvalanche)
+          dao.insertAvalanche(newAvalanche)
 	      }
 	      
 	      logger.info("Avalanche " + extId + " successfully inserted")

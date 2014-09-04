@@ -1,35 +1,18 @@
 package com.avyeyes.snippet
 
-import net.liftweb.util.Helpers.strToCssBindPromoter
-import com.avyeyes.test.AvyEyesSpec
-import scala.xml.XML
 import scala.xml.NodeSeq
-import net.liftweb.util.CssSel
-import net.liftweb.http.SHtml
+
+import org.mockito.ArgumentCaptor
+
+import com.avyeyes.persist._
+import com.avyeyes.test.AvyEyesSpec
+import com.avyeyes.util.AEConstants._
 
 class SearchTest extends AvyEyesSpec {
-  "Avalanche search snippet" should {
+  "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 
-      val search = new Search    
-      search.northLimit = "39.76999580282912"
-      search.eastLimit = "-105.74790739483988"
-      search.southLimit = "39.624208600404096"
-      search.westLimit = "-106.0104492051601"
-      
-      search.camAlt = "7364.194647056396"
-      search.camTilt = "39.94"
-      search.camLat = "39.609381090080554"
-      search.camLng = "-105.87917829999999"
-      
-      search.fromDate = "12-01-2013"
-      search.toDate = "01-31-2014"
-      search.avyType = "WL"
-      search.avyTrigger = "N"
-      search.rSize = "2"
-      search.dSize = "3.5"
-      search.numCaught = "2"
-      search.numKilled = "1"
+      val search = newSearchWithTestData 
       
       val renderedPage = search.render(IndexHtmlElem)
       
@@ -59,4 +42,68 @@ class SearchTest extends AvyEyesSpec {
       assertInputValue(renderedPage, TextInputType, "avySearchNumKilled", search.numKilled)
     }
   }
+  
+  "Main search method" should {
+    "Display 'eye too high' message if camera altitude is too high" withSFor("/") in {
+      val search = new Search 
+      search.camAlt = (CamRelAltLimitMeters + 1).toString
+      val jsCmd = search.doSearch()
+      
+      jsCmd.toJsCmd must startWith("avyeyes.showModalDialog")
+      jsCmd.toJsCmd must contain("Error")
+    }
+    
+    "Pass search criteria to DAO" withSFor("/") in {
+      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns Nil
+      
+      val searchCriteriaArg: ArgumentCaptor[AvalancheSearchCriteria] = 
+        ArgumentCaptor.forClass(classOf[AvalancheSearchCriteria]);
+
+      val search = newSearchWithTestData
+      search.doSearch()
+      search must not beNull
+
+      there was one(mockAvalancheDao).selectAvalanches(searchCriteriaArg.capture())
+      val passedCritera = searchCriteriaArg.getValue
+      
+      passedCritera.northLimit must_== search.northLimit
+      passedCritera.eastLimit must_== search.eastLimit
+      passedCritera.southLimit must_== search.southLimit
+      passedCritera.westLimit must_== search.westLimit
+      passedCritera.fromDateStr must_== search.fromDate
+      passedCritera.toDateStr must_== search.toDate
+      passedCritera.avyTypeStr must_== search.avyType
+      passedCritera.avyTriggerStr must_== search.avyTrigger
+      passedCritera.rSize must_== search.rSize
+      passedCritera.dSize must_== search.dSize
+      passedCritera.numCaught must_== search.numCaught
+      passedCritera.numKilled must_== search.numKilled
+    }
+  }
+  
+  private def newSearchWithTestData(): Search = {
+      val search = new Search
+      
+      search.northLimit = "39.76999580282912"
+      search.eastLimit = "-105.74790739483988"
+      search.southLimit = "39.624208600404096"
+      search.westLimit = "-106.0104492051601"
+      
+      search.camAlt = "7364.194647056396"
+      search.camTilt = "39.94"
+      search.camLat = "39.609381090080554"
+      search.camLng = "-105.87917829999999"
+      
+      search.fromDate = "12-01-2013"
+      search.toDate = "01-31-2014"
+      search.avyType = "WL"
+      search.avyTrigger = "N"
+      search.rSize = "2"
+      search.dSize = "3.5"
+      search.numCaught = "2"
+      search.numKilled = "1"
+      
+      search
+  }
+  
 }

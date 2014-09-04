@@ -4,18 +4,19 @@ import java.io.ByteArrayInputStream
 
 import org.squeryl.PrimitiveTypeMode._
 
-import com.avyeyes.persist.SquerylPersistence
-import com.avyeyes.service.PersistenceService
+import com.avyeyes.persist._
 
 import net.liftweb.http.BadResponse
 import net.liftweb.http.StreamingResponse
 import net.liftweb.http.rest.RestHelper
 
-object ImageServe extends RestHelper with PersistenceService with SquerylPersistence {
+object ImageServe extends RestHelper {
+  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  
   serve {
     case "rest" :: "imgserve" :: avyExtId :: filename :: Nil Get req => {
       val returnedImg = transaction { 
-        findAvalancheImage(avyExtId, filename) 
+        dao.selectAvalancheImage(avyExtId, filename) 
       }
       
       returnedImg match {
