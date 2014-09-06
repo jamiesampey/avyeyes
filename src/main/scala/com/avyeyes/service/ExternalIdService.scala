@@ -16,8 +16,14 @@ trait ExternalIdService extends Loggable {
   
   def reserveNewExtId(implicit dao: AvalancheDao): String = {
     var extIdAttempt = ""
+    var attemptCount = 0
+    
     do {
       extIdAttempt = RandomStringUtils.random(ExtIdLength, ExtIdChars)
+      attemptCount += 1
+      if (attemptCount >= Props.getInt("extId.newIdAttemptLimit", 100)) {
+        throw new RuntimeException("Could not find an available ID")
+      }
     } while (ExternalIdMaitreD.reservationExists(extIdAttempt) || dao.selectAvalanche(extIdAttempt).isDefined)
       
     ExternalIdMaitreD.reserve(extIdAttempt, new Date())
@@ -32,7 +38,7 @@ trait ExternalIdService extends Loggable {
   }
 }
 
-private object ExternalIdMaitreD {
+object ExternalIdMaitreD {
   private val reservedExtIds: Cache[String, Date] = 
     CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 24), TimeUnit.HOURS).build()
   
