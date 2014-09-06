@@ -52,14 +52,17 @@ class Search extends KmlCreator with Loggable {
         JsDialog.error("eyeTooHigh")
     else {
       val avyList = matchingAvalanchesInRange
-      val kml = createCompositeKml(avyList:_*)
       
       logger.debug(s"Found ${avyList.size} avalanches matching criteria "
           + s" [From: $fromDate | To: $toDate | Type: $avyType | Trigger: $avyTrigger"
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
-      Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
-      JsDialog.info("avySearchSuccess", avyList.size)
+      if (avyList.size > 0) {
+        val kml = createCompositeKml(avyList:_*)
+        Call("avyeyes.overlaySearchResultKml", kml.toString).cmd & JsDialog.info("avySearchSuccess", avyList.size)
+      } else {
+        JsDialog.info("avySearchZeroMatches")
+      } 
     }
   }
 
