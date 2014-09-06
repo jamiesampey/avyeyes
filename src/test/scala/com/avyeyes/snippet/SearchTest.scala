@@ -4,11 +4,11 @@ import scala.xml.NodeSeq
 
 import org.mockito.ArgumentCaptor
 
-import com.avyeyes.persist._
-import com.avyeyes.test.AvyEyesSpec
+import com.avyeyes.persist.AvalancheSearchCriteria
+import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
 
-class SearchTest extends AvyEyesSpec {
+class SearchTest extends AvyEyesSpec with AvalancheGenerator {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 
@@ -43,7 +43,9 @@ class SearchTest extends AvyEyesSpec {
     }
   }
   
-  "Main search method" should {
+  "Main search method" should { 
+    isolated
+    
     "Display 'eye too high' message if camera altitude is too high" withSFor("/") in {
       val search = new Search 
       search.camAlt = (CamRelAltLimitMeters + 1).toString
@@ -61,7 +63,6 @@ class SearchTest extends AvyEyesSpec {
 
       val search = newSearchWithTestData
       search.doSearch()
-      search must not beNull
 
       there was one(mockAvalancheDao).selectAvalanches(searchCriteriaArg.capture())
       val passedCritera = searchCriteriaArg.getValue
@@ -78,6 +79,40 @@ class SearchTest extends AvyEyesSpec {
       passedCritera.dSize must_== search.dSize
       passedCritera.numCaught must_== search.numCaught
       passedCritera.numKilled must_== search.numKilled
+    }
+    
+    "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {
+      val inRangeExtId = "jd3ru8vg"
+      val avalancheInRange = avalancheAtLocation(inRangeExtId, true, 39.6634870900582, -105.875046142935)
+      
+      val outOfRangeExtId = "rt739fs8"
+      val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
+      
+      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      
+      val search = newSearchWithTestData
+      search.camTilt = "10"
+      val jsCmd = search.doSearch()
+
+      jsCmd.toJsCmd must contain(inRangeExtId)
+      jsCmd.toJsCmd must contain(outOfRangeExtId)
+    }
+    
+    "Uses haversine distance if cam tilt is greater than cutoff" withSFor("/") in {
+      val inRangeExtId = "jd3ru8vg"
+      val avalancheInRange = avalancheAtLocation(inRangeExtId, true, 39.6634870900582, -105.875046142935)
+      
+      val outOfRangeExtId = "rt739fs8"
+      val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
+      
+      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      
+      val search = newSearchWithTestData
+      search.camTilt = (CamTiltRangeCutoff + 1).toString
+      val jsCmd = search.doSearch()
+
+      jsCmd.toJsCmd must contain(inRangeExtId)
+      jsCmd.toJsCmd must not contain(outOfRangeExtId)
     }
   }
   

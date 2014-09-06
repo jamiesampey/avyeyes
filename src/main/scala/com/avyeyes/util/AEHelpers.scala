@@ -15,15 +15,13 @@ import net.liftweb.util.Props
 
 
 object AEHelpers {
-    private val UnknownLabel = S.?("enum.U")
+  private val UnknownLabel = S.?("enum.U")
     
-	private val df = new SimpleDateFormat("MM-dd-yyyy")
-
-    def getProp(prop: String) = Props.get(prop) openOr(prop)
+  def getProp(prop: String) = Props.get(prop) openOr(prop)
     
-    def parseDateStr(str: String) = df.parse(str)
+  def parseDateStr(str: String) = new SimpleDateFormat("MM-dd-yyyy").parse(str)
 	
-    def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
+  def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
     
 	def strToDbl(str: String): Double = asDouble(str) openOr 0
 
@@ -40,5 +38,5 @@ object AEHelpers {
 	  case _ => true
 	}
     
-    def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(UnknownLabel)
+  def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(UnknownLabel)
 }

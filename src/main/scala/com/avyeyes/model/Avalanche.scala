@@ -3,7 +3,7 @@ package com.avyeyes.model
 import com.avyeyes.model.enums._
 import java.util.Date
 
-class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
+case class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
     val submitterEmail: String, val submitterExp: ExperienceLevel.Value, 
     val lat: Double, val lng: Double, val areaName: String, /* location */
     val avyDate: Date, val sky: Sky.Value, val precip: Precip.Value, /* temporal */
