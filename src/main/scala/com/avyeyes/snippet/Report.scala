@@ -27,30 +27,30 @@ class Report extends ExternalIdService with Loggable {
     
   def render = {
     "#avyReportExtId" #> SHtml.hidden(extId = _, extId) &
-    "#avyReportLat" #> SHtml.hidden(lat = _, "") &
-    "#avyReportLng" #> SHtml.hidden(lng = _, "") &
-    "#avyReportAreaName" #> SHtml.text("", areaName = _) &
-    "#avyReportDate" #> SHtml.text("", dateStr = _) &
-    "#avyReportSky" #> SHtml.hidden(sky = _, "") &
-    "#avyReportPrecip" #> SHtml.hidden(precip = _, "") &
-    "#avyReportElevation" #> SHtml.text("", elevation = _) &
-    "#avyReportAspect" #> SHtml.hidden(aspect = _, "") &
-    "#avyReportAngle" #> SHtml.text("", angle = _) &
-    "#avyReportType" #> SHtml.hidden(avyType = _, "") & 
-    "#avyReportTrigger" #> SHtml.hidden(trigger = _, "") &
-    "#avyReportBedSurface" #> SHtml.hidden(bedSurface = _, "") &
-    "#avyReportRsizeValue" #> SHtml.text("", rSize = _) &
-    "#avyReportDsizeValue" #> SHtml.text("", dSize = _) &
-    "#avyReportNumCaught" #> SHtml.text("", caught = _) &
-    "#avyReportNumPartiallyBuried" #> SHtml.text("", partiallyBuried = _) &
-    "#avyReportNumFullyBuried" #> SHtml.text("", fullyBuried = _) &
-    "#avyReportNumInjured" #> SHtml.text("", injured = _) &
-    "#avyReportNumKilled" #> SHtml.text("", killed = _) &
-    "#avyReportModeOfTravel" #> SHtml.hidden(modeOfTravel = _, "") &
-    "#avyReportComments" #> SHtml.textarea("", comments = _) &
-    "#avyReportSubmitterEmail" #> SHtml.text("", submitterEmail = _) &
-    "#avyReportSubmitterExp" #> SHtml.hidden(submitterExp = _, "") &
-    "#avyReportKml" #> SHtml.hidden(kmlStr = _, "") &
+    "#avyReportLat" #> SHtml.hidden(lat = _, lat) &
+    "#avyReportLng" #> SHtml.hidden(lng = _, lng) &
+    "#avyReportAreaName" #> SHtml.text(areaName, areaName = _) &
+    "#avyReportDate" #> SHtml.text(dateStr, dateStr = _) &
+    "#avyReportSky" #> SHtml.hidden(sky = _, sky) &
+    "#avyReportPrecip" #> SHtml.hidden(precip = _, precip) &
+    "#avyReportElevation" #> SHtml.text(elevation, elevation = _) &
+    "#avyReportAspect" #> SHtml.hidden(aspect = _, aspect) &
+    "#avyReportAngle" #> SHtml.text(angle, angle = _) &
+    "#avyReportType" #> SHtml.hidden(avyType = _, avyType) & 
+    "#avyReportTrigger" #> SHtml.hidden(trigger = _, trigger) &
+    "#avyReportBedSurface" #> SHtml.hidden(bedSurface = _, bedSurface) &
+    "#avyReportRsizeValue" #> SHtml.text(rSize, rSize = _) &
+    "#avyReportDsizeValue" #> SHtml.text(dSize, dSize = _) &
+    "#avyReportNumCaught" #> SHtml.text(caught, caught = _) &
+    "#avyReportNumPartiallyBuried" #> SHtml.text(partiallyBuried, partiallyBuried = _) &
+    "#avyReportNumFullyBuried" #> SHtml.text(fullyBuried, fullyBuried = _) &
+    "#avyReportNumInjured" #> SHtml.text(injured, injured = _) &
+    "#avyReportNumKilled" #> SHtml.text(killed, killed = _) &
+    "#avyReportModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
+    "#avyReportComments" #> SHtml.textarea(comments, comments = _) &
+    "#avyReportSubmitterEmail" #> SHtml.text(submitterEmail, submitterEmail = _) &
+    "#avyReportSubmitterExp" #> SHtml.hidden(submitterExp = _, submitterExp) &
+    "#avyReportKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
     "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
   }
   

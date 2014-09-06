@@ -20,8 +20,8 @@ class SearchTest extends AvyEyesSpec with AvalancheGenerator {
       val TextInputType = "text"
 
       def assertInputValue(ns: NodeSeq, nodeType: String, cssSel: String, value: String) = {
-        val node = (ns \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
-        (node\"@value").text must_== value
+        val n = (ns \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
+        (n\"@value").text must_== value
       }
       
       assertInputValue(renderedPage, HiddenInputType, "avySearchNorthLimit", search.northLimit)
