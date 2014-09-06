@@ -1,7 +1,6 @@
 package com.avyeyes.util
 
 import java.util.Date
-import net.liftweb.util.Props
 
 object AEConstants {
     val ChromeVersion: Double = 35.0

@@ -16,6 +16,7 @@ import bootstrap.liftweb.Boot
 
 abstract class AvyEyesSpec extends WebSpec2(Boot().boot _) with AroundExample with Mockito {
   lazy val IndexHtmlElem = XML.loadFile("src/main/webapp/index.html")
+  lazy val WhaWhaHtmlElem = XML.loadFile("src/main/webapp/whawha.html")
   
   def p(str: String) = System.out.println(str)
 
