@@ -8,7 +8,7 @@ import com.avyeyes.model._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers.strToDbl
+import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
 
 import net.liftweb.common.Loggable
@@ -48,7 +48,7 @@ class Search extends KmlCreator with Loggable {
 	}
 
   def doSearch(): JsCmd = {
-    if (strToDbl(camAlt) > CamRelAltLimitMeters)
+    if (strToDblOrZero(camAlt) > CamRelAltLimitMeters)
         JsDialog.error("eyeTooHigh")
     else {
       val avyList = matchingAvalanchesInRange
@@ -72,17 +72,17 @@ class Search extends KmlCreator with Loggable {
       matchingAvalanches = dao.selectAvalanches(criteria)
     }
     
-    if (strToDbl(camTilt) < CamTiltRangeCutoff) 
+    if (strToDblOrZero(camTilt) < CamTiltRangeCutoff) 
       matchingAvalanches
     else 
       matchingAvalanches filter (a => haversineDist(a) < AvyDistRangeMiles)
   }
 
 	private def haversineDist(a: Avalanche) = {
-    val dLat = (a.lat - strToDbl(camLat)).toRadians
-    val dLon = (a.lng - strToDbl(camLng)).toRadians
+    val dLat = (a.lat - strToDblOrZero(camLat)).toRadians
+    val dLon = (a.lng - strToDblOrZero(camLng)).toRadians
 
-    val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDbl(camLat).toRadians) * cos(a.lat.toRadians)
+    val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDblOrZero(camLat).toRadians) * cos(a.lat.toRadians)
     val c = 2 * asin(sqrt(ax))
     EarthRadiusMiles * c
 	}

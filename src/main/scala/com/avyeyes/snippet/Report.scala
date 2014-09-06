@@ -54,22 +54,21 @@ class Report extends ExternalIdService with Loggable {
     "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
   }
   
-  private def doReport(): JsCmd = {
+  def doReport(): JsCmd = {
       try {
          checkAutoCompleteValues
          
          val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
 
-         val newAvalanche = new Avalanche(extId, false, 
-           submitterEmail, ExperienceLevel.withName(submitterExp), 
-           asDouble(lat) openOr 0, asDouble(lng) openOr 0, 
-           areaName, parseDateStr(dateStr), Sky.withName(sky), Precip.withName(precip), 
-           asInt(elevation) openOr -1, Aspect.withName(aspect), asInt(angle) openOr -1, 
+         val newAvalanche = Avalanche(extId, false, submitterEmail, ExperienceLevel.withName(submitterExp), 
+           strToDblOrZero(lat), strToDblOrZero(lng), areaName, parseDateStr(dateStr), 
+           Sky.withName(sky), Precip.withName(precip), 
+           strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle), 
            AvalancheType.withName(avyType), AvalancheTrigger.withName(trigger), 
-           AvalancheInterface.withName(bedSurface), asDouble(rSize) openOr 0, asDouble(dSize) openOr 0, 
-           asInt(caught) openOr -1, asInt(partiallyBuried) openOr -1, asInt(fullyBuried) openOr -1, 
-           asInt(injured) openOr -1, asInt(killed) openOr -1, 
-           ModeOfTravel.withName(modeOfTravel), Some(comments), kmlCoordsNode.text.trim)
+           AvalancheInterface.withName(bedSurface), strToDblOrZero(rSize), strToDblOrZero(dSize), 
+           strToIntOrNegOne(caught), strToIntOrNegOne(partiallyBuried), strToIntOrNegOne(fullyBuried), 
+           strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
+           ModeOfTravel.withName(modeOfTravel), comments, kmlCoordsNode.text.trim)
 
         transaction {
           dao.insertAvalanche(newAvalanche)

@@ -33,7 +33,7 @@ CREATE TABLE "avalanche" (
     "injured" integer not null,
     "killed" integer not null,
     "modeOfTravel" integer not null,
-    "comments" text,
+    "comments" text not null,
     "kmlCoords" text not null
   );
 

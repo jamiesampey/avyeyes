@@ -1,9 +1,12 @@
 package com.avyeyes.snippet
 
 import scala.xml.NodeSeq
-
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
+import org.mockito.ArgumentCaptor
+import com.avyeyes.model.Avalanche
+import com.avyeyes.util.AEHelpers._
+import scala.xml.XML
 
 class ReportTest extends AvyEyesSpec {
   "Snippet rendering" should {
@@ -54,6 +57,93 @@ class ReportTest extends AvyEyesSpec {
     }
   }
   
+  "Main report method" should {
+    isolated 
+    
+    "Not allow empty strings for enum fields" withSFor("/") in {
+      val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
+
+      val report = newReportWithTestData
+      report.sky = ""
+      report.precip = ""
+      report.aspect = ""
+      report.avyType = ""
+      report.trigger = ""
+      report.bedSurface = ""
+      report.modeOfTravel = ""
+      report.submitterExp = ""
+      report.doReport()
+      
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      val passedAvalanche = avalancheArg.getValue
+      
+      passedAvalanche.sky must_== Sky.U
+      passedAvalanche.precip must_== Precip.U
+      passedAvalanche.aspect must_== Aspect.N
+      passedAvalanche.avyType must_== AvalancheType.U
+      passedAvalanche.trigger must_== AvalancheTrigger.U
+      passedAvalanche.bedSurface must_== AvalancheInterface.U
+      passedAvalanche.modeOfTravel must_== ModeOfTravel.U
+      passedAvalanche.submitterExp must_== ExperienceLevel.A0      
+    }
+    
+    "Insert an avalanche with the correct values" withSFor("/") in {
+      val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
+      
+      val report = newReportWithTestData
+      report.doReport()
+      
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      val passedAvalanche = avalancheArg.getValue
+      
+      passedAvalanche.extId must_== report.extId
+      passedAvalanche.viewable must beFalse
+      passedAvalanche.submitterEmail must_== report.submitterEmail
+      passedAvalanche.submitterExp must_== ExperienceLevel.withName(report.submitterExp)
+      passedAvalanche.lat must_== strToDblOrZero(report.lat)
+      passedAvalanche.lng must_== strToDblOrZero(report.lng)
+      passedAvalanche.areaName must_== report.areaName
+      passedAvalanche.avyDate must_== parseDateStr(report.dateStr)
+      passedAvalanche.sky must_== Sky.withName(report.sky)
+      passedAvalanche.precip must_== Precip.withName(report.precip)
+      passedAvalanche.avyType must_== AvalancheType.withName(report.avyType)
+      passedAvalanche.trigger must_== AvalancheTrigger.withName(report.trigger)
+      passedAvalanche.bedSurface must_== AvalancheInterface.withName(report.bedSurface)
+      passedAvalanche.caught must_== strToIntOrNegOne(report.caught)
+      passedAvalanche.partiallyBuried must_== strToIntOrNegOne(report.partiallyBuried)
+      passedAvalanche.fullyBuried must_== strToIntOrNegOne(report.fullyBuried)
+      passedAvalanche.injured must_== strToIntOrNegOne(report.injured)
+      passedAvalanche.killed must_== strToIntOrNegOne(report.killed)
+      passedAvalanche.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
+      passedAvalanche.comments must_== report.comments
+      passedAvalanche.kmlCoords must_== testCoords
+    }
+    
+    "Handles an insertion success correctly" withSFor("/") in {
+      val report = spy(newReportWithTestData)
+      val unreserveThisExtId = "4iu2kjr2"
+      report.extId = unreserveThisExtId
+      val jsCmd = report.doReport()
+
+      there was one(report).unreserveExtId(unreserveThisExtId)
+      jsCmd.toJsCmd must contain(report.extId)
+    }
+    
+    "Handles an insertion failure correctly" withSFor("/") in {
+      val exceptionMsg = "gotcha!"
+      mockAvalancheDao.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
+      
+      val report = spy(newReportWithTestData)
+      val unreserveThisExtId = "4iu2kjr2"
+      report.extId = unreserveThisExtId
+      val jsCmd = report.doReport()
+      
+      there was one(report).unreserveExtId(unreserveThisExtId)
+      jsCmd.toJsCmd must contain("Error")
+      jsCmd.toJsCmd must contain(exceptionMsg)
+    }
+  }
+  
   private def newReportWithTestData(): Report = {
       val report = new Report
       
@@ -85,9 +175,10 @@ class ReportTest extends AvyEyesSpec {
       report.comments = "some test comments here"
       report.submitterEmail = "sledhead@company.com"
       report.submitterExp = ExperienceLevel.A0.toString
-      report.kmlStr = "<kml>some coords and stuff</kml>"
+      report.kmlStr = s"<kml><LinearRing><coordinates>$testCoords</coordinates></LinearRing></kml>"
       
       report
   }
   
+  val testCoords = "-105.875489242241,39.66464854369643,3709.514235071098 -105.8754892458672,39.66464854070823,3709.514606327546 -105.8755061401399,39.66464732239427,3709.575492384985 -105.8755399183114,39.66464488490382,3709.696893243417 -105.8755736845457,39.66464244825151,3709.818665358297 -105.8756061647792,39.66460598711289,3708.469890683423"
 }

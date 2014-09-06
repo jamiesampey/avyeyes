@@ -41,12 +41,12 @@ class AEHelpersTest extends AvyEyesSpec {
     
     "String to Double conversion" should {
       "Work on doubles of different precisions" withSFor("/") in {
-        AEHelpers.strToDbl("23") must_== 23
-        AEHelpers.strToDbl("23.0") must_== 23
+        AEHelpers.strToDblOrZero("23") must_== 23
+        AEHelpers.strToDblOrZero("23.0") must_== 23
       }
       
       "Return 0 for unparsable strings" withSFor("/") in {
-        AEHelpers.strToDbl("blah") must_== 0
+        AEHelpers.strToDblOrZero("blah") must_== 0
       }
     }
     

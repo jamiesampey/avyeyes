@@ -40,8 +40,8 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
   }
     
   def selectAvalanches(criteria: AvalancheSearchCriteria) = {
-    val latBounds = List(strToDbl(criteria.northLimit), strToDbl(criteria.southLimit))
-    val lngBounds = List(strToDbl(criteria.eastLimit), strToDbl(criteria.westLimit))
+    val latBounds = List(strToDblOrZero(criteria.northLimit), strToDblOrZero(criteria.southLimit))
+    val lngBounds = List(strToDblOrZero(criteria.eastLimit), strToDblOrZero(criteria.westLimit))
     
     val fromDate = if (!criteria.fromDateStr.isEmpty) parseDateStr(criteria.fromDateStr) else EarliestAvyDate
     val toDate = if (!criteria.toDateStr.isEmpty) parseDateStr(criteria.toDateStr) else today.getTime
@@ -81,8 +81,8 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
   }
   
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
-    if (strToDbl(sizeStr) > 0) Some(strToDbl(sizeStr)) else None
+    if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
     
   private def getHumanNumberQueryVal(numStr: String): Option[Int] = 
-    if (strToHumanNumber(numStr) >= 0) Some(strToHumanNumber(numStr)) else None
+    if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
 }
