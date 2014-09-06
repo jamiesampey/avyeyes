@@ -3,11 +3,11 @@ package com.avyeyes.util
 import java.util.Date
 
 object AEConstants {
-    val ChromeVersion: Double = 35.0
-    val FirefoxVersion: Double = 30.0
-    val OperaVersion: Double = 22.0
-    val SafariVersion: Double = 6.0
-    val IeVersion: Double = 9.0
+  val ChromeVersion: Double = 35.0
+  val FirefoxVersion: Double = 30.0
+  val OperaVersion: Double = 22.0
+  val SafariVersion: Double = 6.0
+  val IeVersion: Double = 9.0
     
 	val EarliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val HumanNumberUnknown: Int = -1

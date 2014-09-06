@@ -2,6 +2,17 @@ package com.avyeyes.snippet
 
 import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
+import net.liftweb.mocks.MockHttpServletRequest
+import net.liftweb.http.S
+import net.liftweb.http.Req
+import net.liftweb.http.GetRequest
+import net.liftweb.common.Empty
+import net.liftweb.http.provider.servlet.HTTPRequestServlet
+import net.liftweb.http.ParamCalcInfo
+import javax.servlet.http.HttpServletRequest
+import net.liftweb.sitemap.SiteMap
+import bootstrap.liftweb.Boot
+import net.liftweb.common.Full
 
 class NotSupportedTest extends AvyEyesSpec {
   "Snippet rendering" should {
@@ -19,5 +30,11 @@ class NotSupportedTest extends AvyEyesSpec {
       notSupportedMsg must contain(SafariVersion.toString)
       notSupportedMsg must contain(IeVersion.toString)
     }
+  }
+  
+  private def mockRequestFromUserAgent(browser: String, version: Double): HttpServletRequest = {
+    val mockHttpServletRequest = new MockHttpServletRequest("/")
+    mockHttpServletRequest.headers = Map("User-Agent" -> List(s"$browser/$version"))
+    mockHttpServletRequest
   }
 }
