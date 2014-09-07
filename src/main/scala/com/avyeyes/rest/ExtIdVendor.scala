@@ -9,7 +9,7 @@ import net.liftweb.json.JsonAST._
 import com.avyeyes.persist._
 
 object ExtIdVendor extends RestHelper with JsonResponder with ExternalIdService {
-  implicit val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  implicit lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
     case "rest" :: "reserveExtId" :: Nil Get req => {

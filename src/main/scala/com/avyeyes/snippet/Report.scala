@@ -15,6 +15,8 @@ import net.liftweb.util.Helpers._
 import com.avyeyes.service.ExternalIdService
 
 class Report extends ExternalIdService with Loggable {
+  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  
   var extId = ""; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = ""; 
   var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
@@ -23,8 +25,6 @@ class Report extends ExternalIdService with Loggable {
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
   var modeOfTravel = ""; var comments = ""; var kmlStr = ""
   
-  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
-    
   def render = {
     "#avyReportExtId" #> SHtml.hidden(extId = _, extId) &
     "#avyReportLat" #> SHtml.hidden(lat = _, lat) &

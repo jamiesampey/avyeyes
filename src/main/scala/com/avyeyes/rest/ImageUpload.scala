@@ -6,7 +6,7 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
 
 object ImageUpload extends RestHelper with JsonResponder {
-  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
     
   serve {
     case "rest" :: "imgupload" :: avyExtId :: Nil Post req => {

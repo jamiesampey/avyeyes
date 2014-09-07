@@ -4,8 +4,6 @@ import com.avyeyes.model._
 import net.liftweb.http.FileParamHolder
 
 trait AvalancheDao {
-  def initSession(): Unit
-  
   def selectAvalanche(extId: String): Option[Avalanche]
   
   def selectViewableAvalanche(extId: String): Option[Avalanche]

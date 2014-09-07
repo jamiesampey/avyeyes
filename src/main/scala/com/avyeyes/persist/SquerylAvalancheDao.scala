@@ -2,14 +2,11 @@ package com.avyeyes.persist
 
 import org.apache.commons.lang3.StringUtils.isNotBlank
 import org.squeryl.PrimitiveTypeMode._
-import org.squeryl.Session
-import org.squeryl.SessionFactory
-import org.squeryl.adapters.PostgreSqlAdapter
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvalancheSchema._
-import com.avyeyes.util.AEConstants.EarliestAvyDate
+import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 
 import net.liftweb.common.Loggable
@@ -17,20 +14,6 @@ import net.liftweb.http.FileParamHolder
 import net.liftweb.util.Helpers.today
 
 class SquerylAvalancheDao extends AvalancheDao with Loggable {
-  lazy val jdbcConnectionString = new StringBuilder("jdbc:postgresql://")
-    .append(getProp("db.host")).append(":")
-    .append(getProp("db.port")).append("/")
-    .append(getProp("db.name")).toString
- 
-  def initSession() = {
-    if (SessionFactory.concreteFactory.isEmpty) {
-      logger.info("Initializing database session")
-      Class.forName("org.postgresql.Driver")
-      SessionFactory.concreteFactory = Some(()=>
-        Session.create(java.sql.DriverManager.getConnection(jdbcConnectionString), new PostgreSqlAdapter))
-    }
-  }
-  
   def selectViewableAvalanche(extId: String): Option[Avalanche] = {
     avalanches.where(a => a.viewable === true and a.extId === extId).headOption
   }

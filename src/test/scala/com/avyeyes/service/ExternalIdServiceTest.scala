@@ -4,7 +4,7 @@ import com.avyeyes.test._
 import com.avyeyes.model._
 import com.avyeyes.util.AEHelpers._
 
-class ExternalIdServiceTest extends AvyEyesSpec {
+class ExternalIdServiceTest extends WebSpec2 with MockPersistence {
   isolated
   
   class ExtIdTester extends ExternalIdService

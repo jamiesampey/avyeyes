@@ -13,7 +13,7 @@ import net.liftweb.common.Loggable
 
 
 object AvyDetails extends RestHelper with JsonResponder with Loggable {
-  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
     case "rest" :: "avydetails" :: extId :: Nil Get req => {

@@ -8,7 +8,9 @@ import com.avyeyes.persist.AvalancheSearchCriteria
 import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
 
-class SearchTest extends AvyEyesSpec with AvalancheGenerator {
+import bootstrap.liftweb.Boot
+
+class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with AvalancheGenerator with TemplateReader {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 

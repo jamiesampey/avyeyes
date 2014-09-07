@@ -19,7 +19,7 @@ import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.util.Helpers._
 
 class Search extends KmlCreator with Loggable {
-  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
   var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 

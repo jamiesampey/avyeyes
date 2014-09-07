@@ -1,13 +1,12 @@
 package com.avyeyes.snippet
 
 import scala.xml._
-
-import com.avyeyes.test.AvyEyesSpec
+import com.avyeyes.test._
 import com.avyeyes.util.AEHelpers._
-
 import net.liftweb.http.S
+import bootstrap.liftweb.Boot
 
-class ContentTest extends AvyEyesSpec {
+class ContentTest extends WebSpec2(Boot().boot _) with TemplateReader {
   var renderedPage: NodeSeq = NodeSeq.Empty
   
   "Snippet rendering" should {

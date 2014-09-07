@@ -1,12 +1,12 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.test._
 import com.avyeyes.model.enums._
-import net.liftweb.mocks.MockHttpServletRequest
-import org.mockito.ArgumentCaptor
-import com.avyeyes.model.Avalanche
+import com.avyeyes.test._
 
-class InitTest extends AvyEyesSpec with AvalancheGenerator {
+import bootstrap.liftweb.Boot
+import net.liftweb.mocks.MockHttpServletRequest
+
+class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with AvalancheGenerator {
   "Initial JsCmd" should {
     val validExtId = "4jhu2ie9"
     val reqWithGoodExtId = new MockHttpServletRequest("http://avyeyes.com/" + validExtId)

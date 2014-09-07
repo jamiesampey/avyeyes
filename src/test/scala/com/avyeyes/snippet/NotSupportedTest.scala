@@ -2,19 +2,11 @@ package com.avyeyes.snippet
 
 import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
-import net.liftweb.mocks.MockHttpServletRequest
-import net.liftweb.http.S
-import net.liftweb.http.Req
-import net.liftweb.http.GetRequest
-import net.liftweb.common.Empty
-import net.liftweb.http.provider.servlet.HTTPRequestServlet
-import net.liftweb.http.ParamCalcInfo
 import javax.servlet.http.HttpServletRequest
-import net.liftweb.sitemap.SiteMap
+import net.liftweb.mocks.MockHttpServletRequest
 import bootstrap.liftweb.Boot
-import net.liftweb.common.Full
 
-class NotSupportedTest extends AvyEyesSpec {
+class NotSupportedTest extends WebSpec2(Boot().boot _) with TemplateReader {
   "Snippet rendering" should {
     "Wire message output span via CSS selector and list supported browser versions" withSFor("/") in {
 

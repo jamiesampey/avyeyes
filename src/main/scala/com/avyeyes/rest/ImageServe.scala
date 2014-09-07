@@ -11,7 +11,7 @@ import net.liftweb.http.StreamingResponse
 import net.liftweb.http.rest.RestHelper
 
 object ImageServe extends RestHelper {
-  val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
     case "rest" :: "imgserve" :: avyExtId :: filename :: Nil Get req => {

@@ -1,14 +1,17 @@
 package com.avyeyes.snippet
 
 import scala.xml.NodeSeq
+
+import org.mockito.ArgumentCaptor
+
+import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import org.mockito.ArgumentCaptor
-import com.avyeyes.model.Avalanche
 import com.avyeyes.util.AEHelpers._
-import scala.xml.XML
 
-class ReportTest extends AvyEyesSpec {
+import bootstrap.liftweb.Boot
+
+class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with TemplateReader {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 

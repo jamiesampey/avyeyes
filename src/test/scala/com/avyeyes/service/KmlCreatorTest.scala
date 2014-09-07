@@ -3,7 +3,7 @@ package com.avyeyes.service
 import com.avyeyes.test._
 import scala.xml.Node
 
-class KmlCreatorTest extends AvyEyesSpec with AvalancheGenerator {
+class KmlCreatorTest extends WebSpec2 with AvalancheGenerator {
   class KmlCreatorTester extends KmlCreator
   val kmlCreatorTester = new KmlCreatorTester
   

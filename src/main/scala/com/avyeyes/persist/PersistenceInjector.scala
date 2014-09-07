@@ -7,7 +7,6 @@ object PersistenceInjector extends Factory {
   
   private def initSquerylAvalancheDao: AvalancheDao = {
     val squerylDao = new SquerylAvalancheDao
-    squerylDao.initSession
     squerylDao
   }
 }

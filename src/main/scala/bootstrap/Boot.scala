@@ -2,6 +2,7 @@ package bootstrap.liftweb
 
 import com.avyeyes.rest._
 import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.AEHelpers._
 
 import net.liftweb.common._
 import net.liftweb.http._
@@ -9,12 +10,19 @@ import net.liftweb.sitemap.LocPath.stringToLocPath
 import net.liftweb.sitemap.Menu
 import net.liftweb.sitemap.SiteMap
 import net.liftweb.util.Vendor.valToVendor
+import org.squeryl.SessionFactory
+import org.squeryl.Session
+import org.squeryl.adapters.PostgreSqlAdapter
 
 /**
  * Companion object for unit testing
  */
 object Boot {
-  def apply() = new Boot
+  def apply() = {
+    val boot = new Boot
+    boot.test_(true)
+    boot
+  }
 }
 
 /**
@@ -56,6 +64,8 @@ class Boot extends Loggable {
     LiftRules.maxMimeFileSize = MaxImageSize
     LiftRules.maxMimeSize = MaxImageSize
     LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
+    
+    if (!test) initPostgresqlSession
   }
   
   ResourceServer.allow {
@@ -63,6 +73,20 @@ class Boot extends Loggable {
   	case "css" :: _ => true
   }
   
+  lazy val jdbcConnectionString = new StringBuilder("jdbc:postgresql://")
+    .append(getProp("db.host")).append(":")
+    .append(getProp("db.port")).append("/")
+    .append(getProp("db.name")).toString
+ 
+  def initPostgresqlSession() = {
+    if (SessionFactory.concreteFactory.isEmpty) {
+      logger.info("Initializing Postgresql database session")
+      Class.forName("org.postgresql.Driver")
+      SessionFactory.concreteFactory = Some(()=>
+        Session.create(java.sql.DriverManager.getConnection(jdbcConnectionString), new PostgreSqlAdapter))
+    }
+  }
+    
   private def browserSupported(req: Req): Boolean = (
     unboxedBrowserVersion(req.chromeVersion) >= ChromeVersion
     || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxVersion
@@ -71,4 +95,7 @@ class Boot extends Loggable {
   
   private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
   private def unboxedBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
+  
+  private var test = false
+  private def test_(b: Boolean) = test = b
 }
