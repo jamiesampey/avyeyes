@@ -12,7 +12,7 @@ import net.liftweb.json.JsonDSL._
 import net.liftweb.common.Loggable
 
 
-object AvyDetails extends RestHelper with JsonResponder with Loggable {
+object AvyDetails extends RestHelper with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
@@ -26,7 +26,7 @@ object AvyDetails extends RestHelper with JsonResponder with Loggable {
       
       if (avyJsonOption.isDefined) {
           logger.debug("Serving details for avy " + extId)
-          sendJsonResponse(avyJsonOption.get)
+          avyJsonOption.get
       } else {
           logger.warn("Avy details request failed. Could not serve details for avy " + extId)
           new BadResponse
