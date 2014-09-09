@@ -11,15 +11,23 @@ import bootstrap.liftweb.Boot
 import net.liftweb.http.S
 
 class AEHelpersTest extends WebSpec2(Boot().boot _) {
-    "Date parsing" should {
-      "Parse a normal date correctly" withSFor("/") in {
-          val parsedDate = AEHelpers.parseDateStr("08-26-2014")
-          val cal: Calendar = Calendar.getInstance()
-          cal.setTime(parsedDate)
+    "Date parsing and formatting" should {
+      "Parse a string to a date" withSFor("/") in {
+        val cal: Calendar = Calendar.getInstance
+        cal.setTime(AEHelpers.strToDate("08-26-2014"))
+        
+        cal.get(Calendar.DAY_OF_MONTH) must_== 26
+        cal.get(Calendar.MONTH) must_== Calendar.AUGUST
+        cal.get(Calendar.YEAR) must_== 2014
+      }
+      
+      "Format date to a string" withSFor("/") in {
+          val cal: Calendar = Calendar.getInstance
+          cal.set(Calendar.YEAR, 2014)
+          cal.set(Calendar.MONTH, Calendar.SEPTEMBER)
+          cal.set(Calendar.DAY_OF_MONTH, 8)
           
-          cal.get(Calendar.DAY_OF_MONTH) must_== 26
-          cal.get(Calendar.MONTH) must_== Calendar.AUGUST
-          cal.get(Calendar.YEAR) must_== 2014
+          AEHelpers.dateToStr(cal.getTime) must_== "09-08-2014"
       }
     }
     

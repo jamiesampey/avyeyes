@@ -26,8 +26,8 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
     val latBounds = List(strToDblOrZero(criteria.northLimit), strToDblOrZero(criteria.southLimit))
     val lngBounds = List(strToDblOrZero(criteria.eastLimit), strToDblOrZero(criteria.westLimit))
     
-    val fromDate = if (!criteria.fromDateStr.isEmpty) parseDateStr(criteria.fromDateStr) else EarliestAvyDate
-    val toDate = if (!criteria.toDateStr.isEmpty) parseDateStr(criteria.toDateStr) else today.getTime
+    val fromDate = if (!criteria.fromDateStr.isEmpty) strToDate(criteria.fromDateStr) else EarliestAvyDate
+    val toDate = if (!criteria.toDateStr.isEmpty) strToDate(criteria.toDateStr) else today.getTime
 
     val avyType = if (isNotBlank(criteria.avyTypeStr)) AvalancheType.withName(criteria.avyTypeStr) else AvalancheType.U
     val avyTrigger = if (isNotBlank(criteria.avyTriggerStr)) AvalancheTrigger.withName(criteria.avyTriggerStr) else AvalancheTrigger.U

@@ -61,7 +61,7 @@ class Report extends ExternalIdService with Loggable {
          val kmlCoordsNode = (XML.loadString(kmlStr) \\ "LinearRing" \ "coordinates").head
 
          val newAvalanche = Avalanche(extId, false, submitterEmail, ExperienceLevel.withName(submitterExp), 
-           strToDblOrZero(lat), strToDblOrZero(lng), areaName, parseDateStr(dateStr), 
+           strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr), 
            Sky.withName(sky), Precip.withName(precip), 
            strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle), 
            AvalancheType.withName(avyType), AvalancheTrigger.withName(trigger), 

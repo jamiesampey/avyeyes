@@ -106,7 +106,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       passedAvalanche.lat must_== strToDblOrZero(report.lat)
       passedAvalanche.lng must_== strToDblOrZero(report.lng)
       passedAvalanche.areaName must_== report.areaName
-      passedAvalanche.avyDate must_== parseDateStr(report.dateStr)
+      passedAvalanche.avyDate must_== strToDate(report.dateStr)
       passedAvalanche.sky must_== Sky.withName(report.sky)
       passedAvalanche.precip must_== Precip.withName(report.precip)
       passedAvalanche.avyType must_== AvalancheType.withName(report.avyType)

@@ -5,11 +5,11 @@ import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.util.AEHelpers.humanNumberToStr
-import net.liftweb.http.BadResponse
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import net.liftweb.common.Loggable
+import net.liftweb.http.NotFoundResponse
 
 
 object AvyDetails extends RestHelper with Loggable {
@@ -29,7 +29,7 @@ object AvyDetails extends RestHelper with Loggable {
           avyJsonOption.get
       } else {
           logger.warn("Avy details request failed. Could not serve details for avy " + extId)
-          new BadResponse
+          NotFoundResponse("Avalanche not found")
       }
     }
   }
