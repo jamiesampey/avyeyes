@@ -4,13 +4,11 @@ import scala.xml._
 import com.avyeyes.test._
 import com.avyeyes.util.AEHelpers._
 import net.liftweb.http.S
-import bootstrap.liftweb.Boot
 
-class ContentTest extends WebSpec2(Boot().boot _) with TemplateReader {
+class ContentTest extends WebSpec2 with TemplateReader {
   var renderedPage: NodeSeq = NodeSeq.Empty
   
   "Snippet rendering" should {
-
     "Wire label fields" withSFor("/") in {
       renderedPage = (new Content).render(IndexHtmlElem)
       val labels = renderedPage \\ "label"

@@ -2,17 +2,16 @@ package com.avyeyes.snippet
 
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-
-import bootstrap.liftweb.Boot
 import net.liftweb.mocks.MockHttpServletRequest
+import bootstrap.liftweb.Boot
 
 class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with AvalancheGenerator {
   "Initial JsCmd" should {
-    val validExtId = "4jhu2ie9"
-    val reqWithGoodExtId = new MockHttpServletRequest("http://avyeyes.com/" + validExtId)
-    val reqWithBadExtId = new MockHttpServletRequest("http://avyeyes.com/j4ek-d3s")
+    isolated 
     
-    "Fly to an avalanche if passed a valid external ID" withSFor(reqWithGoodExtId) in {
+    val validExtId = "4jhu2ie9"
+    
+    "Fly to an avalanche if passed a valid external ID" withSFor("http://avyeyes.com/" + validExtId) in {
       val initAvalancheLat = 35.59939321
       val initAvalancheLng = -104.323455342
       val initAvalanche = avalancheAtLocationWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
@@ -30,7 +29,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
     
-    "Ignore an invalid external ID on the URL" withSFor(reqWithBadExtId) in {
+    "Ignore an invalid external ID on the URL" withSFor("http://avyeyes.com/j4ek-d3s") in {
       val init = new Init
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
