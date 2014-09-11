@@ -27,4 +27,11 @@ trait LiftHelpers {
   
   def extractJsonStringField(resp: LiftResponse, field: String):String = (jsonResponseAsJValue(resp) \\ field).extract[String]
   def extractJsonDoubleField(resp: LiftResponse, field: String): Double = (jsonResponseAsJValue(resp) \\ field).extract[Double]
+  def extractJsonLongField(resp: LiftResponse, field: String): Long = (jsonResponseAsJValue(resp) \\ field).extract[Long]
+  
+  def addFileUploadToReq(orig: Req, fph: FileParamHolder): Req = {
+    val fphParamCalcInfo = new ParamCalcInfo(Nil, null, fph :: Nil, Empty)
+    new Req(orig.path, orig.contextPath, orig.requestType, orig.contentType, orig.request,
+      orig.nanoStart, orig.nanoEnd, orig.stateless_?, () => fphParamCalcInfo, Map.empty)
+  }
 }

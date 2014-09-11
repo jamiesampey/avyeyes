@@ -1,14 +1,11 @@
 package com.avyeyes.rest
 
 import java.io.ByteArrayInputStream
-
 import org.squeryl.PrimitiveTypeMode._
-
 import com.avyeyes.persist._
-
-import net.liftweb.http.BadResponse
 import net.liftweb.http.StreamingResponse
 import net.liftweb.http.rest.RestHelper
+import net.liftweb.http.NotFoundResponse
 
 object ImageServe extends RestHelper {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -23,7 +20,7 @@ object ImageServe extends RestHelper {
         case Some(avyImg) => val byteStream = new ByteArrayInputStream(avyImg.bytes)
           StreamingResponse(byteStream, () => byteStream.close(), avyImg.bytes.length, 
             ("Content-Type", avyImg.mimeType) :: Nil, Nil, 200)
-        case _ => new BadResponse
+        case _ => new NotFoundResponse(s"Image $avyExtId/$filename not found")
       }
     }
   }

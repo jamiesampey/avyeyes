@@ -5,7 +5,7 @@ import com.avyeyes.persist._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
 
-object ImageUpload extends RestHelper with JsonResponder {
+object ImageUpload extends RestHelper {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
     
   serve {
@@ -15,8 +15,7 @@ object ImageUpload extends RestHelper with JsonResponder {
         dao.insertAvalancheImage(avyExtId, fph)
       }
 
-      val ret = ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
-      sendJsonResponse(ret)
+      ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
     }
   }
 }
