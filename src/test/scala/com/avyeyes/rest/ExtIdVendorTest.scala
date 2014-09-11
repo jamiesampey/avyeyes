@@ -27,7 +27,7 @@ class ExtIdVendorTest extends WebSpec2 with MockPersistence with LiftHelpers {
      isValidExtId(Some(returnedExtId)) must beTrue
     }
     
-    "Return a 500 if an external ID could not be reserved" withSFor("http://avyeyes.com/rest/reserveExtId") in {
+    "Return InternalServerErrorResponse (500) if an extId could not be reserved" withSFor("http://avyeyes.com/rest/reserveExtId") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(ExtIdVendor(req)())
 

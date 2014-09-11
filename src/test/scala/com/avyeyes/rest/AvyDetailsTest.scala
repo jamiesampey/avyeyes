@@ -20,7 +20,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
   mockAvalancheDao.selectViewableAvalanche(badExtId) returns noAvalanche
       
   "Valid avalanche details REST request" should {
-    "Return avalanche details" withSFor("http://avyeyes.com/rest/avydetails/" + extId1) in {
+    "Return avalanche details" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(AvyDetails(req)())
         
@@ -28,7 +28,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
       extractJsonStringField(resp, "extId") must_== extId1
     }
     
-    "Return reader-friendly labels for enum code fields" withSFor("http://avyeyes.com/rest/avydetails/" + extId1) in {
+    "Return reader-friendly labels for enum code fields" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(AvyDetails(req)())
       
@@ -44,7 +44,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
   }
   
   "Invalid avalanche details REST request" should {
-    "Return NotFoundResponse" withSFor("http://avyeyes.com/rest/avydetails/" + badExtId) in {
+    "Return NotFoundResponse (404)" withSFor(s"http://avyeyes.com/rest/avydetails/$badExtId") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(AvyDetails(req)())
     
