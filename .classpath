@@ -1,8 +1,6 @@
 <classpath>
   <classpathentry output="target/scala-2.11/classes" kind="src" path="src/main/scala"/>
-  <classpathentry output="target/scala-2.11/classes" kind="src" path="src/main/java"/>
   <classpathentry output="target/scala-2.11/test-classes" kind="src" path="src/test/scala"/>
-  <classpathentry output="target/scala-2.11/test-classes" kind="src" path="src/test/java"/>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/net.liftweb/lift-webkit_2.11/jars/lift-webkit_2.11-2.6-RC1.jar"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/net.liftweb/lift-util_2.11/jars/lift-util_2.11-2.6-RC1.jar"/>
