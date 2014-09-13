@@ -13,8 +13,8 @@ import java.util.Date
 
 
 object AEHelpers {
-  private val UnknownLabel = S.?("enum.U")
   val DatePattern = "MM-dd-yyyy"
+  val UnknownEnumCode = "enum.U"
   
   def getProp(prop: String) = Props.get(prop) openOr(prop)
     
@@ -28,9 +28,9 @@ object AEHelpers {
 
 	def strToIntOrNegOne(str: String): Int = asInt(str) openOr -1
 
-	def sizeToStr(size: Double): String = if (size == 0) UnknownLabel else size.toString
+	def sizeToStr(size: Double): String = if (size == 0) S.?(UnknownEnumCode) else size.toString
 	 
-	def humanNumberToStr(hn: Int): String = if (hn == -1) UnknownLabel else hn.toString
+	def humanNumberToStr(hn: Int): String = if (hn == -1) S.?(UnknownEnumCode) else hn.toString
 
 	def isValidExtId(extId: Option[String]): Boolean = extId match {
 	  case None => false
@@ -39,5 +39,5 @@ object AEHelpers {
 	  case _ => true
 	}
     
-  def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(UnknownLabel)
+  def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(S.?(UnknownEnumCode))
 }
