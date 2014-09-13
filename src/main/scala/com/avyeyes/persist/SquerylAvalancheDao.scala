@@ -10,7 +10,6 @@ import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 
 import net.liftweb.common.Loggable
-import net.liftweb.http.FileParamHolder
 import net.liftweb.util.Helpers.today
 
 class SquerylAvalancheDao extends AvalancheDao with Loggable {
@@ -23,9 +22,6 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
   }
     
   def selectAvalanches(criteria: AvalancheSearchCriteria) = {
-    val latBounds = List(strToDblOrZero(criteria.northLimit), strToDblOrZero(criteria.southLimit))
-    val lngBounds = List(strToDblOrZero(criteria.eastLimit), strToDblOrZero(criteria.westLimit))
-    
     val fromDate = if (!criteria.fromDateStr.isEmpty) strToDate(criteria.fromDateStr) else EarliestAvyDate
     val toDate = if (!criteria.toDateStr.isEmpty) strToDate(criteria.toDateStr) else today.getTime
 
@@ -34,8 +30,8 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
 
     from(avalanches)(a => where(
       a.viewable === true
-      and a.lat.between(latBounds.min, latBounds.max)
-      and a.lng.between(lngBounds.min, lngBounds.max)
+      and a.lat.between(strToDblOrZero(criteria.southLimit), strToDblOrZero(criteria.northLimit))
+      and a.lng.between(strToDblOrZero(criteria.westLimit), strToDblOrZero(criteria.eastLimit))
       and a.avyDate.between(fromDate, toDate)
       and (a.avyType === avyType).inhibitWhen(criteria.avyTypeStr.isEmpty)
       and (a.trigger === avyTrigger).inhibitWhen(criteria.avyTriggerStr.isEmpty)
@@ -48,9 +44,7 @@ class SquerylAvalancheDao extends AvalancheDao with Loggable {
 
   def insertAvalanche(avalanche: Avalanche) = avalanches insert avalanche
 
-  def insertAvalancheImage(avyExtId: String, fph: FileParamHolder) = {
-    avalancheImageDropbox insert new AvalancheImg(avyExtId, fph.fileName.split("\\.")(0), fph.mimeType, fph.file)
-  }
+  def insertAvalancheImage(avalancheImg: AvalancheImg) = avalancheImageDropbox insert avalancheImg
   
   def selectAvalancheImage(avyExtId: String, filename: String) = {
     from(avalancheImageDropbox)(img => where(

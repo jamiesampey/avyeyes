@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import com.avyeyes.model.Avalanche
+import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
 import net.liftweb.http._
@@ -22,7 +22,7 @@ class ImageUploadTest extends WebSpec2 with MockPersistence with LiftHelpers {
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(ImageUpload(reqWithFPH)())
         
-      there was one(mockAvalancheDao).insertAvalancheImage(extId, fph)
+      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImg])
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") must_== extId
       extractJsonStringField(resp, "fileName") must_== fileName

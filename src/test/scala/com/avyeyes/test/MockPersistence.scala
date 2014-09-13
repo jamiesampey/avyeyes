@@ -9,13 +9,10 @@ import org.squeryl.adapters.PostgreSqlAdapter
 import com.avyeyes.persist._
 
 
-trait MockPersistence extends BeforeExample with AroundExample with Mockito {
+trait MockPersistence extends AroundExample with Mockito {
   val mockAvalancheDao = mock[AvalancheDao]
   
-  def before() = {
-    SessionFactory.concreteFactory = Some(()=>
-      Session.create(mock[java.sql.Connection], mock[PostgreSqlAdapter]))
-  }
+  SessionFactory.concreteFactory = Some(() => Session.create(mock[java.sql.Connection], mock[PostgreSqlAdapter]))
   
   def around[T: AsResult](t: => T): Result = {
     PersistenceInjector.avalancheDao.doWith(mockAvalancheDao) {

@@ -12,7 +12,7 @@ trait AvalancheDao {
 
   def insertAvalanche(avalanche: Avalanche): Unit
 
-  def insertAvalancheImage(avyExtId: String, fph: FileParamHolder): Unit
+  def insertAvalancheImage(img: AvalancheImg): Unit
   
   def selectAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImg]
   

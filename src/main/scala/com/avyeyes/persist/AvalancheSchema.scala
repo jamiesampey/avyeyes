@@ -6,9 +6,9 @@ import org.squeryl.Schema
 import com.avyeyes.model._
 
 object AvalancheSchema extends Schema {
-  def avalanches = table[Avalanche]("avalanche")
-  def avalancheImages = table[AvalancheImg]("avalanche_img")
-  def avalancheImageDropbox = table[AvalancheImg]("avalanche_img_dropbox")
+  val avalanches = table[Avalanche]("avalanche")
+  val avalancheImages = table[AvalancheImg]("avalanche_img")
+  val avalancheImageDropbox = table[AvalancheImg]("avalanche_img_dropbox")
   
   on(avalanches)(a => declare(
     a.id is(primaryKey, autoIncremented),

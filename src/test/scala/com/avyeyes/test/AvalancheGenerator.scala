@@ -23,4 +23,31 @@ trait AvalancheGenerator {
       Sky.U, Precip.U, 12171, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
       0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", coords)
   }
+  
+  def avalancheAtLocationOnDate(extId: String, viewable: Boolean, lat: Double, lng: Double, date: Date): Avalanche = {
+    Avalanche(extId, viewable, "tester@company.com", ExperienceLevel.A0, lat, lng, "test title", date, 
+      Sky.U, Precip.U, 12171, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
+      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  }
+  
+  def avalancheAtLocationWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+    avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value): Avalanche = {
+    Avalanche(extId, viewable, "tester@company.com", ExperienceLevel.A0, lat, lng, "test title", new Date, 
+      Sky.U, Precip.U, 12171, Aspect.N, 45, avyType, trigger, AvalancheInterface.U, 
+      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  }
+  
+  def avalancheAtLocationWithSize(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+    rSize: Double, dSize: Double): Avalanche = {
+    Avalanche(extId, viewable, "tester@company.com", ExperienceLevel.A0, lat, lng, "test title", new Date, 
+      Sky.U, Precip.U, 12171, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
+      rSize, dSize, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  }
+  
+  def avalancheAtLocationWithCaughtKilledNumbers(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+    caught: Int, killed: Int): Avalanche = {
+    Avalanche(extId, viewable, "tester@company.com", ExperienceLevel.A0, lat, lng, "test title", new Date, 
+      Sky.U, Precip.U, 12171, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
+      0.0, 0.0, caught, -1, -1, -1, killed, ModeOfTravel.U, "", "")
+  }
 }

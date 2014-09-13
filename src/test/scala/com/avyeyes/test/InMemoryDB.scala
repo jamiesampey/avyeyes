@@ -7,15 +7,14 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.adapters.H2Adapter
 import java.sql.DriverManager
 
-trait InMemoryDB extends BeforeExample with AroundExample {
-  def before() = {
-    Class.forName("org.h2.Driver")
-    SessionFactory.concreteFactory = Some(() =>
-      Session.create(DriverManager.getConnection("jdbc:h2:mem:avyeyes_db_test;DB_CLOSE_DELAY=-1", "sa", ""), 
-        new H2Adapter))
-  }
+trait InMemoryDB extends AroundExample {
+  Class.forName("org.h2.Driver")
   
-  def wipeDB() = {
+  SessionFactory.concreteFactory = Some(() =>
+    Session.create(DriverManager.getConnection("jdbc:h2:mem:avyeyes_db_test;DB_CLOSE_DELAY=-1", "sa", ""), 
+      new H2Adapter))
+  
+  def recreateDB() = {
     try {
       transaction {
         AvalancheSchema.drop
@@ -27,7 +26,7 @@ trait InMemoryDB extends BeforeExample with AroundExample {
   }
   
   def around[T: AsResult](t: => T): Result = {
-    wipeDB() 
+    recreateDB  
     transaction {
       AsResult(t)
     }
