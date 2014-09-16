@@ -75,6 +75,7 @@ AvyReport.prototype.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect,
 	$('#avyReportLat').val(lat);
 	$('#avyReportLng').val(lng);
 	$('#avyReportElevation').val(elev);
+	$('#avyReportElevationFt').val(this.view.metersToFeet(elev));
 	$('#avyReportAspectAC').val(aspect);
 	$('#avyReportAspect').val(aspect);
 	$('#avyReportAngle').val(angle);

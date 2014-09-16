@@ -184,7 +184,7 @@ define(['gearth',
 			expect(report.setAvyDrawingHiddenInputs).toHaveBeenCalled();
 			expect(report.setAvyDrawingHiddenInputs.calls[0].args[0]).toEqual(geo._midpointCoord.getLatitude());
 			expect(report.setAvyDrawingHiddenInputs.calls[0].args[1]).toEqual(geo._midpointCoord.getLongitude());
-			expect(report.setAvyDrawingHiddenInputs.calls[0].args[2]).toEqual(Math.round(highestCoordAlt * drawing.FEET_PER_METER));
+			expect(report.setAvyDrawingHiddenInputs.calls[0].args[2]).toEqual(Math.round(highestCoordAlt));
 			expect(report.setAvyDrawingHiddenInputs.calls[0].args[3]).toEqual('SE');
 			expect(report.setAvyDrawingHiddenInputs.calls[0].args[5]).toEqual(testKml);
 		});

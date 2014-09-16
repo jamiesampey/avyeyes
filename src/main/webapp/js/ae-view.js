@@ -124,6 +124,7 @@ AvyEyesView.prototype.showAvyDetails = function(kmlClickEvent, a) {
 	$('#avyDetailDSize').text(a.dSize);
 
 	$('#avyDetailElevation').text(a.elevation);
+	$('#avyDetailElevationFt').text(this.metersToFeet(a.elevation));
 	$('#avyDetailAspect').text(a.aspect);
 	$('#avyDetailAngle').text(a.angle);
 	
@@ -268,6 +269,10 @@ AvyEyesView.prototype.failureEarthCB = function(errorCode) {
 
 AvyEyesView.prototype.init = function() {
   this.gearth.createInstance('map3d', (this.initEarthCB).bind(this), (this.failureEarthCB).bind(this), { 'language': 'en' });
+}
+
+AvyEyesView.prototype.metersToFeet = function(meters) {
+  return Math.round(meters * 3.28084);
 }
 
 return AvyEyesView;

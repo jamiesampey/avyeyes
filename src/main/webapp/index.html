@@ -91,7 +91,11 @@
                                 <table class="avyDetailFieldsSubTable">
                                     <tr>
                                        <td><label for="avyDetailElevation"></label></td>
-                                       <td><span id="avyDetailElevation"></span></td>
+                                       <td>
+                                         <span id="avyDetailElevation"></span>
+                                         <span>/</span>
+                                         <span id="avyDetailElevationFt"></span>
+                                       </td>
                                     </tr>
                                     <tr>
                                        <td><label for="avyDetailAspect"></label></td>
@@ -386,12 +390,16 @@
 				<table id="avyReportDetailsRightColumnTable">
 				    <tr><td><table class="avyReportSubTable">
                       <tr><td class="avyReportSectionHeader">
-                        <span id="avyReportSiteDesc" class="avyHeader"></span>
+                        <span id="avyReportSlopeDesc" class="avyHeader"></span>
                       </td></tr>
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
 				          <td><label for="avyReportElevation" data-required="true"></label></td>
-				          <td><input id="avyReportElevation" class="avyRawTextInput" type="text" readonly="readonly" /></td>
+				          <td>
+				            <input id="avyReportElevation" class="avyReportElevation" type="text" readonly="readonly" />
+				            <span>/</span>
+				            <input id="avyReportElevationFt" class="avyReportElevation" type="text" readonly="readonly" />
+				          </td>
 				        </tr>
 				        <tr>
 				          <td><label for="avyReportAspect" data-required="true"></label></td>

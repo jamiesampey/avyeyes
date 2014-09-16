@@ -6,7 +6,6 @@ function AvyDraw(avyReport) {
 	this.ge = avyReport.view.ge;
 	
 	this.AVY_DRAW_COLOR = '773b3bff';
-	this.FEET_PER_METER = 3.28084;
 	
 	this.drawingKmlObj = null;
 	this.isMouseDown = false;
@@ -60,11 +59,10 @@ AvyDraw.prototype.convertLineStringToPolygon = function() {
   var vDist = highPoint.altitude() - lowPoint.altitude();  
   var angleRadians = Math.asin(vDist/hDist);
   
-  this.report.setAvyDrawingHiddenInputs(midPoint.lat(), midPoint.lng(), 
-		  Math.round(highPoint.altitude() * this.FEET_PER_METER), 
-		  this.headingToDirection(heading.toFixed(1)), 
-		  Math.round(angleRadians * (180/Math.PI)), 
-		  this.drawingKmlObj.getKml());
+  this.report.setAvyDrawingHiddenInputs(midPoint.lat(), midPoint.lng(), Math.round(highPoint.altitude()), 
+	  this.headingToDirection(heading.toFixed(1)), 
+	  Math.round(angleRadians * (180/Math.PI)), 
+	  this.drawingKmlObj.getKml());
   
   this.report.confirmDrawing();
 }

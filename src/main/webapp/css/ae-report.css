@@ -121,8 +121,22 @@
 	padding: 0px;
 }
 
-#avyReportElevation {
+.avyReportElevation {
+    width: 40px;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+    background: transparent;
+    color: white;
     border: none;
+}
+
+#avyReportElevation.avyReportElevation {
+    text-align: right;
+}
+
+#avyReportElevationFt.avyReportElevation {
+    text-align: left;
 }
 
 #avyReportAspectAC {
