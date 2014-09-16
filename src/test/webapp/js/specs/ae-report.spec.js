@@ -68,6 +68,7 @@ define(['jasmine-jquery',
 	                + '<input id="avyReportLng" type="hidden"/>'
 	                + '<input id="avyReportKml" type="hidden"/>'
 	                + '<input id="avyReportElevation" type="text"/>'
+	                + '<input id="avyReportElevationFt" type="text"/>'
 	                + '<input id="avyReportAspect" type="hidden"/>'
 	                + '<input id="avyReportAspectAC" type="text"/>'
 	                + '<input id="avyReportAngle"/>'
@@ -86,6 +87,7 @@ define(['jasmine-jquery',
 			expect($("#avyReportLng")).toHaveValue(lng);
 			expect($("#avyReportKml")).toHaveValue(kmlStr);
 			expect($("#avyReportElevation")).toHaveValue(elev);
+			expect($("#avyReportElevationFt")).toHaveValue(view.metersToFeet(elev));
 			expect($("#avyReportAspect")).toHaveValue(aspect);
 			expect($("#avyReportAspectAC")).toHaveValue(aspect);
 			expect($("#avyReportAngle")).toHaveValue(angle);
