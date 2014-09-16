@@ -96,6 +96,14 @@
 	border-radius: 10px;
 }
 
+#avyReportSubmitterWrapperTable .avyReportSubTable {
+    width: 100%;
+}
+
+#avyReportSubmitterWrapperTable .avyReportInputsSubTable {
+	width: 100%;
+}
+
 .avyReportInputsSubTable > tbody > tr > td {
     padding-top: 5px;
     margin: 0px;
@@ -104,10 +112,6 @@
 
 #avyReportSubmitterWrapperTable {
 	width: 100%;
-}
-
-#avyReportSubmitterYearsExpCol {
-    padding: 0px 0px 0px 10px;
 }
 
 #avyReportRequiredFieldsMsgRow {

@@ -300,6 +300,26 @@
 	   <form class="lift:form.ajax">
 	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">
+	           <tr><td colspan="2">
+                    <table id="avyReportSubmitterWrapperTable"><tr><td>
+                        <table class="avyReportSubTable">
+                            <tr><td class="avyReportSectionHeader">
+                                <span id="avyReportSubmitterInfo" class="avyHeader"></span>
+                            </td></tr>
+                            <tr><td>
+                                <table class="avyReportInputsSubTable">
+                                    <tr><td><label for="avyReportSubmitterEmail" data-required="true"></label></td>
+                                        <td colspan="3"><input id="avyReportSubmitterEmail" class="avyRawTextInput" type="text"/></td>
+                                        <td><label for="avyReportSubmitterExp" data-required="true"></label></td>
+                                        <td>
+                                            <input class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
+                                            <input id="avyReportSubmitterExp" type="hidden"/>
+                                        </td>
+                                    </tr>
+                                </table></td></tr>
+                        </table></td></tr>
+                    </table>
+               </td></tr>
 	           <tr><td>
 	             <table id="avyReportDetailsLeftColumnTable">
 	               <tr><td>
@@ -338,7 +358,7 @@
 	               <tr><td>
 	                 <table class="avyReportSubTable">
 	                   <tr><td class="avyReportSectionHeader">
-	                       <span id="avyReportAvalancheDesc" class="avyHeader"></span>
+	                       <span id="avyReportAvalancheClass" class="avyHeader"></span>
 	                   </td></tr>
 	                   <tr><td><table class="avyReportInputsSubTable">
 		                 <tr>
@@ -456,28 +476,6 @@
            </tr>  
            <tr><td colspan="2"><label for="avyReportComments"></label></td></tr>
            <tr><td colspan="2"><textarea id="avyReportComments" rows="5"></textarea></td></tr>
-           <tr><td colspan="2">
-           <table id="avyReportSubmitterWrapperTable"><tr><td>
-	           <table class="avyReportSubTable">
-	              <tr><td class="avyReportSectionHeader">
-	                 <span id="avyReportSubmitterInfo" class="avyHeader"></span>
-	              </td></tr>
-	              <tr><td>
-	                 <table class="avyReportInputsSubTable">
-	                    <tr>
-		                  <td><label for="avyReportSubmitterEmail" data-required="true"></label></td>
-			              <td colspan="3"><input id="avyReportSubmitterEmail" class="avyRawTextInput" type="text"/></td>
-		                  <td><label for="avyReportSubmitterExp" data-required="true"></label></td>
-		                  <td>
-		                      <input class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
-		                      <input id="avyReportSubmitterExp" type="hidden"/>
-		                  </td>
-	                    </tr>
-	                 </table>
-	              </td></tr></table>
-	           </td>
-	       </tr></table>
-           </td></tr>
            <tr>
                <td colspan="2" id="avyReportRequiredFieldsMsgRow">
                    <span style="color: red;">* </span><span id="avyReportRequiredFields" class="avyMsg"></span>
