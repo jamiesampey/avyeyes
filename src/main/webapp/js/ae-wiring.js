@@ -28,16 +28,27 @@ var wireUI = function(view) {
 			return false;
 		}
 	});
-	
+
+	$('#avyReportDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#avyReportDialog');
+	 
 	$('.avyAutoComplete').change(function() {
 		$(this).val('');
 		$(this).siblings(':hidden').val('');
 	});
 	
-	$('.avyAutoComplete').focus(function(){            
+	$('.avyAutoComplete').focus(function(){
 		$(this).autocomplete("search");
-    });
+  });
 	
+	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
+		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
+		  view.currentReport.toggleClassification(true); 
+		} else {
+		  view.currentReport.toggleClassification(false); 
+		}
+		return false;
+	});
+
   $('#aeMenu').menu().position({
 	  my: 'left top', 
 	  at: 'right top', 
@@ -69,15 +80,6 @@ var wireUI = function(view) {
 
   $('#howItWorks').click(function(){
 	  view.showHelp(0);
-  });
-  
-  $('#debugReportForm').click(function(){
-	  view.toggleMenu();
-	  view.currentReport = new AvyReport(this, function() {
-			$("#avyReportDialog").children('form').submit();
-			view.currentReport = null;
-		});
-	  view.currentReport.enterAvyDetail();
   });
   
 	$('.avyDate').datepicker({
@@ -228,7 +230,7 @@ var wireUI = function(view) {
 		    	view.resetView();
 		        $(this).dialog('close');
 		      }
-			}
+		    }
 		  ]
 		});
 	
@@ -257,7 +259,7 @@ var wireUI = function(view) {
 		    	view.resetView();
 		        $(this).dialog('close');
 		      }
-			}
+		    }
 		  ]
 		});
 	
@@ -352,7 +354,7 @@ var wireUI = function(view) {
 			}
 		  ]
     });	
-}
+	}
 
 return wireUI;
 });

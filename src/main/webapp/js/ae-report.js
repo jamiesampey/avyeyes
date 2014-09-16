@@ -7,6 +7,7 @@ function AvyReport(avyEyesView) {
 
 AvyReport.prototype.initAvyReport = function() {
 	this.reserveExtId();
+	this.toggleClassification(false);
 	$('#avyReportGeocodeDialog').dialog('open');
 }
 
@@ -81,6 +82,25 @@ AvyReport.prototype.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect,
 	$('#avyReportAngle').val(angle);
 	$('#avyReportKml').val(kmlStr);
 }
+
+AvyReport.prototype.toggleClassification = function(enabled) {
+  if (enabled) {
+    $('#avyReportClassification .avyHeader').css('color', 'white');
+    $('#avyReportClassification label').css('color', 'white');
+    $('#avyReportClassification .avyRDSliderValue').css('color', 'white');
+    $('#avyReportClassification :input').prop('disabled', false);
+    $('#avyReportClassification .avyRDSlider').slider('enable');
+  } else {
+    $('#avyReportClassification .avyHeader').css('color', 'gray');
+    $('#avyReportClassification label').css('color', 'gray');
+    $('#avyReportClassification .avyRDSliderValue').css('color', 'gray');
+    $('#avyReportClassification :input').val('');
+    $('#avyReportClassification :input').prop("disabled", true);
+    $('#avyReportClassification .avyRDSlider').slider('disable');
+    $('#avyReportClassification .avyRDSliderValue').val('0');
+    $('#avyReportClassification .avyRDSlider').slider('value', 0);
+  }
+};
 
 return AvyReport;
 });

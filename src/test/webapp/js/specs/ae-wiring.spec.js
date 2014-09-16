@@ -26,7 +26,10 @@ define(['gearth',
 			
 			wireUI(view);
 			
-			expect(jquiAutocomplete.mostRecentCall.object.selector).toEqual('.avyAutoComplete');
+			expect(jquiAutocomplete.callCount).toEqual(2);
+	    expect(jquiAutocomplete.calls[0].object.selector).toEqual('.avyAutoComplete');
+			expect(jquiAutocomplete.calls[1].object.selector).toEqual('#avyReportDialog .avyAutoComplete');
+			
 			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenu');
 			expect(jquiDatepicker.mostRecentCall.object.selector).toEqual('.avyDate');
 			expect(jquiSlider.mostRecentCall.object.selector).toEqual('.avyRDSlider');
