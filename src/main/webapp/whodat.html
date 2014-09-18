@@ -1,0 +1,32 @@
+<html>
+    <body class="lift:surround?with=default&amp;at=content">
+	    <div class="lift:AdminLogin.loggedOutContent">
+	        <form class="lift:AdminLogin.logIn?form=post">
+	          <table>
+	              <tr><td colspan="2">Currently logged out</td></tr>
+	              <tr>
+	                  <td><label for="avyLoginEmail">Email:</label></td>
+	                  <td><input id="avyLoginEmail" type="text" /></td>
+	              </tr>
+	              <tr>
+	                  <td><label for="avyLoginPassword">Password:</label></td>
+	                  <td><input id="avyLoginPassword" type="password" /></td>
+	              </tr>
+	              <tr>
+	                  <td><input id="avyLoginButton" type="submit" value="Log in" /></td>
+	                  <td><span class="lift:Msg?id=loginMsg;errorClass=error"></span></td>
+	              <tr>
+                 </table>
+	        </form>
+	    </div>
+	
+	    <div class="lift:AdminLogin.loggedInContent">
+	        <form class="lift:AdminLogin.logOut?form=post">
+	          <table>
+	              <tr><td>Logged in as: <span class="lift:AdminLogin.getLoggedInEmail"></span></td></tr>
+	              <tr><td><input id="avyLogoutButton" type="submit" value="Log out" /></td></tr>    
+		      </table>
+	        </form>
+	    </div>
+    </body>
+</html>

@@ -29,6 +29,7 @@
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/ch.qos.logback/logback-classic/jars/logback-classic-1.1.2.jar"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/ch.qos.logback/logback-core/jars/logback-core-1.1.2.jar"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/org.slf4j/slf4j-api/jars/slf4j-api-1.7.6.jar"/>
+  <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/org.mindrot/jbcrypt/jars/jbcrypt-0.3m.jar"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/org.eclipse.jetty.orbit/javax.servlet/jars/javax.servlet-3.0.0.v201112011016.jar"/>
   <classpathentry kind="lib" path="/Users/jamie/.ivy2/cache/org.specs2/specs2_2.11/jars/specs2_2.11-2.4.1.jar"/>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_COMPILER_CONTAINER"/>

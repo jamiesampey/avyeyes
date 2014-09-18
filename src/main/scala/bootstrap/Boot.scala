@@ -33,23 +33,29 @@ class Boot extends Loggable {
   def boot() = {
     logger.info("LIFT BOOT")
     
+    val IndexPath = "index"
+    val BrowserNotSupportedPath = "whawha"
+    val LoginPath = "whodat"
+    val ContextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
+    
     LiftRules.addToPackages("com.avyeyes")
     
     LiftRules.setSiteMap(SiteMap(
-      Menu.i("Home") / "index",
-      Menu.i("Browser Not Supported") / "whawha"
+      Menu.i("Home") / IndexPath,
+      Menu.i("Browser Not Supported") / BrowserNotSupportedPath,
+      Menu.i("Log In") / LoginPath
     ))
 
     // external ID URL extraction
     LiftRules.statelessRewrite.prepend {
-      case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) => 
-        RewriteResponse(ParsePath("index" :: Nil, "", true, true), Map(ExtIdUrlParam -> extId))
+      case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) if !ContextPaths.contains(extId) => 
+        RewriteResponse(ParsePath(IndexPath :: Nil, "", true, true), Map(ExtIdUrlParam -> extId))
     }
     
     // browser not supported redirect
     LiftRules.statelessDispatch.prepend {
-      case req @ Req(path, _, _) if (path != List("whawha") && !browserSupported(req)) => 
-        () => {Full(RedirectResponse("/whawha.html"))}
+      case req @ Req(path, _, _) if (path != List(BrowserNotSupportedPath) && !browserSupported(req)) => 
+        () => {Full(RedirectResponse(BrowserNotSupportedPath))}
     }
     
     // setup stateless REST endpoints
