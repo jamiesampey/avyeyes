@@ -46,6 +46,7 @@ libraryDependencies ++= {
     "com.h2database" % "h2" % "1.3.176" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.2",
     "org.mindrot" % "jbcrypt" % "0.3m",
+    "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile",
     "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
   )

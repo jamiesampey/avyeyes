@@ -3,7 +3,6 @@ package bootstrap.liftweb
 import com.avyeyes.rest._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
-
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.sitemap.LocPath.stringToLocPath
@@ -13,6 +12,8 @@ import net.liftweb.util.Vendor.valToVendor
 import org.squeryl.SessionFactory
 import org.squeryl.Session
 import org.squeryl.adapters.PostgreSqlAdapter
+import net.liftweb.sitemap.Loc
+import omniauth.Omniauth
 
 /**
  * Companion object for unit testing
@@ -33,22 +34,19 @@ class Boot extends Loggable {
   def boot() = {
     logger.info("LIFT BOOT")
     
-    val IndexPath = "index"
-    val BrowserNotSupportedPath = "whawha"
-    val LoginPath = "whodat"
-    val ContextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
-    
     LiftRules.addToPackages("com.avyeyes")
     
-    LiftRules.setSiteMap(SiteMap(
-      Menu.i("Home") / IndexPath,
-      Menu.i("Browser Not Supported") / BrowserNotSupportedPath,
-      Menu.i("Log In") / LoginPath
-    ))
-
+    val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
+    val appMenus: List[Menu] = Menu(Loc("home", IndexPath :: Nil, "Home")) :: 
+      Menu(Loc("browserNotSupported", BrowserNotSupportedPath :: Nil, "Browser Not Supported")) :: 
+      Menu(Loc("logIn", LoginPath :: Nil, "Log In")) :: Nil
+    val menus = appMenus ::: Omniauth.sitemap
+    
+    LiftRules.setSiteMap(SiteMap(menus:_*))
+        
     // external ID URL extraction
     LiftRules.statelessRewrite.prepend {
-      case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) if !ContextPaths.contains(extId) => 
+      case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) if !contextPaths.contains(extId) => 
         RewriteResponse(ParsePath(IndexPath :: Nil, "", true, true), Map(ExtIdUrlParam -> extId))
     }
     
@@ -58,11 +56,12 @@ class Boot extends Loggable {
         () => {Full(RedirectResponse(BrowserNotSupportedPath))}
     }
     
-    // setup stateless REST endpoints
+    // setup REST endpoints
     LiftRules.statelessDispatch.append(ImageUpload)
     LiftRules.statelessDispatch.append(ImageServe)
     LiftRules.statelessDispatch.append(ExtIdVendor)
     LiftRules.statelessDispatch.append(AvyDetails)
+    LiftRules.dispatch.append(OmniAuthCallback)
     
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
@@ -70,6 +69,8 @@ class Boot extends Loggable {
     LiftRules.maxMimeFileSize = MaxImageSize
     LiftRules.maxMimeSize = MaxImageSize
     LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
+    
+    Omniauth.init // grabs omniauth.* settings from props file
     
     if (!test) initPostgresqlSession
   }

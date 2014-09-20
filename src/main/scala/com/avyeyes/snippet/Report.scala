@@ -75,7 +75,7 @@ class Report extends ExternalIdService with Loggable {
 	      }
 	      
 	      logger.info("Avalanche " + extId + " successfully inserted")
-        JsDialog.info("avyReportSuccess", getProp("base.url") + extId)
+        JsDialog.info("avyReportSuccess", getHttpBaseUrl + extId)
       } catch {
         case e: Exception => {
           logger.error("Error creating avalanche " + extId, e)

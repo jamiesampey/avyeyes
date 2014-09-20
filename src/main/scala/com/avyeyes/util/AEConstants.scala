@@ -3,6 +3,10 @@ package com.avyeyes.util
 import java.util.Date
 
 object AEConstants {
+  val IndexPath = "index"
+  val BrowserNotSupportedPath = "whawha"
+  val LoginPath = "whodat"
+    
   val ChromeVersion: Double = 35.0
   val FirefoxVersion: Double = 30.0
   val OperaVersion: Double = 22.0

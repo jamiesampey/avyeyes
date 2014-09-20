@@ -3,15 +3,15 @@ package com.avyeyes.model
 import com.avyeyes.model.enums._
 import java.util.Date
 
-case class Avalanche(val extId: String, val viewable: Boolean, /* metadata */
-    val submitterEmail: String, val submitterExp: ExperienceLevel.Value, 
-    val lat: Double, val lng: Double, val areaName: String, /* location */
-    val avyDate: Date, val sky: Sky.Value, val precip: Precip.Value, /* temporal */
-    val elevation: Int, val aspect: Aspect.Value, val angle: Int, /* slope characteristics */
-    val avyType: AvalancheType.Value, val trigger: AvalancheTrigger.Value, val bedSurface: AvalancheInterface.Value, 
-    val rSize: Double, val dSize: Double, /* avy characteristics */
-    val caught: Int, val partiallyBuried: Int, val fullyBuried: Int, val injured: Int, val killed: Int, /* human numbers */
-    val modeOfTravel: ModeOfTravel.Value, val comments: String, val kmlCoords: String) extends AvalancheObj {
+case class Avalanche(extId: String, viewable: Boolean, /* metadata */
+    submitterEmail: String, submitterExp: ExperienceLevel.Value, 
+    lat: Double, lng: Double, areaName: String, /* location */
+    avyDate: Date, sky: Sky.Value, precip: Precip.Value, /* temporal */
+    elevation: Int, aspect: Aspect.Value, angle: Int, /* slope characteristics */
+    avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value, bedSurface: AvalancheInterface.Value, 
+    rSize: Double, dSize: Double, /* avy characteristics */
+    caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int, /* human numbers */
+    modeOfTravel: ModeOfTravel.Value, comments: String, kmlCoords: String) extends SquerylDbObj {
   
   def this() = this("", false, "", ExperienceLevel.A0, 
       0.0, 0.0, "", new Date(), 

@@ -36,14 +36,12 @@ CREATE TABLE "avalanche" (
     "comments" text not null,
     "kmlCoords" text not null
   );
-
 CREATE SEQUENCE s_avalanche_id
   INCREMENT 1
   MINVALUE 1
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
-
 CREATE UNIQUE INDEX idx2f5d05cf
   ON avalanche
   USING btree
@@ -57,18 +55,17 @@ CREATE TABLE "avalanche_img" (
     "mimeType" varchar(20) not null,
     "bytes" bytea not null
 );
-
 CREATE SEQUENCE s_avalanche_img_id
   INCREMENT 1
   MINVALUE 1
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
-
 CREATE INDEX idx644c089b 
   ON "avalanche_img"
   USING btree
   ("avyExtId");
+CREATE UNIQUE INDEX "idxc1fe0c09" ON "avalanche_img" ("avyExtId","filename");
   
 CREATE TABLE "avalanche_img_dropbox" (
     "id" bigint primary key,
@@ -78,8 +75,20 @@ CREATE TABLE "avalanche_img_dropbox" (
     "mimeType" varchar(20) not null,
     "bytes" bytea not null
 );
-
 CREATE SEQUENCE s_avalanche_img_dropbox_id
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+CREATE UNIQUE INDEX "idx375e0f66" on "avalanche_img_dropbox" ("avyExtId","filename");
+
+CREATE TABLE "app_user" (
+    "email" varchar(128) not null,
+    "createTime" timestamp not null,
+    "id" bigint primary key not null
+  );
+CREATE SEQUENCE "s_app_user_id"
   INCREMENT 1
   MINVALUE 1
   MAXVALUE 9223372036854775807

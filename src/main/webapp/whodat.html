@@ -1,29 +1,46 @@
 <html>
+    <head>
+        <script type="text/javascript" src="/js/lib/jquery.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/ae-common.css"/>
+        <!-- <link rel="stylesheet" type="text/css" href="/css/ae-admin.css"/> -->
+    </head>
     <body class="lift:surround?with=default&amp;at=content">
-	    <div class="lift:AdminLogin.loggedOutContent">
-	        <form class="lift:AdminLogin.logIn?form=post">
-	          <table>
-	              <tr><td colspan="2">Currently logged out</td></tr>
-	              <tr>
-	                  <td><label for="avyLoginEmail">Email:</label></td>
-	                  <td><input id="avyLoginEmail" type="text" /></td>
-	              </tr>
-	              <tr>
-	                  <td><label for="avyLoginPassword">Password:</label></td>
-	                  <td><input id="avyLoginPassword" type="password" /></td>
-	              </tr>
-	              <tr>
-	                  <td><input id="avyLoginButton" type="submit" value="Log in" /></td>
-	                  <td><span class="lift:Msg?id=loginMsg;errorClass=error"></span></td>
-	              <tr>
-                 </table>
-	        </form>
+    
+        <div id="avyAdminLoginDiv">
+		    <div id="avyAdminLoginFormDiv" class="lift:AdminConsole.loginForm">
+		      <table><tr>
+		         <td>
+			         <table>
+			           <tr><td><a href="/auth/facebook/signin">sign in with facebook</a></td></tr>
+			           <tr><td><a href="/auth/google/signin">sign in with google</a></td></tr>
+			         </table>
+		         </td>
+		         <td>
+		             <form class="lift:AdminConsole.localLogIn?form=post">
+		               <table>
+			             <tr>
+			                 <td><label for="avyLoginEmail">Email:</label></td>
+			                 <td><input id="avyLoginEmail" type="text" /></td>
+			             </tr>
+			             <tr>
+			                 <td><label for="avyLoginPassword">Password:</label></td>
+			                 <td><input id="avyLoginPassword" type="password" /></td>
+			             </tr>
+			             <tr>
+			                 <td><input id="avyLoginButton" type="submit" value="Log in" /></td>
+			                 <td><span class="lift:Msg?id=loginMsg;errorClass=error"></span></td>
+			             <tr>
+		               </table>
+		             </form>
+		          </td>
+		       </tr></table>
+		    </div>
 	    </div>
 	
-	    <div class="lift:AdminLogin.loggedInContent">
-	        <form class="lift:AdminLogin.logOut?form=post">
+	    <div id="avyAdminLogoutFormDiv" class="lift:AdminConsole.logoutForm">
+	        <form class="lift:AdminConsole.logOut?form=post">
 	          <table>
-	              <tr><td>Logged in as: <span class="lift:AdminLogin.getLoggedInEmail"></span></td></tr>
+	              <tr><td>Logged in as: <span class="lift:AdminConsole.loggedInEmailNodeSeq"></span></td></tr>
 	              <tr><td><input id="avyLogoutButton" type="submit" value="Log out" /></td></tr>    
 		      </table>
 	        </form>

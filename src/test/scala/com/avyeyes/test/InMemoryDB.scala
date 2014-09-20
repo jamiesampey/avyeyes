@@ -17,8 +17,8 @@ trait InMemoryDB extends AroundExample {
   def recreateDB() = {
     try {
       transaction {
-        AvalancheSchema.drop
-        AvalancheSchema.create
+        AvyEyesSchema.drop
+        AvyEyesSchema.create
       }
     } catch {
       case e: Exception => System.out.println(s"Exception while dropping or creating DB: ${e.getMessage}")

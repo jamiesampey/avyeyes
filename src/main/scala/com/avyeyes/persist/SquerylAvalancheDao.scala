@@ -5,14 +5,13 @@ import org.squeryl.PrimitiveTypeMode._
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.AvalancheSchema._
+import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 
-import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today
 
-class SquerylAvalancheDao extends AvalancheDao with Loggable {
+class SquerylAvalancheDao extends AvalancheDao {
   def selectViewableAvalanche(extId: String): Option[Avalanche] = {
     avalanches.where(a => a.viewable === true and a.extId === extId).headOption
   }

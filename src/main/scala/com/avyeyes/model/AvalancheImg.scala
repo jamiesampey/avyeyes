@@ -1,7 +1,7 @@
 package com.avyeyes.model
 
-case class AvalancheImg(val avyExtId: String, val filename: String, 
-    val mimeType: String, val bytes: Array[Byte]) extends AvalancheObj {
+case class AvalancheImg(avyExtId: String, filename: String, 
+    mimeType: String, bytes: Array[Byte]) extends SquerylDbObj {
 
   def this() = this("", "", "", Array.emptyByteArray)
 }
