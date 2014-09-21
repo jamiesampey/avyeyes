@@ -3,6 +3,7 @@ package com.avyeyes.rest
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
+import com.avyeyes.util.AEHelpers._
 
 import net.liftweb.http._
 
@@ -26,6 +27,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
         
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") must_== extId1
+      extractJsonStringField(resp, "extUrl") must endWith(extId1)
     }
     
     "Return reader-friendly labels for enum code fields" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {

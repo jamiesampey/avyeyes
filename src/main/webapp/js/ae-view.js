@@ -113,9 +113,8 @@ AvyEyesView.prototype.showAvyDetails = function(kmlClickEvent, a) {
 	$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
 	$('#avyDetailSubmitterExp').text(a.submitterExp);
 	
-	var extUrl = 'http://dev.avyeyes.com:8080/' + a.extId;
-	$('#avyDetailExtLink').attr('href', extUrl);
-	$('#avyDetailExtLink').text(extUrl);
+	$('#avyDetailExtLink').attr('href', a.extUrl);
+	$('#avyDetailExtLink').text(a.extUrl);
 	
 	$('#avyDetailType').text(a.avyType);
 	$('#avyDetailTrigger').text(a.trigger);

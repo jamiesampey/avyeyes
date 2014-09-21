@@ -25,7 +25,7 @@ class Init extends KmlCreator with Loggable {
   val InitViewCamTilt = 0
   val InitViewHeading = 0
     
-  val InitAvyAltMeters = 1300
+  val InitAvyAltMeters = 800
   val InitAvyCamTilt = 75
 
   private var extId: Option[String] = None

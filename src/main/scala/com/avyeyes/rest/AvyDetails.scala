@@ -4,7 +4,7 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
-import com.avyeyes.util.AEHelpers.humanNumberToStr
+import com.avyeyes.util.AEHelpers._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
@@ -36,8 +36,9 @@ object AvyDetails extends RestHelper with Loggable {
 
   private def getJSON(a: Avalanche) = {
     val imgFilenames = dao.selectAvalancheImageFilenames(a.extId).toList
+    val extUrl = getHttpBaseUrl + a.extId
     
-    ("extId" -> a.extId) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
+    ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
     ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 
     ("sky" -> Sky.getEnumLabel(a.sky)) ~ ("precip" -> Precip.getEnumLabel(a.precip)) ~
     ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.getEnumLabel(a.aspect)) ~ ("angle" -> a.angle) ~
