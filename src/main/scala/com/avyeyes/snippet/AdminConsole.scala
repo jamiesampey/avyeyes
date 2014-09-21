@@ -36,14 +36,12 @@ object AdminConsole extends Loggable {
     Omniauth.clearCurrentAuth
   }
   
-  private val AccessDenied = getMessage("loginAccessDenied").toString
+  def loggedInContent(html: NodeSeq) = if (isAuthorizedSession) html else NodeSeq.Empty
+  def loggedOutContent(html: NodeSeq) = if (!isAuthorizedSession) html else NodeSeq.Empty
+
+  private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
   private val LocalAuthEmailHash = Props.get("localauth.email", "")
   private val LocalAuthPwHash = Props.get("localauth.pw", "")
-
-  def logoutForm(html: NodeSeq) = if (isAuthorizedSession) html else NodeSeq.Empty
-  def loginForm(html: NodeSeq) = if (!isAuthorizedSession) html else NodeSeq.Empty
-
-  def loggedInEmailNodeSeq = "*" #> authorizedEmail
   
   def localLogIn = {
     var localLoginAttemptEmail = ""
@@ -68,19 +66,22 @@ object AdminConsole extends Loggable {
         } else {
           logger.warn(s"local authentication failure: $localLoginAttemptEmail")
           localAuthorizedEmail.set(Empty)
+        }
+        
+        if (localAuthorizedEmail.is.isEmpty) {
           localLoginAttemptEmail = ""
           localLoginAttemptPw = ""
-          S.error("loginMsg", AccessDenied)
+          S.error("avyAdminLocalLoginMsg", AccessDenied)
         }
       }
     }
     
-    "#avyLoginEmail" #> SHtml.text(localLoginAttemptEmail, localLoginAttemptEmail = _) &
-    "#avyLoginPassword" #> SHtml.password(localLoginAttemptPw, localLoginAttemptPw = _) &
-    "#avyLoginButton" #> SHtml.onSubmitUnit(processLocalLogin)
+    "#avyAdminLocalLoginEmail" #> SHtml.text(localLoginAttemptEmail, localLoginAttemptEmail = _) &
+    "#avyAdminLocalLoginPw" #> SHtml.password(localLoginAttemptPw, localLoginAttemptPw = _) &
+    "#avyAdminLocalLoginButton" #> SHtml.onSubmitUnit(processLocalLogin)
   }
 
   def logOut = {
-    "#avyLogoutButton" #> SHtml.onSubmitUnit(clearAuthorizedEmails)
+    "#avyAdminLogoutButton" #> SHtml.onSubmitUnit(clearAuthorizedEmails)
   }
 }

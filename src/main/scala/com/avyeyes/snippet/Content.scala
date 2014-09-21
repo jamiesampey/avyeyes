@@ -15,7 +15,8 @@ class Content {
       ".avyHeader" #> ((n:NodeSeq) => setupHeader((n\"@id").text)) &
       ".avyMsg" #> ((n:NodeSeq) => setupMessage((n\"@id").text)) &
       ".avyLink" #> ((n:NodeSeq) => setupLink((n\"@id").text)) &
-      ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text))
+      ".avyButton [value]" #> ((n:NodeSeq) => getButton((n\"@id").text)) &
+      ".avyAdminLoggedInDiv" #> getAdminLoggedInDiv
     }
 
     private def setupLabel(id: String, required: Boolean): NodeSeq = {
@@ -37,4 +38,19 @@ class Content {
     }
     
     private def getButton(id: String) = S.?(s"button.$id")
+    
+    private def getAdminLoggedInDiv = {
+      AdminConsole.isAuthorizedSession match {
+        case false => NodeSeq.Empty
+        case true => {
+          <div class="avyAdminLoggedInDiv">
+            <form class="lift:AdminConsole.logOut?form=post">
+              <label for="avyAdminLoggedInEmail">{S.?("label.avyAdminLoggedInEmail")}</label> 
+              <span id="avyAdminLoggedInEmail">{AdminConsole.authorizedEmail}</span>
+              <input id="avyAdminLogoutButton" type="submit" value={S.?("button.avyAdminLogOutButton")} />    
+            </form>
+          </div>
+        }
+      }
+    }
 }
