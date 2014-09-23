@@ -10,10 +10,13 @@ import net.liftweb.util.Helpers.asDouble
 import net.liftweb.util.Helpers.asInt
 import net.liftweb.util.Props
 import java.util.Date
+import net.liftweb.http.LiftRules
+import scala.xml.NodeSeq
 
 
 object AEHelpers {
   val DatePattern = "MM-dd-yyyy"
+  
   val UnknownEnumCode = "enum.U"
   
   def getProp(prop: String) = Props.get(prop) openOr(prop)
@@ -49,5 +52,17 @@ object AEHelpers {
   def getHttpsBaseUrl = {
     val httpsPort = getProp("httpsPort")
     s"https://${getProp("hostname")}${if (httpsPort != 443) s":$httpsPort" else ""}/"
+  }
+  
+  lazy val BadWords = {
+    val badWordsXml = LiftRules.loadResourceAsXml("/badWords.xml") openOr NodeSeq.Empty
+    (badWordsXml \\ "word").toList.map(node => node.text)
+  } 
+    
+  def containsBadWord(str: String): Boolean = {
+    BadWords.find(w => str.contains(w)) match {
+      case Some(badWord) => true
+      case None => false
+    }
   }
 }

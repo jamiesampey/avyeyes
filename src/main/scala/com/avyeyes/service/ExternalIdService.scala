@@ -7,6 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils
 
 import com.avyeyes.persist.AvalancheDao
 import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.AEHelpers._
 import com.google.common.cache._
 
 import net.liftweb.common.Loggable
@@ -24,7 +25,9 @@ trait ExternalIdService extends Loggable {
       if (attemptCount >= Props.getInt("extId.newIdAttemptLimit", 100)) {
         throw new RuntimeException("Could not find an available ID")
       }
-    } while (ExternalIdMaitreD.reservationExists(extIdAttempt) || dao.selectAvalanche(extIdAttempt).isDefined)
+    } while (ExternalIdMaitreD.reservationExists(extIdAttempt) 
+        || dao.selectAvalanche(extIdAttempt).isDefined
+        || containsBadWord(extIdAttempt))
       
     ExternalIdMaitreD.reserve(extIdAttempt, new Date())
     logger.info(s"Reserved new extId $extIdAttempt. Current extIds reserve cache size is ${ExternalIdMaitreD.reservations}")

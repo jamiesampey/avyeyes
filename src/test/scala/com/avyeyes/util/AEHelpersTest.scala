@@ -114,4 +114,16 @@ class AEHelpersTest extends WebSpec2(Boot().boot _) {
         AEHelpers.isValidExtId(Some(goodExtId)) must beTrue
       }
     }
+    
+    "Bad word check" should {
+      "Catch bad words in a string" withSFor("/") in {
+        AEHelpers.containsBadWord("what a fucking day!") must beTrue
+        AEHelpers.containsBadWord("what a lovely day!") must beFalse
+      }
+      
+      "Catch bad words in external IDs" withSFor("/") in {
+        AEHelpers.containsBadWord("193tit3k") must beTrue
+        AEHelpers.containsBadWord("49fk9d3k") must beFalse
+      }
+    }
 }
