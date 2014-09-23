@@ -8,6 +8,8 @@ trait AvalancheDao {
   
   def selectViewableAvalanche(extId: String): Option[Avalanche]
   
+  def selectUnviewableAvalanches: List[Avalanche]
+  
   def selectAvalanches(criteria: AvalancheSearchCriteria): List[Avalanche]  
 
   def insertAvalanche(avalanche: Avalanche): Unit

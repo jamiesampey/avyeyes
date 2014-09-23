@@ -57,11 +57,12 @@ class Boot extends Loggable {
     }
     
     // setup REST endpoints
-    LiftRules.statelessDispatch.append(ImageUpload)
-    LiftRules.statelessDispatch.append(ImageServe)
-    LiftRules.statelessDispatch.append(ExtIdVendor)
-    LiftRules.statelessDispatch.append(AvyDetails)
+    LiftRules.dispatch.append(AvyDetails)
+    LiftRules.dispatch.append(ImageServe)
     LiftRules.dispatch.append(OmniAuthCallback)
+    LiftRules.statelessDispatch.append(ImageUpload)
+    LiftRules.statelessDispatch.append(ExtIdVendor)
+
     
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))

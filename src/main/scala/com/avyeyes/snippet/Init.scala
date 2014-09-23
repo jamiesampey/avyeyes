@@ -5,6 +5,7 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
+import com.avyeyes.snippet.AdminConsole._
 import com.avyeyes.util.AEConstants.ExtIdUrlParam
 import com.avyeyes.util.AEHelpers.isValidExtId
 
@@ -40,7 +41,10 @@ class Init extends KmlCreator with Loggable {
   private def initialFlyToCmd: JsCmd = {
     val initAvalanche = if (isValidExtId(extId)) {
       transaction {
-        dao.selectViewableAvalanche(extId.get)
+        isAuthorizedSession match {
+          case true => dao.selectAvalanche(extId.get)
+          case false => dao.selectViewableAvalanche(extId.get)
+        }
       }
     } else None
     

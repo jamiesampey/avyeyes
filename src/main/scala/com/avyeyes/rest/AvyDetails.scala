@@ -5,6 +5,8 @@ import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.util.AEHelpers._
+import com.avyeyes.snippet.AdminConsole._
+
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
@@ -18,7 +20,11 @@ object AvyDetails extends RestHelper with Loggable {
   serve {
     case "rest" :: "avydetails" :: extId :: Nil Get req => {
       val avyJsonOption = transaction {
-          val avalancheOption = dao.selectViewableAvalanche(extId)
+          val avalancheOption = isAuthorizedSession match {
+            case true => dao.selectAvalanche(extId)
+            case false => dao.selectViewableAvalanche(extId) 
+          }
+          
           if (avalancheOption.isDefined) {
               Some(getJSON(avalancheOption.get))
           } else None

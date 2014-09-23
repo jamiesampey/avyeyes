@@ -19,6 +19,10 @@ class SquerylAvalancheDao extends AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche] = {
     avalanches.where(a => a.extId === extId).headOption
   }
+   
+  def selectUnviewableAvalanches = { from(avalanches)(a => 
+    where(a.viewable === false) select(a) orderBy(a.createTime asc)).toList
+  }
     
   def selectAvalanches(criteria: AvalancheSearchCriteria) = {
     val fromDate = if (!criteria.fromDateStr.isEmpty) strToDate(criteria.fromDateStr) else EarliestAvyDate
