@@ -70,9 +70,8 @@ class Search extends KmlCreator with Loggable {
     val criteria = AvalancheSearchCriteria(northLimit, eastLimit, southLimit, westLimit, 
       fromDate, toDate, avyType, avyTrigger, rSize, dSize, numCaught, numKilled)
       
-    var matchingAvalanches: List[Avalanche] = Nil
-    transaction {
-      matchingAvalanches = dao.selectAvalanches(criteria)
+    val matchingAvalanches: List[Avalanche] = transaction {
+      dao.selectAvalanches(criteria)
     }
     
     if (strToDblOrZero(camTilt) < CamTiltRangeCutoff) 
