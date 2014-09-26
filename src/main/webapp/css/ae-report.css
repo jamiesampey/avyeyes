@@ -125,6 +125,10 @@
 	padding: 0px;
 }
 
+#avyReportViewableTd {
+	visibility: hidden;
+}
+
 .avyReportElevation {
     width: 40px;
     height: 20px;

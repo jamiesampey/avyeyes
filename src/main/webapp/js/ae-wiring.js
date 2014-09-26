@@ -122,6 +122,14 @@ var wireUI = function(view) {
 		max: 90,
 		step: 1}).val(0);
 	
+	$('#avyReportViewable').change(function(){
+      if ($(this).is(':checked')) {
+          $(this).siblings('label').css('color', 'green');
+      } else {
+        $(this).siblings('label').css('color', 'red');
+      }
+  });
+	
 	$('.avyButton').button();
 	
 	$('#multiDialog').dialog({

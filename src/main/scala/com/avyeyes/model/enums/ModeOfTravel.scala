@@ -4,12 +4,12 @@ object ModeOfTravel extends Enumeration with UISelectableEnum {
   type ModeOfTravel = Value
   
   val U = Value(0)
-  val SKIER = Value(1)
-  val SNOWBOARDER = Value(2)
-  val SNOWMOBILER = Value(3)
-  val SNOWSHOER = Value(4)
-  val HIKER = Value(5)
-  val CLIMBER = Value(6)
-  val MOTORIST = Value(7)
-  val OTHER = Value(8)
+  val Skier = Value(1)
+  val Snowboarder = Value(2)
+  val Snowmobiler = Value(3)
+  val Snowshoer = Value(4)
+  val Hiker = Value(5)
+  val Climber = Value(6)
+  val Motorist = Value(7)
+  val Other = Value(8)
 }

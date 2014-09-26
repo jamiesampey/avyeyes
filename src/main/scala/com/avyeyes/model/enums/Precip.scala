@@ -3,6 +3,8 @@ package com.avyeyes.model.enums
 object Precip extends Enumeration with UISelectableEnum {
   type Precip = Value
   
+  override def isCompositeLabel = true
+  
   val U = Value(0)
   val NO = Value(1) 
   val RA = Value(2)

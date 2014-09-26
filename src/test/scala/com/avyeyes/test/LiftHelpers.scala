@@ -4,7 +4,6 @@ import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.json._
 import net.liftweb.json.JsonAST._
-import java.util.Date
 
 trait LiftHelpers {
   implicit val formats = DefaultFormats
@@ -25,10 +24,11 @@ trait LiftHelpers {
     JsonParser.parse(response.asInstanceOf[JsonResponse].json.toJsCmd)
   }
   
-  def extractJsonStringField(resp: LiftResponse, field: String):String = (jsonResponseAsJValue(resp) \\ field).extract[String]
-  def extractJsonDoubleField(resp: LiftResponse, field: String): Double = (jsonResponseAsJValue(resp) \\ field).extract[Double]
-  def extractJsonLongField(resp: LiftResponse, field: String): Long = (jsonResponseAsJValue(resp) \\ field).extract[Long]
-  
+  def extractJsonStringField(resp: LiftResponse, field: String):String = extractJsonField(resp, field).extract[String]
+  def extractJsonDoubleField(resp: LiftResponse, field: String): Double = extractJsonField(resp, field).extract[Double]
+  def extractJsonLongField(resp: LiftResponse, field: String): Long = extractJsonField(resp, field).extract[Long]
+  def extractJsonField(resp: LiftResponse, field: String): JValue = jsonResponseAsJValue(resp) \\ field
+      
   def addFileUploadToReq(orig: Req, fph: FileParamHolder): Req = {
     val fphParamCalcInfo = new ParamCalcInfo(Nil, null, fph :: Nil, Empty)
     new Req(orig.path, orig.contextPath, orig.requestType, orig.contentType, orig.request,

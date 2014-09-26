@@ -26,7 +26,11 @@ object AvyDetails extends RestHelper with Loggable {
           }
           
           if (avalancheOption.isDefined) {
-              Some(getJSON(avalancheOption.get))
+            val avalanche = avalancheOption.get
+            isAuthorizedSession match {
+              case true => Some(getJson(avalanche) ~ getJsonAdminFields(avalanche))
+              case false => Some(getJson(avalanche))
+            }
           } else None
       }
       
@@ -40,21 +44,25 @@ object AvyDetails extends RestHelper with Loggable {
     }
   }
 
-  private def getJSON(a: Avalanche) = {
+  private def getJson(a: Avalanche) = {
     val imgFilenames = dao.selectAvalancheImageFilenames(a.extId).toList
     val extUrl = getHttpBaseUrl + a.extId
     
     ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
-    ("submitterExp" -> ExperienceLevel.getEnumLabel(a.submitterExp)) ~ 
-    ("sky" -> Sky.getEnumLabel(a.sky)) ~ ("precip" -> Precip.getEnumLabel(a.precip)) ~
-    ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.getEnumLabel(a.aspect)) ~ ("angle" -> a.angle) ~
-    ("avyType" -> AvalancheType.getEnumLabel(a.avyType)) ~
-    ("trigger" -> AvalancheTrigger.getEnumLabel(a.trigger)) ~
-    ("bedSurface" -> AvalancheInterface.getEnumLabel(a.bedSurface)) ~
+    ("submitterExp" -> ExperienceLevel.toJObject(a.submitterExp)) ~ 
+    ("sky" -> Sky.toJObject(a.sky)) ~ ("precip" -> Precip.toJObject(a.precip)) ~
+    ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.toJObject(a.aspect)) ~ ("angle" -> a.angle) ~
+    ("avyType" -> AvalancheType.toJObject(a.avyType)) ~
+    ("trigger" -> AvalancheTrigger.toJObject(a.trigger)) ~
+    ("bedSurface" -> AvalancheInterface.toJObject(a.bedSurface)) ~
     ("rSize" -> a.rSize) ~ ("dSize" -> a.dSize) ~
-    ("caught" -> humanNumberToStr(a.caught)) ~ ("partiallyBuried" -> humanNumberToStr(a.partiallyBuried)) ~ 
-    ("fullyBuried" -> humanNumberToStr(a.fullyBuried)) ~ ("injured" -> humanNumberToStr(a.injured)) ~ 
-    ("killed" -> humanNumberToStr(a.killed)) ~ ("modeOfTravel" -> ModeOfTravel.getEnumLabel(a.modeOfTravel)) ~
+    ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ 
+    ("fullyBuried" -> a.fullyBuried) ~ ("injured" -> a.injured) ~ 
+    ("killed" -> a.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(a.modeOfTravel)) ~
     ("comments" -> a.comments) ~ ("images" -> JArray(imgFilenames map (s => JString(s))))
+  }
+  
+  private def getJsonAdminFields(a: Avalanche) = {
+    ("viewable", a.viewable) ~ ("submitterEmail", a.submitterEmail)
   }
 }

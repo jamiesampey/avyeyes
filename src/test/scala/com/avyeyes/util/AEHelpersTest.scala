@@ -82,16 +82,6 @@ class AEHelpersTest extends WebSpec2(Boot().boot _) {
       }
     }
     
-    "Human number to String conversion" should {
-      "Work on normal integers" withSFor("/") in {
-        AEHelpers.humanNumberToStr(4) must_== "4"
-      }
-      
-      "Return localized 'Unknown' for -1" withSFor("/") in {
-        AEHelpers.humanNumberToStr(-1) must_== S.?("enum.U")
-      }
-    }
-    
     "Valid External ID check" should {
       "Return false for None" withSFor("/") in {
         AEHelpers.isValidExtId(None) must beFalse

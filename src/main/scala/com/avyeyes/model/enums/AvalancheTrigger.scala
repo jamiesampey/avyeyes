@@ -3,6 +3,8 @@ package com.avyeyes.model.enums
 object AvalancheTrigger extends Enumeration with UISelectableEnum {
   type AvalancheTrigger = Value
   
+  override def isCompositeLabel = true
+  
   val U = Value(0)
   val N = Value(1)
   val NC = Value(2)

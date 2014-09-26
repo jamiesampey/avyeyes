@@ -156,7 +156,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.areaName = "east side of LP"
       report.dateStr = "01-27-2014"
       
-      report.sky = Sky.BROKEN.toString
+      report.sky = Sky.Broken.toString
       report.precip = Precip.SN.toString
       report.elevation = "3500"
       report.aspect = Aspect.E.toString
@@ -173,7 +173,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.fullyBuried = "1"
       report.injured = "1"
       report.killed = "1"
-      report.modeOfTravel = ModeOfTravel.SNOWMOBILER.toString
+      report.modeOfTravel = ModeOfTravel.Snowmobiler.toString
 
       report.comments = "some test comments here"
       report.submitterEmail = "sledhead@company.com"

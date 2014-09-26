@@ -30,18 +30,18 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
       extractJsonStringField(resp, "extUrl") must endWith(extId1)
     }
     
-    "Return reader-friendly labels for enum code fields" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
+    "Return JSON objects for enum (autocomplete) fields" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(AvyDetails(req)())
       
-      extractJsonStringField(resp, "submitterExp") must_== ExperienceLevel.getEnumLabel(a1.submitterExp)
-      extractJsonStringField(resp, "sky") must_== Sky.getEnumLabel(a1.sky)
-      extractJsonStringField(resp, "precip") must_== Precip.getEnumLabel(a1.precip)
-      extractJsonStringField(resp, "aspect") must_== Aspect.getEnumLabel(a1.aspect)
-      extractJsonStringField(resp, "avyType") must_== AvalancheType.getEnumLabel(a1.avyType)
-      extractJsonStringField(resp, "trigger") must_== AvalancheTrigger.getEnumLabel(a1.trigger)
-      extractJsonStringField(resp, "bedSurface") must_== AvalancheInterface.getEnumLabel(a1.bedSurface)      
-      extractJsonStringField(resp, "modeOfTravel") must_== ModeOfTravel.getEnumLabel(a1.modeOfTravel)
+      extractJsonField(resp, "submitterExp") must_== ExperienceLevel.toJObject(a1.submitterExp)
+      extractJsonField(resp, "sky") must_== Sky.toJObject(a1.sky)
+      extractJsonField(resp, "precip") must_== Precip.toJObject(a1.precip)
+      extractJsonField(resp, "aspect") must_== Aspect.toJObject(a1.aspect)
+      extractJsonField(resp, "avyType") must_== AvalancheType.toJObject(a1.avyType)
+      extractJsonField(resp, "trigger") must_== AvalancheTrigger.toJObject(a1.trigger)
+      extractJsonField(resp, "bedSurface") must_== AvalancheInterface.toJObject(a1.bedSurface)      
+      extractJsonField(resp, "modeOfTravel") must_== ModeOfTravel.toJObject(a1.modeOfTravel)
     }
   }
   

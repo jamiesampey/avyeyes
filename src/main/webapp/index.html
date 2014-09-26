@@ -54,64 +54,67 @@
                </td></tr>
                <tr><td colspan="2"><hr/></td></tr>
                <tr><td>
-                  <table id="avyDetailLeftColumnTable"><tr><td>
-                       <table class="avyDetailSubTable">
-                            <tr><td class="avyDetailSectionHeader">
-                                <span id="avyDetailAvyCharacter" class="avyHeader"></span>
-                            </td></tr>
-                            <tr><td>
-	                           <table class="avyDetailFieldsSubTable">
-	                               <tr>
-	                                  <td><label for="avyDetailType"></label></td>
-	                                  <td><span id="avyDetailType"></span></td>
-	                               </tr>
-	                               <tr>
-	                                  <td><label for="avyDetailTrigger"></label></td>
-	                                  <td><span id="avyDetailTrigger"></span></td>
-	                               </tr>
-	                               <tr>
-	                                  <td><label for="avyDetailInterface"></label></td>
-	                                  <td><span id="avyDetailInterface"></span></td>
-	                               </tr>
-	                               <tr>
-	                                  <td><label for="avyDetailRSize"></label></td>
-	                                  <td><span id="avyDetailRSize"></span></td>
-	                               </tr>
-	                               <tr>
-	                                  <td><label for="avyDetailDSize"></label></td>
-	                                  <td><span id="avyDetailDSize"></span></td>
-	                               </tr>
-	                           </table>
-                            </td></tr>
-                      </table>
-	               </td></tr><tr><td>
-	                   <table class="avyDetailSubTable">
-                           <tr><td class="avyDetailSectionHeader">
-                               <span id="avyDetailSlopeCharacter" class="avyHeader"></span>
-                           </td></tr>
-                           <tr><td>
-                                <table class="avyDetailFieldsSubTable">
-                                    <tr>
-                                       <td><label for="avyDetailElevation"></label></td>
-                                       <td>
-                                         <span id="avyDetailElevation"></span>
-                                         <span>/</span>
-                                         <span id="avyDetailElevationFt"></span>
-                                       </td>
-                                    </tr>
-                                    <tr>
-                                       <td><label for="avyDetailAspect"></label></td>
-                                       <td><span id="avyDetailAspect"></span></td>
-                                    </tr>
-                                    <tr>
-                                       <td><label for="avyDetailAngle"></label></td>
-                                       <td><span id="avyDetailAngle"></span></td>
-                                    </tr>
-                                </table>
-                            </td></tr>
+               <table id="avyDetailLeftColumnTable"><tr><td>
+                  <table class="avyDetailSubTable">
+                      <tr><td class="avyDetailSectionHeader">
+                          <span id="avyDetailSlopeCharacter" class="avyHeader"></span>
+                      </td></tr>
+                      <tr><td>
+                           <table class="avyDetailFieldsSubTable">
+                               <tr>
+                                  <td><label for="avyDetailElevation"></label></td>
+                                  <td>
+                                    <span id="avyDetailElevation"></span>
+                                    <span>/</span>
+                                    <span id="avyDetailElevationFt"></span>
+                                  </td>
+                               </tr>
+                               <tr>
+                                  <td><label for="avyDetailAspect"></label></td>
+                                  <td><span id="avyDetailAspect"></span></td>
+                               </tr>
+                               <tr>
+                                  <td><label for="avyDetailAngle"></label></td>
+                                  <td><span id="avyDetailAngle"></span></td>
+                               </tr>
+                           </table>
+                       </td></tr>
+                  </table>
+               </td></tr>
+               <tr><td>
+                  <table class="avyDetailSubTable">
+                       <tr><td class="avyDetailSectionHeader">
+                           <span id="avyDetailAvyCharacter" class="avyHeader"></span>
+                       </td></tr>
+                       <tr><td>
+                       <table class="avyDetailFieldsSubTable">
+                           <tr>
+                              <td><label for="avyDetailType"></label></td>
+                              <td><span id="avyDetailType"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailTrigger"></label></td>
+                              <td><span id="avyDetailTrigger"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailInterface"></label></td>
+                              <td><span id="avyDetailInterface"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailRSize"></label></td>
+                              <td><span id="avyDetailRSize"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="avyDetailDSize"></label></td>
+                              <td><span id="avyDetailDSize"></span></td>
+                           </tr>
                        </table>
-               </td></tr></table>
+                       </td></tr>
+                 </table>
+	          </td></tr></table>
+	          
             </td><td>
+               
                <table id="avyDetailRightColumnTable"><tr><td> 
 	                 <table class="avyDetailSubTable">
 	                        <tr><td class="avyDetailSectionHeader">
@@ -301,6 +304,9 @@
 	   <form class="lift:form.ajax">
 	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">
+	           <tr><td id='avyReportViewableTd' colspan="2">
+	               <label for="avyReportViewable"></label><input id="avyReportViewable" type="checkbox"/>
+	           </td></tr>
 	           <tr><td colspan="2">
                     <table id="avyReportSubmitterWrapperTable"><tr><td>
                         <table class="avyReportSubTable">

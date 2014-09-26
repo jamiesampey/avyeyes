@@ -61,14 +61,14 @@ class Init extends KmlCreator with Loggable {
   }
   
   private def autoCompleteSourcesCmd: JsCmd = {
-    JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${AvalancheType.toJsonArray});"
-      + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${AvalancheTrigger.toJsonArray});"
-      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${Sky.toJsonArray});"
-      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${Precip.toJsonArray});"
-      + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${AvalancheInterface.toJsonArray});"
-      + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${Aspect.toJsonArray});"
-      + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${ModeOfTravel.toJsonArray});"
-      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toJsonArray});").cmd
+    JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${AvalancheType.toAutoCompleteSourceJson});"
+      + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${AvalancheTrigger.toAutoCompleteSourceJson});"
+      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${Sky.toAutoCompleteSourceJson});"
+      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${Precip.toAutoCompleteSourceJson});"
+      + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${AvalancheInterface.toAutoCompleteSourceJson});"
+      + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${Aspect.toAutoCompleteSourceJson});"
+      + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${ModeOfTravel.toAutoCompleteSourceJson});"
+      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toAutoCompleteSourceJson});").cmd
   }
   
   private def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {

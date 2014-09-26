@@ -33,8 +33,6 @@ object AEHelpers {
 
 	def sizeToStr(size: Double): String = if (size == 0) S.?(UnknownEnumCode) else size.toString
 	 
-	def humanNumberToStr(hn: Int): String = if (hn == -1) S.?(UnknownEnumCode) else hn.toString
-
 	def isValidExtId(extId: Option[String]): Boolean = extId match {
 	  case None => false
 	  case Some(s) if s.length != ExtIdLength => false
