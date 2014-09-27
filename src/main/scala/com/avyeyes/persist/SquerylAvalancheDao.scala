@@ -72,17 +72,17 @@ class SquerylAvalancheDao extends AvalancheDao {
         a.comments := updated.comments)) 
   }
   
-  def insertAvalancheImage(avalancheImg: AvalancheImg) = avalancheImageDropbox insert avalancheImg
+  def insertAvalancheImage(avalancheImg: AvalancheImg) = avalancheImages insert avalancheImg
   
   def selectAvalancheImage(avyExtId: String, filename: String) = {
-    from(avalancheImageDropbox)(img => where(
+    from(avalancheImages)(img => where(
       img.avyExtId === avyExtId 
       and img.filename === filename) 
     select(img)).headOption
   }
   
   def selectAvalancheImageFilenames(avyExtId: String) = {
-    from(avalancheImageDropbox)(img => where(img.avyExtId === avyExtId) select(img.filename)).toList
+    from(avalancheImages)(img => where(img.avyExtId === avyExtId) select(img.filename)).toList
   }
   
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
