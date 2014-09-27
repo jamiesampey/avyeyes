@@ -6,7 +6,6 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
-import com.avyeyes.snippet.AdminConsole._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
@@ -52,47 +51,55 @@ class Report extends ExternalIdService with Loggable {
     "#avyReportModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
     "#avyReportComments" #> SHtml.textarea(comments, comments = _) &
     "#avyReportKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
-    "#avyReportSubmitBinding" #> SHtml.hidden(doReport)
+    "#avyReportSubmitBinding" #> SHtml.hidden(saveReport) & 
+    "#avyReportDeleteBinding [onClick]" #> SHtml.onEvent((value) => deleteReport(value))
   }
   
-  def doReport(): JsCmd = {
+  def saveReport(): JsCmd = {
     try {
       checkAutoCompleteValues
       
       transaction {
         dao.selectAvalanche(extId) match {
           case Some(avalanche) => {
-            isAuthorizedSession match {
-              case true => {
-                dao.updateAvalanche(avalancheFromValues(viewable)) 
-                logger.info(s"Avalanche $extId successfully updated")
-                JsDialog.info("avyReportUpdateSuccess")                
-              }
-              case false => {
-                logger.error(s"Attempted avalanche update for $extId without admin credentials")
-                JsDialog.info("avyReportUpdateUnauthorized")
-              }
-            }
+            dao.updateAvalanche(avalancheFromValues) 
+            logger.info(s"Avalanche $extId successfully updated")
+            JsDialog.info("avyReportUpdateSuccess")                
           }
           case None => {
-            dao.insertAvalanche(avalancheFromValues(false)) 
+            dao.insertAvalanche(avalancheFromValues) 
             logger.info(s"Avalanche $extId successfully inserted")
-            JsDialog.info("avyReportSuccess", getHttpBaseUrl + extId)  
+            JsDialog.info("avyReportInsertSuccess", getHttpBaseUrl + extId)  
           }
         }
       }
       
     } catch {
       case e: Exception => {
-        logger.error(s"Error creating or updating avalanche $extId", e)
-        JsDialog.error("avyReportError", e.getMessage())
+        logger.error(s"Error saving avalanche $extId", e)
+        JsDialog.error("avyReportSaveError")
       }
     } finally {
       unreserveExtId(extId)
     }
   }
   
-  private def avalancheFromValues(viewable: Boolean) = {
+  def deleteReport(extIdToDelete: String) = {
+    try {
+      transaction {
+        dao.deleteAvalanche(extIdToDelete)
+      }
+      logger.info(s"Avalanche $extIdToDelete deleted")
+      JsDialog.info("avyReportDeleteSuccess")  
+    } catch {
+      case e: Exception => {
+        logger.error(s"Error deleting avalanche $extIdToDelete", e)
+        JsDialog.error("avyReportDeleteError")
+      }
+    }
+  }
+  
+  private def avalancheFromValues() = {
     val coords = kmlStr match {
       case str if (isNotBlank(str)) => (XML.loadString(str) \\ "LinearRing" \ "coordinates").head.text.trim
       case _ => ""

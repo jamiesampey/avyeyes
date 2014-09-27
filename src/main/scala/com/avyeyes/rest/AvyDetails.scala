@@ -20,10 +20,7 @@ object AvyDetails extends RestHelper with Loggable {
   serve {
     case "rest" :: "avydetails" :: extId :: Nil Get req => {
       val avyJsonOption = transaction {
-          val avalancheOption = isAuthorizedSession match {
-            case true => dao.selectAvalanche(extId)
-            case false => dao.selectViewableAvalanche(extId) 
-          }
+          val avalancheOption = dao.selectAvalanche(extId)
           
           if (avalancheOption.isDefined) {
             val avalanche = avalancheOption.get

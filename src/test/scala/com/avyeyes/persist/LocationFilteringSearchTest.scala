@@ -5,7 +5,7 @@ import com.avyeyes.test._
 
 class LocationFilteringSearchTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
-  val dao = new SquerylAvalancheDao
+  val dao = new SquerylAvalancheDao(() => true)
   
   val neHemisphereAvalanche = avalancheAtLocation("4a3jr23k", true, 47.59349550, 7.59349050)
   val seHemisphereAvalanche = avalancheAtLocation("83j859j3", true, -44.5943285, 170.2395494)

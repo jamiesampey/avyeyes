@@ -9,30 +9,16 @@ import com.avyeyes.util.AEHelpers._
 
 class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
-  val dao = new SquerylAvalancheDao
+  
+  val dao = new SquerylAvalancheDao(() => true)
 
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
     
-  val viewableAvalanche = avalancheAtLocation("1j4ui3kr", true, commonLat, commonLng)
-  val nonviewableAvalanche = avalancheAtLocation("5j3fyjd9", false, commonLat, commonLng)
-    
-  "Single avalanche select" >> {
-    "viewable filter" >> {
-      dao insertAvalanche nonviewableAvalanche
-      
-      val openSelectResult = dao.selectAvalanche(nonviewableAvalanche.extId)
-      val viewableSelectResult = dao.selectViewableAvalanche(nonviewableAvalanche.extId)
-      
-      openSelectResult must beSome
-      viewableSelectResult must beNone
-    }
-  }
-  
   "Date filtering" >> {
     val jan1Avalanche = avalancheAtLocationOnDate("94jfi449", true, commonLat, commonLng, strToDate("01-01-2014"))
     val jan5Avalanche = avalancheAtLocationOnDate("42rtir54", true, commonLat, commonLng, strToDate("01-05-2014"))  
-  
+    
     "From date filtering" >> {
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche

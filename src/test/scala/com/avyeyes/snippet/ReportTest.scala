@@ -1,15 +1,13 @@
 package com.avyeyes.snippet
 
 import scala.xml.NodeSeq
-
 import org.mockito.ArgumentCaptor
-
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
 import com.avyeyes.util.AEHelpers._
-
 import bootstrap.liftweb.Boot
+import net.liftweb.http.S
 
 class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with TemplateReader {
   "Snippet rendering" should {
@@ -78,7 +76,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
-      report.doReport()
+      report.saveReport()
       
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
@@ -99,7 +97,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       val report = newReportWithTestData
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
-      report.doReport()
+      report.saveReport()
       
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
@@ -133,7 +131,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.extId = unreserveThisExtId
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
-      val jsCmd = report.doReport()
+      val jsCmd = report.saveReport()
 
       there was one(report).unreserveExtId(unreserveThisExtId)
       jsCmd.toJsCmd must contain(report.extId)
@@ -148,11 +146,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.extId = unreserveThisExtId
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
-      val jsCmd = report.doReport()
+      val jsCmd = report.saveReport()
       
       there was one(report).unreserveExtId(unreserveThisExtId)
       jsCmd.toJsCmd must contain("Error")
-      jsCmd.toJsCmd must contain(exceptionMsg)
+      jsCmd.toJsCmd must contain(S.?("msg.avyReportSaveError"))
     }
   }
   

@@ -359,7 +359,7 @@ var wireUI = function(view) {
 		    	  view.resetView();
 			      $(this).dialog('close');
 		      }
-			}
+		    }
 		  ]
     });	
 	}

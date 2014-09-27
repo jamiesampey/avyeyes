@@ -16,13 +16,13 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       val initAvalancheLng = -104.323455342
       val initAvalanche = avalancheAtLocationWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
       
-      mockAvalancheDao.selectViewableAvalanche(any[String]) returns Some(initAvalanche)
+      mockAvalancheDao.selectAvalanche(any[String]) returns Some(initAvalanche)
       
       val init = new Init
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
       
-      there was one(mockAvalancheDao).selectViewableAvalanche(validExtId)
+      there was one(mockAvalancheDao).selectAvalanche(validExtId)
       initJsCalls must contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo($initAvalancheLat,$initAvalancheLng,"
         + s"${init.InitAvyAltMeters},${init.InitAvyCamTilt},270)")
@@ -34,7 +34,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
       
-      there was no(mockAvalancheDao).selectViewableAvalanche(any[String])
+      there was no(mockAvalancheDao).selectAvalanche(any[String])
       initJsCalls must not contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo(${init.InitViewLat},${init.InitViewLng},"
         + s"${init.InitViewAltMeters},${init.InitViewCamTilt},${init.InitViewHeading})")

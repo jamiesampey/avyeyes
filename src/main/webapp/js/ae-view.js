@@ -1,14 +1,16 @@
 define(['ae-wiring',
         'ae-report',
+        'ae-admin',
         'jquery-ui', 
         'jquery-geocomplete', 
         'jquery-fileupload', 
         'jquery-iframe-transport',
         'lightbox'
-        ], function(wireFunction, AvyReport) {
+        ], function(wireFunc, AvyReport, AvyAdmin) {
 
 function AvyEyesView(gearthInst, gmapsInst) {
-	this.wireUI = wireFunction;
+	this.wireUI = wireFunc;
+	this.admin = null;
 	
 	this.gearth = gearthInst;
 	this.gmaps = gmapsInst;
@@ -102,9 +104,12 @@ AvyEyesView.prototype.handleMapClick = function(event) {
 	
 	$.getJSON('/rest/avydetails/' + extId, function(data) {
 	  if ($('#avyAdminLoggedInEmail').length) {
-	    this.displayDetailsReadWrite(event, data);
+	    if (!this.admin) {
+	      this.admin = new AvyAdmin(this);
+	    }
+	    this.admin.displayDetails(data);
 	  } else {
-	    this.displayDetailsReadOnly(event, data);
+	    this.displayDetails(event, data);
 	  }
 	}.bind(this))
 	.fail(function(jqxhr, textStatus, error) {
@@ -113,9 +118,7 @@ AvyEyesView.prototype.handleMapClick = function(event) {
 	});
 }
 
-AvyEyesView.prototype.displayDetailsReadOnly = function(kmlClickEvent, a) {
-  $('#avyReportViewableTd').css('visibility', 'hidden');
-  
+AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 	$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
 	$('#avyDetailSubmitterExp').text(a.submitterExp.label);
 	$('#avyDetailExtLink').attr('href', a.extUrl);
@@ -135,11 +138,11 @@ AvyEyesView.prototype.displayDetailsReadOnly = function(kmlClickEvent, a) {
 	$('#avyDetailSky').text(a.sky.label);
 	$('#avyDetailPrecip').text(a.precip.label);
 	
-	$('#avyDetailNumCaught').text(this.getSpinnerValueRO(a.caught));
-	$('#avyDetailNumPartiallyBuried').text(this.getSpinnerValueRO(a.partiallyBuried));
-	$('#avyDetailNumFullyBuried').text(this.getSpinnerValueRO(a.fullyBuried));
-	$('#avyDetailNumInjured').text(this.getSpinnerValueRO(a.injured));
-	$('#avyDetailNumKilled').text(this.getSpinnerValueRO(a.killed));
+	this.setSpinner('#avyDetailNumCaught', a.caught);
+	this.setSpinner('#avyDetailNumPartiallyBuried', a.partiallyBuried);
+	this.setSpinner('#avyDetailNumFullyBuried', a.fullyBuried);
+	this.setSpinner('#avyDetailNumInjured', a.injured);
+	this.setSpinner('#avyDetailNumKilled', a.killed);
 	$('#avyDetailModeOfTravel').text(a.modeOfTravel.label);
 	
 	if (a.comments.length > 0) {
@@ -166,61 +169,12 @@ AvyEyesView.prototype.displayDetailsReadOnly = function(kmlClickEvent, a) {
   $('#avyDetailDialog').dialog('open');
 }
 
-AvyEyesView.prototype.displayDetailsReadWrite = function(kmlClickEvent, a) {
-  $('#avyReportExtId').val(a.extId);
-  $('#avyReportViewableTd').css('visibility', 'visible');
-  $('#avyReportViewableTd').children(':checkbox').attr('checked', a.viewable);
-  $('#avyReportViewableTd').children(':checkbox').trigger('change');
-  
-  $('#avyReportSubmitterEmail').val(a.submitterEmail);
-  this.setAutocomplete('#avyReportSubmitterExp', a.submitterExp);
-  
-  $('#avyReportAreaName').val(a.areaName);
-  $('#avyReportDate').val(a.avyDate);
-  this.setAutocomplete('#avyReportSky', a.sky);
-  this.setAutocomplete('#avyReportPrecip', a.precip);
-  
-  this.setAutocomplete('#avyReportType', a.avyType);
-  this.setAutocomplete('#avyReportTrigger', a.trigger);
-  this.setAutocomplete('#avyReportBedSurface', a.bedSurface);
-  this.setSlider('#avyReportRsizeValue', a.rSize);
-  this.setSlider('#avyReportDsizeValue', a.dSize);
-  
-  $('#avyReportElevation').val(a.elevation);
-  $('#avyReportElevationFt').val(this.metersToFeet(a.elevation));
-  this.setAutocomplete('#avyReportAspect', a.aspect);
-  $('#avyReportAngle').val(a.angle);
-  
-  $('#avyReportNumCaught').val(this.getSpinnerValueRW(a.caught));
-  $('#avyReportNumPartiallyBuried').val(this.getSpinnerValueRW(a.partiallyBuried));
-  $('#avyReportNumFullyBuried').val(this.getSpinnerValueRW(a.fullyBuried));
-  $('#avyReportNumInjured').val(this.getSpinnerValueRW(a.injured));
-  $('#avyReportNumKilled').val(this.getSpinnerValueRW(a.killed));
-  this.setAutocomplete('#avyReportModeOfTravel', a.modeOfTravel);
-  
-  $('#avyReportComments').val(a.comments);
-  
-  $('#avyReportDialog').dialog('open');
-}
-
-AvyEyesView.prototype.setAutocomplete = function(hiddenSibling, enumObj) {
-  $(hiddenSibling).val(enumObj.value)
-  $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
-}
-
-AvyEyesView.prototype.setSlider = function(inputElem, value) {
-  $(inputElem).val(value)
-  $(inputElem).siblings('.avyRDSlider').slider('value', value);
-}
-
-AvyEyesView.prototype.getSpinnerValueRO = function(rawValue) {
-  if (rawValue == -1) return 'Unknown';
-  else return rawValue;
-}
-
-AvyEyesView.prototype.getSpinnerValueRW = function(rawValue) {
-  if (rawValue == -1) return '';
-  else return rawValue;
+AvyEyesView.prototype.setSpinner = function(inputElem, value) {
+  if (value == -1) {
+    $(inputElem).text('Unknown');
+  } else {
+    $(inputElem).text(value);
+  }
 }
 
 AvyEyesView.prototype.hideAvyDetails = function() {

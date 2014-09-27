@@ -5,6 +5,7 @@ import net.liftweb.util.Helpers._
 import net.liftweb.http.S
 import scala.xml.NodeSeq
 import scala.xml.Unparsed
+import com.avyeyes.snippet.AdminConsole._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 import net.liftweb.http.Req
@@ -40,7 +41,7 @@ class Content {
     private def getButton(id: String) = S.?(s"button.$id")
     
     private def getAdminLoggedInDiv = {
-      AdminConsole.isAuthorizedSession match {
+      isAuthorizedSession match {
         case false => NodeSeq.Empty
         case true => {
           <div class="avyAdminLoggedInDiv">

@@ -13,12 +13,12 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
 
   val extId1 = "4jf93dkj"
   val a1 = avalancheAtLocation(extId1, true, 41.6634870900582, -103.875046142935)
-  mockAvalancheDao.selectViewableAvalanche(extId1) returns Some(a1)  
+  mockAvalancheDao.selectAvalanche(extId1) returns Some(a1)  
   mockAvalancheDao.selectAvalancheImageFilenames(extId1) returns Nil
       
   val badExtId = "59fke4k0"
   val noAvalanche: Option[Avalanche] = None
-  mockAvalancheDao.selectViewableAvalanche(badExtId) returns noAvalanche
+  mockAvalancheDao.selectAvalanche(badExtId) returns noAvalanche
       
   "Valid avalanche details REST request" should {
     "Return avalanche details" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
