@@ -122,11 +122,11 @@ var wireUI = function(view) {
 		max: 90,
 		step: 1}).val(0);
 	
-	$('#avyReportViewable').change(function(){
+	$('#avyReportViewableTd').children(':checkbox').change(function(){
       if ($(this).is(':checked')) {
-          $(this).siblings('label').css('color', 'green');
+        $('#avyReportViewableTd').css('background', 'rgba(0, 255, 0, 0.3)');
       } else {
-        $(this).siblings('label').css('color', 'red');
+        $('#avyReportViewableTd').css('background', 'rgba(255, 0, 0, 0.3)');
       }
   });
 	

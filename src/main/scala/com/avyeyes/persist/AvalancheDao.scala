@@ -14,6 +14,8 @@ trait AvalancheDao {
 
   def insertAvalanche(avalanche: Avalanche): Unit
 
+  def updateAvalanche(avalanche: Avalanche): Unit
+  
   def insertAvalancheImage(img: AvalancheImg): Unit
   
   def selectAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImg]

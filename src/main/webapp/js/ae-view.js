@@ -167,15 +167,10 @@ AvyEyesView.prototype.displayDetailsReadOnly = function(kmlClickEvent, a) {
 }
 
 AvyEyesView.prototype.displayDetailsReadWrite = function(kmlClickEvent, a) {
+  $('#avyReportExtId').val(a.extId);
   $('#avyReportViewableTd').css('visibility', 'visible');
-  if (a.viewable) {
-    $('#avyReportViewable').attr('checked', true);
-    $('#avyReportViewable').siblings('label').css('color', 'green');
-  }
-  else {
-    $('#avyReportViewable').attr('checked', false);
-    $('#avyReportViewable').siblings('label').css('color', 'red');
-  }
+  $('#avyReportViewableTd').children(':checkbox').attr('checked', a.viewable);
+  $('#avyReportViewableTd').children(':checkbox').trigger('change');
   
   $('#avyReportSubmitterEmail').val(a.submitterEmail);
   this.setAutocomplete('#avyReportSubmitterExp', a.submitterExp);

@@ -47,6 +47,31 @@ class SquerylAvalancheDao extends AvalancheDao {
 
   def insertAvalanche(avalanche: Avalanche) = avalanches insert avalanche
 
+  def updateAvalanche(updated: Avalanche) = {
+    update(avalanches)(a => where(a.extId === updated.extId)
+      set(a.viewable := updated.viewable,
+        a.submitterEmail := updated.submitterEmail,
+        a.submitterExp := updated.submitterExp,
+        a.areaName := updated.areaName,
+        a.avyDate := updated.avyDate,
+        a.sky := updated.sky,
+        a.precip := updated.precip,
+        a.aspect := updated.aspect,
+        a.angle := updated.angle,
+        a.avyType := updated.avyType,
+        a.trigger := updated.trigger,
+        a.bedSurface := updated.bedSurface,
+        a.rSize := updated.rSize,
+        a.dSize := updated.dSize,
+        a.caught := updated.caught,
+        a.partiallyBuried := updated.partiallyBuried,
+        a.fullyBuried := updated.fullyBuried,
+        a.injured := updated.injured,
+        a.killed := updated.killed,
+        a.modeOfTravel := updated.modeOfTravel,
+        a.comments := updated.comments)) 
+  }
+  
   def insertAvalancheImage(avalancheImg: AvalancheImg) = avalancheImageDropbox insert avalancheImg
   
   def selectAvalancheImage(avyExtId: String, filename: String) = {

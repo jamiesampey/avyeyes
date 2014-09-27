@@ -60,12 +60,12 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
     }
   }
   
-  "Main report method" should {
+  "New avalanche insert" should {
     isolated 
     
     "Not allow empty strings for enum fields" withSFor("/") in {
       val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
-
+      
       val report = newReportWithTestData
       report.sky = ""
       report.precip = ""
@@ -75,6 +75,9 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.bedSurface = ""
       report.modeOfTravel = ""
       report.submitterExp = ""
+      
+      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      
       report.doReport()
       
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
@@ -94,6 +97,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
       
       val report = newReportWithTestData
+      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      
       report.doReport()
       
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
@@ -126,6 +131,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
+      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      
       val jsCmd = report.doReport()
 
       there was one(report).unreserveExtId(unreserveThisExtId)
@@ -139,6 +146,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
+      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      
       val jsCmd = report.doReport()
       
       there was one(report).unreserveExtId(unreserveThisExtId)
