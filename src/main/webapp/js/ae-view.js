@@ -257,8 +257,10 @@ AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, t
   
   this.geocoder.geocode( {'address': address}, function(results, status) {
     if (status == this.gmaps.GeocoderStatus.OK && results.length) {
-		var latLng = results[0].geometry.location;
+		  var latLng = results[0].geometry.location;
     	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
+    } else {
+      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
     }
   }.bind(this));
 }
