@@ -43,6 +43,7 @@ define(['jasmine-jquery',
 			report.beginReportWithGeocode();
 			
 			expect(view.geocodeAndFlyToLocation).toHaveBeenCalledWith(address, 8000.0, 65.0);
+			expect($("#avyReportInitLocation")).toHaveValue('');
 			expect(window.setTimeout).toHaveBeenCalled();
 		});
 
