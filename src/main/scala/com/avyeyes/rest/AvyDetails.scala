@@ -48,7 +48,8 @@ object AvyDetails extends RestHelper with Loggable {
     val imgFilenames = dao.selectAvalancheImageFilenames(a.extId).toList
     val extUrl = getHttpBaseUrl + a.extId
     
-    ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ ("areaName" -> a.areaName) ~ ("avyDate" -> a.avyDate.toString) ~
+    ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ 
+    ("areaName" -> a.areaName) ~ ("avyDate" -> dateToStr(a.avyDate)) ~
     ("submitterExp" -> ExperienceLevel.toJObject(a.submitterExp)) ~ 
     ("sky" -> Sky.toJObject(a.sky)) ~ ("precip" -> Precip.toJObject(a.precip)) ~
     ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.toJObject(a.aspect)) ~ ("angle" -> a.angle) ~
