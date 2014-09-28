@@ -46,7 +46,7 @@ define(['gearth',
 			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportGeocodeDialog');
 			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportBeginDrawDialog');
 			expect(jquiDialog.calls[5].object.selector).toEqual('#avyReportConfirmDrawDialog');
-			expect(jquiDialog.calls[6].object.selector).toEqual('#avyReportImgDialog');
+			expect(jquiDialog.calls[6].object.selector).toEqual('#avyReportImageDialog');
 			expect(jquiDialog.calls[7].object.selector).toEqual('#avyReportDialog');
 			
 			expect(jqCss.mostRecentCall.object.selector).toEqual("#aeControlContainer");

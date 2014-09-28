@@ -150,8 +150,8 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 
 	if (a.images.length > 0) {
 		$('#avyDetailImageRow').show();
-        $.each(a.images, function(i) {
-			var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i];
+    $.each(a.images, function(i) {
+			var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
 			$('#avyDetailImageList').append('<li class="avyDetailImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="avyDetailImages"><img src="' + imgUrl + '" /></a></li>');
 		});

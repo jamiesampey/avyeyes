@@ -297,7 +297,7 @@ AvyEyesWiring.prototype.wireUI = function() {
     }]
 	});
 	
-	$('#avyReportImgDialog').dialog({
+	$('#avyReportImageDialog').dialog({
 	  minWidth: 750,
 	  minHeight: 700,
 	  autoOpen: false,
@@ -336,7 +336,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 		buttons: [{
       text: "Image Attachment",
       click: function(event, ui) {
-    	  $('#avyReportImgDialog').dialog('open');
+    	  $('#avyReportImageDialog').dialog('open');
       }
     },{
       text: "Submit",
@@ -356,9 +356,11 @@ AvyEyesWiring.prototype.wireUI = function() {
 }
 
 AvyEyesWiring.prototype.wireReportAdminControls = function() {
+  if ($('#avyReportViewableTd').is(':visible')) return; // already wired admin fields
+  
   var aeView = this.view;
   
-  if ($('#avyReportViewableTd').is(':visible')) return; // already wired admin fields
+  $('#avyReportImageTable').show();
   
   $('#avyReportViewableTd').css('visibility', 'visible');
   $('#avyReportDeleteConfirmDialog').css('visibility', 'visible');

@@ -4,7 +4,7 @@ import com.avyeyes.model.enums._
 import com.avyeyes.test._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
-import com.avyeyes.model.AvalancheImg
+import com.avyeyes.model.AvalancheImage
 
 class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
   // Testing an OBJECT (singleton), so the mockAvalancheDao is inserted ONCE. 
@@ -15,10 +15,10 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
   val goodImgFileName = "imgInDb"
   val goodImgMimeType = "image/jpeg"
   val goodImgBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
-  val avalancheImage = AvalancheImg(extId, goodImgFileName, goodImgMimeType, goodImgBytes)
+  val avalancheImage = AvalancheImage(extId, goodImgFileName, goodImgMimeType, goodImgBytes)
   
   val badImgFileName = "imgNotInDb"
-  val noImage: Option[AvalancheImg] = None
+  val noImage: Option[AvalancheImage] = None
   
   mockAvalancheDao.selectAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)  
   mockAvalancheDao.selectAvalancheImage(extId, badImgFileName) returns noImage
@@ -56,7 +56,7 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(Images(reqWithFPH)())
         
-      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImg])
+      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") must_== extId
       extractJsonStringField(resp, "fileName") must_== fileName

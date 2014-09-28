@@ -7,7 +7,7 @@ import com.avyeyes.model._
 
 object AvyEyesSchema extends Schema {
   val avalanches = table[Avalanche]("avalanche")
-  val avalancheImages = table[AvalancheImg]("avalanche_img")
+  val avalancheImages = table[AvalancheImage]("avalanche_image")
   val users = table[User]("app_user")
   
   on(avalanches)(a => declare(

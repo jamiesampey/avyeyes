@@ -39,7 +39,7 @@ CREATE UNIQUE INDEX idx2f5d05cf
   USING btree
   ("extId");
   
-CREATE TABLE "avalanche_img" (
+CREATE TABLE "avalanche_image" (
     "id" bigint primary key,
     "createTime" timestamp not null,
     "avyExtId" varchar(8) not null,
@@ -47,17 +47,17 @@ CREATE TABLE "avalanche_img" (
     "mimeType" varchar(20) not null,
     "bytes" bytea not null
 );
-CREATE SEQUENCE s_avalanche_img_id
+CREATE SEQUENCE s_avalanche_image_id
   INCREMENT 1
   MINVALUE 1
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
 CREATE INDEX idx644c089b 
-  ON "avalanche_img"
+  ON "avalanche_image"
   USING btree
   ("avyExtId");
-CREATE UNIQUE INDEX "idxc1fe0c09" ON "avalanche_img" ("avyExtId","filename");
+CREATE UNIQUE INDEX "idxc1fe0c09" ON "avalanche_image" ("avyExtId","filename");
 
 CREATE TABLE "app_user" (
     "email" varchar(128) not null,
@@ -70,4 +70,4 @@ CREATE SEQUENCE "s_app_user_id"
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
-INSERT INTO app_user (id, createTime, email) values (1, now(), 'jamie.sampey@gmail.com');
+INSERT INTO app_user (id, "createTime", email) values (1, now(), 'jamie.sampey@gmail.com');

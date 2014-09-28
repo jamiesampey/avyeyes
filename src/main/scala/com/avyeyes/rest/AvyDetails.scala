@@ -42,7 +42,8 @@ object AvyDetails extends RestHelper with Loggable {
   }
 
   private def getJson(a: Avalanche) = {
-    val imgFilenames = dao.selectAvalancheImageFilenames(a.extId).toList
+    val images = dao.selectAvalancheImages(a.extId)
+    
     val extUrl = getHttpBaseUrl + a.extId
     
     ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ 
@@ -57,7 +58,7 @@ object AvyDetails extends RestHelper with Loggable {
     ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ 
     ("fullyBuried" -> a.fullyBuried) ~ ("injured" -> a.injured) ~ 
     ("killed" -> a.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(a.modeOfTravel)) ~
-    ("comments" -> a.comments) ~ ("images" -> JArray(imgFilenames map (s => JString(s))))
+    ("comments" -> a.comments) ~ ("images" -> JArray(images map (img => img.toJObject)))
   }
   
   private def getJsonAdminFields(a: Avalanche) = {

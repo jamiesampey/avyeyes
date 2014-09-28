@@ -26,33 +26,33 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
   "Avalanche Images" >> {
     val nonExistentAvalancheExtId = "594jk3i3"
     
-    val avalancheImg1 = AvalancheImg(testAvalanche.extId, "imgInDb", "image/jpeg", Array[Byte](10, 20, 30, 40, 50, 60, 70))
-    val avalancheImg2 = AvalancheImg(nonExistentAvalancheExtId, "differentImg", "image/gif", Array[Byte](90, 80, 70))
+    val img1 = AvalancheImage(testAvalanche.extId, "imgInDb", "image/jpeg", Array[Byte](10, 20, 30, 40, 50, 60, 70))
+    val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", Array[Byte](90, 80, 70))
   
     "Image insert and select works" >> {
       dao insertAvalanche testAvalanche
-      dao insertAvalancheImage avalancheImg1
-      val readImg = dao.selectAvalancheImage(testAvalanche.extId, avalancheImg1.filename).get
+      dao insertAvalancheImage img1
+      val returnedImage = dao.selectAvalancheImage(testAvalanche.extId, img1.filename).get
       
-      readImg.avyExtId must_== testAvalanche.extId
-      readImg.filename must_== avalancheImg1.filename
-      readImg.mimeType must_== avalancheImg1.mimeType
-      readImg.bytes must_== avalancheImg1.bytes
+      returnedImage.avyExtId must_== testAvalanche.extId
+      returnedImage.filename must_== img1.filename
+      returnedImage.mimeType must_== img1.mimeType
+      returnedImage.bytes must_== img1.bytes
     }
     
     "Image without corresponding avalanche is not selected" >> {
-      dao insertAvalancheImage avalancheImg2
-      
-      dao.selectAvalancheImage(nonExistentAvalancheExtId, avalancheImg2.filename) must_== None
+      dao insertAvalancheImage img2
+      dao.selectAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
     "Avalanche image filename search works" >> {
-      dao insertAvalancheImage avalancheImg1
-      dao insertAvalancheImage avalancheImg2
+      dao insertAvalanche testAvalanche
+      dao insertAvalancheImage img1
+      dao insertAvalancheImage img2
       
-      val imgFilenames = dao.selectAvalancheImageFilenames(testAvalanche.extId)
-      imgFilenames must have length(1)
-      imgFilenames.head must_== avalancheImg1.filename
+      val returnedImages = dao.selectAvalancheImages(testAvalanche.extId)
+      returnedImages must have length(1)
+      returnedImages.head must_== img1
     }
   }
 }

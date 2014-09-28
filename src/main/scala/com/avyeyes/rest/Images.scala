@@ -30,7 +30,7 @@ object Images extends RestHelper {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       val fph = req.uploadedFiles(0)
       transaction {
-        dao insertAvalancheImage AvalancheImg(avyExtId, fph.fileName.split("\\.")(0), fph.mimeType, fph.file)
+        dao insertAvalancheImage AvalancheImage(avyExtId, fph.fileName.split("\\.")(0), fph.mimeType, fph.file)
       }
 
       ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)

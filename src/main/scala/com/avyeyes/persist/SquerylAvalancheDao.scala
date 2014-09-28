@@ -80,19 +80,23 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     }
   }
   
-  def insertAvalancheImage(avalancheImg: AvalancheImg) = avalancheImages insert avalancheImg
+  def insertAvalancheImage(img: AvalancheImage) = avalancheImages insert img
   
   def selectAvalancheImage(avyExtId: String, filename: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())
-      and img.avyExtId === avyExtId 
+      and img.avyExtId === a.extId 
       and img.filename === filename) 
     select(img)).headOption
   }
   
-  def selectAvalancheImageFilenames(avyExtId: String) = {
-    from(avalancheImages)(img => where(img.avyExtId === avyExtId) select(img.filename)).toList
+  def selectAvalancheImages(avyExtId: String) = {
+    from(avalancheImages, avalanches)((img, a) => where(
+      a.extId === avyExtId
+      and (a.viewable === true).inhibitWhen(isAuthorizedSession())
+      and img.avyExtId === a.extId)
+    select(img)).toList
   }
   
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 

@@ -13,17 +13,17 @@
 	display: none;
 }
 
-#avyReportFinishedImgsTable {
+#avyReportImageTable {
 	display: none;
 	width: 100%;
 	vertical-align: top;
 }
 
-#avyReportFinishedImgsTable th {
+#avyReportImageTable th {
     text-align: left;
 }
  
-#avyReportFinishedImgsTable tr {
+#avyReportImageTable tr {
 	width: 100%;
     height: 30px;
     padding: 0px 0px 0px 5px;
@@ -31,16 +31,16 @@
     vertical-align: top;
 }
 
-#avyReportFinishedImgsTable td {
+#avyReportImageTable td {
     vertical-align: middle;
     border-top: 1px solid #555555;
 }
 
-#avyReportImgDropZoneMsgDiv {
+#avyReportImageDropZoneMsgDiv {
     width: 100%;
 }
 
-#avyReportImgDropZoneMsgDiv > span {
+#avyReportImageDropZoneMsgDiv > span {
 	display: block;
 	margin: 0 auto;
     padding: 10px 0px 20px 0px;
@@ -48,7 +48,7 @@
     font-size: 1.5em;
 }
 
-#avyReportImgDropZone {
+#avyReportImageDropZone {
 	display: block;
 	margin: 0 auto;
 	padding: 5px;
@@ -59,12 +59,12 @@
 	height: 500px;
 }
 
-#avyReportImgOldSchoolImgUpload {
+#avyReportImageOldSchoolImgUpload {
 	width: 100%;
 	padding-top: 20px;
 }
 
-#avyReportImgOldSchoolImgUpload > form {
+#avyReportImageOldSchoolImgUpload > form {
 	display: inline;
     width: 200px;
 }

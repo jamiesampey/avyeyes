@@ -62,10 +62,10 @@ AvyReport.prototype.confirmDrawing = function() {
 	
 AvyReport.prototype.enterAvyDetail = function() {
 	var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
-	$("#imgUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImgDropZone'),
+	$("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
         done: function(e, data) {
-        	$('#avyReportFinishedImgsTable').show();
-        	$('#avyReportFinishedImgsTable').append('<tr><td>' + data.result.fileName + '</td><td>' + data.result.fileSize + '</td></tr>');
+        	$('#avyReportImageTable').show();
+        	$('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>' + data.result.fileSize + '</td></tr>');
         }
     });
 	
@@ -137,6 +137,11 @@ AvyReport.prototype.displayDetails = function(a) {
   
   $('#avyReportComments').val(a.comments);
   
+  $.each(a.images, function(i) {
+    var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
+    $('#avyReportImageTable').append('<tr><td><a href="' + imgUrl + '" target="_blank">'
+      + a.images[i].filename + '</a></td><td>' + a.images[i].size + '</td></tr>');
+  });
   
   $('#avyReportDeleteBinding').val(a.extId);
   $('#avyReportDialog').dialog('open');
