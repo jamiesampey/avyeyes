@@ -147,7 +147,7 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 	
 	if (a.comments.length > 0) {
 		$('#avyDetailCommentsRow').show();
-		$('#avyDetailComments').text(a.comments);			
+		$('#avyDetailComments').html('<pre>' + a.comments + '</pre>');
 	}
 
 	if (a.images.length > 0) {
