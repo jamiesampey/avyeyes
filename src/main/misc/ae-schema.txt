@@ -1,11 +1,3 @@
-CREATE DATABASE avyeyes_db
-  WITH OWNER = jamie
-  ENCODING = 'UTF8'
-  TABLESPACE = pg_default
-  LC_COLLATE = 'en_US.UTF-8'
-  LC_CTYPE = 'en_US.UTF-8'
-  CONNECTION LIMIT = -1;
-
 CREATE TABLE "avalanche" (
     "id" bigint primary key,
     "createTime" timestamp not null,
@@ -78,3 +70,4 @@ CREATE SEQUENCE "s_app_user_id"
   MAXVALUE 9223372036854775807
   START 1
   CACHE 1;
+INSERT INTO app_user (id, createTime, email) values (1, now(), 'jamie.sampey@gmail.com');
