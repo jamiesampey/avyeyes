@@ -278,7 +278,7 @@ AvyEyesView.prototype.initEarthCB = function(instance) {
 }
 	    
 AvyEyesView.prototype.failureEarthCB = function(errorCode) {
-    $('#loadingDiv').fadeOut(500); // allow the 'download Google Earth plugin' msg to be shown 
+  window.location.replace('/whawha');
 	console.log('Failed to create an instance of Google Earth. Error code: ' + errorCode);
 }
 
