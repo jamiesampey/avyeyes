@@ -199,7 +199,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	$('.avyLocation').geocomplete({types: ['geocode']});
 	
 	$('#avySearchLocation').blur(function(event) {
-	  aeView.geocodeAndFlyToLocation($('#avySearchLocation').val(), 9400.0, 40.0);
+	  aeView.geocodeAndFlyToLocation($('#avySearchLocation').val(), 5000.0, 20.0);
 	});
 	
 	$('#aeControlContainer').css('visibility', 'visible');

@@ -183,6 +183,8 @@
 }
 
 #avyDetailComments pre {
+	padding: 0px;
+	margin: 0px;
 	font: normal 1em times,serif !important;
 	white-space: pre-wrap;       /* CSS 3 */
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
