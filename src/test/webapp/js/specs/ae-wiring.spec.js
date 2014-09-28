@@ -1,7 +1,6 @@
 define(['gearth', 
         'gmaps',
-        'ae-view',
-        'ae-wiring'], function(gearthMock, gmapsMock, AvyEyesView, wireUI) {
+        'ae-view'], function(gearthMock, gmapsMock, AvyEyesView) {
 
 	var gearth = new gearthMock();
 	var gmaps = new gmapsMock();
@@ -24,7 +23,7 @@ define(['gearth',
 			var jqCss = spyOn($.fn, 'css');
 			var jqSubmit = spyOn($.fn, 'submit');
 			
-			wireUI(view);
+			view.wiring.wireUI();
 			
 			expect(jquiAutocomplete.callCount).toEqual(2);
 	    expect(jquiAutocomplete.calls[0].object.selector).toEqual('.avyAutoComplete');

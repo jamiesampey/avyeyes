@@ -5,7 +5,7 @@ function AvyReport(avyEyesView) {
 	this.currentDrawing = null;
 }
 
-AvyReport.prototype.initAvyReport = function() {
+AvyReport.prototype.beginReportWizard = function() {
 	this.reserveExtId();
 	this.toggleClassification(false);
 	$('#avyReportGeocodeDialog').dialog('open');
@@ -102,6 +102,63 @@ AvyReport.prototype.toggleClassification = function(enabled) {
     $('#avyReportClassification .avyRDSlider').slider('value', 0);
   }
 };
+
+AvyReport.prototype.displayDetails = function(a) {
+  $('#avyReportExtId').val(a.extId);
+
+  $('#avyReportViewableTd').children(':checkbox').attr('checked', a.viewable);
+  $('#avyReportViewableTd').children(':checkbox').trigger('change');
+    
+  $('#avyReportSubmitterEmail').val(a.submitterEmail);
+  this.setAutocomplete('#avyReportSubmitterExp', a.submitterExp);
+    
+  $('#avyReportAreaName').val(a.areaName);
+  $('#avyReportDate').val(a.avyDate);
+  this.setAutocomplete('#avyReportSky', a.sky);
+  this.setAutocomplete('#avyReportPrecip', a.precip);
+    
+  this.setAutocomplete('#avyReportType', a.avyType);
+  this.setAutocomplete('#avyReportTrigger', a.trigger);
+  this.setAutocomplete('#avyReportBedSurface', a.bedSurface);
+  this.setSlider('#avyReportRsizeValue', a.rSize);
+  this.setSlider('#avyReportDsizeValue', a.dSize);
+  
+  $('#avyReportElevation').val(a.elevation);
+  $('#avyReportElevationFt').val(this.view.metersToFeet(a.elevation));
+  this.setAutocomplete('#avyReportAspect', a.aspect);
+  $('#avyReportAngle').val(a.angle);
+  
+  this.setSpinner('#avyReportNumCaught', a.caught);
+  this.setSpinner('#avyReportNumPartiallyBuried', a.partiallyBuried);
+  this.setSpinner('#avyReportNumFullyBuried', a.fullyBuried);
+  this.setSpinner('#avyReportNumInjured', a.injured);
+  this.setSpinner('#avyReportNumKilled', a.killed);
+  this.setAutocomplete('#avyReportModeOfTravel', a.modeOfTravel);
+  
+  $('#avyReportComments').val(a.comments);
+  
+  
+  $('#avyReportDeleteBinding').val(a.extId);
+  $('#avyReportDialog').dialog('open');
+}
+
+AvyReport.prototype.setAutocomplete = function(hiddenSibling, enumObj) {
+  $(hiddenSibling).val(enumObj.value);
+  $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
+}
+
+AvyReport.prototype.setSlider = function(inputElem, value) {
+  $(inputElem).val(value);
+  $(inputElem).siblings('.avyRDSlider').slider('value', value);
+}
+
+AvyReport.prototype.setSpinner = function(inputElem, value) {
+  if (value == -1) {
+    $(inputElem).val('');
+  } else {
+    $(inputElem).val(value);
+  }
+}
 
 return AvyReport;
 });

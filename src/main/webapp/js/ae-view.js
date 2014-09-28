@@ -1,17 +1,15 @@
 define(['ae-wiring',
         'ae-report',
-        'ae-admin',
         'jquery-ui', 
         'jquery-geocomplete', 
         'jquery-fileupload', 
         'jquery-iframe-transport',
         'lightbox'
-        ], function(wireFunc, AvyReport, AvyAdmin) {
+        ], function(AvyEyesWiring, AvyReport) {
 
 function AvyEyesView(gearthInst, gmapsInst) {
-	this.wireUI = wireFunc;
-	this.admin = null;
-	
+  this.wiring = new AvyEyesWiring(this);
+  
 	this.gearth = gearthInst;
 	this.gmaps = gmapsInst;
 	this.ge = null;
@@ -57,7 +55,7 @@ AvyEyesView.prototype.showModalDialog = function(title, msg) {
 AvyEyesView.prototype.doReport = function() {
 	this.cancelReport();
 	this.currentReport = new AvyReport(this);
-	this.currentReport.initAvyReport();
+	this.currentReport.beginReportWizard();
 }
 
 AvyEyesView.prototype.cancelReport = function() {
@@ -104,10 +102,10 @@ AvyEyesView.prototype.handleMapClick = function(event) {
 	
 	$.getJSON('/rest/avydetails/' + extId, function(data) {
 	  if ($('#avyAdminLoggedInEmail').length) {
-	    if (!this.admin) {
-	      this.admin = new AvyAdmin(this);
-	    }
-	    this.admin.displayDetails(data);
+	    this.wiring.wireReportAdminControls();
+	    this.cancelReport();
+	    this.currentReport = new AvyReport(this);
+	    this.currentReport.displayDetails(data);
 	  } else {
 	    this.displayDetails(event, data);
 	  }
@@ -147,7 +145,7 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 	
 	if (a.comments.length > 0) {
 		$('#avyDetailCommentsRow').show();
-		$('#avyDetailComments').html('<pre>' + a.comments + '</pre>');
+		$('#avyDetailComments').html('<pre>' + a.comments.trim() + '</pre>');
 	}
 
 	if (a.images.length > 0) {
@@ -272,11 +270,11 @@ AvyEyesView.prototype.initEarthCB = function(instance) {
 	this.ge.getNavigationControl().setVisibility(this.ge.VISIBILITY_AUTO);
 	this.ge.getLayerRoot().enableLayerById(this.ge.LAYER_BORDERS, true);
 	this.ge.getLayerRoot().enableLayerById(this.ge.LAYER_ROADS, true);
-    this.gearth.addEventListener(this.ge.getView(), 'viewchangeend', (this.viewChangeEndTimeout).bind(this));
-    this.gearth.addEventListener(this.ge.getGlobe(), 'click', (this.handleMapClick).bind(this));
+  this.gearth.addEventListener(this.ge.getView(), 'viewchangeend', (this.viewChangeEndTimeout).bind(this));
+  this.gearth.addEventListener(this.ge.getGlobe(), 'click', (this.handleMapClick).bind(this));
     
-    this.wireUI(this);
-    $('#loadingDiv').fadeOut(500);
+  this.wiring.wireUI();
+  $('#loadingDiv').fadeOut(500);
 }
 	    
 AvyEyesView.prototype.failureEarthCB = function(errorCode) {

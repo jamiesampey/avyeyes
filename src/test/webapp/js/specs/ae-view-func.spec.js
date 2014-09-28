@@ -31,7 +31,7 @@ define(['gearth',
 	    
 		it('initEarthCB should init GE plugin and geocoder', function() {
 			spyOn(gearth, 'addEventListener');
-			spyOn(view, 'wireUI');
+			spyOn(view.wiring, 'wireUI');
 			var jqFadeOut = spyOn($.fn, 'fadeOut');
 
 			expect(view.ge).toBeNull();
@@ -46,7 +46,7 @@ define(['gearth',
 			expect(gearth.addEventListener.calls[0].args[1]).toEqual('viewchangeend');
 			expect(gearth.addEventListener.calls[1].args[1]).toEqual('click');
 
-			expect(view.wireUI).toHaveBeenCalledWith(view);
+			expect(view.wiring.wireUI).toHaveBeenCalled();
 			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
 		});
 
