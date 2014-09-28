@@ -99,6 +99,13 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     select(img)).toList
   }
   
+  def deleteAvalancheImage(avyExtId: String, filename: String) = {
+    isAuthorizedSession() match {
+      case true => avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
+      case false => throw new UnauthorizedException("Not authorized to delete image")
+    }
+  }
+  
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
     if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
     

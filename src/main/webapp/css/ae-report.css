@@ -14,7 +14,6 @@
 }
 
 #avyReportImageTable {
-	display: none;
 	width: 100%;
 	vertical-align: top;
 }
@@ -34,6 +33,12 @@
 #avyReportImageTable td {
     vertical-align: middle;
     border-top: 1px solid #555555;
+}
+
+#avyReportImageTable .avyReportImageDeleteWrapper {
+    float: right;
+    margin: 0px;
+    padding: 0px;
 }
 
 #avyReportImageDropZoneMsgDiv {

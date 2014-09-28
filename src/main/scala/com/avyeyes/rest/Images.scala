@@ -6,9 +6,9 @@ import com.avyeyes.model._
 import com.avyeyes.persist._
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
-import net.liftweb.http.StreamingResponse
+import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.NotFoundResponse
+import com.avyeyes.util.UnauthorizedException
 
 object Images extends RestHelper {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -23,7 +23,7 @@ object Images extends RestHelper {
         case Some(avyImg) => val byteStream = new ByteArrayInputStream(avyImg.bytes)
           StreamingResponse(byteStream, () => byteStream.close(), avyImg.bytes.length, 
             ("Content-Type", avyImg.mimeType) :: Nil, Nil, 200)
-        case _ => new NotFoundResponse(s"Image $avyExtId/$filename not found")
+        case _ => NotFoundResponse(s"Image $avyExtId/$filename not found")
       }
     }
     
@@ -34,6 +34,18 @@ object Images extends RestHelper {
       }
 
       ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
+    }
+    
+    case "rest" :: "images" :: avyExtId :: filename :: Nil Delete req => {
+      try {
+        transaction { 
+          dao.deleteAvalancheImage(avyExtId, filename) 
+        }
+        OkResponse()
+      } catch {
+        case ue: UnauthorizedException => UnauthorizedResponse("Avy Eyes auth required")
+        case e: Exception => InternalServerErrorResponse()
+      }
     }
   }
 }

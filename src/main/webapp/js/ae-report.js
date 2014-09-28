@@ -26,8 +26,7 @@ AvyReport.prototype.clearAllFields = function() {
 	$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
 	$('#avyReportDialog').find('.avyRDSliderValue').val('0');
 	$('#avyReportDialog').find('.avyRDSlider').slider('value', 0);
-	$('#avyReportFinishedImgsTable > tbody').empty();
-	$('#avyReportFinishedImgsTable').hide();
+	$('#avyReportImageTable > tbody').empty();
 }
 
 AvyReport.prototype.clearAvyDrawing = function() {
@@ -61,14 +60,7 @@ AvyReport.prototype.confirmDrawing = function() {
 }
 	
 AvyReport.prototype.enterAvyDetail = function() {
-	var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
-	$("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
-        done: function(e, data) {
-        	$('#avyReportImageTable').show();
-        	$('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>' + data.result.fileSize + '</td></tr>');
-        }
-    });
-	
+  this.wireImageUpload();
 	$.ui.dialog.prototype._focusTabbable = function(){};
 	$('#avyReportDialog').dialog('open');
 }
@@ -103,9 +95,23 @@ AvyReport.prototype.toggleClassification = function(enabled) {
   }
 };
 
+AvyReport.prototype.wireImageUpload = function() {
+  $('#avyReportImageTable > tbody').empty();
+  
+  var thisReport = this;
+  var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
+  $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
+      done: function(e, data) {
+        $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>' 
+          + thisReport.bytesToFileSize(data.result.fileSize) + '</td></tr>');
+      }
+  });
+}
+
 AvyReport.prototype.displayDetails = function(a) {
   $('#avyReportExtId').val(a.extId);
-
+  this.wireImageUpload();
+  
   $('#avyReportViewableTd').children(':checkbox').attr('checked', a.viewable);
   $('#avyReportViewableTd').children(':checkbox').trigger('change');
     
@@ -137,10 +143,14 @@ AvyReport.prototype.displayDetails = function(a) {
   
   $('#avyReportComments').val(a.comments);
   
+  var thisReport = this;
   $.each(a.images, function(i) {
     var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
-    $('#avyReportImageTable').append('<tr><td><a href="' + imgUrl + '" target="_blank">'
-      + a.images[i].filename + '</a></td><td>' + a.images[i].size + '</td></tr>');
+    $('#avyReportImageTable').append('<tr id="' + a.images[i].filename + '">' 
+      + '<td><a href="' + imgUrl + '" target="_blank">' + a.images[i].filename 
+      + '</a></td><td>' + thisReport.bytesToFileSize(a.images[i].size) + '<div class="avyReportImageDeleteWrapper">'
+      + '<input type="button" value="Delete" onclick="avyeyes.currentReport.deleteImage(\'' 
+      + a.extId + '\',\'' + a.images[i].filename + '\')"/></div></td></tr>');
   });
   
   $('#avyReportDeleteBinding').val(a.extId);
@@ -163,6 +173,34 @@ AvyReport.prototype.setSpinner = function(inputElem, value) {
   } else {
     $(inputElem).val(value);
   }
+}
+
+AvyReport.prototype.deleteImage = function(extId, filename) {
+  $.ajax({
+    url: '/rest/images/' + extId + '/' + filename,
+    type: 'DELETE',
+    success: function(result) {
+      $('#avyReportImageTable').find('#' + filename).remove();
+    },
+    fail: function(jqxhr, textStatus, error) {
+      var err = textStatus + ", " + error;
+      alert('Failed to delete ' + filename + '. Error: ' + err);
+    }
+  });  
+}
+
+AvyReport.prototype.bytesToFileSize = function(numBytes) {
+  var thresh = 1000;
+  if(numBytes < thresh) return numBytes + ' B';
+
+  var units = ['KB','MB','GB'];
+  var u = -1;
+  
+  do {
+    numBytes /= thresh;
+    ++u;
+  } while(numBytes >= thresh);
+  return numBytes.toFixed(1) + ' ' + units[u];
 }
 
 return AvyReport;
