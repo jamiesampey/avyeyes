@@ -61,7 +61,7 @@ AvyReport.prototype.confirmDrawing = function() {
 }
 	
 AvyReport.prototype.enterAvyDetail = function() {
-	var imgUploadUrl = '/rest/imgupload/' + $('#avyReportExtId').val();
+	var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
 	$("#imgUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImgDropZone'),
         done: function(e, data) {
         	$('#avyReportFinishedImgsTable').show();
