@@ -15,7 +15,7 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
   val goodImgFileName = "imgInDb"
   val goodImgMimeType = "image/jpeg"
   val goodImgBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
-  val avalancheImage = AvalancheImage(extId, goodImgFileName, goodImgMimeType, goodImgBytes)
+  val avalancheImage = AvalancheImage(extId, goodImgFileName, goodImgMimeType, goodImgBytes.length, goodImgBytes)
   
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None

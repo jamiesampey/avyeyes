@@ -14,7 +14,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
   val extId1 = "4jf93dkj"
   val a1 = avalancheAtLocation(extId1, true, 41.6634870900582, -103.875046142935)
   mockAvalancheDao.selectAvalanche(extId1) returns Some(a1)  
-  mockAvalancheDao.selectAvalancheImages(extId1) returns Nil
+  mockAvalancheDao.selectAvalancheImagesMetadata(extId1) returns Nil
       
   val badExtId = "59fke4k0"
   val noAvalanche: Option[Avalanche] = None

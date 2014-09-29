@@ -9,6 +9,7 @@ import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 import net.liftweb.util.Helpers.today
 import com.avyeyes.util.UnauthorizedException
+import java.sql.Timestamp
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche] = {
@@ -55,7 +56,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     isAuthorizedSession() match {
       case true => {
         update(avalanches)(a => where(a.extId === updated.extId)
-          set(a.viewable := updated.viewable, 
+          set(a.updateTime := new Timestamp(System.currentTimeMillis),
+            a.viewable := updated.viewable, 
             a.submitterEmail := updated.submitterEmail, a.submitterExp := updated.submitterExp,
             a.areaName := updated.areaName, a.avyDate := updated.avyDate,
             a.sky := updated.sky, a.precip := updated.precip,
@@ -91,12 +93,12 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     select(img)).headOption
   }
   
-  def selectAvalancheImages(avyExtId: String) = {
+  def selectAvalancheImagesMetadata(avyExtId: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())
       and img.avyExtId === a.extId)
-    select(img)).toList
+    select(img.filename, img.mimeType, img.size)).toList
   }
   
   def deleteAvalancheImage(avyExtId: String, filename: String) = {

@@ -20,7 +20,7 @@ trait AvalancheDao {
   
   def selectAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImage]
   
-  def selectAvalancheImages(avyExtId: String): List[AvalancheImage]
+  def selectAvalancheImagesMetadata(avyExtId: String): List[(String, String, Int)]
   
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit
 }

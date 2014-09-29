@@ -1,7 +1,7 @@
 package com.avyeyes.rest
 
 import org.squeryl.PrimitiveTypeMode.transaction
-import com.avyeyes.model.Avalanche
+import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.util.AEHelpers._
@@ -42,7 +42,7 @@ object AvyDetails extends RestHelper with Loggable {
   }
 
   private def getJson(a: Avalanche) = {
-    val images = dao.selectAvalancheImages(a.extId)
+    val imagesMetadata = dao.selectAvalancheImagesMetadata(a.extId)
     
     val extUrl = getHttpBaseUrl + a.extId
     
@@ -58,8 +58,15 @@ object AvyDetails extends RestHelper with Loggable {
     ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ 
     ("fullyBuried" -> a.fullyBuried) ~ ("injured" -> a.injured) ~ 
     ("killed" -> a.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(a.modeOfTravel)) ~
-    ("comments" -> a.comments) ~ ("images" -> JArray(images map (img => img.toJObject)))
+    ("comments" -> a.comments) ~ 
+    ("images" -> JArray(imagesMetadata map Function.tupled ((f,m,s) => imageMetadataToJObject(f,m,s))))
   }
+  
+  private def imageMetadataToJObject(filename: String, mimeType: String, size: Int): JObject = JObject(List(
+    JField("filename", JString(filename)),
+    JField("mimeType", JString(mimeType)),
+    JField("size", JInt(size)) 
+  ))
   
   private def getJsonAdminFields(a: Avalanche) = {
     ("viewable", a.viewable) ~ ("submitterEmail", a.submitterEmail)

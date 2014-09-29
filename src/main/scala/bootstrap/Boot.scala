@@ -91,6 +91,7 @@ class Boot extends Loggable {
       SessionFactory.concreteFactory = Some(()=>
         Session.create(java.sql.DriverManager.getConnection(jdbcConnectionString), new PostgreSqlAdapter))
     }
+    //org.squeryl.PrimitiveTypeMode.transaction { com.avyeyes.persist.AvyEyesSchema.printDdl }
   }
     
   private def browserSupported(req: Req): Boolean = (

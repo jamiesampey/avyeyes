@@ -1,6 +1,7 @@
 CREATE TABLE "avalanche" (
     "id" bigint primary key,
     "createTime" timestamp not null,
+    "updateTime" timestamp not null,
     "extId" varchar(8) not null,
     "viewable" boolean not null,
     "submitterEmail" varchar(256) not null,
@@ -45,6 +46,7 @@ CREATE TABLE "avalanche_image" (
     "avyExtId" varchar(8) not null,
     "filename" varchar(255) not null,
     "mimeType" varchar(20) not null,
+    "size" integer not null,
     "bytes" bytea not null
 );
 CREATE SEQUENCE s_avalanche_image_id

@@ -11,7 +11,7 @@ case class Avalanche(extId: String, viewable: Boolean, /* metadata */
     avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value, bedSurface: AvalancheInterface.Value, 
     rSize: Double, dSize: Double, /* avy characteristics */
     caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int, /* human numbers */
-    modeOfTravel: ModeOfTravel.Value, comments: String, kmlCoords: String) extends SquerylDbObj {
+    modeOfTravel: ModeOfTravel.Value, comments: String, kmlCoords: String) extends UpdatableSquerylDbObj {
   
   def this() = this("", false, "", ExperienceLevel.A0, 
       0.0, 0.0, "", new Date(), 

@@ -26,8 +26,10 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
   "Avalanche Images" >> {
     val nonExistentAvalancheExtId = "594jk3i3"
     
-    val img1 = AvalancheImage(testAvalanche.extId, "imgInDb", "image/jpeg", Array[Byte](10, 20, 30, 40, 50, 60, 70))
-    val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", Array[Byte](90, 80, 70))
+    val img1Bytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
+    val img1 = AvalancheImage(testAvalanche.extId, "imgInDb", "image/jpeg", img1Bytes.length, img1Bytes)
+    val img2Bytes = Array[Byte](90, 80, 70)
+    val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", img2Bytes.length, img2Bytes)
   
     "Image insert and select works" >> {
       dao insertAvalanche testAvalanche
@@ -45,14 +47,14 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
       dao.selectAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
-    "Avalanche image filename search works" >> {
+    "Avalanche image metadata search works" >> {
       dao insertAvalanche testAvalanche
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
       
-      val returnedImages = dao.selectAvalancheImages(testAvalanche.extId)
+      val returnedImages = dao.selectAvalancheImagesMetadata(testAvalanche.extId)
       returnedImages must have length(1)
-      returnedImages.head must_== img1
+      returnedImages.head must_== (img1.filename, img1.mimeType, img1.size)
     }
   }
 }
