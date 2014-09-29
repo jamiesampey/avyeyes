@@ -114,12 +114,15 @@ AvyEyesWiring.prototype.wireUI = function() {
 	$('.avyHumanNumber').spinner({
 		min: -1,
 		max: 500, 
-		step: 1, 
+		step: 1,
 		spin: function(event, ui) {
-			if (ui.value < 0) {
-				event.preventDefault();
-				$(this).spinner('value', '');
-			}
+		  if (ui.value < 0) {
+        event.preventDefault();
+        $(this).spinner('value', ''); // empty value signifies unknown human number
+		  } else if ($(this).val() == '' && ui.value > 0) {
+		    event.preventDefault();
+        $(this).spinner('value', 0); // start increasing at known human number of zero
+		  } 
 		}
 	}).val('');
 	
