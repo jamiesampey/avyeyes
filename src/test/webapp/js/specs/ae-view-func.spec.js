@@ -50,6 +50,15 @@ define(['gearth',
 			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
 		});
 
+		it('failureEarthCB should fade out the loading div to display GE plugin message', function() {
+		  var jqFadeOut = spyOn($.fn, 'fadeOut');
+		  var consoleLog = spyOn(console, 'log');
+		  
+		  view.failureEarthCB();
+		  
+		  expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
+		  expect(console.log).toHaveBeenCalled();
+		});
 	});
 	
 	describe('Create and cancel a report', function() {
