@@ -6,10 +6,12 @@ import net.liftweb.http.FileParamHolder
 trait AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche]
   
-  def selectUnviewableAvalanches: List[Avalanche]
-  
   def selectAvalanches(criteria: AvalancheSearchCriteria): List[Avalanche]  
 
+  def selectUnviewableAvalanches(): List[Avalanche]
+  
+  def selectRecentlyUpdatedAvalanches(limit: Int): List[Avalanche]
+  
   def insertAvalanche(avalanche: Avalanche): Unit
 
   def updateAvalanche(avalanche: Avalanche): Unit

@@ -17,10 +17,17 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())).headOption
   }
    
-  def selectUnviewableAvalanches = { 
+  def selectUnviewableAvalanches() = { 
     isAuthorizedSession() match {
       case true => from(avalanches)(a => where(a.viewable === false) select(a) orderBy(a.createTime asc)).toList
-      case false => throw new UnauthorizedException("Not authorized to access unviewable avalanches")
+      case false => throw new UnauthorizedException("Not authorized to access avalanche list")
+    }
+  }
+  
+  def selectRecentlyUpdatedAvalanches(limit: Int) = {
+    isAuthorizedSession() match {
+      case true => from(avalanches)(a => select(a) orderBy(a.updateTime desc)).page(0, limit).toList
+      case false => throw new UnauthorizedException("Not authorized to access avalanche list")
     }
   }
     

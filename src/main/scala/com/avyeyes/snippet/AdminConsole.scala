@@ -90,16 +90,25 @@ object AdminConsole extends Loggable {
   def loggedInContent(html: NodeSeq) = if (isAuthorizedSession) html else NodeSeq.Empty
   
   def unapprovedAvalanches() = {
-    val baseUrl = getHttpBaseUrl
-    val unapprovedList: List[Avalanche] = transaction {
+    val unapprovedList = transaction {
       avyDao.selectUnviewableAvalanches
     }
+    renderAvalancheListAsTableRows(unapprovedList)
+  }
+  
+  def updatedAvalanches() = {
+    val recentlyUpdatedList = transaction {
+      avyDao.selectRecentlyUpdatedAvalanches(50)
+    }
+    renderAvalancheListAsTableRows(recentlyUpdatedList)
+  }
+  
+  private def renderAvalancheListAsTableRows(list: List[Avalanche]): CssSel = {
+    val baseUrl = getHttpBaseUrl
 
-    "tr" #> unapprovedList.map(a => {
-      "a *" #> s"${dateToStr(a.createTime)}: ${a.areaName} (${a.extId})" &
-      "a [href]" #> (baseUrl + a.extId) &
-      "a [target]" #> "_blank"
+    "tbody tr" #> list.map(a => {
+      <td>{s"${dateToStr(a.createTime)}:"}</td>
+      <td><a href={baseUrl + a.extId} target="_blank">{s"${a.areaName} (${a.extId})"}</a></td>
     })
   }
-      
 }

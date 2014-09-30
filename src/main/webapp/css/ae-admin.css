@@ -28,17 +28,43 @@
 	text-align: left;
 }
 
-#avyAdminUnapprovedListWrapperDiv {
+#avyAdminConsoleTitle {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	font-size: 2em;
+	color: red;
+}
+
+#avyAdminTableWrapperDiv {
     position: absolute;
     margin: auto;
-    width: 800px;
+    width: 1000px;
     height: 600px;
     top: 0px; left: 0px; bottom: 0px; right: 0px;
 }
 
-#avyAdminUnapprovedListDiv {
-	width: 100%;
+#avyAdminTableWrapperDiv > table {
+    width: 100%;
+}
+
+.avyAdminScrollingList {
+	width: 95%;
     height: 100%;
+    margin: 10px 0px 0px 0px;
     overflow-y: auto;
-    border: 1px solid black;
+}
+
+.avyAdminTableTitle {
+	font-size: 1.5em;
+}
+
+.avyAdminDataTable th {
+    text-align: left;
+    text-decoration: underline;
+    padding: 0px 20px 10px 0px;
+}
+
+.avyAdminDataTable > tbody > tr > td {
+	text-align: left;
 }

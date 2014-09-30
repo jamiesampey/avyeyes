@@ -40,14 +40,33 @@
 	    </div>
 	
 		<div id="avyAdminLoggedInContentDiv" class="lift:AdminConsole.loggedInContent">
-		  <div id="avyAdminUnapprovedListWrapperDiv">
-			  <span id="avyAdminUnapprovedList" class="avyHeader"></span>
-			  <div id="avyAdminUnapprovedListDiv">
-				  <table class="lift:AdminConsole.unapprovedAvalanches">
-                     <tr><td><a href="#"></a></td></tr>
+		  <span id="avyAdminConsoleTitle" class="avyHeader"></span>
+		  <div id="avyAdminTableWrapperDiv"><table><tr>
+	        <td>
+			  <span id="avyAdminUnapprovedList" class="avyHeader avyAdminTableTitle"></span>
+			  <div class="avyAdminScrollingList">
+				  <table class="avyAdminDataTable lift:AdminConsole.unapprovedAvalanches">
+				    <thead>
+				      <th class="avyAdminDateTd"><span id="avyAdminCreatedDateColumn" class="avyHeader"></span></th>
+				      <th><span id="avyAdminNameIdColumn" class="avyHeader"></span></th>
+				    </thead>
+                    <tr><td><a href="#"></a></td></tr>
 		          </table>
 	          </div>
-          </div>
+            </td>
+            <td>
+              <span id="avyAdminUpdatedList" class="avyHeader avyAdminTableTitle"></span>
+              <div class="avyAdminScrollingList">
+                  <table class="avyAdminDataTable lift:AdminConsole.updatedAvalanches">
+                    <thead>
+                      <th class="avyAdminDateTd"><span id="avyAdminUpdatedDateColumn" class="avyHeader"></span></th>
+                      <th><span id="avyAdminNameIdColumn" class="avyHeader"></span></th>
+                    </thead>
+                    <tr><td><a href="#"></a></td></tr>
+                  </table>
+              </div>
+            </td>
+          </tr></table></div>
 		</div>
 	</div>
     </body>
