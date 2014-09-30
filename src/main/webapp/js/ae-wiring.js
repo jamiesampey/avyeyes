@@ -359,14 +359,23 @@ AvyEyesWiring.prototype.wireUI = function() {
 }
 
 AvyEyesWiring.prototype.wireReportAdminControls = function() {
-  if ($('#avyReportViewableTd').is(':visible')) return; // already wired admin fields
+  var reportDialogButtons = $('#avyReportDialog').dialog("option", "buttons");
+  if (reportDialogButtons.length > 3) return; // already wired admin fields
   
-  var aeView = this.view;
+  reportDialogButtons.push({ 
+    text: "Delete",
+    click: function(event, ui) {
+      $('#avyReportDeleteConfirmDialog').dialog('open');
+    }
+  });
+  $('#avyReportDialog').dialog('option', 'buttons', reportDialogButtons);
   
   $('#avyReportImageTable').show();
   
   $('#avyReportViewableTd').css('visibility', 'visible');
   $('#avyReportDeleteConfirmDialog').css('visibility', 'visible');
+
+  var aeView = this.view;
   
   $('#avyReportDeleteConfirmDialog').dialog({
     title: "Confirm",
@@ -395,17 +404,7 @@ AvyEyesWiring.prototype.wireReportAdminControls = function() {
         $(this).dialog('close');
       }
     }]
-  });
-  
-  var reportDialogButtons = $('#avyReportDialog').dialog("option", "buttons");
-  reportDialogButtons.push({ 
-    text: "Delete",
-    click: function(event, ui) {
-      $('#avyReportDeleteConfirmDialog').dialog('open');
-    }
-  });
-  
-  $('#avyReportDialog').dialog('option', 'buttons', reportDialogButtons);  
+  });  
 }
 
 return AvyEyesWiring;

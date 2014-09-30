@@ -82,7 +82,10 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     }
   }
   
-  def insertAvalancheImage(img: AvalancheImage) = avalancheImages insert img
+  def insertAvalancheImage(img: AvalancheImage) = {
+    avalancheImages insert img
+    setAvalancheUpdateTime(img.avyExtId)
+  }
   
   def selectAvalancheImage(avyExtId: String, filename: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
@@ -103,9 +106,17 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
     isAuthorizedSession() match {
-      case true => avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
+      case true => {
+        avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
+        setAvalancheUpdateTime(avyExtId)
+      }
       case false => throw new UnauthorizedException("Not authorized to delete image")
     }
+  }
+  
+  private def setAvalancheUpdateTime(extId: String) = {
+    update(avalanches)(a => where(a.extId === extId)
+      set(a.updateTime := new Timestamp(System.currentTimeMillis)))
   }
   
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
