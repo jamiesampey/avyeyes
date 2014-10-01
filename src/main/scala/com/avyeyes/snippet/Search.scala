@@ -67,7 +67,7 @@ class Search extends KmlCreator with Loggable {
   }
 
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val criteria = AvalancheSearchCriteria(northLimit, eastLimit, southLimit, westLimit, 
+    val criteria = AvalancheQuery(Some(true), Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
       fromDate, toDate, avyType, avyTrigger, rSize, dSize, numCaught, numKilled)
       
     val matchingAvalanches: List[Avalanche] = transaction {

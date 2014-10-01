@@ -21,6 +21,11 @@ object AdminConsole extends Loggable {
   lazy val avyDao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   lazy val userDao: UserDao = PersistenceInjector.userDao.vend
 
+  private val unviewableQuery = AvalancheQuery(Some(false), None, 
+      "", "", "", "", "", "", "", "", "createTime", OrderDirection.ASC)
+  private val recentlyUpdatedQuery = AvalancheQuery(None, None, 
+      "", "", "", "", "", "", "", "", "updateTime", OrderDirection.DESC, 0, 50)
+  
   def isAuthorizedSession(): Boolean = isNotBlank(authorizedEmail)
   def authorizedEmail(): String = {
     localAuthorizedEmail.get match {
@@ -91,14 +96,14 @@ object AdminConsole extends Loggable {
   
   def unapprovedAvalanches() = {
     val unapprovedList = transaction {
-      avyDao.selectUnviewableAvalanches
+      avyDao.selectAvalanches(unviewableQuery)
     }
     renderAvalancheListAsTableRows(unapprovedList)
   }
   
   def updatedAvalanches() = {
     val recentlyUpdatedList = transaction {
-      avyDao.selectRecentlyUpdatedAvalanches(50)
+      avyDao.selectAvalanches(recentlyUpdatedQuery)
     }
     renderAvalancheListAsTableRows(recentlyUpdatedList)
   }

@@ -2,6 +2,7 @@ package com.avyeyes.persist
 
 import org.specs2.mutable.Specification
 import com.avyeyes.test._
+import com.avyeyes.model.Avalanche
 
 class LocationFilteringSearchTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
@@ -16,12 +17,8 @@ class LocationFilteringSearchTest extends Specification with InMemoryDB with Ava
     "NE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val neLatLngInBoundsCriteria = AvalancheSearchCriteria(
-        (neHemisphereAvalanche.lat+.01).toString, 
-        (neHemisphereAvalanche.lng+.01).toString, 
-        (neHemisphereAvalanche.lat-.01).toString, 
-        (neHemisphereAvalanche.lng-.01).toString, 
-        "", "", "", "", "", "", "", "")
+      val neLatLngInBoundsCriteria = AvalancheQuery(Some(true), 
+        Some(createGeoBoundsToInclude(neHemisphereAvalanche)), "", "", "", "", "", "", "", "")
       
       val resultList = dao.selectAvalanches(neLatLngInBoundsCriteria)
       
@@ -32,12 +29,8 @@ class LocationFilteringSearchTest extends Specification with InMemoryDB with Ava
     "SE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val seLatLngInBoundsCriteria = AvalancheSearchCriteria(
-        (seHemisphereAvalanche.lat+.01).toString, 
-        (seHemisphereAvalanche.lng+.01).toString, 
-        (seHemisphereAvalanche.lat-.01).toString, 
-        (seHemisphereAvalanche.lng-.01).toString, 
-        "", "", "", "", "", "", "", "")
+      val seLatLngInBoundsCriteria = AvalancheQuery(Some(true), 
+        Some(createGeoBoundsToInclude(seHemisphereAvalanche)), "", "", "", "", "", "", "", "")
       
       val resultList = dao.selectAvalanches(seLatLngInBoundsCriteria)
       
@@ -48,12 +41,8 @@ class LocationFilteringSearchTest extends Specification with InMemoryDB with Ava
     "SW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val swLatLngInBoundsCriteria = AvalancheSearchCriteria(
-        (swHemisphereAvalanche.lat+.01).toString, 
-        (swHemisphereAvalanche.lng+.01).toString, 
-        (swHemisphereAvalanche.lat-.01).toString, 
-        (swHemisphereAvalanche.lng-.01).toString, 
-        "", "", "", "", "", "", "", "")
+      val swLatLngInBoundsCriteria = AvalancheQuery(Some(true), 
+        Some(createGeoBoundsToInclude(swHemisphereAvalanche)), "", "", "", "", "", "", "", "")
       
       val resultList = dao.selectAvalanches(swLatLngInBoundsCriteria)
       
@@ -64,18 +53,18 @@ class LocationFilteringSearchTest extends Specification with InMemoryDB with Ava
     "NW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val nwLatLngInBoundsCriteria = AvalancheSearchCriteria(
-        (nwHemisphereAvalanche.lat+.01).toString, 
-        (nwHemisphereAvalanche.lng+.01).toString, 
-        (nwHemisphereAvalanche.lat-.01).toString, 
-        (nwHemisphereAvalanche.lng-.01).toString, 
-        "", "", "", "", "", "", "", "")
+      val nwLatLngInBoundsCriteria = AvalancheQuery(Some(true), 
+        Some(createGeoBoundsToInclude(nwHemisphereAvalanche)), "", "", "", "", "", "", "", "")
       
       val resultList = dao.selectAvalanches(nwLatLngInBoundsCriteria)
       
       resultList must have length(1)
       resultList.head.extId must_== nwHemisphereAvalanche.extId
     }
+  }
+  
+  private def createGeoBoundsToInclude(a: Avalanche) = {
+    GeoBounds((a.lat+.01).toString, (a.lng+.01).toString, (a.lat-.01).toString, (a.lng-.01).toString)
   }
   
   private def insertAllAvalanches() = {

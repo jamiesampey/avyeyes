@@ -4,9 +4,10 @@ import scala.xml.NodeSeq
 
 import org.mockito.ArgumentCaptor
 
-import com.avyeyes.persist.AvalancheSearchCriteria
+import com.avyeyes.persist.AvalancheQuery
 import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.AEHelpers._
 
 import bootstrap.liftweb.Boot
 
@@ -58,21 +59,21 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with Avala
     }
     
     "Pass search criteria to DAO" withSFor("/") in {
-      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns Nil
+      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns Nil
       
-      val searchCriteriaArg: ArgumentCaptor[AvalancheSearchCriteria] = 
-        ArgumentCaptor.forClass(classOf[AvalancheSearchCriteria]);
+      val queryArg: ArgumentCaptor[AvalancheQuery] = 
+        ArgumentCaptor.forClass(classOf[AvalancheQuery]);
 
       val search = newSearchWithTestData
       search.doSearch()
 
-      there was one(mockAvalancheDao).selectAvalanches(searchCriteriaArg.capture())
-      val passedCritera = searchCriteriaArg.getValue
+      there was one(mockAvalancheDao).selectAvalanches(queryArg.capture())
+      val passedCritera = queryArg.getValue
       
-      passedCritera.northLimit must_== search.northLimit
-      passedCritera.eastLimit must_== search.eastLimit
-      passedCritera.southLimit must_== search.southLimit
-      passedCritera.westLimit must_== search.westLimit
+      passedCritera.geo.get.northLimit must_== strToDblOrZero(search.northLimit)
+      passedCritera.geo.get.eastLimit must_== strToDblOrZero(search.eastLimit)
+      passedCritera.geo.get.southLimit must_== strToDblOrZero(search.southLimit)
+      passedCritera.geo.get.westLimit must_== strToDblOrZero(search.westLimit)
       passedCritera.fromDateStr must_== search.fromDate
       passedCritera.toDateStr must_== search.toDate
       passedCritera.avyTypeStr must_== search.avyType
@@ -90,7 +91,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with Avala
       val outOfRangeExtId = "rt739fs8"
       val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
       
-      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camTilt = "10"
@@ -107,7 +108,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with Avala
       val outOfRangeExtId = "rt739fs8"
       val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
       
-      mockAvalancheDao.selectAvalanches(any[AvalancheSearchCriteria]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camTilt = (CamTiltRangeCutoff + 1).toString

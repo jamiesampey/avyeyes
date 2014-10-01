@@ -10,6 +10,8 @@ import com.avyeyes.util.AEHelpers._
 import net.liftweb.util.Helpers.today
 import com.avyeyes.util.UnauthorizedException
 import java.sql.Timestamp
+import org.squeryl.dsl.ast.ExpressionNode
+import org.squeryl.dsl.ast.OrderByArg
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche] = {
@@ -17,41 +19,35 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())).headOption
   }
    
-  def selectUnviewableAvalanches() = { 
-    isAuthorizedSession() match {
-      case true => from(avalanches)(a => where(a.viewable === false) select(a) orderBy(a.createTime asc)).toList
-      case false => throw new UnauthorizedException("Not authorized to access avalanche list")
-    }
-  }
-  
-  def selectRecentlyUpdatedAvalanches(limit: Int) = {
-    isAuthorizedSession() match {
-      case true => from(avalanches)(a => select(a) orderBy(a.updateTime desc)).page(0, limit).toList
-      case false => throw new UnauthorizedException("Not authorized to access avalanche list")
-    }
-  }
-    
-  def selectAvalanches(criteria: AvalancheSearchCriteria) = {
-    val fromDate = if (!criteria.fromDateStr.isEmpty) strToDate(criteria.fromDateStr) else EarliestAvyDate
-    val toDate = if (!criteria.toDateStr.isEmpty) strToDate(criteria.toDateStr) else today.getTime
+  def selectAvalanches(query: AvalancheQuery) = {
+    val fromDate = if (!query.fromDateStr.isEmpty) strToDate(query.fromDateStr) else EarliestAvyDate
+    val toDate = if (!query.toDateStr.isEmpty) strToDate(query.toDateStr) else today.getTime
 
-    val avyType = if (isNotBlank(criteria.avyTypeStr)) AvalancheType.withName(criteria.avyTypeStr) else AvalancheType.U
-    val avyTrigger = if (isNotBlank(criteria.avyTriggerStr)) AvalancheTrigger.withName(criteria.avyTriggerStr) else AvalancheTrigger.U
+    val avyType = if (isNotBlank(query.avyTypeStr)) AvalancheType.withName(query.avyTypeStr) else AvalancheType.U
+    val avyTrigger = if (isNotBlank(query.avyTriggerStr)) AvalancheTrigger.withName(query.avyTriggerStr) else AvalancheTrigger.U
+
+    val northLimit = if (query.geo.isDefined) query.geo.get.northLimit else 0
+    val eastLimit = if (query.geo.isDefined) query.geo.get.eastLimit else 0
+    val southLimit = if (query.geo.isDefined) query.geo.get.southLimit else 0
+    val westLimit = if (query.geo.isDefined) query.geo.get.westLimit else 0
 
     from(avalanches)(a => where(
-      (a.viewable === true).inhibitWhen(isAuthorizedSession())
-      and a.lat.between(strToDblOrZero(criteria.southLimit), strToDblOrZero(criteria.northLimit))
-      and a.lng.between(strToDblOrZero(criteria.westLimit), strToDblOrZero(criteria.eastLimit))
+      (a.viewable === getAvyViewableQueryVal(query.viewable).?)
+      and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
+      and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
       and a.avyDate.between(fromDate, toDate)
-      and (a.avyType === avyType).inhibitWhen(criteria.avyTypeStr.isEmpty)
-      and (a.trigger === avyTrigger).inhibitWhen(criteria.avyTriggerStr.isEmpty)
-      and (a.rSize gte getAvySizeQueryVal(criteria.rSize).?)
-      and (a.dSize gte getAvySizeQueryVal(criteria.dSize).?)
-      and (a.caught gte getHumanNumberQueryVal(criteria.numCaught).?)
-      and (a.killed gte getHumanNumberQueryVal(criteria.numKilled).?))
-    select(a)).toList
+      and (a.avyType === avyType).inhibitWhen(query.avyTypeStr.isEmpty)
+      and (a.trigger === avyTrigger).inhibitWhen(query.avyTriggerStr.isEmpty)
+      and (a.rSize gte getAvySizeQueryVal(query.rSize).?)
+      and (a.dSize gte getAvySizeQueryVal(query.dSize).?)
+      and (a.caught gte getHumanNumberQueryVal(query.numCaught).?)
+      and (a.killed gte getHumanNumberQueryVal(query.numKilled).?))
+    select(a) orderBy(buildAvalancheOrderBy(a, query.orderBy, query.orderDirection)))
+    .page(query.page, query.pageLimit).toList
   }  
 
+  def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute(count)).toInt
+  
   def insertAvalanche(avalanche: Avalanche) = {
     (avalanche.viewable && !isAuthorizedSession()) match {
       case false => avalanches insert avalanche
@@ -126,9 +122,36 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       set(a.updateTime := new Timestamp(System.currentTimeMillis)))
   }
   
+  private def getAvyViewableQueryVal(viewable: Option[Boolean]): Option[Boolean] = viewable match {
+    case None if isAuthorizedSession() => None // viewable criteria will NOT apply (ADMIN ONLY)
+    case Some(bool) if (!bool && isAuthorizedSession()) => Some(false) // criteria: viewable == false (ADMIN ONLY)
+    case _ => Some(true) // criteria: viewable == true
+  }
+  
   private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
     if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
     
   private def getHumanNumberQueryVal(numStr: String): Option[Int] = 
     if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
+    
+  private def buildAvalancheOrderBy(a: Avalanche, field: String, dir: OrderDirection.Value): OrderByArg = dir match {
+    case OrderDirection.ASC => new OrderByArg(fieldToExpNode(a, field)) asc
+    case OrderDirection.DESC => new OrderByArg(fieldToExpNode(a, field)) desc
+  }
+    
+  private def fieldToExpNode(a: Avalanche, field: String): ExpressionNode = field match {
+    case "createTime" => a.createTime
+    case "updateTime" => a.updateTime
+    case "lat" => a.lat
+    case "lng" => a.lng
+    case "areaName" => a.areaName
+    case "avyDate" => a.avyDate
+    case "avyType" => a.avyType
+    case "trigger" => a.trigger
+    case "rSize" => a.rSize
+    case "dSize" => a.dSize
+    case "caught" => a.caught
+    case "killed" => a.killed
+    case _ => a.id
+  }
 }

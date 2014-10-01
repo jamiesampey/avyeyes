@@ -14,7 +14,8 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
 
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
-    
+  val commonGeoBounds = GeoBounds((commonLat+.01).toString, (commonLng+.01).toString, (commonLat-.01).toString, (commonLng-.01).toString)
+  
   "Date filtering" >> {
     val jan1Avalanche = avalancheAtLocationOnDate("94jfi449", true, commonLat, commonLng, strToDate("01-01-2014"))
     val jan5Avalanche = avalancheAtLocationOnDate("42rtir54", true, commonLat, commonLng, strToDate("01-05-2014"))  
@@ -23,8 +24,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val fromDateCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "01-03-2014", "", "", "", "", "", "", "")
+      val fromDateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "01-03-2014", "", "", "", "", "", "", "")
       
       verifySingleResult(fromDateCriteria, jan5Avalanche.extId)
     }
@@ -33,8 +33,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val toDateCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "01-03-2014", "", "", "", "", "", "")
+      val toDateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "01-03-2014", "", "", "", "", "", "")
       
       verifySingleResult(toDateCriteria, jan1Avalanche.extId)
     }
@@ -43,8 +42,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val dateCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "12-25-2013", "01-04-2014", "", "", "", "", "", "")
+      val dateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "12-25-2013", "01-04-2014", "", "", "", "", "", "")
       
       verifySingleResult(dateCriteria, jan1Avalanche.extId)
     }
@@ -58,8 +56,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val wsTypeCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", AvalancheType.WS.toString, "", "", "", "", "")
+      val wsTypeCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", AvalancheType.WS.toString, "", "", "", "", "")
       
       verifySingleResult(wsTypeCriteria, wsNeAvalanche.extId)
     }
@@ -68,8 +65,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val asTriggerCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", AvalancheTrigger.AS.toString, "", "", "", "")
+      val asTriggerCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", AvalancheTrigger.AS.toString, "", "", "", "")
       
       verifySingleResult(asTriggerCriteria, hsAsAvalanche.extId)
     }
@@ -78,8 +74,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val hsAsCriteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", AvalancheType.HS.toString, AvalancheTrigger.AS.toString, "", "", "", "")
+      val hsAsCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", AvalancheType.HS.toString, AvalancheTrigger.AS.toString, "", "", "", "")
       
       verifySingleResult(hsAsCriteria, hsAsAvalanche.extId)
     }
@@ -93,8 +88,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val r4Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "4.0", "", "", "")
+      val r4Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "4.0", "", "", "")
         
       verifySingleResult(r4Criteria, r4d15Avalanche.extId)
     }
@@ -103,8 +97,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val d25Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "", "2.5", "", "")
+      val d25Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "2.5", "", "")
         
       verifySingleResult(d25Criteria, r15d3Avalanche.extId)
     }
@@ -113,8 +106,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val r3d1Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "3.0", "1.0", "", "")
+      val r3d1Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "3.0", "1.0", "", "")
         
       verifySingleResult(r3d1Criteria, r4d15Avalanche.extId)
     }
@@ -128,8 +120,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val c4Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "", "", "4", "")
+      val c4Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "4", "")
         
       verifySingleResult(c4Criteria, c4k0Avalanche.extId)
     }
@@ -138,8 +129,7 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val k1Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "", "", "", "1")
+      val k1Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "", "1")
         
       verifySingleResult(k1Criteria, c3k2Avalanche.extId)
     }
@@ -148,14 +138,13 @@ class AvalancheSearchTest extends Specification with InMemoryDB with AvalancheGe
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val c2k2Criteria = AvalancheSearchCriteria((commonLat+.01).toString, (commonLng+.01).toString, 
-        (commonLat-.01).toString, (commonLng-.01).toString, "", "", "", "", "", "", "2", "2")
+      val c2k2Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "2", "2")
         
       verifySingleResult(c2k2Criteria, c3k2Avalanche.extId)
     }
   }
   
-  private def verifySingleResult(criteria: AvalancheSearchCriteria, extId: String): Result = {
+  private def verifySingleResult(criteria: AvalancheQuery, extId: String): Result = {
     val resultList = dao.selectAvalanches(criteria)
     resultList must have length(1)
     resultList.head.extId must_== extId    
