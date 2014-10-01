@@ -41,20 +41,33 @@
 	
 		<div id="avyAdminLoggedInContentDiv" class="lift:AdminConsole.loggedInContent">
 		  <span id="avyAdminConsoleTitle" class="avyHeader"></span>
-		  <div id="avyAdminTableWrapperDiv"><table><tr>
-	        <td>
-			  <span id="avyAdminUnapprovedList" class="avyHeader avyAdminTableTitle"></span>
+		  <div id="avyAdminStatsDiv">
+            <span id="avyAdminStats" class="avyHeader"></span>
+              <table id="avyAdminStatsTable">
+                  <tr>
+                    <td id="avyAdminViewableCountTd"><label for="avyAdminViewableCount"/></td>
+                    <td><span id="avyAdminViewableCount" class="lift:AdminConsole.viewableAvalancheCount"></span></td>
+                  </tr>
+                  <tr>
+                    <td id="avyAdminUnviewableCountTd"><label for="avyAdminUnviewableCount"/></td>
+                    <td><span id="avyAdminUnviewableCount" class="lift:AdminConsole.unviewableAvalancheCount"></span></td>
+                  </tr>           
+              </table>
+          </div>
+              
+		  <div id="avyAdminTableWrapperDiv"><table>
+            <tr><td>
+			  <span id="avyAdminUnviewableList" class="avyHeader avyAdminTableTitle"></span>
 			  <div class="avyAdminScrollingList">
-				  <table class="avyAdminDataTable lift:AdminConsole.unapprovedAvalanches">
+				  <table class="avyAdminDataTable lift:AdminConsole.unviewableAvalanches">
 				    <thead>
 				      <th class="avyAdminDateTd"><span id="avyAdminCreatedDateColumn" class="avyHeader"></span></th>
 				      <th><span id="avyAdminNameIdColumn" class="avyHeader"></span></th>
 				    </thead>
-                    <tr><td><a href="#"></a></td></tr>
+		            <tr><td><a href="#"></a></td></tr>
 		          </table>
 	          </div>
-            </td>
-            <td>
+            </td><td>
               <span id="avyAdminUpdatedList" class="avyHeader avyAdminTableTitle"></span>
               <div class="avyAdminScrollingList">
                   <table class="avyAdminDataTable lift:AdminConsole.updatedAvalanches">

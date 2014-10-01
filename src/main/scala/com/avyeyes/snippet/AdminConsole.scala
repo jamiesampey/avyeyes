@@ -91,18 +91,20 @@ object AdminConsole extends Loggable {
   def logOut = "#avyAdminLogoutButton" #> SHtml.onSubmitUnit(processLogout)
   
   def loggedOutContent(html: NodeSeq) = if (!isAuthorizedSession) html else NodeSeq.Empty
-
   def loggedInContent(html: NodeSeq) = if (isAuthorizedSession) html else NodeSeq.Empty
   
-  def unapprovedAvalanches() = {
-    val unapprovedList = transaction {
-      avyDao.selectAvalanches(unviewableQuery)
+  def unviewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(false)} }</span>
+  def viewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(true)} }</span>
+  
+  def unviewableAvalanches() = {
+    val unviewableList = transaction { 
+      avyDao.selectAvalanches(unviewableQuery) 
     }
-    renderAvalancheListAsTableRows(unapprovedList)
+    renderAvalancheListAsTableRows(unviewableList)
   }
   
   def updatedAvalanches() = {
-    val recentlyUpdatedList = transaction {
+    val recentlyUpdatedList = transaction { 
       avyDao.selectAvalanches(recentlyUpdatedQuery)
     }
     renderAvalancheListAsTableRows(recentlyUpdatedList)
