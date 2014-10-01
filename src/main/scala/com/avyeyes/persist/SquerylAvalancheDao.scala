@@ -65,7 +65,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
             a.areaName := updated.areaName, a.avyDate := updated.avyDate,
             a.sky := updated.sky, a.precip := updated.precip,
             a.aspect := updated.aspect, a.angle := updated.angle,
-            a.avyType := updated.avyType, a.trigger := updated.trigger, a.bedSurface := updated.bedSurface,
+            a.avyType := updated.avyType, a.trigger := updated.trigger, a.avyInterface := updated.avyInterface,
             a.rSize := updated.rSize, a.dSize := updated.dSize,
             a.caught := updated.caught, a.partiallyBuried := updated.partiallyBuried,
             a.fullyBuried := updated.fullyBuried, a.injured := updated.injured, a.killed := updated.killed,

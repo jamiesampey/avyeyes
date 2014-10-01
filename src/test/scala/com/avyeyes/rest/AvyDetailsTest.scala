@@ -40,7 +40,7 @@ class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheGenerat
       extractJsonField(resp, "aspect") must_== Aspect.toJObject(a1.aspect)
       extractJsonField(resp, "avyType") must_== AvalancheType.toJObject(a1.avyType)
       extractJsonField(resp, "trigger") must_== AvalancheTrigger.toJObject(a1.trigger)
-      extractJsonField(resp, "bedSurface") must_== AvalancheInterface.toJObject(a1.bedSurface)      
+      extractJsonField(resp, "avyInterface") must_== AvalancheInterface.toJObject(a1.avyInterface)      
       extractJsonField(resp, "modeOfTravel") must_== ModeOfTravel.toJObject(a1.modeOfTravel)
     }
   }

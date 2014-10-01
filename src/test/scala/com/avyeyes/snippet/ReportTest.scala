@@ -42,7 +42,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       assertInputValue(renderedPage, TextInputType, "avyReportAngle", report.angle)
       assertInputValue(renderedPage, HiddenInputType, "avyReportType", report.avyType)
       assertInputValue(renderedPage, HiddenInputType, "avyReportTrigger", report.trigger)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportBedSurface", report.bedSurface)
+      assertInputValue(renderedPage, HiddenInputType, "avyReportInterface", report.avyInterface)
       assertInputValue(renderedPage, TextInputType, "avyReportRsizeValue", report.rSize)
       assertInputValue(renderedPage, TextInputType, "avyReportDsizeValue", report.dSize)
       assertInputValue(renderedPage, TextInputType, "avyReportNumCaught", report.caught)
@@ -70,7 +70,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       report.aspect = ""
       report.avyType = ""
       report.trigger = ""
-      report.bedSurface = ""
+      report.avyInterface = ""
       report.modeOfTravel = ""
       report.submitterExp = ""
       
@@ -86,7 +86,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       passedAvalanche.aspect must_== Aspect.N
       passedAvalanche.avyType must_== AvalancheType.U
       passedAvalanche.trigger must_== AvalancheTrigger.U
-      passedAvalanche.bedSurface must_== AvalancheInterface.U
+      passedAvalanche.avyInterface must_== AvalancheInterface.U
       passedAvalanche.modeOfTravel must_== ModeOfTravel.U
       passedAvalanche.submitterExp must_== ExperienceLevel.A0      
     }
@@ -114,7 +114,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       passedAvalanche.precip must_== Precip.withName(report.precip)
       passedAvalanche.avyType must_== AvalancheType.withName(report.avyType)
       passedAvalanche.trigger must_== AvalancheTrigger.withName(report.trigger)
-      passedAvalanche.bedSurface must_== AvalancheInterface.withName(report.bedSurface)
+      passedAvalanche.avyInterface must_== AvalancheInterface.withName(report.avyInterface)
       passedAvalanche.caught must_== strToIntOrNegOne(report.caught)
       passedAvalanche.partiallyBuried must_== strToIntOrNegOne(report.partiallyBuried)
       passedAvalanche.fullyBuried must_== strToIntOrNegOne(report.fullyBuried)
@@ -171,7 +171,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       
       report.avyType = AvalancheType.HS.toString
       report.trigger = AvalancheTrigger.AM.toString
-      report.bedSurface = AvalancheInterface.O.toString
+      report.avyInterface = AvalancheInterface.O.toString
       report.rSize = "3.5"
       report.dSize = "4.0"
       

@@ -20,7 +20,7 @@ class Report extends ExternalIdService with Loggable {
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
   var elevation = ""; var aspect = ""; var angle = ""    
-  var avyType = ""; var trigger = ""; var bedSurface = ""; var rSize = ""; var dSize = ""
+  var avyType = ""; var trigger = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
   var modeOfTravel = ""; var comments = ""; var kmlStr = ""
   
@@ -40,7 +40,7 @@ class Report extends ExternalIdService with Loggable {
     "#avyReportAngle" #> SHtml.text(angle, angle = _) &
     "#avyReportType" #> SHtml.hidden(avyType = _, avyType) & 
     "#avyReportTrigger" #> SHtml.hidden(trigger = _, trigger) &
-    "#avyReportBedSurface" #> SHtml.hidden(bedSurface = _, bedSurface) &
+    "#avyReportInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
     "#avyReportRsizeValue" #> SHtml.text(rSize, rSize = _) &
     "#avyReportDsizeValue" #> SHtml.text(dSize, dSize = _) &
     "#avyReportNumCaught" #> SHtml.text(caught, caught = _) &
@@ -110,7 +110,7 @@ class Report extends ExternalIdService with Loggable {
       Sky.withName(sky), Precip.withName(precip), 
       strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle), 
       AvalancheType.withName(avyType), AvalancheTrigger.withName(trigger), 
-      AvalancheInterface.withName(bedSurface), strToDblOrZero(rSize), strToDblOrZero(dSize), 
+      AvalancheInterface.withName(avyInterface), strToDblOrZero(rSize), strToDblOrZero(dSize), 
       strToIntOrNegOne(caught), strToIntOrNegOne(partiallyBuried), strToIntOrNegOne(fullyBuried), 
       strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
       ModeOfTravel.withName(modeOfTravel), comments, coords)
@@ -123,7 +123,7 @@ class Report extends ExternalIdService with Loggable {
      if (isBlank(precip)) precip = Precip.U.toString
      if (isBlank(avyType)) avyType = AvalancheType.U.toString
      if (isBlank(trigger)) trigger = AvalancheTrigger.U.toString
-     if (isBlank(bedSurface)) bedSurface = AvalancheInterface.U.toString
+     if (isBlank(avyInterface)) avyInterface = AvalancheInterface.U.toString
      if (isBlank(modeOfTravel)) modeOfTravel = ModeOfTravel.U.toString
   }
 }

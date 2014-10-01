@@ -8,7 +8,7 @@ case class Avalanche(extId: String, viewable: Boolean, /* metadata */
     lat: Double, lng: Double, areaName: String, /* location */
     avyDate: Date, sky: Sky.Value, precip: Precip.Value, /* temporal */
     elevation: Int, aspect: Aspect.Value, angle: Int, /* slope characteristics */
-    avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value, bedSurface: AvalancheInterface.Value, 
+    avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value, avyInterface: AvalancheInterface.Value, 
     rSize: Double, dSize: Double, /* avy characteristics */
     caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int, /* human numbers */
     modeOfTravel: ModeOfTravel.Value, comments: String, kmlCoords: String) extends UpdatableSquerylDbObj {
