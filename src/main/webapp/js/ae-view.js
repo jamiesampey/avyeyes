@@ -128,7 +128,7 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 	$('#avyDetailAngle').text(a.angle);
 	  
 	$('#avyDetailType').text(a.avyType.label);
-	$('#avyDetailTrigger').text(a.trigger.label);
+	$('#avyDetailTrigger').text(a.avyTrigger.label);
 	$('#avyDetailInterface').text(a.avyInterface.label);
 	$('#avyDetailRSize').text(a.rSize);
 	$('#avyDetailDSize').text(a.dSize);

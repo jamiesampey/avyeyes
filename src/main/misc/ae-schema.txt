@@ -16,7 +16,7 @@ CREATE TABLE "avalanche" (
     "aspect" integer not null,
     "angle" integer not null,    
     "avyType" integer not null,
-    "trigger" integer not null,
+    "avyTrigger" integer not null,
     "avyInterface" integer not null,
     "rSize" double precision not null,
     "dSize" double precision not null,

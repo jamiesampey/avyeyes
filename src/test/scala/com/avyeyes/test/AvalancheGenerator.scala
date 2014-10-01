@@ -31,9 +31,9 @@ trait AvalancheGenerator {
   }
   
   def avalancheAtLocationWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double, 
-    avyType: AvalancheType.Value, trigger: AvalancheTrigger.Value): Avalanche = {
+    avyType: AvalancheType.Value, avyTrigger: AvalancheTrigger.Value): Avalanche = {
     Avalanche(extId, viewable, "tester@company.com", ExperienceLevel.A0, lat, lng, "test title", new Date, 
-      Sky.U, Precip.U, 12171, Aspect.N, 45, avyType, trigger, AvalancheInterface.U, 
+      Sky.U, Precip.U, 12171, Aspect.N, 45, avyType, avyTrigger, AvalancheInterface.U, 
       0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
   }
   

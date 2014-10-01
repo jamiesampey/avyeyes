@@ -52,7 +52,7 @@ object AvyDetails extends RestHelper with Loggable {
     ("sky" -> Sky.toJObject(a.sky)) ~ ("precip" -> Precip.toJObject(a.precip)) ~
     ("elevation" -> a.elevation) ~ ("aspect" -> Aspect.toJObject(a.aspect)) ~ ("angle" -> a.angle) ~
     ("avyType" -> AvalancheType.toJObject(a.avyType)) ~
-    ("trigger" -> AvalancheTrigger.toJObject(a.trigger)) ~
+    ("avyTrigger" -> AvalancheTrigger.toJObject(a.avyTrigger)) ~
     ("avyInterface" -> AvalancheInterface.toJObject(a.avyInterface)) ~
     ("rSize" -> a.rSize) ~ ("dSize" -> a.dSize) ~
     ("caught" -> a.caught) ~ ("partiallyBuried" -> a.partiallyBuried) ~ 

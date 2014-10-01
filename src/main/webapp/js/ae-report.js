@@ -124,7 +124,7 @@ AvyReport.prototype.displayDetails = function(a) {
   this.setAutocomplete('#avyReportPrecip', a.precip);
     
   this.setAutocomplete('#avyReportType', a.avyType);
-  this.setAutocomplete('#avyReportTrigger', a.trigger);
+  this.setAutocomplete('#avyReportTrigger', a.avyTrigger);
   this.setAutocomplete('#avyReportInterface', a.avyInterface);
   this.setSlider('#avyReportRsizeValue', a.rSize);
   this.setSlider('#avyReportDsizeValue', a.dSize);
