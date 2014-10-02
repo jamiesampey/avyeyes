@@ -22,9 +22,9 @@ object AdminConsole extends Loggable {
   lazy val userDao: UserDao = PersistenceInjector.userDao.vend
 
   private val unviewableQuery = AvalancheQuery(Some(false), None, 
-      "", "", "", "", "", "", "", "", "createTime", OrderDirection.ASC)
+      "", "", "", "", "", "", "", "", OrderBy.CreateTime, OrderDirection.ASC)
   private val recentlyUpdatedQuery = AvalancheQuery(None, None, 
-      "", "", "", "", "", "", "", "", "updateTime", OrderDirection.DESC, 0, 50)
+      "", "", "", "", "", "", "", "", OrderBy.UpdateTime, OrderDirection.DESC, 0, 50)
   
   def isAuthorizedSession(): Boolean = isNotBlank(authorizedEmail)
   def authorizedEmail(): String = {

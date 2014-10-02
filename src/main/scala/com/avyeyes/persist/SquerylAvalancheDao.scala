@@ -15,10 +15,10 @@ import org.squeryl.dsl.ast.OrderByArg
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche] = {
-    avalanches.where(a => a.extId === extId 
+    avalanches.where(a => a.extId === extId
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())).headOption
   }
-   
+
   def selectAvalanches(query: AvalancheQuery) = {
     val fromDate = if (!query.fromDateStr.isEmpty) strToDate(query.fromDateStr) else EarliestAvyDate
     val toDate = if (!query.toDateStr.isEmpty) strToDate(query.toDateStr) else today.getTime
@@ -33,34 +33,34 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
 
     from(avalanches)(a => where(
       (a.viewable === getAvyViewableQueryVal(query.viewable).?)
-      and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
-      and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
-      and a.avyDate.between(fromDate, toDate)
-      and (a.avyType === avyType).inhibitWhen(query.avyTypeStr.isEmpty)
-      and (a.avyTrigger === avyTrigger).inhibitWhen(query.avyTriggerStr.isEmpty)
-      and (a.rSize gte getAvySizeQueryVal(query.rSize).?)
-      and (a.dSize gte getAvySizeQueryVal(query.dSize).?)
-      and (a.caught gte getHumanNumberQueryVal(query.numCaught).?)
-      and (a.killed gte getHumanNumberQueryVal(query.numKilled).?))
-    select(a) orderBy(buildAvalancheOrderBy(a, query.orderBy, query.orderDirection)))
-    .page(query.page, query.pageLimit).toList
-  }  
+        and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
+        and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
+        and a.avyDate.between(fromDate, toDate)
+        and (a.avyType === avyType).inhibitWhen(query.avyTypeStr.isEmpty)
+        and (a.avyTrigger === avyTrigger).inhibitWhen(query.avyTriggerStr.isEmpty)
+        and (a.rSize gte getAvySizeQueryVal(query.rSize).?)
+        and (a.dSize gte getAvySizeQueryVal(query.dSize).?)
+        and (a.caught gte getHumanNumberQueryVal(query.numCaught).?)
+        and (a.killed gte getHumanNumberQueryVal(query.numKilled).?))
+      select (a) orderBy (buildAvalancheOrderBy(a, query.orderBy, query.orderDirection)))
+      .page(query.page, query.pageLimit).toList
+  }
 
-  def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute(count)).toInt
-  
+  def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute (count)).toInt
+
   def insertAvalanche(avalanche: Avalanche) = {
     (avalanche.viewable && !isAuthorizedSession()) match {
       case false => avalanches insert avalanche
       case true => throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
   }
-  
+
   def updateAvalanche(updated: Avalanche) = {
     isAuthorizedSession() match {
       case true => {
         update(avalanches)(a => where(a.extId === updated.extId)
-          set(a.updateTime := new Timestamp(System.currentTimeMillis),
-            a.viewable := updated.viewable, 
+          set (a.updateTime := new Timestamp(System.currentTimeMillis),
+            a.viewable := updated.viewable,
             a.submitterEmail := updated.submitterEmail, a.submitterExp := updated.submitterExp,
             a.areaName := updated.areaName, a.avyDate := updated.avyDate,
             a.sky := updated.sky, a.precip := updated.precip,
@@ -69,12 +69,12 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
             a.rSize := updated.rSize, a.dSize := updated.dSize,
             a.caught := updated.caught, a.partiallyBuried := updated.partiallyBuried,
             a.fullyBuried := updated.fullyBuried, a.injured := updated.injured, a.killed := updated.killed,
-            a.modeOfTravel := updated.modeOfTravel, a.comments := updated.comments)) 
+            a.modeOfTravel := updated.modeOfTravel, a.comments := updated.comments))
       }
       case false => throw new UnauthorizedException("Not authorized to update avalanches")
     }
   }
-  
+
   def deleteAvalanche(extId: String) = {
     isAuthorizedSession() match {
       case true => {
@@ -84,29 +84,29 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       case false => throw new UnauthorizedException("Not authorized to delete avalanches")
     }
   }
-  
+
   def insertAvalancheImage(img: AvalancheImage) = {
     avalancheImages insert img
     setAvalancheUpdateTime(img.avyExtId)
   }
-  
+
   def selectAvalancheImage(avyExtId: String, filename: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
-      and (a.viewable === true).inhibitWhen(isAuthorizedSession())
-      and img.avyExtId === a.extId 
-      and img.filename === filename) 
-    select(img)).headOption
+        and (a.viewable === true).inhibitWhen(isAuthorizedSession())
+        and img.avyExtId === a.extId
+        and img.filename === filename)
+      select (img)).headOption
   }
-  
+
   def selectAvalancheImagesMetadata(avyExtId: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
-      and (a.viewable === true).inhibitWhen(isAuthorizedSession())
-      and img.avyExtId === a.extId)
-    select(img.filename, img.mimeType, img.size)).toList
+        and (a.viewable === true).inhibitWhen(isAuthorizedSession())
+        and img.avyExtId === a.extId)
+      select (img.filename, img.mimeType, img.size)).toList
   }
-  
+
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
     isAuthorizedSession() match {
       case true => {
@@ -116,42 +116,44 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       case false => throw new UnauthorizedException("Not authorized to delete image")
     }
   }
-  
+
   private def setAvalancheUpdateTime(extId: String) = {
     update(avalanches)(a => where(a.extId === extId)
-      set(a.updateTime := new Timestamp(System.currentTimeMillis)))
+      set (a.updateTime := new Timestamp(System.currentTimeMillis)))
   }
-  
+
   private def getAvyViewableQueryVal(viewable: Option[Boolean]): Option[Boolean] = viewable match {
     case None if isAuthorizedSession() => None // viewable criteria will NOT apply (ADMIN ONLY)
     case Some(bool) if (!bool && isAuthorizedSession()) => Some(false) // criteria: viewable == false (ADMIN ONLY)
     case _ => Some(true) // criteria: viewable == true
   }
-  
-  private def getAvySizeQueryVal(sizeStr: String): Option[Double] = 
+
+  private def getAvySizeQueryVal(sizeStr: String): Option[Double] =
     if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
-    
-  private def getHumanNumberQueryVal(numStr: String): Option[Int] = 
+
+  private def getHumanNumberQueryVal(numStr: String): Option[Int] =
     if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
-    
-  private def buildAvalancheOrderBy(a: Avalanche, field: String, dir: OrderDirection.Value): OrderByArg = dir match {
-    case OrderDirection.ASC => new OrderByArg(fieldToExpNode(a, field)) asc
-    case OrderDirection.DESC => new OrderByArg(fieldToExpNode(a, field)) desc
+
+  private def buildAvalancheOrderBy(a: Avalanche, orderBy: OrderBy.Value,
+    dir: OrderDirection.Value): OrderByArg = dir match {
+    case OrderDirection.ASC => new OrderByArg(orderByToExpNode(a, orderBy)) asc
+    case OrderDirection.DESC => new OrderByArg(orderByToExpNode(a, orderBy)) desc
   }
-    
-  private def fieldToExpNode(a: Avalanche, field: String): ExpressionNode = field match {
-    case "createTime" => a.createTime
-    case "updateTime" => a.updateTime
-    case "lat" => a.lat
-    case "lng" => a.lng
-    case "areaName" => a.areaName
-    case "avyDate" => a.avyDate
-    case "avyType" => a.avyType
-    case "avyTrigger" => a.avyTrigger
-    case "rSize" => a.rSize
-    case "dSize" => a.dSize
-    case "caught" => a.caught
-    case "killed" => a.killed
-    case _ => a.id
+
+  private def orderByToExpNode(a: Avalanche, orderBy: OrderBy.Value): ExpressionNode = orderBy match {
+    case OrderBy.Id => a.id
+    case OrderBy.CreateTime => a.createTime
+    case OrderBy.UpdateTime => a.updateTime
+    case OrderBy.Lat => a.lat
+    case OrderBy.Lng => a.lng
+    case OrderBy.AreaName => a.areaName
+    case OrderBy.AvyDate => a.avyDate
+    case OrderBy.AvyType => a.avyType
+    case OrderBy.AvyTrigger => a.avyTrigger
+    case OrderBy.AvyInterface => a.avyInterface
+    case OrderBy.RSize => a.rSize
+    case OrderBy.DSize => a.dSize
+    case OrderBy.Caught => a.caught
+    case OrderBy.Killed => a.killed
   }
 }
