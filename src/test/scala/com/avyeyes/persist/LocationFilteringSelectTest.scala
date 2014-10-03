@@ -4,7 +4,7 @@ import org.specs2.mutable.Specification
 import com.avyeyes.test._
 import com.avyeyes.model.Avalanche
 
-class LocationFilteringSearchTest extends Specification with InMemoryDB with AvalancheGenerator {
+class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
   val dao = new SquerylAvalancheDao(() => true)
   

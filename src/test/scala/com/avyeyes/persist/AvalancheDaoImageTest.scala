@@ -1,28 +1,16 @@
 package com.avyeyes.persist
 
 import org.specs2.mutable.Specification
-
 import com.avyeyes.test._
 import com.avyeyes.model._
+import com.avyeyes.util.UnauthorizedException
 
 
-class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheGenerator {
+class AvalancheDaoImageTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
-  val dao = new SquerylAvalancheDao(() => true)
 
   val testAvalanche = avalancheAtLocation("5j3fyjd9", false, 43.57636345634, -100.5345550)
     
-  "Avalanche insert" >> {
-    "works" >> {
-      dao insertAvalanche testAvalanche
-      val readAvalanche = dao.selectAvalanche(testAvalanche.extId).get
-      
-      readAvalanche.extId must_== testAvalanche.extId
-      readAvalanche.lat must_== testAvalanche.lat
-      readAvalanche.lng must_== testAvalanche.lng
-    }
-  }
-  
   "Avalanche Images" >> {
     val nonExistentAvalancheExtId = "594jk3i3"
     
@@ -32,6 +20,7 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
     val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", img2Bytes.length, img2Bytes)
   
     "Image insert and select works" >> {
+      val dao = new SquerylAvalancheDao(() => true)
       dao insertAvalanche testAvalanche
       dao insertAvalancheImage img1
       val returnedImage = dao.selectAvalancheImage(testAvalanche.extId, img1.filename).get
@@ -43,11 +32,13 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
     }
     
     "Image without corresponding avalanche is not selected" >> {
+      val dao = new SquerylAvalancheDao(() => true)
       dao insertAvalancheImage img2
       dao.selectAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
-    "Avalanche image metadata search works" >> {
+    "Image metadata search works" >> {
+      val dao = new SquerylAvalancheDao(() => true)
       dao insertAvalanche testAvalanche
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
@@ -55,6 +46,21 @@ class AvalancheDaoMiscTest extends Specification with InMemoryDB with AvalancheG
       val returnedImages = dao.selectAvalancheImagesMetadata(testAvalanche.extId)
       returnedImages must have length(1)
       returnedImages.head must_== (img1.filename, img1.mimeType, img1.size)
+    }
+    
+    "Image delete works for authorized session" >> {
+      val dao = new SquerylAvalancheDao(() => true)
+      dao insertAvalanche testAvalanche
+      dao insertAvalancheImage img1
+      
+      dao.selectAvalancheImage(testAvalanche.extId, img1.filename) must beSome
+      dao.deleteAvalancheImage(testAvalanche.extId, img1.filename)
+      dao.selectAvalancheImage(testAvalanche.extId, img1.filename) must beNone
+    }
+    
+    "Image delete does not work for unauthorized session" >> {
+      val dao = new SquerylAvalancheDao(() => false)
+      dao.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
   }
 }
