@@ -5,6 +5,7 @@ require.config({
   paths: {
     'earthAsyncLoad': 'lib/require/gearth-loader',
     'mapsAsyncLoad': 'lib/require/gmaps-loader',
+    'analytics': 'lib/analytics',
     'jquery-ui': 'lib/jquery-ui',
     'jquery-geocomplete': 'lib/jquery.geocomplete.min',
     'jquery-fileupload': 'lib/jquery.fileupload',
@@ -18,7 +19,8 @@ var avyeyes = null;
 var avyeyesInitGate = $.Deferred();
 var earthLoaded = false;
 var mapsLoaded = false;
-    
+
+var GA_TRACKING_CODE = 'UA-45548947-3';
 var GOOGLE_API_KEY = 'AIzaSyAHuPQo0kaoI-rEGr0q57EkOF2UPNpFP28';
     
 function earthLoadCB() {
@@ -36,8 +38,8 @@ function mapsLoadCB() {
 }
     
 //Start the main app logic.
-requirejs(['earthAsyncLoad', 'mapsAsyncLoad', 'ae-view'], 
-	function (earthAsyncLoad, mapsAsyncLoad, AvyEyesView) {
+requirejs(['earthAsyncLoad', 'mapsAsyncLoad', 'analytics', 'ae-view'], 
+	function (earthAsyncLoad, mapsAsyncLoad, analytics, AvyEyesView) {
     earthAsyncLoad(earthLoadCB);
     mapsAsyncLoad("mapsLoadCB");
     
