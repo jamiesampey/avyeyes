@@ -5,6 +5,7 @@ import com.avyeyes.test._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
 import com.avyeyes.model.AvalancheImage
+import org.mockito.ArgumentCaptor
 
 class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
   // Testing an OBJECT (singleton), so the mockAvalancheDao is inserted ONCE. 
@@ -61,6 +62,25 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
       extractJsonStringField(resp, "extId") must_== extId
       extractJsonStringField(resp, "fileName") must_== fileName
       extractJsonLongField(resp, "fileSize") must_== fileBytes.length
+    }
+  }
+  
+  "Image Delete request" should {
+    val mockDeleteRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
+    mockDeleteRequest.method = "DELETE"
+    
+    "Delete an image from the DB" withSFor(mockDeleteRequest) in {
+      val req = openLiftReqBox(S.request)
+     
+      val extIdArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
+      val filenameArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
+
+      val resp = openLiftRespBox(Images(req)())
+
+      there was one(mockAvalancheDao).deleteAvalancheImage(extIdArg.capture(), filenameArg.capture())
+      resp must beAnInstanceOf[OkResponse]
+      extIdArg.getValue must_== extId
+      filenameArg.getValue must_== goodImgFileName
     }
   }
 }
