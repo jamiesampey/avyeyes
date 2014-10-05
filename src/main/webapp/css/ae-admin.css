@@ -82,5 +82,6 @@
 }
 
 .avyAdminDataTable > tbody > tr > td {
+	padding-right: 10px;
 	text-align: left;
 }

@@ -13,19 +13,26 @@ import net.liftweb.http._
 import net.liftweb.util._
 import net.liftweb.util.Helpers._
 import omniauth._
-
-
 import org.squeryl.PrimitiveTypeMode._
+import java.text.SimpleDateFormat
 
 object AdminConsole extends Loggable {
   lazy val avyDao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   lazy val userDao: UserDao = PersistenceInjector.userDao.vend
 
+  private object localAuthorizedEmail extends SessionVar[Box[String]](Empty)
+    
+  private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
+  private val LocalAuthEmailHash = Props.get("localauth.email", "")
+  private val LocalAuthPwHash = Props.get("localauth.pw", "")
+  
   private val unviewableQuery = AvalancheQuery.baseQuery.copy(
     viewable = Some(false), orderBy = OrderBy.CreateTime, order = Order.Asc)
   private val recentlyUpdatedQuery = AvalancheQuery.baseQuery.copy(
     orderBy = OrderBy.UpdateTime, order = Order.Desc, offset = 0, limit = 50)
   
+  private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    
   def isAuthorizedSession(): Boolean = isNotBlank(authorizedEmail)
   def authorizedEmail(): String = {
     localAuthorizedEmail.get match {
@@ -37,8 +44,6 @@ object AdminConsole extends Loggable {
     }
   }
   
-  private object localAuthorizedEmail extends SessionVar[Box[String]](Empty)
-    
   private def processLogout() = {
     logger.info(s"logging out authorized user ${authorizedEmail}")
     localAuthorizedEmail.set(Empty)
@@ -46,10 +51,6 @@ object AdminConsole extends Loggable {
     S.redirectTo(getHttpBaseUrl)
   }
 
-  private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
-  private val LocalAuthEmailHash = Props.get("localauth.email", "")
-  private val LocalAuthPwHash = Props.get("localauth.pw", "")
-  
   def localLogIn = {
     var localLoginAttemptEmail = ""
     var localLoginAttemptPw = ""
@@ -100,22 +101,19 @@ object AdminConsole extends Loggable {
     val unviewableList = transaction { 
       avyDao.selectAvalanches(unviewableQuery) 
     }
-    renderAvalancheListAsTableRows(unviewableList)
+
+    "tbody tr" #> unviewableList.map(a => <tr><td>{s"${sdf.format(a.createTime)}:"}</td><td>{getAvalancheLink(a)}</td></tr>)
   }
   
   def updatedAvalanches() = {
     val recentlyUpdatedList = transaction { 
       avyDao.selectAvalanches(recentlyUpdatedQuery)
     }
-    renderAvalancheListAsTableRows(recentlyUpdatedList)
+       
+    "tbody tr" #> recentlyUpdatedList.map(a => <tr><td>{s"${sdf.format(a.updateTime)}:"}</td><td>{getAvalancheLink(a)}</td></tr>)
   }
   
-  private def renderAvalancheListAsTableRows(list: List[Avalanche]): CssSel = {
-    val baseUrl = getHttpBaseUrl
-
-    "tbody tr" #> list.map(a => {
-      <td>{s"${dateToStr(a.createTime)}:"}</td>
-      <td><a href={baseUrl + a.extId} target="_blank">{s"${a.areaName} (${a.extId})"}</a></td>
-    })
+  private def getAvalancheLink(a: Avalanche) = {
+    <a href={getHttpBaseUrl + a.extId} target="_blank">{s"${a.areaName} (${a.extId})"}</a>
   }
 }
