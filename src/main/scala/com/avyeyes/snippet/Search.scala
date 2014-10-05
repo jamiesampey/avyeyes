@@ -1,22 +1,21 @@
 package com.avyeyes.snippet
 
 import scala.math._
-
 import org.squeryl.PrimitiveTypeMode.transaction
-
 import com.avyeyes.model._
+import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
-
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.util.Helpers._
+import org.apache.commons.lang3.StringUtils._
 
 class Search extends KmlCreator with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -65,21 +64,39 @@ class Search extends KmlCreator with Loggable {
       } 
     }
   }
-
+    
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val criteria = AvalancheQuery(Some(true), Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
-      fromDate, toDate, avyType, avyTrigger, rSize, dSize, numCaught, numKilled)
+    val query = AvalancheQuery.baseQuery.copy(
+      viewable = Some(true), 
+      geo = Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
+      fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None, 
+      toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None, 
+      avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None, 
+      avyTrigger = if (isNotBlank(avyTrigger)) Some(AvalancheTrigger.withName(avyTrigger)) else None, 
+      rSize = getAvySizeQueryVal(rSize), 
+      dSize = getAvySizeQueryVal(dSize), 
+      numCaught = getHumanNumberQueryVal(numCaught), 
+      numKilled = getHumanNumberQueryVal(numKilled))
       
     val matchingAvalanches: List[Avalanche] = transaction {
-      dao.selectAvalanches(criteria)
+      dao.selectAvalanches(query)
     }
     
-    if (strToDblOrZero(camTilt) < CamTiltRangeCutoff) 
+    if (strToDblOrZero(camTilt) < CamTiltRangeCutoff)  {
       matchingAvalanches
-    else 
+    } else { 
       matchingAvalanches filter (a => haversineDist(a) < AvyDistRangeMiles)
+    }
   }
 
+  private def getAvySizeQueryVal(sizeStr: String): Option[Double] = {
+    if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
+  }
+  
+  private def getHumanNumberQueryVal(numStr: String): Option[Int] = {
+    if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
+  }
+  
 	private def haversineDist(a: Avalanche) = {
     val dLat = (a.lat - strToDblOrZero(camLat)).toRadians
     val dLon = (a.lng - strToDblOrZero(camLng)).toRadians

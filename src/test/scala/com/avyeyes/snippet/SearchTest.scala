@@ -1,15 +1,13 @@
 package com.avyeyes.snippet
 
 import scala.xml.NodeSeq
-
 import org.mockito.ArgumentCaptor
-
 import com.avyeyes.persist.AvalancheQuery
 import com.avyeyes.test._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
-
 import bootstrap.liftweb.Boot
+import com.avyeyes.model.enums._
 
 class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with AvalancheGenerator with TemplateReader {
   "Snippet rendering" should {
@@ -68,20 +66,20 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockPersistence with Avala
       search.doSearch()
 
       there was one(mockAvalancheDao).selectAvalanches(queryArg.capture())
-      val passedCritera = queryArg.getValue
+      val passedQuery = queryArg.getValue
       
-      passedCritera.geo.get.northLimit must_== strToDblOrZero(search.northLimit)
-      passedCritera.geo.get.eastLimit must_== strToDblOrZero(search.eastLimit)
-      passedCritera.geo.get.southLimit must_== strToDblOrZero(search.southLimit)
-      passedCritera.geo.get.westLimit must_== strToDblOrZero(search.westLimit)
-      passedCritera.fromDateStr must_== search.fromDate
-      passedCritera.toDateStr must_== search.toDate
-      passedCritera.avyTypeStr must_== search.avyType
-      passedCritera.avyTriggerStr must_== search.avyTrigger
-      passedCritera.rSize must_== search.rSize
-      passedCritera.dSize must_== search.dSize
-      passedCritera.numCaught must_== search.numCaught
-      passedCritera.numKilled must_== search.numKilled
+      passedQuery.geo.get.northLimit must_== strToDblOrZero(search.northLimit)
+      passedQuery.geo.get.eastLimit must_== strToDblOrZero(search.eastLimit)
+      passedQuery.geo.get.southLimit must_== strToDblOrZero(search.southLimit)
+      passedQuery.geo.get.westLimit must_== strToDblOrZero(search.westLimit)
+      passedQuery.fromDate.get must_== strToDate(search.fromDate)
+      passedQuery.toDate.get must_== strToDate(search.toDate)
+      passedQuery.avyType.get must_== AvalancheType.withName(search.avyType)
+      passedQuery.avyTrigger.get must_== AvalancheTrigger.withName(search.avyTrigger)
+      passedQuery.rSize.get must_== strToDblOrZero(search.rSize)
+      passedQuery.dSize.get must_== strToDblOrZero(search.dSize)
+      passedQuery.numCaught.get must_== strToIntOrNegOne(search.numCaught)
+      passedQuery.numKilled.get must_== strToIntOrNegOne(search.numKilled)
     }
     
     "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {

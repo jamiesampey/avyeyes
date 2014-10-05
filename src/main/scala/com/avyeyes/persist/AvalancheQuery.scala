@@ -1,12 +1,20 @@
 package com.avyeyes.persist
 
 import com.avyeyes.util.AEHelpers._
+import java.util.Date
+import com.avyeyes.model.enums._
 
-case class AvalancheQuery(viewable: Option[Boolean], geo: Option[GeoBounds],
-  fromDateStr: String, toDateStr: String, avyTypeStr: String, avyTriggerStr: String, 
-  rSize: String, dSize: String, numCaught: String, numKilled: String,
-  orderBy: OrderBy.Value = OrderBy.Id, orderDirection: OrderDirection.Value = OrderDirection.ASC,
-  page: Int = 0, pageLimit: Int = Int.MaxValue)
+object AvalancheQuery {
+  val baseQuery = new AvalancheQuery
+}
+
+case class AvalancheQuery(viewable: Option[Boolean] = None, geo: Option[GeoBounds] = None,
+  fromDate: Option[Date] = None, toDate: Option[Date] = None, 
+  avyType: Option[AvalancheType.Value] = None, avyTrigger: Option[AvalancheTrigger.Value] = None, 
+  rSize: Option[Double] = None, dSize: Option[Double] = None, 
+  numCaught: Option[Int] = None, numKilled: Option[Int] = None,
+  orderBy: OrderBy.Value = OrderBy.Id, order: Order.Value = Order.Asc,
+  offset: Int = 0, limit: Int = Int.MaxValue)
  
 case class GeoBounds(northStr: String, eastStr: String, southStr: String, westStr: String) {
   def northLimit = strToDblOrZero(northStr)
@@ -21,7 +29,7 @@ object OrderBy extends Enumeration {
     AvyTrigger, AvyInterface, RSize, DSize, Caught, Killed = Value
 }
 
-object OrderDirection extends Enumeration {
-  type OrderDirection = Value
-  val ASC, DESC = Value
+object Order extends Enumeration {
+  type Order = Value
+  val Asc, Desc = Value
 }

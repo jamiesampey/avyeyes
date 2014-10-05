@@ -2,10 +2,11 @@ package com.avyeyes.persist
 
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification
-
 import com.avyeyes.model.enums._
+import com.avyeyes.persist.AvalancheQuery._
 import com.avyeyes.test.AvalancheGenerator
 import com.avyeyes.util.AEHelpers._
+import org.joda.time.DateTime
 
 class AvalancheDaoSelectTest extends Specification with InMemoryDB with AvalancheGenerator {
   sequential
@@ -39,27 +40,27 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val fromDateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "01-03-2014", "", "", "", "", "", "", "")
+      val fromDateQuery = baseQuery.copy(fromDate = Some(strToDate("01-03-2014")))
       
-      verifySingleResult(dao, fromDateCriteria, jan5Avalanche.extId)
+      verifySingleResult(dao, fromDateQuery, jan5Avalanche.extId)
     }
     
     "To date filtering" >> {
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val toDateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "01-03-2014", "", "", "", "", "", "")
+      val toDateQuery = baseQuery.copy(toDate = Some(strToDate("01-03-2014")))
       
-      verifySingleResult(dao, toDateCriteria, jan1Avalanche.extId)
+      verifySingleResult(dao, toDateQuery, jan1Avalanche.extId)
     }
     
     "Date filtering spanning year boundary" >> {
       dao insertAvalanche jan1Avalanche
       dao insertAvalanche jan5Avalanche
       
-      val dateCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "12-25-2013", "01-04-2014", "", "", "", "", "", "")
+      val dateQuery = baseQuery.copy(fromDate = Some(strToDate("12-25-2013")), toDate = Some(strToDate("01-04-2014")))
       
-      verifySingleResult(dao, dateCriteria, jan1Avalanche.extId)
+      verifySingleResult(dao, dateQuery, jan1Avalanche.extId)
     }
   }
   
@@ -72,27 +73,27 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val wsTypeCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", AvalancheType.WS.toString, "", "", "", "", "")
+      val wsTypeQuery = baseQuery.copy(avyType = Some(AvalancheType.WS))
       
-      verifySingleResult(dao, wsTypeCriteria, wsNeAvalanche.extId)
+      verifySingleResult(dao, wsTypeQuery, wsNeAvalanche.extId)
     }
     
     "Trigger filtering" >> {
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val asTriggerCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", AvalancheTrigger.AS.toString, "", "", "", "")
+      val asTriggerQuery = baseQuery.copy(avyTrigger = Some(AvalancheTrigger.AS))
       
-      verifySingleResult(dao, asTriggerCriteria, hsAsAvalanche.extId)
+      verifySingleResult(dao, asTriggerQuery, hsAsAvalanche.extId)
     }
   
     "Type and trigger filtering" >> {
       dao insertAvalanche hsAsAvalanche
       dao insertAvalanche wsNeAvalanche
       
-      val hsAsCriteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", AvalancheType.HS.toString, AvalancheTrigger.AS.toString, "", "", "", "")
+      val hsAsQuery = baseQuery.copy(avyType = Some(AvalancheType.HS), avyTrigger = Some(AvalancheTrigger.AS))
       
-      verifySingleResult(dao, hsAsCriteria, hsAsAvalanche.extId)
+      verifySingleResult(dao, hsAsQuery, hsAsAvalanche.extId)
     }
   }
   
@@ -105,27 +106,27 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val r4Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "4.0", "", "", "")
+      val r4Query = baseQuery.copy(rSize = Some(4.0))
         
-      verifySingleResult(dao, r4Criteria, r4d15Avalanche.extId)
+      verifySingleResult(dao, r4Query, r4d15Avalanche.extId)
     }
     
     "D size filtering" >> {
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val d25Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "2.5", "", "")
+      val d25Query = baseQuery.copy(dSize = Some(2.5))
         
-      verifySingleResult(dao, d25Criteria, r15d3Avalanche.extId)
+      verifySingleResult(dao, d25Query, r15d3Avalanche.extId)
     }
     
     "R and D size filtering" >> {
       dao insertAvalanche r4d15Avalanche
       dao insertAvalanche r15d3Avalanche
       
-      val r3d1Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "3.0", "1.0", "", "")
+      val r3d1Query = baseQuery.copy(rSize = Some(3.0), dSize = Some(1.0))
         
-      verifySingleResult(dao, r3d1Criteria, r4d15Avalanche.extId)
+      verifySingleResult(dao, r3d1Query, r4d15Avalanche.extId)
     }
   }
   
@@ -138,27 +139,27 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val c4Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "4", "")
+      val c4Query = baseQuery.copy(numCaught = Some(4))
         
-      verifySingleResult(dao, c4Criteria, c4k0Avalanche.extId)
+      verifySingleResult(dao, c4Query, c4k0Avalanche.extId)
     }
     
     "Number killed filtering" >> {
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val k1Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "", "1")
+      val k1Query = baseQuery.copy(numKilled = Some(1))
         
-      verifySingleResult(dao, k1Criteria, c3k2Avalanche.extId)
+      verifySingleResult(dao, k1Query, c3k2Avalanche.extId)
     }
     
     "Number caught and killed filtering" >> {
       dao insertAvalanche c4k0Avalanche
       dao insertAvalanche c3k2Avalanche
       
-      val c2k2Criteria = AvalancheQuery(Some(true), Some(commonGeoBounds), "", "", "", "", "", "", "2", "2")
+      val c2k2Query = baseQuery.copy(numCaught = Some(2), numKilled = Some(2))
         
-      verifySingleResult(dao, c2k2Criteria, c3k2Avalanche.extId)
+      verifySingleResult(dao, c2k2Query, c3k2Avalanche.extId)
     }
   }
   
@@ -177,9 +178,63 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       dao.countAvalanches(false) must_==1
     }
   }
+  
+  "Ordering" >> {
+    val latest = avalancheAtLocationOnDate("94jfi449", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).toDate)
+    val earliest = avalancheAtLocationOnDate("42rtir54", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(20).toDate)
+    val middle = avalancheAtLocationOnDate("6903k2fh", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(10).toDate)
+
+    val dao = new SquerylAvalancheDao(() => true)
     
-  private def verifySingleResult(dao: AvalancheDao, criteria: AvalancheQuery, extId: String): Result = {
-    val resultList = dao.selectAvalanches(criteria)
+    "Selects can be ordered by date ascending" >> {
+      dao insertAvalanche latest
+      dao insertAvalanche earliest
+      dao insertAvalanche middle
+      
+      val dateAscOrderQuery = baseQuery.copy(orderBy = OrderBy.AvyDate, order = Order.Asc)
+      val avyDateAscArray = dao.selectAvalanches(dateAscOrderQuery).toArray
+      
+      avyDateAscArray(0).extId must_== earliest.extId
+      avyDateAscArray(1).extId must_== middle.extId
+      avyDateAscArray(2).extId must_== latest.extId
+    }
+    
+    "Selects can be ordered by date descending" >> {
+      dao insertAvalanche latest
+      dao insertAvalanche earliest
+      dao insertAvalanche middle
+
+      val dateDescOrderQuery = baseQuery.copy(orderBy = OrderBy.AvyDate, order = Order.Desc)
+      val avyDateDescArray = dao.selectAvalanches(dateDescOrderQuery).toArray
+      
+      avyDateDescArray(0).extId must_== latest.extId
+      avyDateDescArray(1).extId must_== middle.extId
+      avyDateDescArray(2).extId must_== earliest.extId
+    }
+  }
+  
+  "Pagination" >> {
+    val avalanche1 = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
+    val avalanche2 = avalancheAtLocation("42rtir54", false, commonLat, commonLng)
+    val avalanche3 = avalancheAtLocation("6903k2fh", false, commonLat, commonLng)
+    
+    val dao = new SquerylAvalancheDao(() => true)
+    
+    "Selects can be paginated" >> {
+      dao insertAvalanche avalanche1
+      dao insertAvalanche avalanche2
+      dao insertAvalanche avalanche3
+                  
+      val firstPageQuery = baseQuery.copy(offset = 0, limit = 2)
+      val secondPageQuery = baseQuery.copy(offset = 2, limit = 2)
+      
+      dao.selectAvalanches(firstPageQuery).size must_== 2
+      dao.selectAvalanches(secondPageQuery).size must_== 1
+    }
+  }
+  
+  private def verifySingleResult(dao: AvalancheDao, query: AvalancheQuery, extId: String): Result = {
+    val resultList = dao.selectAvalanches(query)
     resultList must have length(1)
     resultList.head.extId must_== extId    
   }

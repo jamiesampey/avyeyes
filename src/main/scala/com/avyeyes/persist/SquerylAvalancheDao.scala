@@ -1,6 +1,5 @@
 package com.avyeyes.persist
 
-import org.apache.commons.lang3.StringUtils.isNotBlank
 import org.squeryl.PrimitiveTypeMode._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
@@ -20,30 +19,30 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   }
 
   def selectAvalanches(query: AvalancheQuery) = {
-    val fromDate = if (!query.fromDateStr.isEmpty) strToDate(query.fromDateStr) else EarliestAvyDate
-    val toDate = if (!query.toDateStr.isEmpty) strToDate(query.toDateStr) else today.getTime
-
-    val avyType = if (isNotBlank(query.avyTypeStr)) AvalancheType.withName(query.avyTypeStr) else AvalancheType.U
-    val avyTrigger = if (isNotBlank(query.avyTriggerStr)) AvalancheTrigger.withName(query.avyTriggerStr) else AvalancheTrigger.U
-
     val northLimit = if (query.geo.isDefined) query.geo.get.northLimit else 0
     val eastLimit = if (query.geo.isDefined) query.geo.get.eastLimit else 0
     val southLimit = if (query.geo.isDefined) query.geo.get.southLimit else 0
     val westLimit = if (query.geo.isDefined) query.geo.get.westLimit else 0
+    
+    val fromDate = query.fromDate match {case Some(date) => date; case None => EarliestAvyDate}
+    val toDate = query.toDate match {case Some(date) => date; case None => today.getTime}
 
+    val avyTypeQueryVal = query.avyType match {case Some(avyType) => avyType; case None => AvalancheType.U}
+    val avyTriggerQueryVal = query.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
+    
     from(avalanches)(a => where(
       (a.viewable === getAvyViewableQueryVal(query.viewable).?)
         and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
         and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
         and a.avyDate.between(fromDate, toDate)
-        and (a.avyType === avyType).inhibitWhen(query.avyTypeStr.isEmpty)
-        and (a.avyTrigger === avyTrigger).inhibitWhen(query.avyTriggerStr.isEmpty)
-        and (a.rSize gte getAvySizeQueryVal(query.rSize).?)
-        and (a.dSize gte getAvySizeQueryVal(query.dSize).?)
-        and (a.caught gte getHumanNumberQueryVal(query.numCaught).?)
-        and (a.killed gte getHumanNumberQueryVal(query.numKilled).?))
-      select (a) orderBy (buildAvalancheOrderBy(a, query.orderBy, query.orderDirection)))
-      .page(query.page, query.pageLimit).toList
+        and (a.avyType === avyTypeQueryVal).inhibitWhen(query.avyType.isEmpty)
+        and (a.avyTrigger === avyTriggerQueryVal).inhibitWhen(query.avyTrigger.isEmpty)
+        and (a.rSize gte (query.rSize).?)
+        and (a.dSize gte (query.dSize).?)
+        and (a.caught gte (query.numCaught).?)
+        and (a.killed gte (query.numKilled).?))
+      select (a) orderBy (buildAvalancheOrderBy(a, query.orderBy, query.order)))
+      .page(query.offset, query.limit).toList
   }
 
   def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute (count)).toInt
@@ -128,16 +127,10 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     case _ => Some(true) // criteria: viewable == true
   }
 
-  private def getAvySizeQueryVal(sizeStr: String): Option[Double] =
-    if (strToDblOrZero(sizeStr) > 0) Some(strToDblOrZero(sizeStr)) else None
-
-  private def getHumanNumberQueryVal(numStr: String): Option[Int] =
-    if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
-
   private def buildAvalancheOrderBy(a: Avalanche, orderBy: OrderBy.Value,
-    dir: OrderDirection.Value): OrderByArg = dir match {
-    case OrderDirection.ASC => new OrderByArg(orderByToExpNode(a, orderBy)) asc
-    case OrderDirection.DESC => new OrderByArg(orderByToExpNode(a, orderBy)) desc
+    order: Order.Value): OrderByArg = order match {
+    case Order.Asc => new OrderByArg(orderByToExpNode(a, orderBy)) asc
+    case Order.Desc => new OrderByArg(orderByToExpNode(a, orderBy)) desc
   }
 
   private def orderByToExpNode(a: Avalanche, orderBy: OrderBy.Value): ExpressionNode = orderBy match {
