@@ -136,29 +136,37 @@
 }
 
 #avyDetailTable {
-    width: 640px;
+    width: 740px;
+    overflow-x: hidden;
+}
+
+#avyDetailTitleTd {
+    width: 570px;
 }
 
 #avyDetailTitle {
-    width: 500px;
-    height: auto;
+    width: 100%;
+    font: bold 1.2em times,serif !important;
 }
 
-#avyDetailExtLink {
-    display: inline-block;
-    float: right;
-    text-decoration: none;
-}
-
-#avyDetailTitleRow {
-	padding-bottom: 5px;
-}
-
-#avyDetailSubmitterExpRow {
+#avyDetailSubmitterExpTd {
 	font: italic .8em times,serif !important;
 }
 
-#avyDetailTable  tbody  tr  td {
+#avyDetailExtLinkTd {
+    font: normal .8em times,serif !important;
+    text-align: right;
+}
+
+#avyDetailExtLinkTd a {
+    text-decoration: none;
+}
+
+#avyDetailSocialButtonsTd {
+    text-align: right;
+}
+
+#avyDetailTable tbody tr td {
     vertical-align: top;
 }
 
@@ -201,12 +209,12 @@
     display: none;
 }
 
+#avyDetailImageRow table {
+    width: 100%;
+}
+
 #avyDetailImageDiv {
-	width: 620px;
-    padding: 5px;
-    margin: 0px;
-    border: 1px solid #555555;
-    border-radius: 10px;
+	width: 100%;
 }
 
 #avyDetailImageList {

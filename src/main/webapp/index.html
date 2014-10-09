@@ -18,7 +18,7 @@
 		<div id="liftContent" class="lift:Content">
         
         <div id="loadingDiv">
-          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"/><span id="loadingText" class="avyMsg"></span></div>
+          <div id="loadingMsgDiv"><img src="/images/loadcircle.gif"/><span id="loadingText" class="avyMsg"/></div>
         </div>		
 		
 		<form class="lift:form.ajax">
@@ -39,43 +39,46 @@
 			    <li><a id="reportHelpTab" class="avyLink" href="#reportHelpDiv"></a></li>
 			    <li><a id="aboutHelpTab" class="avyLink" href="#aboutHelpDiv"></a></li>
 		    </ul>
-	        <div id="searchHelpDiv"><span id="searchHelpContent" class="avyMsg"></span></div>
-	        <div id="reportHelpDiv"><span id="reportHelpContent" class="avyMsg"></span></div>
-	        <div id="aboutHelpDiv"><span id="aboutHelpContent" class="avyMsg"></span></div>
+	        <div id="searchHelpDiv"><span id="searchHelpContent" class="avyMsg"/></div>
+	        <div id="reportHelpDiv"><span id="reportHelpContent" class="avyMsg"/></div>
+	        <div id="aboutHelpDiv"><span id="aboutHelpContent" class="avyMsg"/></div>
         </div>
         
         <div id="avyDetailDialog">
            <table id="avyDetailTable">
-               <tr id="avyDetailTitleRow"><td colspan="2">
-                   <span id="avyDetailTitle" class="avySearchHeader"></span><a id="avyDetailExtLink"></a>
-               </td></tr>
-               <tr id="avyDetailSubmitterExpRow"><td colspan="2">
-                    <label for="avyDetailSubmitterExp"></label><span id="avyDetailSubmitterExp"></span>
+               <tr><td colspan="2">
+                   <table><tr>
+                       <td id="avyDetailTitleTd"><span id="avyDetailTitle"/></td>
+                       <td id="avyDetailExtLinkTd"><a id="avyDetailExtLink"/></td>
+                   </tr><tr>
+                       <td id="avyDetailSubmitterExpTd"><label for="avyDetailSubmitterExp"></label><span id="avyDetailSubmitterExp"/></td>
+                       <td id="avyDetailSocialButtonsTd"><input type="button" value="facebook"/><input type="button" value="twitter"/></td>
+                   </tr></table>
                </td></tr>
                <tr><td colspan="2"><hr/></td></tr>
                <tr><td>
                <table id="avyDetailLeftColumnTable"><tr><td>
                   <table class="avyDetailSubTable">
                       <tr><td class="avyDetailSectionHeader">
-                          <span id="avyDetailSlopeCharacter" class="avyHeader"></span>
+                          <span id="avyDetailSlopeCharacter" class="avyHeader"/>
                       </td></tr>
                       <tr><td>
                            <table class="avyDetailFieldsSubTable">
                                <tr>
                                   <td><label for="avyDetailElevation"></label></td>
                                   <td>
-                                    <span id="avyDetailElevation"></span>
+                                    <span id="avyDetailElevation"/>
                                     <span>/</span>
-                                    <span id="avyDetailElevationFt"></span>
+                                    <span id="avyDetailElevationFt"/>
                                   </td>
                                </tr>
                                <tr>
                                   <td><label for="avyDetailAspect"></label></td>
-                                  <td><span id="avyDetailAspect"></span></td>
+                                  <td><span id="avyDetailAspect"/></td>
                                </tr>
                                <tr>
                                   <td><label for="avyDetailAngle"></label></td>
-                                  <td><span id="avyDetailAngle"></span></td>
+                                  <td><span id="avyDetailAngle"/></td>
                                </tr>
                            </table>
                        </td></tr>
@@ -84,29 +87,29 @@
                <tr><td>
                   <table class="avyDetailSubTable">
                        <tr><td class="avyDetailSectionHeader">
-                           <span id="avyDetailAvyCharacter" class="avyHeader"></span>
+                           <span id="avyDetailAvyCharacter" class="avyHeader"/>
                        </td></tr>
                        <tr><td>
                        <table class="avyDetailFieldsSubTable">
                            <tr>
                               <td><label for="avyDetailType"></label></td>
-                              <td><span id="avyDetailType"></span></td>
+                              <td><span id="avyDetailType"/></td>
                            </tr>
                            <tr>
                               <td><label for="avyDetailTrigger"></label></td>
-                              <td><span id="avyDetailTrigger"></span></td>
+                              <td><span id="avyDetailTrigger"/></td>
                            </tr>
                            <tr>
                               <td><label for="avyDetailInterface"></label></td>
-                              <td><span id="avyDetailInterface"></span></td>
+                              <td><span id="avyDetailInterface"/></td>
                            </tr>
                            <tr>
                               <td><label for="avyDetailRSize"></label></td>
-                              <td><span id="avyDetailRSize"></span></td>
+                              <td><span id="avyDetailRSize"/></td>
                            </tr>
                            <tr>
                               <td><label for="avyDetailDSize"></label></td>
-                              <td><span id="avyDetailDSize"></span></td>
+                              <td><span id="avyDetailDSize"/></td>
                            </tr>
                        </table>
                        </td></tr>
@@ -118,17 +121,17 @@
                <table id="avyDetailRightColumnTable"><tr><td> 
 	                 <table class="avyDetailSubTable">
 	                        <tr><td class="avyDetailSectionHeader">
-	                            <span id="avyDetailConditions" class="avyHeader"></span>
+	                            <span id="avyDetailConditions" class="avyHeader"/>
 	                        </td></tr>
 	                        <tr><td>
 	                       <table class="avyDetailFieldsSubTable">
 	                           <tr>
 	                              <td><label for="avyDetailSky"></label></td>
-	                              <td><span id="avyDetailSky"></span></td>
+	                              <td><span id="avyDetailSky"/></td>
 	                           </tr>
 	                           <tr>
 	                              <td><label for="avyDetailPrecip"></label></td>
-	                              <td><span id="avyDetailPrecip"></span></td>
+	                              <td><span id="avyDetailPrecip"/></td>
 	                           </tr>
 	                       </table>
 	                  </td></tr>
@@ -136,52 +139,65 @@
 	            </td></tr><tr><td>
                      <table class="avyDetailSubTable">
                         <tr><td class="avyDetailSectionHeader">
-                            <span id="avyDetailHumanNumbers" class="avyHeader"></span>
+                            <span id="avyDetailHumanNumbers" class="avyHeader"/>
                         </td></tr>
                         <tr><td>
                            <table class="avyDetailFieldsSubTable">
 	                           <tr>
 	                              <td><label for="avyDetailNumCaught"></label></td>
-	                              <td><span id="avyDetailNumCaught"></span></td>
+	                              <td><span id="avyDetailNumCaught"/></td>
 	                           </tr>
 	                           <tr>
 	                              <td><label for="avyDetailNumPartiallyBuried"></label></td>
-	                              <td><span id="avyDetailNumPartiallyBuried"></span></td>
+	                              <td><span id="avyDetailNumPartiallyBuried"/></td>
 	                           </tr>
 	                           <tr>
                                   <td><label for="avyDetailNumFullyBuried"></label></td>
-                                  <td><span id="avyDetailNumFullyBuried"></span></td>
+                                  <td><span id="avyDetailNumFullyBuried"/></td>
                                </tr>
                                <tr>
                                   <td><label for="avyDetailNumInjured"></label></td>
-                                  <td><span id="avyDetailNumInjured"></span></td>
+                                  <td><span id="avyDetailNumInjured"/></td>
                                </tr>
                                <tr>
                                   <td><label for="avyDetailNumKilled"></label></td>
-                                  <td><span id="avyDetailNumKilled"></span></td>
+                                  <td><span id="avyDetailNumKilled"/></td>
                                </tr>
                                <tr>
                                   <td><label for="avyDetailModeOfTravel"></label></td>
-                                  <td><span id="avyDetailModeOfTravel"></span></td>
+                                  <td><span id="avyDetailModeOfTravel"/></td>
                                </tr>
                             </table>
                     </td></tr></table>
                   </td></tr></table>
                </td></tr>
-               <tr id="avyDetailCommentsRow"><td colspan="2">
-	               <table id="avyDetailCommentsTable" class="avyDetailSubTable">
-	                   <tr><td class="avyDetailSectionHeader">
-	                       <span id="avyDetailCommentsHeader" class="avyHeader"></span>
-	                   </td></tr>
-	                   <tr><td>
-	                       <table class="avyDetailFieldsSubTable">
-	                           <tr><td><div id="avyDetailComments"></div></td></tr></table>
-	                   </td></tr>
-	               </table>
-               </td></tr>
+
                <tr id="avyDetailImageRow"><td colspan="2">
-                    <div id="avyDetailImageDiv"><ul id="avyDetailImageList"></ul></div>
+                   <table class="avyDetailSubTable">
+                       <tr><td class="avyDetailSectionHeader">
+                           <span id="avyDetailImagesHeader" class="avyHeader"/>
+                       </td></tr>
+                       <tr><td>
+                           <table class="avyDetailFieldsSubTable">
+                               <tr><td><div id="avyDetailImageDiv"><ul id="avyDetailImageList"></ul></div></td></tr>
+                           </table>
+                       </td></tr>
+                   </table>
                </td></tr>
+
+               <tr id="avyDetailCommentsRow"><td colspan="2">
+                   <table id="avyDetailCommentsTable" class="avyDetailSubTable">
+                       <tr><td class="avyDetailSectionHeader">
+                           <span id="avyDetailCommentsHeader" class="avyHeader"/>
+                       </td></tr>
+                       <tr><td>
+                           <table class="avyDetailFieldsSubTable">
+                               <tr><td><div id="avyDetailComments"></div></td></tr>
+                           </table>
+                       </td></tr>
+                   </table>
+               </td></tr>
+
            </table>
        </div>
        
@@ -202,7 +218,7 @@
 			<div id="aeSearchControlContainer" class="lift:Search?form.post">
 			  <hr/>
 			  <div class="avySearchHeaderContainer">
-			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
+			     <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"/></div>
 			     <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#"></a></div>
 			  </div>
 			  
@@ -220,7 +236,7 @@
 			         <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
 			      </tr>
                   <tr>
-                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchAdditionalCriteria" class="avyHeader"></span></td>
+                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchAdditionalCriteria" class="avyHeader"/></td>
                   </tr>  
 		         <tr>
 		             <td class="avySearchTableLabel"><label for="avySearchType"></label></td>
@@ -255,7 +271,7 @@
                     </td>
                  </tr>
                  <tr>
-                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchHumanNumbersHeader" class="avyHeader"></span></td>
+                    <td class="avySearchSubHeader" colspan="2"><span id="avySearchHumanNumbersHeader" class="avyHeader"/></td>
                   </tr>
                  <tr>
                     <td colspan="2">
@@ -289,15 +305,15 @@
 		</div> <!--  END SEARCH DIV -->
 		
 	   <div id="avyReportGeocodeDialog">
-	      <span id="avyReportGeocodeInstr" class="avyMsg"></span>
+	      <span id="avyReportGeocodeInstr" class="avyMsg"/>
 		  <label for="avyReportInitLocation"></label>
 		  <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text"/>
 	   </div>
 	   <div id="avyReportBeginDrawDialog">
-	       <span id="avyReportDrawInstr" class="avyMsg"></span>
+	       <span id="avyReportDrawInstr" class="avyMsg"/>
        </div>
        <div id="avyReportConfirmDrawDialog">
-           <span id="avyReportConfirmDrawInstr" class="avyMsg"></span>
+           <span id="avyReportConfirmDrawInstr" class="avyMsg"/>
        </div>
        
 	   <div id="avyReportDialog">
@@ -311,7 +327,7 @@
                     <table id="avyReportSubmitterWrapperTable"><tr><td>
                         <table class="avyReportSubTable">
                             <tr><td class="avyReportSectionHeader">
-                                <span id="avyReportSubmitterInfo" class="avyHeader"></span>
+                                <span id="avyReportSubmitterInfo" class="avyHeader"/>
                             </td></tr>
                             <tr><td>
                                 <table class="avyReportInputsSubTable">
@@ -332,13 +348,13 @@
 	               <tr><td>
 	                 <table class="avyReportSubTable">
 	                   <tr><td class="avyReportSectionHeader">
-	                       <span id="avyReportSceneDesc" class="avyHeader"></span>
+	                       <span id="avyReportSceneDesc" class="avyHeader"/>
 	                   </td></tr>
 		               <tr><td>
 		                 <table class="avyReportInputsSubTable">
 		                     <tr>
 		                        <td><label for="avyReportAreaName" data-required="true"></label></td>
-		                        <td><input id="avyReportAreaName" class="avyRawTextInput" type="text"/></td>
+		                        <td><input id="avyReportAreaName" class="avyRawTextInput" type="text" maxlength="55"/></td>
 		                     </tr>	             
 			                 <tr>
 			                   <td><label for="avyReportDate" data-required="true"></label></td>
@@ -365,7 +381,7 @@
 	               <tr><td id="avyReportClassification">
 	                 <table class="avyReportSubTable">
 	                   <tr><td class="avyReportSectionHeader">
-	                       <span id="avyReportAvalancheClass" class="avyHeader"></span>
+	                       <span id="avyReportAvalancheClass" class="avyHeader"/>
 	                   </td></tr>
 	                   <tr><td><table class="avyReportInputsSubTable">
 		                 <tr>
@@ -417,7 +433,7 @@
 				<table id="avyReportDetailsRightColumnTable">
 				    <tr><td><table class="avyReportSubTable">
                       <tr><td class="avyReportSectionHeader">
-                        <span id="avyReportSlopeDesc" class="avyHeader"></span>
+                        <span id="avyReportSlopeDesc" class="avyHeader"/>
                       </td></tr>
 	  			      <tr><td><table class="avyReportInputsSubTable">
 				        <tr>
@@ -445,7 +461,7 @@
 				  </td></tr>
 				  <tr><td><table class="avyReportSubTable">
 				     <tr><td class="avyReportSectionHeader">
-				        <span id="avyReportHumanNumbers" class="avyHeader"></span>
+				        <span id="avyReportHumanNumbers" class="avyHeader"/>
 				     </td></tr>
 				     <tr><td><table class="avyReportInputsSubTable">
 				      <tr>
@@ -482,10 +498,10 @@
              </td>
            </tr>  
            <tr><td colspan="2"><label for="avyReportComments"></label></td></tr>
-           <tr><td colspan="2"><textarea id="avyReportComments" rows="5"></textarea></td></tr>
+           <tr><td colspan="2"><textarea id="avyReportComments" rows="5" maxlength="10000"></textarea></td></tr>
            <tr>
                <td colspan="2" id="avyReportRequiredFieldsMsgRow">
-                   <span style="color: red;">* </span><span id="avyReportRequiredFields" class="avyMsg"></span>
+                   <span style="color: red;">* </span><span id="avyReportRequiredFields" class="avyMsg"/>
                </td>
            </tr>
 	   </table>
@@ -499,17 +515,17 @@
 	   </form> <!-- END LIFT FORM -->
        
        <div id="avyReportImageDialog">
-          <div id="avyReportImageDropZoneMsgDiv"><span id="avyReportImageDropZoneMsg" class="avyMsg"></span></div>
+          <div id="avyReportImageDropZoneMsgDiv"><span id="avyReportImageDropZoneMsg" class="avyMsg"/></div>
           <div id="avyReportImageDropZone">
                <table id="avyReportImageTable">
                <thead><tr>
-	               <th><span id="avyReportImageFilename" class="avyHeader"></span></th>
-	               <th><span id="avyReportImageSize" class="avyHeader"></span></th>
+	               <th><span id="avyReportImageFilename" class="avyHeader"/></th>
+	               <th><span id="avyReportImageSize" class="avyHeader"/></th>
                </tr></thead>
                </table>
 	      </div>
 		  <div id="avyReportImageOldSchoolImgUpload">
-		      <span id="avyReportImageOldSchoolImgUploadMsg" class="avyMsg"></span>
+		      <span id="avyReportImageOldSchoolImgUploadMsg" class="avyMsg"/>
               <form id="avyReportImageUploadForm" action="/rest/images" method="POST" enctype="multipart/form-data">
                    <input type="file" multiple="multiple" />
               </form>
@@ -517,7 +533,7 @@
        </div>
 
        <div id="avyReportDeleteConfirmDialog">
-            <span id="avyReportDeleteConfirmMsg" class="avyMsg"></span>
+            <span id="avyReportDeleteConfirmMsg" class="avyMsg"/>
        </div>
        
 	   </div> <!-- END REPORT DIALOG DIV -->

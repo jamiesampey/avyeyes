@@ -160,7 +160,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	});
 	
 	$('#avyDetailDialog').dialog({
-	  minWidth: 650,
+	  minWidth: 750,
 	  autoOpen: false,
 	  modal: false,
 	  resizable: false,
