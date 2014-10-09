@@ -1,16 +1,15 @@
 package com.avyeyes.persist
 
-import org.squeryl.PrimitiveTypeMode._
+import java.sql.Timestamp
+
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
-import net.liftweb.util.Helpers.today
 import com.avyeyes.util.UnauthorizedException
-import java.sql.Timestamp
-import org.squeryl.dsl.ast.ExpressionNode
-import org.squeryl.dsl.ast.OrderByArg
+import net.liftweb.util.Helpers.today
+import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche] = {
@@ -47,40 +46,47 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
 
   def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute (count)).toInt
 
-  def insertAvalanche(avalanche: Avalanche) = {
-    (avalanche.viewable && !isAuthorizedSession()) match {
-      case false => avalanches insert avalanche
-      case true => throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
+  def insertAvalanche(avalanche: Avalanche, submitterEmail: String) = {
+    if (avalanche.viewable && !isAuthorizedSession()) {
+      throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
+
+    users.where(u => u.email === submitterEmail).headOption match {
+      case Some(existingUser) => avalanche.submitterId = existingUser.id
+      case None => {
+        val newUser = users insert User(submitterEmail)
+        avalanche.submitterId = newUser.id
+      }
+    }
+
+    avalanches insert avalanche
   }
 
   def updateAvalanche(updated: Avalanche) = {
-    isAuthorizedSession() match {
-      case true => {
-        update(avalanches)(a => where(a.extId === updated.extId)
-          set (a.updateTime := new Timestamp(System.currentTimeMillis),
-            a.viewable := updated.viewable,
-            a.submitterEmail := updated.submitterEmail, a.submitterExp := updated.submitterExp,
-            a.areaName := updated.areaName, a.avyDate := updated.avyDate,
-            a.sky := updated.sky, a.precip := updated.precip,
-            a.aspect := updated.aspect, a.angle := updated.angle,
-            a.avyType := updated.avyType, a.avyTrigger := updated.avyTrigger, a.avyInterface := updated.avyInterface,
-            a.rSize := updated.rSize, a.dSize := updated.dSize,
-            a.caught := updated.caught, a.partiallyBuried := updated.partiallyBuried,
-            a.fullyBuried := updated.fullyBuried, a.injured := updated.injured, a.killed := updated.killed,
-            a.modeOfTravel := updated.modeOfTravel, a.comments := updated.comments))
-      }
-      case false => throw new UnauthorizedException("Not authorized to update avalanches")
+    if (!isAuthorizedSession()) {
+      throw new UnauthorizedException("Not authorized to update avalanche")
     }
+
+    update(avalanches)(a => where(a.extId === updated.extId)
+      set (a.updateTime := new Timestamp(System.currentTimeMillis),
+        a.viewable := updated.viewable, a.submitterExp := updated.submitterExp,
+        a.areaName := updated.areaName, a.avyDate := updated.avyDate,
+        a.sky := updated.sky, a.precip := updated.precip,
+        a.aspect := updated.aspect, a.angle := updated.angle,
+        a.avyType := updated.avyType, a.avyTrigger := updated.avyTrigger, a.avyInterface := updated.avyInterface,
+        a.rSize := updated.rSize, a.dSize := updated.dSize,
+        a.caught := updated.caught, a.partiallyBuried := updated.partiallyBuried,
+        a.fullyBuried := updated.fullyBuried, a.injured := updated.injured, a.killed := updated.killed,
+        a.modeOfTravel := updated.modeOfTravel, a.comments := updated.comments))
   }
 
   def deleteAvalanche(extId: String) = {
     isAuthorizedSession() match {
+      case false => throw new UnauthorizedException("Not authorized to delete avalanches")
       case true => {
         avalancheImages deleteWhere (img => img.avyExtId === extId)
         avalanches deleteWhere (a => a.extId === extId)
       }
-      case false => throw new UnauthorizedException("Not authorized to delete avalanches")
     }
   }
 
@@ -108,11 +114,11 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
     isAuthorizedSession() match {
+      case false => throw new UnauthorizedException("Not authorized to delete image")
       case true => {
         avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
         setAvalancheUpdateTime(avyExtId)
       }
-      case false => throw new UnauthorizedException("Not authorized to delete image")
     }
   }
 

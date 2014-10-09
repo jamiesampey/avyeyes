@@ -5,7 +5,7 @@ import com.avyeyes.test._
 import com.avyeyes.model.Avalanche
 import com.avyeyes.persist.AvalancheQuery._
 
-class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheGenerator {
+class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
   val dao = new SquerylAvalancheDao(() => true)
   
@@ -65,9 +65,9 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
   }
   
   private def insertAllAvalanches() = {
-    dao insertAvalanche neHemisphereAvalanche
-    dao insertAvalanche nwHemisphereAvalanche
-    dao insertAvalanche swHemisphereAvalanche
-    dao insertAvalanche seHemisphereAvalanche
+    insertTestAvalanche(dao, neHemisphereAvalanche)
+    insertTestAvalanche(dao, nwHemisphereAvalanche)
+    insertTestAvalanche(dao, swHemisphereAvalanche)
+    insertTestAvalanche(dao, seHemisphereAvalanche)
   }
 }

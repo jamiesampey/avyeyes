@@ -10,7 +10,7 @@ trait AvalancheDao {
   
   def countAvalanches(viewable: Boolean): Int
   
-  def insertAvalanche(avalanche: Avalanche): Unit
+  def insertAvalanche(avalanche: Avalanche, submitterEmail: String): Unit
 
   def updateAvalanche(avalanche: Avalanche): Unit
   

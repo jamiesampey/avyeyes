@@ -1,10 +1,9 @@
-CREATE TABLE "avalanche" (
+create table "avalanche" (
     "id" bigint primary key,
     "createTime" timestamp not null,
     "updateTime" timestamp not null,
     "extId" varchar(8) not null,
     "viewable" boolean not null,
-    "submitterEmail" varchar(256) not null,
     "submitterExp" integer not null,
     "lat" double precision not null,
     "lng" double precision not null,
@@ -27,49 +26,62 @@ CREATE TABLE "avalanche" (
     "killed" integer not null,
     "modeOfTravel" integer not null,
     "comments" text not null,
-    "kmlCoords" text not null
+    "kmlCoords" text not null,
+    "submitterId" bigint not null
   );
-CREATE SEQUENCE s_avalanche_id
-  INCREMENT 1
-  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-CREATE UNIQUE INDEX idx2f5d05cf
-  ON avalanche
-  USING btree
-  ("extId");
+create sequence "s_avalanche_id";
+-- indexes on avalanche
+create unique index "idx2f5d05cf" on "avalanche" ("extId");
   
-CREATE TABLE "avalanche_image" (
+create table "avalanche_image" (
     "id" bigint primary key,
     "createTime" timestamp not null,
     "avyExtId" varchar(8) not null,
-    "filename" varchar(255) not null,
+    "filename" varchar(128) not null,
     "mimeType" varchar(20) not null,
     "size" integer not null,
     "bytes" bytea not null
 );
-CREATE SEQUENCE s_avalanche_image_id
-  INCREMENT 1
-  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-CREATE INDEX idx644c089b 
-  ON "avalanche_image"
-  USING btree
-  ("avyExtId");
-CREATE UNIQUE INDEX "idxc1fe0c09" ON "avalanche_image" ("avyExtId","filename");
+create sequence "s_avalanche_image_id";
+-- indexes on avalanche_image
+create index "idx76e30961" on "avalanche_image" ("avyExtId");
 
-CREATE TABLE "app_user" (
-    "email" varchar(128) not null,
+create table "app_user" (
+    "id" bigint primary key not null,
     "createTime" timestamp not null,
-    "id" bigint primary key not null
-  );
-CREATE SEQUENCE "s_app_user_id"
-  INCREMENT 1
-  MINVALUE 1
-  MAXVALUE 9223372036854775807
-  START 1
-  CACHE 1;
-INSERT INTO app_user (id, "createTime", email) values (1, now(), 'jamie.sampey@gmail.com');
+    "email" varchar(128) not null
+);
+create sequence "s_app_user_id";
+-- indexes on app_user
+create unique index "idx2a600595" on "app_user" ("email");
+
+create table "app_user_role" (
+    "id" bigint primary key not null,
+    "createTime" timestamp not null,
+    "name" varchar(128) not null
+);
+create sequence "s_app_user_role_id";
+
+create table "app_user_role_assignment" (
+    "userId" bigint not null,
+    "roleId" bigint not null
+);
+
+-- foreign key constraints :
+alter table "avalanche" add constraint "avalancheFK1" foreign key ("submitterId") references "app_user"("id");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK2" foreign key ("userId") references "app_user"("id");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK3" foreign key ("roleId") references "app_user_role"("id");
+
+-- composite key indexes :
+alter table "app_user_role_assignment" add primary key ("userId","roleId");
+
+-- column group indexes :
+create unique index "idxdb8b0ccf" on "avalanche_image" ("avyExtId","filename");
+
+-- initial inserts :
+insert into app_user (id, "createTime", email) values (nextval('s_app_user_id'), now(), 'jamie.sampey@gmail.com');
+insert into app_user (id, "createTime", email) values (nextval('s_app_user_id'), now(), 'avyeyes@gmail.com');
+insert into app_user_role (id, "createTime", name) values (nextval('s_app_user_role_id'), now(), 'site_owner');
+insert into app_user_role (id, "createTime", name) values (nextval('s_app_user_role_id'), now(), 'admin');
+insert into app_user_role_assignment("userId", "roleId") values ((select id from app_user where email='jamie.sampey@gmail.com'), (select id from app_user_role where name='site_owner'));
+insert into app_user_role_assignment("userId", "roleId") values ((select id from app_user where email='avyeyes@gmail.com'), (select id from app_user_role where name='admin'));

@@ -67,7 +67,7 @@ class Report extends ExternalIdService with Loggable {
             JsDialog.info("avyReportUpdateSuccess")                
           }
           case None => {
-            dao.insertAvalanche(avalancheFromValues) 
+            dao.insertAvalanche(avalancheFromValues, submitterEmail)
             logger.info(s"Avalanche $extId successfully inserted")
             JsDialog.info("avyReportInsertSuccess", getHttpBaseUrl + extId)  
           }
@@ -105,7 +105,7 @@ class Report extends ExternalIdService with Loggable {
       case _ => ""
     }
     
-    Avalanche(extId, viewable, submitterEmail, ExperienceLevel.withName(submitterExp), 
+    Avalanche(extId, viewable, ExperienceLevel.withName(submitterExp),
       strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr), 
       Sky.withName(sky), Precip.withName(precip), 
       strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle), 

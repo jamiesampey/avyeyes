@@ -4,13 +4,13 @@ import org.specs2.execute.Result
 import org.specs2.mutable.Specification
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvalancheQuery._
-import com.avyeyes.test.AvalancheGenerator
+import com.avyeyes.test.AvalancheHelpers
 import com.avyeyes.util.AEHelpers._
 import org.joda.time.DateTime
 
-class AvalancheDaoSelectTest extends Specification with InMemoryDB with AvalancheGenerator {
+class AvalancheDaoSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
-  
+
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
   val commonGeoBounds = GeoBounds((commonLat+.01).toString, (commonLng+.01).toString, (commonLat-.01).toString, (commonLng-.01).toString)
@@ -19,14 +19,14 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     "Not allowed with unauthorized session" >> {
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
       val dao = new SquerylAvalancheDao(() => false)
-      dao insertAvalanche nonviewableAvalanche
+      insertTestAvalanche(dao, nonviewableAvalanche)
       dao.selectAvalanche(nonviewableAvalanche.extId) must beNone
     }
     
     "Allowed with authorized session" >> {
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
       val dao = new SquerylAvalancheDao(() => true)
-      dao insertAvalanche nonviewableAvalanche
+      insertTestAvalanche(dao, nonviewableAvalanche)
       dao.selectAvalanche(nonviewableAvalanche.extId) must beSome
     }
   }
@@ -37,8 +37,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
 
     "From date filtering" >> {
-      dao insertAvalanche jan1Avalanche
-      dao insertAvalanche jan5Avalanche
+      insertTestAvalanche(dao, jan1Avalanche)
+      insertTestAvalanche(dao, jan5Avalanche)
       
       val fromDateQuery = baseQuery.copy(fromDate = Some(strToDate("01-03-2014")))
       
@@ -46,8 +46,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "To date filtering" >> {
-      dao insertAvalanche jan1Avalanche
-      dao insertAvalanche jan5Avalanche
+      insertTestAvalanche(dao, jan1Avalanche)
+      insertTestAvalanche(dao, jan5Avalanche)
       
       val toDateQuery = baseQuery.copy(toDate = Some(strToDate("01-03-2014")))
       
@@ -55,8 +55,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "Date filtering spanning year boundary" >> {
-      dao insertAvalanche jan1Avalanche
-      dao insertAvalanche jan5Avalanche
+      insertTestAvalanche(dao, jan1Avalanche)
+      insertTestAvalanche(dao, jan5Avalanche)
       
       val dateQuery = baseQuery.copy(fromDate = Some(strToDate("12-25-2013")), toDate = Some(strToDate("01-04-2014")))
       
@@ -70,8 +70,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
     
     "Type filtering" >> {
-      dao insertAvalanche hsAsAvalanche
-      dao insertAvalanche wsNeAvalanche
+      insertTestAvalanche(dao, hsAsAvalanche)
+      insertTestAvalanche(dao, wsNeAvalanche)
       
       val wsTypeQuery = baseQuery.copy(avyType = Some(AvalancheType.WS))
       
@@ -79,8 +79,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "Trigger filtering" >> {
-      dao insertAvalanche hsAsAvalanche
-      dao insertAvalanche wsNeAvalanche
+      insertTestAvalanche(dao, hsAsAvalanche)
+      insertTestAvalanche(dao, wsNeAvalanche)
       
       val asTriggerQuery = baseQuery.copy(avyTrigger = Some(AvalancheTrigger.AS))
       
@@ -88,8 +88,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
   
     "Type and trigger filtering" >> {
-      dao insertAvalanche hsAsAvalanche
-      dao insertAvalanche wsNeAvalanche
+      insertTestAvalanche(dao, hsAsAvalanche)
+      insertTestAvalanche(dao, wsNeAvalanche)
       
       val hsAsQuery = baseQuery.copy(avyType = Some(AvalancheType.HS), avyTrigger = Some(AvalancheTrigger.AS))
       
@@ -103,8 +103,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
     
     "R size filtering" >> {
-      dao insertAvalanche r4d15Avalanche
-      dao insertAvalanche r15d3Avalanche
+      insertTestAvalanche(dao, r4d15Avalanche)
+      insertTestAvalanche(dao, r15d3Avalanche)
       
       val r4Query = baseQuery.copy(rSize = Some(4.0))
         
@@ -112,8 +112,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "D size filtering" >> {
-      dao insertAvalanche r4d15Avalanche
-      dao insertAvalanche r15d3Avalanche
+      insertTestAvalanche(dao, r4d15Avalanche)
+      insertTestAvalanche(dao, r15d3Avalanche)
       
       val d25Query = baseQuery.copy(dSize = Some(2.5))
         
@@ -121,8 +121,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "R and D size filtering" >> {
-      dao insertAvalanche r4d15Avalanche
-      dao insertAvalanche r15d3Avalanche
+      insertTestAvalanche(dao, r4d15Avalanche)
+      insertTestAvalanche(dao, r15d3Avalanche)
       
       val r3d1Query = baseQuery.copy(rSize = Some(3.0), dSize = Some(1.0))
         
@@ -136,8 +136,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
     
     "Number caught filtering" >> {
-      dao insertAvalanche c4k0Avalanche
-      dao insertAvalanche c3k2Avalanche
+      insertTestAvalanche(dao, c4k0Avalanche)
+      insertTestAvalanche(dao, c3k2Avalanche)
       
       val c4Query = baseQuery.copy(numCaught = Some(4))
         
@@ -145,8 +145,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "Number killed filtering" >> {
-      dao insertAvalanche c4k0Avalanche
-      dao insertAvalanche c3k2Avalanche
+      insertTestAvalanche(dao, c4k0Avalanche)
+      insertTestAvalanche(dao, c3k2Avalanche)
       
       val k1Query = baseQuery.copy(numKilled = Some(1))
         
@@ -154,8 +154,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "Number caught and killed filtering" >> {
-      dao insertAvalanche c4k0Avalanche
-      dao insertAvalanche c3k2Avalanche
+      insertTestAvalanche(dao, c4k0Avalanche)
+      insertTestAvalanche(dao, c3k2Avalanche)
       
       val c2k2Query = baseQuery.copy(numCaught = Some(2), numKilled = Some(2))
         
@@ -170,9 +170,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       val unviewableAvalanche = avalancheAtLocation("6903k2fh", false, commonLat, commonLng)
     
       val dao = new SquerylAvalancheDao(() => true)
-      dao insertAvalanche viewableAvalanche1
-      dao insertAvalanche viewableAvalanche2
-      dao insertAvalanche unviewableAvalanche
+      insertTestAvalanche(dao, viewableAvalanche1)
+      insertTestAvalanche(dao, viewableAvalanche2)
+      insertTestAvalanche(dao, unviewableAvalanche)
       
       dao.countAvalanches(true) must_== 2
       dao.countAvalanches(false) must_==1
@@ -187,9 +187,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
     
     "Selects can be ordered by date ascending" >> {
-      dao insertAvalanche latest
-      dao insertAvalanche earliest
-      dao insertAvalanche middle
+      insertTestAvalanche(dao, latest)
+      insertTestAvalanche(dao, earliest)
+      insertTestAvalanche(dao, middle)
       
       val dateAscOrderQuery = baseQuery.copy(orderBy = OrderBy.AvyDate, order = Order.Asc)
       val avyDateAscArray = dao.selectAvalanches(dateAscOrderQuery).toArray
@@ -200,9 +200,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
     
     "Selects can be ordered by date descending" >> {
-      dao insertAvalanche latest
-      dao insertAvalanche earliest
-      dao insertAvalanche middle
+      insertTestAvalanche(dao, latest)
+      insertTestAvalanche(dao, earliest)
+      insertTestAvalanche(dao, middle)
 
       val dateDescOrderQuery = baseQuery.copy(orderBy = OrderBy.AvyDate, order = Order.Desc)
       val avyDateDescArray = dao.selectAvalanches(dateDescOrderQuery).toArray
@@ -221,9 +221,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     val dao = new SquerylAvalancheDao(() => true)
     
     "Selects can be paginated" >> {
-      dao insertAvalanche avalanche1
-      dao insertAvalanche avalanche2
-      dao insertAvalanche avalanche3
+      insertTestAvalanche(dao, avalanche1)
+      insertTestAvalanche(dao, avalanche2)
+      insertTestAvalanche(dao, avalanche3)
                   
       val firstPageQuery = baseQuery.copy(offset = 0, limit = 2)
       val secondPageQuery = baseQuery.copy(offset = 2, limit = 2)

@@ -78,7 +78,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture(), anyString)
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.sky must_== Sky.U
@@ -93,18 +93,18 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
     
     "Insert an avalanche with the correct values" withSFor("/") in {
       val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
-      
+      val emailArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
+
       val report = newReportWithTestData
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture(), emailArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.extId must_== report.extId
       passedAvalanche.viewable must beFalse
-      passedAvalanche.submitterEmail must_== report.submitterEmail
       passedAvalanche.submitterExp must_== ExperienceLevel.withName(report.submitterExp)
       passedAvalanche.lat must_== strToDblOrZero(report.lat)
       passedAvalanche.lng must_== strToDblOrZero(report.lng)
@@ -123,6 +123,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       passedAvalanche.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
       passedAvalanche.comments must_== report.comments
       passedAvalanche.kmlCoords must_== testCoords
+      emailArg.getValue must_== report.submitterEmail
     }
     
     "Handles an insertion success correctly" withSFor("/") in {
@@ -139,7 +140,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
     
     "Handles an insertion failure correctly" withSFor("/") in {
       val exceptionMsg = "gotcha!"
-      mockAvalancheDao.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
+      mockAvalancheDao.insertAvalanche(any[Avalanche], anyString) throws new RuntimeException(exceptionMsg)
       
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"

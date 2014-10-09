@@ -6,7 +6,7 @@ import com.avyeyes.model._
 import com.avyeyes.util.UnauthorizedException
 
 
-class AvalancheDaoImageTest extends Specification with InMemoryDB with AvalancheGenerator {
+class AvalancheDaoImageTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
 
   val testAvalanche = avalancheAtLocation("5j3fyjd9", false, 43.57636345634, -100.5345550)
@@ -21,7 +21,7 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
   
     "Image insert and select works" >> {
       val dao = new SquerylAvalancheDao(() => true)
-      dao insertAvalanche testAvalanche
+      insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       val returnedImage = dao.selectAvalancheImage(testAvalanche.extId, img1.filename).get
       
@@ -39,7 +39,7 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     
     "Image metadata search works" >> {
       val dao = new SquerylAvalancheDao(() => true)
-      dao insertAvalanche testAvalanche
+      insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
       
@@ -50,7 +50,7 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     
     "Image delete works for authorized session" >> {
       val dao = new SquerylAvalancheDao(() => true)
-      dao insertAvalanche testAvalanche
+      insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       
       dao.selectAvalancheImage(testAvalanche.extId, img1.filename) must beSome
