@@ -16,6 +16,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 			items: '[data-help]',
 			content: $(this).data('help'),
 			tooltipClass: 'avyTooltip',
+			show: {delay: 700},
 			position: {
 				my: "left center", 
 				at: 'right+10 center', 
