@@ -302,8 +302,8 @@ AvyEyesWiring.prototype.wireUI = function() {
 	});
 	
 	$('#avyReportImageDialog').dialog({
-	  minWidth: 750,
-	  minHeight: 700,
+      minWidth: 750,
+      minHeight: 800,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -321,8 +321,10 @@ AvyEyesWiring.prototype.wireUI = function() {
 	});
 	
 	$('#avyReportDialog').dialog({
-	  minWidth: 750,
-	  minHeight: 700,
+      minWidth: 750,
+      maxWidth: 750,
+      minHeight: 800,
+	  maxHeight: 800,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -371,7 +373,7 @@ AvyEyesWiring.prototype.wireReportAdminControls = function() {
   
   $('#avyReportImageTable').show();
   
-  $('#avyReportViewableTd').css('visibility', 'visible');
+  $('#avyReportViewableTd').css('display', 'table-cell');
   $('#avyReportDeleteConfirmDialog').css('visibility', 'visible');
 
   var aeView = this.view;

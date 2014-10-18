@@ -86,7 +86,7 @@ textarea:focus, input:focus {
 
 .ui-autocomplete {
     background: #1D1D1D;
-    max-height: 300px;
+    max-height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 1000 !important;

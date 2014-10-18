@@ -131,7 +131,7 @@
 }
 
 #avyReportViewableTd {
-	visibility: hidden;
+	display: none;
 }
 
 #avyReportDeleteConfirmDialog {
