@@ -1,5 +1,5 @@
-define(['ae-wiring',
-        'ae-report',
+define(['avyeyes-wiring',
+        'avyeyes-report',
         'jquery-ui', 
         'jquery-geocomplete', 
         'jquery-fileupload', 

@@ -1,14 +1,15 @@
 package com.avyeyes.rest
 
 import java.io.ByteArrayInputStream
-import org.squeryl.PrimitiveTypeMode._
+
 import com.avyeyes.model._
 import com.avyeyes.persist._
-import net.liftweb.json.JsonAST._
-import net.liftweb.json.JsonDSL._
+import com.avyeyes.util.UnauthorizedException
+import com.avyeyes.util.AEConstants._
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
-import com.avyeyes.util.UnauthorizedException
+import net.liftweb.json.JsonDSL._
+import org.squeryl.PrimitiveTypeMode._
 
 object Images extends RestHelper {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -30,11 +31,14 @@ object Images extends RestHelper {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       val fph = req.uploadedFiles(0)
       transaction {
-        dao insertAvalancheImage AvalancheImage(avyExtId, 
-          fph.fileName.split("\\.")(0), fph.mimeType, fph.length.toInt, fph.file)
+        if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
+          BadResponse()
+        } else {
+          dao insertAvalancheImage AvalancheImage(avyExtId,
+            fph.fileName.split("\\.")(0), fph.mimeType, fph.length.toInt, fph.file)
+          ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
+        }
       }
-
-      ("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length)
     }
     
     case "rest" :: "images" :: avyExtId :: filename :: Nil Delete req => {

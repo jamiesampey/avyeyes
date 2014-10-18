@@ -104,6 +104,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       select (img)).headOption
   }
 
+  def countAvalancheImages(extId: String) = from(avalancheImages)(img => where(img.avyExtId === extId) compute (count)).toInt
+
   def selectAvalancheImagesMetadata(avyExtId: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId

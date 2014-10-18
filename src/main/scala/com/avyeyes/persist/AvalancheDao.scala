@@ -19,7 +19,9 @@ trait AvalancheDao {
   def insertAvalancheImage(img: AvalancheImage): Unit
   
   def selectAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImage]
-  
+
+  def countAvalancheImages(extId: String): Int
+
   def selectAvalancheImagesMetadata(avyExtId: String): List[(String, String, Int)]
   
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit

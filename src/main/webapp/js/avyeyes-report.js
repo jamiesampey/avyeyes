@@ -1,4 +1,4 @@
-define(['ae-draw', 'jquery-ui'], function(AvyDraw) {
+define(['avyeyes-draw', 'jquery-ui'], function(AvyDraw) {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
@@ -127,6 +127,9 @@ AvyReport.prototype.wireImageUpload = function() {
   var thisReport = this;
   var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
   $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
+      fail: function(e, data) {
+        thisReport.view.showModalDialog("Error", "One or more images failed to upload. The image upload limit may be exceeded.");
+      },
       done: function(e, data) {
         $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>' 
           + thisReport.bytesToFileSize(data.result.fileSize) + '</td></tr>');

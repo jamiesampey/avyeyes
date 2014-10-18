@@ -162,6 +162,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('#avyDetailDialog').dialog({
 	  minWidth: 750,
+	  maxWidth: 750,
 	  autoOpen: false,
 	  modal: false,
 	  resizable: false,
@@ -303,7 +304,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('#avyReportImageDialog').dialog({
       minWidth: 750,
-      minHeight: 800,
+      minHeight: 810,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -324,7 +325,7 @@ AvyEyesWiring.prototype.wireUI = function() {
       minWidth: 750,
       maxWidth: 750,
       minHeight: 800,
-	  maxHeight: 800,
+	  maxHeight: 810,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,

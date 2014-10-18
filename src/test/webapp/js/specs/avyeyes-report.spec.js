@@ -2,9 +2,9 @@ define(['jasmine-jquery',
         'gearth', 
         'gmaps', 
         'geplugin', 
-        'ae-view', 
-        'ae-report', 
-        'ae-draw'], 
+        'avyeyes-view',
+        'avyeyes-report',
+        'avyeyes-draw'],
         function(jas$, gearthMock, gmapsMock, gePluginMock, AvyEyesView, AvyReport, AvyDraw) {
 	
 	var gearth = new gearthMock();

@@ -1,7 +1,7 @@
 define(['gearth', 
         'gmaps', 
         'geplugin', 
-        'ae-view'], 
+        'avyeyes-view'],
         function(gearthMock, gmapsMock, gePluginMock, AvyEyesView) {
 	
 	var gearth = new gearthMock();

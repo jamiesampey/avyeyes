@@ -1,6 +1,6 @@
 define(['gearth', 
         'gmaps',
-        'ae-view'], function(gearthMock, gmapsMock, AvyEyesView) {
+        'avyeyes-view'], function(gearthMock, gmapsMock, AvyEyesView) {
 
 	var gearth = new gearthMock();
 	var gmaps = new gmapsMock();
