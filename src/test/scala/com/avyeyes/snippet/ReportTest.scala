@@ -57,8 +57,58 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       assertInputValue(renderedPage, HiddenInputType, "avyReportKml", report.kmlStr)
     }
   }
-  
-  "New avalanche insert" should {
+
+  "Avalanche field validation" should {
+    "Validate submitter email" withSFor("/") in {
+      val report = newReportWithTestData
+      report.submitterEmail = "thedude"
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportSubmitterEmail")
+    }
+
+    "Validate submitter experience level" withSFor("/") in {
+      val report = newReportWithTestData
+      report.submitterExp = ""
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportSubmitterExpAC")
+    }
+
+    "Validate area name" withSFor("/") in {
+      val report = newReportWithTestData
+      report.areaName = ""
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportAreaName")
+    }
+
+    "Validate avalanche date" withSFor("/") in {
+      val report = newReportWithTestData
+      report.dateStr = "2345"
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportDate")
+    }
+
+    "Validate avalanche aspect" withSFor("/") in {
+      val report = newReportWithTestData
+      report.aspect = ""
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportAspectAC")
+    }
+
+    "Validate avalanche slope angle" withSFor("/") in {
+      val report = newReportWithTestData
+      report.angle = "0"
+      val jsCmd = report.validateFields()
+      jsCmd.toJsCmd contains("Error")
+      jsCmd.toJsCmd contains("avyReportAngle")
+    }
+  }
+
+  "Avalanche insert" should {
     isolated 
     
     "Not allow empty strings for enum fields" withSFor("/") in {
@@ -67,13 +117,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       val report = newReportWithTestData
       report.sky = ""
       report.precip = ""
-      report.aspect = ""
       report.avyType = ""
       report.avyTrigger = ""
       report.avyInterface = ""
       report.modeOfTravel = ""
-      report.submitterExp = ""
-      
+
       mockAvalancheDao.selectAvalanche(report.extId) returns None
       
       report.saveReport()
@@ -83,12 +131,10 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       
       passedAvalanche.sky must_== Sky.U
       passedAvalanche.precip must_== Precip.U
-      passedAvalanche.aspect must_== Aspect.N
       passedAvalanche.avyType must_== AvalancheType.U
       passedAvalanche.avyTrigger must_== AvalancheTrigger.U
       passedAvalanche.avyInterface must_== AvalancheInterface.U
       passedAvalanche.modeOfTravel must_== ModeOfTravel.U
-      passedAvalanche.submitterExp must_== ExperienceLevel.A0      
     }
     
     "Insert an avalanche with the correct values" withSFor("/") in {

@@ -1,18 +1,24 @@
 package com.avyeyes.snippet
 
-import scala.xml.XML
-import org.apache.commons.lang3.StringUtils._
-import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
+import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.AEHelpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
+import net.liftweb.http.js.JE.{Call, JsRaw}
 import net.liftweb.http.js.JsCmd
+import net.liftweb.json.JsonAST._
+import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
-import com.avyeyes.service.ExternalIdService
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils._
+import org.squeryl.PrimitiveTypeMode.transaction
+
+import scala.collection.mutable.ListBuffer
+import scala.xml.XML
 
 class Report extends ExternalIdService with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -51,14 +57,31 @@ class Report extends ExternalIdService with Loggable {
     "#avyReportModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
     "#avyReportComments" #> SHtml.textarea(comments, comments = _) &
     "#avyReportKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
-    "#avyReportSubmitBinding" #> SHtml.hidden(saveReport) & 
+    "#avyReportSubmitBinding" #> SHtml.hidden(validateFields) &
     "#avyReportDeleteBinding [onClick]" #> SHtml.onEvent((value) => deleteReport(value))
   }
-  
+
+  def validateFields(): JsCmd = {
+    val problemFields = new ListBuffer[String]
+    if (!isValidEmail(submitterEmail)) problemFields.append("avyReportSubmitterEmail")
+    if (!isValidEnumValue(ExperienceLevel, submitterExp)) problemFields.append("avyReportSubmitterExpAC")
+    if (StringUtils.isBlank(areaName)) problemFields.append("avyReportAreaName")
+    if (!isValidDate(dateStr)) problemFields.append("avyReportDate")
+    if (!isValidEnumValue(Aspect, aspect)) problemFields.append("avyReportAspectAC")
+    if (!isValidSlopeAngle(angle)) problemFields.append("avyReportAngle")
+
+    if (problemFields.size == 0) {
+      saveReport()
+    } else {
+      var problemFieldJsonArray = Printer.compact(
+        JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
+      JsRaw(s"avyeyes.currentReport.highlightValidationFields($problemFieldJsonArray)").cmd &
+      JsDialog.error("avyReportValidationError")
+    }
+  }
+
   def saveReport(): JsCmd = {
-    try {
-      checkAutoCompleteValues
-      
+    val jsDialogCmd = try {
       transaction {
         dao.selectAvalanche(extId) match {
           case Some(avalanche) => {
@@ -73,7 +96,6 @@ class Report extends ExternalIdService with Loggable {
           }
         }
       }
-      
     } catch {
       case e: Exception => {
         logger.error(s"Error saving avalanche $extId", e)
@@ -82,6 +104,8 @@ class Report extends ExternalIdService with Loggable {
     } finally {
       unreserveExtId(extId)
     }
+
+    jsDialogCmd & Call("avyeyes.currentReport.finishReport").cmd
   }
   
   def deleteReport(extIdToDelete: String) = {
@@ -106,24 +130,17 @@ class Report extends ExternalIdService with Loggable {
     }
     
     Avalanche(extId, viewable, ExperienceLevel.withName(submitterExp),
-      strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr), 
-      Sky.withName(sky), Precip.withName(precip), 
-      strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle), 
-      AvalancheType.withName(avyType), AvalancheTrigger.withName(avyTrigger), 
-      AvalancheInterface.withName(avyInterface), strToDblOrZero(rSize), strToDblOrZero(dSize), 
+      strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr),
+      enumWithNameOr(Sky, sky, Sky.U),
+      enumWithNameOr(Precip, precip, Precip.U),
+      strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle),
+      enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
+      enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
+      enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
+      strToDblOrZero(rSize), strToDblOrZero(dSize),
       strToIntOrNegOne(caught), strToIntOrNegOne(partiallyBuried), strToIntOrNegOne(fullyBuried), 
       strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
-      ModeOfTravel.withName(modeOfTravel), comments, coords)
-  }
-  
-  private def checkAutoCompleteValues() = {
-     if (isBlank(aspect)) aspect = Aspect.N.toString
-     if (isBlank(submitterExp)) submitterExp = ExperienceLevel.A0.toString
-     if (isBlank(sky)) sky = Sky.U.toString
-     if (isBlank(precip)) precip = Precip.U.toString
-     if (isBlank(avyType)) avyType = AvalancheType.U.toString
-     if (isBlank(avyTrigger)) avyTrigger = AvalancheTrigger.U.toString
-     if (isBlank(avyInterface)) avyInterface = AvalancheInterface.U.toString
-     if (isBlank(modeOfTravel)) modeOfTravel = ModeOfTravel.U.toString
+      enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
+      comments, coords)
   }
 }

@@ -95,4 +95,43 @@ define(['jasmine-jquery',
 		});
 	});
 
+    describe('Highlight fields that fail validation', function() {
+        beforeEach(function() {
+            view = new AvyEyesView(gearth, gmaps);
+            view.ge = geplugin;
+            report = new AvyReport(view);
+        });
+
+        it('Reset field borders correctly', function() {
+            var jqCss = spyOn($.fn, 'css');
+            report.resetValidationHighlights();
+
+            expect(jqCss.callCount).toEqual(6);
+            expect(jqCss.calls[0].object.selector).toEqual('#avyReportSubmitterEmail');
+            expect(jqCss.calls[1].object.selector).toEqual('#avyReportSubmitterExpAC');
+            expect(jqCss.calls[2].object.selector).toEqual('#avyReportAspectAC');
+            expect(jqCss.calls[3].object.selector).toEqual('#avyReportAreaName');
+            expect(jqCss.calls[4].object.selector).toEqual('#avyReportDate');
+        });
+
+        it('Highlight single invalid field', function() {
+            var jqCss = spyOn($.fn, 'css');
+            var resetValidationHighlights = spyOn(report, 'resetValidationHighlights');
+
+            report.highlightValidationFields(['avyReportSubmitterEmail']);
+
+            expect(resetValidationHighlights).toHaveBeenCalled();
+            expect(jqCss.callCount).toEqual(1);
+        });
+
+        it('Highlight multiple invalid fields', function() {
+            var jqCss = spyOn($.fn, 'css');
+            var resetValidationHighlights = spyOn(report, 'resetValidationHighlights');
+
+            report.highlightValidationFields(['avyReportSubmitterExpAC', 'avyReportAreaName', 'avyReportDate']);
+
+            expect(resetValidationHighlights).toHaveBeenCalled();
+            expect(jqCss.callCount).toEqual(3);
+        });
+    });
 });

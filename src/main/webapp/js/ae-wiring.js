@@ -346,14 +346,12 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Submit",
       click: function(event, ui) {
     	  $("#avyReportDialog").children('form').submit();
-    	  aeView.resetView();
-    	  $(this).dialog('close');
       }
     },{
       text: "Cancel",
       click: function(event, ui) {
         aeView.resetView();
-	      $(this).dialog('close');
+        $(this).dialog('close');
       }
     }]
   });	

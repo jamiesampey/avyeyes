@@ -1,14 +1,11 @@
 package com.avyeyes.snippet
 
-import net.liftweb.common._
-import net.liftweb.util.Helpers._
-import net.liftweb.http.S
-import scala.xml.NodeSeq
-import scala.xml.Unparsed
 import com.avyeyes.snippet.AdminConsole._
-import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
-import net.liftweb.http.Req
+import net.liftweb.http.S
+import net.liftweb.util.Helpers._
+
+import scala.xml._
 
 class Content {
     def render = {
@@ -21,9 +18,11 @@ class Content {
     }
 
     private def setupLabel(id: String, required: Boolean): NodeSeq = {
-      <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
-          {S.?(s"label.$id")}:{if (required) Unparsed("<span style='color: red;'>&nbsp;*</span>")}
-      </label>
+      Utility.trim(
+        <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
+            {S.?(s"label.$id")}:{if (required) Unparsed("<span style='color: red;'>&nbsp;*</span>")}
+        </label>
+      )
     }
 
     private def setupHeader(id: String): NodeSeq = {

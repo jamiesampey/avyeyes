@@ -23,6 +23,7 @@ AvyReport.prototype.reserveExtId = function() {
 }
 
 AvyReport.prototype.clearAllFields = function() {
+    this.resetValidationHighlights();
 	$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
 	$('#avyReportDialog').find('.avyRDSliderValue').val('0');
 	$('#avyReportDialog').find('.avyRDSlider').slider('value', 0);
@@ -58,11 +59,36 @@ AvyReport.prototype.confirmDrawing = function() {
 	$.ui.dialog.prototype._focusTabbable = function(){};
 	$('#avyReportConfirmDrawDialog').dialog('open');
 }
-	
+
 AvyReport.prototype.enterAvyDetail = function() {
-  this.wireImageUpload();
+    this.wireImageUpload();
 	$.ui.dialog.prototype._focusTabbable = function(){};
 	$('#avyReportDialog').dialog('open');
+}
+
+AvyReport.prototype.highlightValidationFields = function(problemFieldIds) {
+    this.resetValidationHighlights();
+    $.each(problemFieldIds, function(i) {
+        if (problemFieldIds[i] === 'avyReportAngle') {
+            $('#' + problemFieldIds[i]).parent().css('border', '1px solid red');
+        } else {
+            $('#' + problemFieldIds[i]).css('border', '1px solid red');
+        }
+    });
+}
+
+AvyReport.prototype.resetValidationHighlights = function() {
+    $('#avyReportSubmitterEmail').css('border', '1px solid #555555');
+    $('#avyReportSubmitterExpAC').css('border', '1px solid #555555');
+    $('#avyReportAspectAC').css('border', '1px solid #555555');
+    $('#avyReportAreaName').css('border', '1px solid #555555');
+    $('#avyReportDate').css('border', '1px solid #555555');
+    $('#avyReportAngle').parent().css('border', '1px solid #555555');
+}
+
+AvyReport.prototype.finishReport = function() {
+    $('#avyReportDialog').dialog('close');
+    this.view.resetView();
 }
 
 AvyReport.prototype.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect, angle, kmlStr) {

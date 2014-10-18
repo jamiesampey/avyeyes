@@ -1,6 +1,9 @@
 package com.avyeyes.util
 
-import java.text.SimpleDateFormat
+import java.text.{ParseException, SimpleDateFormat}
+import javax.mail.internet.{AddressException, InternetAddress}
+import org.apache.commons.lang3.Validate
+
 import scala.xml.Unparsed
 import com.avyeyes.util.AEConstants._
 import net.liftweb.common.Box
@@ -39,7 +42,55 @@ object AEHelpers {
 	  case Some(s) if s exists (c => !ExtIdChars.contains(c)) => false
 	  case _ => true
 	}
-    
+
+  def isValidEnumValue(enum: Enumeration, name: String): Boolean = {
+    val enumOpt: Option[Enumeration#Value] = try {
+      Some(enum.withName(name))
+    } catch {
+      case e: NoSuchElementException => None
+    }
+    enumOpt.isDefined
+  }
+
+  def enumWithNameOr[T <: Enumeration](enum: T, name: String, defaultValue: T#Value): T#Value = {
+    val enumOpt: Option[T#Value] = try {
+      Some(enum.withName(name))
+    } catch {
+      case e: NoSuchElementException => None
+    }
+    enumOpt getOrElse defaultValue
+  }
+
+  def isValidEmail(email: String): Boolean = {
+    val isValid = try {
+      new InternetAddress(email).validate()
+      true
+    } catch {
+      case e: AddressException => false
+    }
+    isValid
+  }
+
+  def isValidSlopeAngle(angle: String): Boolean = {
+    val isValid = try {
+      Validate.exclusiveBetween(0, 90, angle.toInt)
+      true
+    } catch {
+      case e: IllegalArgumentException => false
+    }
+    isValid
+  }
+
+  def isValidDate(dateStr: String): Boolean = {
+    val isValid = try {
+      strToDate(dateStr)
+      true
+    } catch {
+      case pe: ParseException => false
+    }
+    isValid
+  }
+
   def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(S.?(UnknownEnumCode))
   
   def getHttpBaseUrl = {
