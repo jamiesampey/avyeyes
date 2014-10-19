@@ -1,13 +1,17 @@
 package com.avyeyes.rest
 
-import com.avyeyes.model.enums._
+import bootstrap.liftweb.Boot
+import com.avyeyes.model.AvalancheImage
 import com.avyeyes.test._
+import com.avyeyes.util.AEConstants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
-import com.avyeyes.model.AvalancheImage
 import org.mockito.ArgumentCaptor
+import org.mockito.Mockito._
 
-class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
+class ImagesTest extends WebSpec2(Boot().boot _) with MockPersistence with LiftHelpers {
+  sequential
+
   // Testing an OBJECT (singleton), so the mockAvalancheDao is inserted ONCE. 
   // Only one chance to mock all methods.
 
@@ -23,7 +27,8 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
   
   mockAvalancheDao.selectAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)  
   mockAvalancheDao.selectAvalancheImage(extId, badImgFileName) returns noImage
-      
+  when(mockAvalancheDao.countAvalancheImages(any[String])).thenReturn(0).thenReturn(MaxImagesPerAvalanche)
+
   "Image Get request" should {
     "Return an image if it exists" withSFor(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName") in {
       val req = openLiftReqBox(S.request)
@@ -62,6 +67,21 @@ class ImagesTest extends WebSpec2 with MockPersistence with LiftHelpers {
       extractJsonStringField(resp, "extId") must_== extId
       extractJsonStringField(resp, "fileName") must_== fileName
       extractJsonLongField(resp, "fileSize") must_== fileBytes.length
+    }
+
+    "Don't insert an image above the max images count" withSFor(mockPostRequest) in {
+      val req = openLiftReqBox(S.request)
+
+      val fileName = "testImgABC"
+      val fileBytes = Array[Byte](10, 20, 30, 40, 50)
+      val fph = FileParamHolder("Test Image", "image/jpeg", fileName, fileBytes)
+
+      val reqWithFPH = addFileUploadToReq(req, fph)
+      val resp = openLiftRespBox(Images(reqWithFPH)())
+
+      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImage]) // one interaction from the prev test
+      resp must beAnInstanceOf[ResponseWithReason]
+      resp.asInstanceOf[ResponseWithReason].reason must contain(MaxImagesPerAvalanche.toString)
     }
   }
   

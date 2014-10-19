@@ -128,7 +128,7 @@ AvyReport.prototype.wireImageUpload = function() {
   var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
   $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
       fail: function(e, data) {
-        thisReport.view.showModalDialog("Error", "One or more images failed to upload. The image upload limit may be exceeded.");
+        thisReport.view.showModalDialog("Error", data.errorThrown);
       },
       done: function(e, data) {
         $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>' 
