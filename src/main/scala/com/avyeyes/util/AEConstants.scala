@@ -21,7 +21,7 @@ object AEConstants {
 	val AvyDistRangeMiles = 10.0
 	val EarthRadiusMiles = 3959.0
 	
-	val MaxImageSize = 30000000L
+	val MaxImageSize = 10000000L
   val MaxImagesPerAvalanche = 10
 
 	val ExtIdUrlParam = "extId"

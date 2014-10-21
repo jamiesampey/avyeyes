@@ -5,13 +5,15 @@ import java.sql.Timestamp
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
+import com.avyeyes.service.ExternalIdMaitreD
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.UnauthorizedException
+import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today
 import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
-class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao {
+class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao with Loggable {
   def selectAvalanche(extId: String): Option[Avalanche] = {
     avalanches.where(a => a.extId === extId
       and (a.viewable === true).inhibitWhen(isAuthorizedSession())).headOption
@@ -122,6 +124,15 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
         setAvalancheUpdateTime(avyExtId)
       }
     }
+  }
+
+  def performMaintenance() = {
+    val orphanImageAvyExtIdsFromDb = from(avalancheImages)(img => where(
+      img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toList
+    val orphanImageAvyExtIds = orphanImageAvyExtIdsFromDb filter(extId => !ExternalIdMaitreD.reservationExists(extId))
+
+    logger.info(s"Deleting orphan images for ${orphanImageAvyExtIds.size} unfinished avalanche reports")
+    avalancheImages.deleteWhere(img => img.avyExtId in orphanImageAvyExtIds)
   }
 
   private def setAvalancheUpdateTime(extId: String) = {

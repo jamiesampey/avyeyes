@@ -62,5 +62,26 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
       val dao = new SquerylAvalancheDao(() => false)
       dao.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
+
+    "Image count works" >> {
+      val dao = new SquerylAvalancheDao(() => false)
+      dao insertAvalancheImage img1
+      dao insertAvalancheImage img2
+      dao insertAvalancheImage(AvalancheImage(img1.avyExtId, "anotherImg", "image/jpeg", img1Bytes.length, img1Bytes))
+      dao.countAvalancheImages(img1.avyExtId) must_== 2
+      dao.countAvalancheImages(img2.avyExtId) must_== 1
+    }
+
+    "Database maintenance deletes orphan images" >> {
+      val dao = new SquerylAvalancheDao(() => false)
+      insertTestAvalanche(dao, testAvalanche)
+      dao insertAvalancheImage img1
+      dao insertAvalancheImage img2 // orphan image
+
+      dao.performMaintenance()
+
+      dao.countAvalancheImages(img1.avyExtId) must_== 1
+      dao.countAvalancheImages(img2.avyExtId) must_== 0
+    }
   }
 }

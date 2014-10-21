@@ -1,19 +1,17 @@
 package bootstrap.liftweb
 
+import akka.actor.{ActorSystem, Props}
+import com.avyeyes.persist.DatabaseMaintainer
 import com.avyeyes.rest._
 import com.avyeyes.util.AEConstants._
 import com.avyeyes.util.AEHelpers._
 import net.liftweb.common._
 import net.liftweb.http._
-import net.liftweb.sitemap.LocPath.stringToLocPath
-import net.liftweb.sitemap.Menu
-import net.liftweb.sitemap.SiteMap
+import net.liftweb.sitemap._
 import net.liftweb.util.Vendor.valToVendor
-import org.squeryl.SessionFactory
-import org.squeryl.Session
-import org.squeryl.adapters.PostgreSqlAdapter
-import net.liftweb.sitemap.Loc
 import omniauth.Omniauth
+import org.squeryl.adapters.PostgreSqlAdapter
+import org.squeryl.{Session, SessionFactory}
 
 /**
  * Companion object for unit testing
@@ -31,6 +29,8 @@ object Boot {
  * to modify lift's environment
  */
 class Boot extends Loggable {
+  val actorSystem = ActorSystem()
+
   def boot() = {
     logger.info("LIFT BOOT")
     
@@ -71,7 +71,17 @@ class Boot extends Loggable {
     
     Omniauth.init // grabs omniauth.* settings from props file
     
-    if (!test) initPostgresqlSession
+    if (!test) {
+      initPostgresqlSession
+
+      import actorSystem.dispatcher
+      import scala.concurrent.duration._
+      actorSystem.scheduler.schedule(
+        initialDelay = getProp("db.maintenanceDelayMinutes").toInt minutes,
+        interval = getProp("db.maintenanceIntervalHours").toInt hours,
+        receiver = actorSystem.actorOf(Props(new DatabaseMaintainer)),
+        message = DatabaseMaintainer.PerformMaintenance)
+    }
   }
   
   ResourceServer.allow {

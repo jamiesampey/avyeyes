@@ -25,4 +25,6 @@ trait AvalancheDao {
   def selectAvalancheImagesMetadata(avyExtId: String): List[(String, String, Int)]
   
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit
+
+  def performMaintenance(): Unit
 }
