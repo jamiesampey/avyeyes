@@ -140,12 +140,25 @@
     overflow-x: hidden;
 }
 
-#avyDetailTitleTd {
-    width: 570px;
+#avyDetailTable > tbody > tr > td {
+    vertical-align: top;
+}
+
+#avyDetailTitleTable {
+    width: 100%;
+}
+
+#avyDetailTitleTable > tbody > tr > td {
+    vertical-align: top;
+    padding: 0px;
+    margin: 0px;
+}
+
+#avyDetailTitleAndSubmitterTable {
+    width: 530px;
 }
 
 #avyDetailTitle {
-    width: 100%;
     font: bold 1.2em times,serif !important;
 }
 
@@ -153,21 +166,24 @@
 	font: italic .8em times,serif !important;
 }
 
-#avyDetailExtLinkTd {
+#avyDetailExtLink {
     font: normal .8em times,serif !important;
-    text-align: right;
-}
-
-#avyDetailExtLinkTd a {
     text-decoration: none;
 }
 
-#avyDetailSocialButtonsTd {
-    text-align: right;
+#avyDetailSocialButtonsTable > tbody > tr > td {
+    vertical-align: top;
+    padding: 0px 5px 0px 0px;
+    margin: 0px;
 }
 
-#avyDetailTable tbody tr td {
-    vertical-align: top;
+.twitter-share-button {
+    width: 85px !important;
+}
+
+#avyDetailTable hr {
+    padding: 0px;
+    margin: 0px 0px 10px 0px;
 }
 
 .avyDetailSubTable {

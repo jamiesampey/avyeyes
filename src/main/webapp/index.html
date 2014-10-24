@@ -15,6 +15,9 @@
 	    <link rel="shortcut icon" href="/favicon.ico"/>
 	</head>
 	<body class="lift:surround?with=default&amp;at=content">
+        <div id="map3d"></div>
+        <div id="fb-root"></div>
+
 		<div id="liftContent" class="lift:Content">
         
         <div id="loadingDiv">
@@ -26,9 +29,7 @@
 	            <input id="avyInitLiftCallback" style="display:none;" type="submit" />
 	        </div>
         </form>
-        
-        <div id="map3d"></div>
-        
+
         <div class="avyAdminLoggedInDiv"></div>
         
 		<div id="multiDialog"></div>
@@ -47,13 +48,24 @@
         <div id="avyDetailDialog">
            <table id="avyDetailTable">
                <tr><td colspan="2">
-                   <table><tr>
-                       <td id="avyDetailTitleTd"><span id="avyDetailTitle"></span></td>
-                       <td id="avyDetailExtLinkTd"><a id="avyDetailExtLink"/></td>
-                   </tr><tr>
-                       <td id="avyDetailSubmitterExpTd"><label for="avyDetailSubmitterExp"></label><span id="avyDetailSubmitterExp"></span></td>
-                       <td id="avyDetailSocialButtonsTd"><input type="button" value="facebook"/><input type="button" value="twitter"/></td>
-                   </tr></table>
+                   <table id="avyDetailTitleTable"><tr>
+                       <td>
+                           <table id="avyDetailTitleAndSubmitterTable">
+                                <tr><td><span id="avyDetailTitle"></span></td></tr>
+                                <tr><td id="avyDetailSubmitterExpTd"><label for="avyDetailSubmitterExp"></label> <span id="avyDetailSubmitterExp"></span></td></tr>
+                           </table>
+                        </td><td>
+                           <table>
+                               <tr><td><a id="avyDetailExtLink"/></td></tr>
+                               <tr><td>
+                                   <table id="avyDetailSocialButtonsTable"><tr>
+                                        <td><div class="fb-share-button" data-layout="button_count"></div></td>
+                                        <td><a class="twitter-share-button" href="http://twitter.com/share" data-count="horizontal"></a></td>
+                                   </tr></table>
+                               </td></tr>
+                           </table>
+                        </td></tr>
+                   </table>
                </td></tr>
                <tr><td colspan="2"><hr/></td></tr>
                <tr><td>

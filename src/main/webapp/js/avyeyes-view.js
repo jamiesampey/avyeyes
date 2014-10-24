@@ -119,8 +119,11 @@ AvyEyesView.prototype.handleMapClick = function(event) {
 AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 	$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
 	$('#avyDetailSubmitterExp').text(a.submitterExp.label);
+
 	$('#avyDetailExtLink').attr('href', a.extUrl);
 	$('#avyDetailExtLink').text(a.extUrl);
+    $('.fb-share-button').data('href', a.extUrl);
+    $('.twitter-share-button').data('url', a.extUrl);
 
 	$('#avyDetailElevation').text(a.elevation);
 	$('#avyDetailElevationFt').text(this.metersToFeet(a.elevation));
