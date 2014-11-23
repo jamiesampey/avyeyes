@@ -62,26 +62,38 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  of: $('#aeMenuButtonContainer'), 
 	  collision: 'none none'
   });
+  var menuBlurTimer;
+  $('#aeMenu').on('menufocus', function(event, ui) {
+    clearTimeout(menuBlurTimer);
+  });
+  $('#aeMenu').on('menublur', function(event, ui) {
+    menuBlurTimer = setTimeout(function() {
+      $('#aeMenu').hide('slide', 400);
+    }, 200);
+  });
+  $('#aeMenu').on('menuselect', function(event, ui){
+    $('#aeMenu').hide('slide', 400);
+  });
   $('#aeMenu').hide();
   
   $('#aeMenuButton').click(function(){
-	  aeView.toggleMenu();
-	});
+    $('#aeMenu').show('slide', 400);
+    menuBlurTimer = setTimeout(function() {
+      $('#aeMenu').hide('slide', 400);
+    }, 10000);
+  });
   
   $('#searchMenuItem').click(function(){
-    aeView.toggleMenu();
     aeView.resetView();
   });
   
   $('#reportMenuItem').click(function(){
-    aeView.toggleMenu();
     aeView.resetView();
     aeView.hideSearchDiv();
     aeView.doReport();
 	});
   
   $('#aboutMenuItem').click(function(){
-    aeView.toggleMenu();
     aeView.showHelp(2);
   });
 

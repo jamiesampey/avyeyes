@@ -190,10 +190,6 @@ AvyEyesView.prototype.showHelp = function(tab) {
 	$('#helpDialog').dialog('open');
 }
 
-AvyEyesView.prototype.toggleMenu = function() {
-	$('#aeMenu').toggle('slide', 400);
-}
-
 AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
 	var lookAt = this.ge.createLookAt('');
 	lookAt.setLatitude(lat);
