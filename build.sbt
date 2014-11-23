@@ -4,7 +4,7 @@ name := "AvyEyes"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.4"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.7", 
