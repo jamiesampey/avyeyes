@@ -7,10 +7,11 @@ import net.liftweb.http.js.JE.Call
 import net.liftweb.http.S
 
 object JsDialog {
-	def info(msgId: String, params: Any*) = getDialogJsCmd("title.infoDialog", msgId, params:_*)
-	def error(msgId: String, params: Any*) = getDialogJsCmd("title.errorDialog", msgId, params:_*)
+	def info(msgId: String, params: Any*) = getDialogJsCmd(0, "title.infoDialog", msgId, params:_*)
+  def delayedInfo(delay: Int, msgId: String, params: Any*) = getDialogJsCmd(delay, "title.infoDialog", msgId, params:_*)
+	def error(msgId: String, params: Any*) = getDialogJsCmd(0, "title.errorDialog", msgId, params:_*)
 
-	private def getDialogJsCmd(titleId: String, msgId: String, params: Any*): JsCmd = {
-	  Call("avyeyes.showModalDialog", S.?(titleId), getMessage(msgId, params:_*).toString).cmd
+	private def getDialogJsCmd(delay: Int, titleId: String, msgId: String, params: Any*): JsCmd = {
+	  Call("avyeyes.showModalDialog", S.?(titleId), getMessage(msgId, params:_*).toString, delay).cmd
 	}
 }

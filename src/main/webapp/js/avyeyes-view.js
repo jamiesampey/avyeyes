@@ -45,11 +45,18 @@ AvyEyesView.prototype.clearSearchFields = function() {
 	$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
 }
 
-AvyEyesView.prototype.showModalDialog = function(title, msg) {
+AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
 	$.ui.dialog.prototype._focusTabbable = function(){};
 	$('#multiDialog').html(msg);
 	$('#multiDialog').dialog('option', 'title', title);
-	$('#multiDialog').dialog('open');
+
+	if (delay > 0) {
+	  setTimeout(function() {
+	    $('#multiDialog').dialog('open');
+	    }, delay);
+	} else {
+	  $('#multiDialog').dialog('open');
+	}
 }
 
 AvyEyesView.prototype.doReport = function() {

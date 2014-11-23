@@ -1,12 +1,13 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.util.JsDialog
 import org.squeryl.PrimitiveTypeMode.transaction
 
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.AEConstants.ExtIdUrlParam
-import com.avyeyes.util.AEHelpers.isValidExtId
+import com.avyeyes.util.AEHelpers._
 
 import net.liftweb.common.Loggable
 import net.liftweb.http._
@@ -47,11 +48,12 @@ class Init extends KmlCreator with Loggable {
       logger.debug("Initial page view with init avy " + extId)
       Call("avyeyes.overlaySearchResultKml", createCompositeKml(initAvalanche.get).toString).cmd &
       Call("avyeyes.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, InitAvyAltMeters, 
-          InitAvyCamTilt, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd
+        InitAvyCamTilt, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd &
+      JsDialog.delayedInfo(5000, "initAvalancheFound", dateToStr(initAvalanche.get.avyDate), initAvalanche.get.areaName)
     } else {
         logger.debug("Initial page view without an init avy")
         Call("avyeyes.flyTo", InitViewLat, InitViewLng, InitViewAltMeters, 
-            InitViewCamTilt, InitViewHeading).cmd
+          InitViewCamTilt, InitViewHeading).cmd
     }
   }
   
