@@ -30,7 +30,7 @@ trait UISelectableEnum {
     case false => getLabel(value)
   }
   
-  private def getLabel(value: Enumeration#Value): String = {
+  def getLabel(value: Enumeration#Value): String = {
     val name = value.toString
     if (name == UNKNOWN_CODE)
       S.?(s"enum.$name")

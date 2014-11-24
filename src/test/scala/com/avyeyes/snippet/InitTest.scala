@@ -2,7 +2,6 @@ package com.avyeyes.snippet
 
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import com.avyeyes.util.AEHelpers._
 import net.liftweb.http.S
 import bootstrap.liftweb.Boot
 
@@ -27,8 +26,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       initJsCalls must contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo($initAvalancheLat,$initAvalancheLng,"
         + s"${init.InitAvyAltMeters},${init.InitAvyCamTilt},270)")
-      initJsCalls must contain(s"""avyeyes.showModalDialog(\"${S.?("title.infoDialog")}\","""
-        + s"""\"${getMessage("initAvalancheFound", dateToStr(initAvalanche.avyDate), initAvalanche.areaName)}\",5000)""")
+      initJsCalls must contain(s"""avyeyes.showModalDialog(\"${S.?("title.infoDialog")}\",""")
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
     
