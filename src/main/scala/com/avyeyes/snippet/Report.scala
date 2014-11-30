@@ -5,7 +5,7 @@ import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.AEHelpers._
-import com.avyeyes.util.JsDialog
+import com.avyeyes.util.{ReportNotifier, JsDialog}
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.{Call, JsRaw}
@@ -81,17 +81,22 @@ class Report extends ExternalIdService with Loggable {
   }
 
   def saveReport(): JsCmd = {
+    val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
       transaction {
         dao.selectAvalanche(extId) match {
-          case Some(avalanche) => {
-            dao.updateAvalanche(avalancheFromValues) 
+          case Some(existingAvalanche) => {
+            dao.updateAvalanche(avalancheFromValues)
             logger.info(s"Avalanche $extId successfully updated")
+            if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
+              ReportNotifier.sendApprovalNotification(avalancheFromValues, submitterEmail)
+            }
             JsDialog.info("avyReportUpdateSuccess")                
           }
           case None => {
             dao.insertAvalanche(avalancheFromValues, submitterEmail)
             logger.info(s"Avalanche $extId successfully inserted")
+            ReportNotifier.sendSubmissionNotifications(avalancheFromValues, submitterEmail)
             JsDialog.info("avyReportInsertSuccess", getHttpBaseUrl + extId)  
           }
         }
@@ -123,7 +128,7 @@ class Report extends ExternalIdService with Loggable {
     }
   }
   
-  private def avalancheFromValues() = {
+  private def createAvalancheFromValues() = {
     val coords = kmlStr match {
       case str if (isNotBlank(str)) => (XML.loadString(str) \\ "LinearRing" \ "coordinates").head.text.trim
       case _ => ""

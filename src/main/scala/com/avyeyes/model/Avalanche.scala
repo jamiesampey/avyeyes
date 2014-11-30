@@ -3,6 +3,7 @@ package com.avyeyes.model
 import com.avyeyes.model.enums._
 import java.util.Date
 
+import com.avyeyes.util.AEHelpers._
 import com.avyeyes.persist.AvyEyesSchema
 import org.squeryl.dsl.ManyToOne
 
@@ -23,4 +24,8 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
       0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
 
   lazy val submitter: ManyToOne[User] = AvyEyesSchema.userToAvalanches.right(this)
+
+  def getTitle() = s"${dateToStr(avyDate)}: ${areaName}"
+
+  def getExtUrl() = s"${getHttpBaseUrl}${extId}"
 }

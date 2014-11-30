@@ -43,10 +43,8 @@ object AvyDetails extends RestHelper with Loggable {
 
   private def getJson(a: Avalanche) = {
     val imagesMetadata = dao.selectAvalancheImagesMetadata(a.extId)
-    
-    val extUrl = getHttpBaseUrl + a.extId
-    
-    ("extId" -> a.extId) ~ ("extUrl" -> extUrl) ~ 
+
+    ("extId" -> a.extId) ~ ("extUrl" -> a.getExtUrl) ~
     ("areaName" -> a.areaName) ~ ("avyDate" -> dateToStr(a.avyDate)) ~
     ("submitterExp" -> ExperienceLevel.toJObject(a.submitterExp)) ~ 
     ("sky" -> Sky.toJObject(a.sky)) ~ ("precip" -> Precip.toJObject(a.precip)) ~
