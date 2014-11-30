@@ -6,8 +6,8 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
-import com.avyeyes.util.AEConstants.ExtIdUrlParam
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Constants.ExtIdUrlParam
+import com.avyeyes.util.Helpers._
 
 import net.liftweb.common.Loggable
 import net.liftweb.http._

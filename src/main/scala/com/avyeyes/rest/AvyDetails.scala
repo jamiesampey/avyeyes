@@ -4,7 +4,7 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import com.avyeyes.snippet.AdminConsole._
 
 import net.liftweb.http.rest.RestHelper

@@ -2,7 +2,7 @@ package com.avyeyes.snippet
 
 import scala.xml._
 import com.avyeyes.test._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
 
 class ContentTest extends WebSpec2 with TemplateReader {

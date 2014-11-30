@@ -2,7 +2,7 @@ package com.avyeyes.util
 
 import java.util.Date
 
-object AEConstants {
+object Constants {
   val IndexPath = "index"
   val BrowserNotSupportedPath = "whawha"
   val LoginPath = "whodat"

@@ -5,7 +5,7 @@ import javax.mail.internet.{AddressException, InternetAddress}
 import org.apache.commons.lang3.Validate
 
 import scala.xml.Unparsed
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.Constants._
 import net.liftweb.common.Box
 import net.liftweb.http.S
 import net.liftweb.http.provider.HTTPRequest
@@ -17,7 +17,7 @@ import net.liftweb.http.LiftRules
 import scala.xml.NodeSeq
 
 
-object AEHelpers {
+object Helpers {
   val DatePattern = "MM-dd-yyyy"
   
   val UnknownEnumCode = "enum.U"

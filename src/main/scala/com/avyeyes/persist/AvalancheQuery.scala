@@ -1,6 +1,6 @@
 package com.avyeyes.persist
 
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import java.util.Date
 import com.avyeyes.model.enums._
 

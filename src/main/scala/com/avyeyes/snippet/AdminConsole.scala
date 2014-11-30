@@ -4,7 +4,7 @@ import scala.xml.NodeSeq
 import org.apache.commons.lang3.StringUtils._
 import com.avyeyes.persist._
 import com.avyeyes.model._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.common.Box._
 import net.liftweb.http._

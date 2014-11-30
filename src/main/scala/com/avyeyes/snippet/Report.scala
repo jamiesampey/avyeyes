@@ -4,7 +4,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.ExternalIdService
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import com.avyeyes.util.{ReportNotifier, JsDialog}
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml

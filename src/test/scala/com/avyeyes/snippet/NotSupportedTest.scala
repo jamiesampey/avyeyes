@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.test._
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.Constants._
 import javax.servlet.http.HttpServletRequest
 import net.liftweb.mocks.MockHttpServletRequest
 import bootstrap.liftweb.Boot

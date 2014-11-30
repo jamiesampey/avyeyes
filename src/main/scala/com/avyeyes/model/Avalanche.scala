@@ -3,7 +3,7 @@ package com.avyeyes.model
 import com.avyeyes.model.enums._
 import java.util.Date
 
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import com.avyeyes.persist.AvyEyesSchema
 import org.squeryl.dsl.ManyToOne
 

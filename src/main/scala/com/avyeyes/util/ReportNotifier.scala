@@ -3,7 +3,7 @@ package com.avyeyes.util
 import javax.mail._
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.util.Mailer._
 import net.liftweb.util._

@@ -5,7 +5,7 @@ import org.mockito.ArgumentCaptor
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import net.liftweb.http.S
 

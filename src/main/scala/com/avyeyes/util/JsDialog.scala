@@ -1,6 +1,6 @@
 package com.avyeyes.util
 
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JE.Call

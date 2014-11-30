@@ -5,7 +5,7 @@ import org.specs2.mutable.Specification
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvalancheQuery._
 import com.avyeyes.test.AvalancheHelpers
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import org.joda.time.DateTime
 
 class AvalancheDaoSelectTest extends Specification with InMemoryDB with AvalancheHelpers {

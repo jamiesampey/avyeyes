@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream
 
 import com.avyeyes.model._
 import com.avyeyes.persist._
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Constants._
+import com.avyeyes.util.Helpers._
 import com.avyeyes.util.UnauthorizedException
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper

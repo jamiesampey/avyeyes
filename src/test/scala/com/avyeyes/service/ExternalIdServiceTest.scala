@@ -2,7 +2,7 @@ package com.avyeyes.service
 
 import com.avyeyes.test._
 import com.avyeyes.model._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 
 class ExternalIdServiceTest extends WebSpec2 with MockPersistence {
   isolated

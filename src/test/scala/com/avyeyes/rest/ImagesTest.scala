@@ -3,7 +3,7 @@ package com.avyeyes.rest
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.AvalancheImage
 import com.avyeyes.test._
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
 import org.mockito.ArgumentCaptor

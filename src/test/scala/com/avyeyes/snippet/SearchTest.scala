@@ -4,8 +4,8 @@ import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor
 import com.avyeyes.persist.AvalancheQuery
 import com.avyeyes.test._
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Constants._
+import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.enums._
 

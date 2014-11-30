@@ -6,8 +6,8 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Constants._
+import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml

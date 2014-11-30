@@ -3,7 +3,7 @@ package com.avyeyes.rest
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 
 import net.liftweb.http._
 

@@ -3,7 +3,7 @@ package com.avyeyes.rest
 import org.squeryl.PrimitiveTypeMode.transaction
 
 import com.avyeyes.persist._
-import com.avyeyes.util.AEConstants.LoginPath
+import com.avyeyes.util.Constants.LoginPath
 
 import net.liftweb.common._
 import net.liftweb.http.RedirectResponse

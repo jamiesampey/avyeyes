@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit
 import org.apache.commons.lang3.RandomStringUtils
 
 import com.avyeyes.persist.AvalancheDao
-import com.avyeyes.util.AEConstants._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Constants._
+import com.avyeyes.util.Helpers._
 import com.google.common.cache._
 
 import net.liftweb.common.Loggable

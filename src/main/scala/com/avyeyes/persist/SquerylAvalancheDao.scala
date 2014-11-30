@@ -6,7 +6,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.service.ExternalIdMaitreD
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.Constants._
 import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today

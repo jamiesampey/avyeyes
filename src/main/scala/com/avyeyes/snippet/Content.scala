@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.snippet.AdminConsole._
-import com.avyeyes.util.AEHelpers._
+import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 

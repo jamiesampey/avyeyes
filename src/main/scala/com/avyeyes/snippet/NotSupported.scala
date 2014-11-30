@@ -2,8 +2,8 @@ package com.avyeyes.snippet
 
 import net.liftweb.common._
 import net.liftweb.util.Helpers._
-import com.avyeyes.util.AEHelpers._
-import com.avyeyes.util.AEConstants._
+import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Constants._
 
 class NotSupported {
     def render = {
