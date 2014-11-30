@@ -2,8 +2,6 @@ package com.avyeyes.snippet
 
 import scala.xml.NodeSeq
 import org.apache.commons.lang3.StringUtils._
-import org.mindrot.jbcrypt.BCrypt
-import org.squeryl.PrimitiveTypeMode._
 import com.avyeyes.persist._
 import com.avyeyes.model._
 import com.avyeyes.util.AEHelpers._
