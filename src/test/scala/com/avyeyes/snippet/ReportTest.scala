@@ -1,5 +1,7 @@
 package com.avyeyes.snippet
 
+import net.liftweb.util.Mailer._
+
 import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor
 import com.avyeyes.model.Avalanche
@@ -200,7 +202,42 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with Templ
       jsCmd.toJsCmd must contain(S.?("msg.avyReportSaveError"))
     }
   }
-  
+
+  "Report email notifications" should {
+    "Send email to both submitter and admin upon initial report submission" withSFor("/") in {
+      val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
+      val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
+      val report = spy(newReportWithTestData)
+      mockAvalancheDao.selectAvalanche(report.extId) returns None
+
+      report.saveReport()
+      there was two(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
+
+      fromArg.getAllValues.get(0) must_== report.adminEmailFrom
+      subjectArg.getAllValues.get(0).subject must_==
+        getMessage("avyReportSubmitEmailAdminSubject", report.submitterEmail).toString
+
+      fromArg.getAllValues.get(1) must_== report.adminEmailFrom
+      subjectArg.getAllValues.get(1).subject must_==
+        getMessage("avyReportSubmitEmailSubmitterSubject", report.extId).toString
+    }
+
+    "Send email to submitter upon report approval" withSFor("/") in {
+      val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
+      val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
+      val report = spy(newReportWithTestData)
+      report.viewable = true
+      mockAvalancheDao.selectAvalanche(report.extId) returns Some(new Avalanche)
+
+      report.saveReport()
+      there was one(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
+
+      fromArg.getAllValues.get(0) must_== report.adminEmailFrom
+      subjectArg.getAllValues.get(0).subject must_==
+        getMessage("avyReportApproveEmailSubmitterSubject", report.extId).toString
+    }
+  }
+
   private def newReportWithTestData(): Report = {
       val report = new Report
       

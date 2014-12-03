@@ -1,18 +1,22 @@
 package com.avyeyes.snippet
 
+import javax.mail.{PasswordAuthentication, Authenticator}
+
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Helpers._
-import com.avyeyes.util.{ReportNotifier, JsDialog}
-import net.liftweb.common.Loggable
+import com.avyeyes.util.JsDialog
+import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.{Call, JsRaw}
 import net.liftweb.http.js.JsCmd
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
+import net.liftweb.util.{Props, Mailer}
+import net.liftweb.util.Mailer._
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils._
 import org.squeryl.PrimitiveTypeMode.transaction
@@ -20,9 +24,10 @@ import org.squeryl.PrimitiveTypeMode.transaction
 import scala.collection.mutable.ListBuffer
 import scala.xml.XML
 
-class Report extends ExternalIdService with Loggable {
+class Report extends ExternalIdService with Mailer with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
-  
+  val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
+
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
   var elevation = ""; var aspect = ""; var angle = ""    
@@ -89,14 +94,14 @@ class Report extends ExternalIdService with Loggable {
             dao.updateAvalanche(avalancheFromValues)
             logger.info(s"Avalanche $extId successfully updated")
             if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
-              ReportNotifier.sendApprovalNotification(avalancheFromValues, submitterEmail)
+              sendApprovalNotification(avalancheFromValues, submitterEmail)
             }
             JsDialog.info("avyReportUpdateSuccess")                
           }
           case None => {
             dao.insertAvalanche(avalancheFromValues, submitterEmail)
             logger.info(s"Avalanche $extId successfully inserted")
-            ReportNotifier.sendSubmissionNotifications(avalancheFromValues, submitterEmail)
+            sendSubmissionNotifications(avalancheFromValues, submitterEmail)
             JsDialog.info("avyReportInsertSuccess", getHttpBaseUrl + extId)  
           }
         }
@@ -147,5 +152,44 @@ class Report extends ExternalIdService with Loggable {
       strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
       enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
       comments, coords)
+  }
+
+  private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
+    configureMailer()
+
+    val adminBody = getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, a.getExtUrl)
+    sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
+      (XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil) : _*)
+
+    val submitterBody = getMessage("avyReportSubmitEmailSubmitterBody", a.extId, a.getExtUrl)
+    sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
+      (XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil) : _*)
+  }
+
+  private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
+    configureMailer()
+
+    val submitterBody = getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, a.getExtUrl)
+    sendMail(adminEmailFrom, Subject(getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
+      (XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil) : _*)
+  }
+
+  private def configureMailer() = {
+    customProperties = Map (
+      "mail.smtp.host" -> getProp("mail.smtp.host"),
+      "mail.smtp.port" -> getProp("mail.smtp.port"),
+      "mail.smtp.auth" -> getProp("mail.smtp.auth"),
+      "mail.smtp.starttls.enable" -> getProp("mail.smtp.starttls.enable")
+    )
+
+    if (Props.get("mail.smtp.auth", "false").toBoolean) {
+      (Props.get("mail.admin.address"), Props.get("mail.admin.pw")) match {
+        case (Full(username), Full(password)) =>
+          authenticator = Full(new Authenticator() {
+            override def getPasswordAuthentication = new PasswordAuthentication(username, password)
+          })
+        case _ => logger.error("Missing username and/or password for SMTP email")
+      }
+    }
   }
 }
