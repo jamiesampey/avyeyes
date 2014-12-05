@@ -124,13 +124,24 @@ AvyEyesView.prototype.handleMapClick = function(event) {
 }
 
 AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
-	$('#avyDetailTitle').text(a.avyDate + ': ' + a.areaName);
+    var title = a.avyDate + ': ' + a.areaName;
+
+	$('#avyDetailTitle').text(title);
 	$('#avyDetailSubmitterExp').text(a.submitterExp.label);
 
 	$('#avyDetailExtLink').attr('href', a.extUrl);
 	$('#avyDetailExtLink').text(a.extUrl);
-    $('.fb-share-button').data('href', a.extUrl);
-    $('.twitter-share-button').data('url', a.extUrl);
+
+    var fbContainer = $('#avyDetailSocialFacebookContainer');
+    fbContainer.empty();
+    fbContainer.append('<meta property="og:title" content="' + title + '"/>');
+    fbContainer.append('<meta property="og:site_name" content="Avy Eyes"/>');
+    fbContainer.append('<div class="fb-share-button" data-layout="button_count" data-href="' + a.extUrl + '">');
+
+    var twttrContainer = $('#avyDetailSocialTwitterContainer');
+    twttrContainer.empty();
+    twttrContainer.append('<a class="twitter-share-button" data-url="' + a.extUrl + '" data-text="' + title
+      + '" href="http://twitter.com/share" data-count="horizontal">');
 
 	$('#avyDetailElevation').text(a.elevation);
 	$('#avyDetailElevationFt').text(this.metersToFeet(a.elevation));
@@ -175,6 +186,9 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
   });
 
   $('#avyDetailDialog').dialog('open');
+
+  FB.XFBML.parse(fbContainer[0]);
+  twttr.widgets.load();
 }
 
 AvyEyesView.prototype.setSpinner = function(inputElem, value) {
