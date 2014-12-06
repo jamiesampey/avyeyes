@@ -134,8 +134,6 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 
     var fbContainer = $('#avyDetailSocialFacebookContainer');
     fbContainer.empty();
-    fbContainer.append('<meta property="og:title" content="' + title + '"/>');
-    fbContainer.append('<meta property="og:site_name" content="Avy Eyes"/>');
     fbContainer.append('<div class="fb-share-button" data-layout="button_count" data-href="' + a.extUrl + '">');
 
     var twttrContainer = $('#avyDetailSocialTwitterContainer');
