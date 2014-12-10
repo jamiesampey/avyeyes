@@ -80,7 +80,7 @@ AvyEyesWiring.prototype.wireUI = function() {
     $('#aeMenu').show('slide', 400);
     menuBlurTimer = setTimeout(function() {
       $('#aeMenu').hide('slide', 400);
-    }, 10000);
+    }, 4000);
   });
   
   $('#searchMenuItem').click(function(){
@@ -185,7 +185,8 @@ AvyEyesWiring.prototype.wireUI = function() {
 
 	$('#helpDialog').dialog({
 		  minWidth: 750,
-		  minHeight: 700,
+		  minHeight: 750,
+		  maxHeight: 750,
 		  autoOpen: false,
 		  modal: true,
 		  resizable: false,
@@ -242,7 +243,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
 	  dialogClass: "avyDialog",
-	  title: "Avalanche Report",
+	  title: "Avalanche Report - Step 1",
 	  buttons: [{
       text: "Begin Report",
       click: function(event, ui) {
@@ -271,7 +272,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
 	  dialogClass: "avyDialog",
-	  title: "Avalanche Report",
+	  title: "Avalanche Report - Step 2",
 	  buttons: [{
       text: "Begin Drawing",
       click: function(event, ui) {
@@ -297,7 +298,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
 	  dialogClass: "avyDialog",
-	  title: "Avalanche Report",
+	  title: "Avalanche Report - Step 3",
 	  buttons: [{
       text: "Accept Drawing",
       click: function(event, ui) {

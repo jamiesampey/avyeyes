@@ -191,6 +191,7 @@ textarea:focus, input:focus {
 #helpDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
+	overflow: hidden;
 }
 
 #helpDialog .ui-tabs-anchor {
@@ -207,6 +208,11 @@ textarea:focus, input:focus {
 
 #helpDialog .ui-widget-header {
     background: transparent;
+}
+
+#reportHelpDiv {
+    max-height: 610px;
+	overflow-y: auto;
 }
 
 .avyTooltip {
