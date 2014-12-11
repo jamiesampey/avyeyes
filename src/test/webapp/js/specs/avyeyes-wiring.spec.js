@@ -43,9 +43,9 @@ define(['gearth',
 			expect(jquiDialog.calls[0].object.selector).toEqual('#multiDialog');
 			expect(jquiDialog.calls[1].object.selector).toEqual('#avyDetailDialog');
 			expect(jquiDialog.calls[2].object.selector).toEqual('#helpDialog');
-			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportGeocodeDialog');
-			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportBeginDrawDialog');
-			expect(jquiDialog.calls[5].object.selector).toEqual('#avyReportConfirmDrawDialog');
+			expect(jquiDialog.calls[3].object.selector).toEqual('#avyReportDrawStep1Dialog');
+			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportDrawStep2Dialog');
+			expect(jquiDialog.calls[5].object.selector).toEqual('#avyReportDrawStep3Dialog');
 			expect(jquiDialog.calls[6].object.selector).toEqual('#avyReportImageDialog');
 			expect(jquiDialog.calls[7].object.selector).toEqual('#avyReportDialog');
 			

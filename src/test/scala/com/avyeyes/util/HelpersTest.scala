@@ -45,13 +45,13 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
     }
 
     "Insert params in messages" withSFor("/") in {
-      val xml = Helpers.getMessage("browserNotSupported", ChromeVersion,
-          FirefoxVersion, OperaVersion, SafariVersion, IeVersion)
+      val xml = Helpers.getMessage("browserNotSupported", FirefoxMinVersion,
+        OperaMinVersion, SafariMinVersion, IeMinVersion, ChromeVersion)
       xml.text must contain(ChromeVersion.toString)
-      xml.text must contain(FirefoxVersion.toString)
-      xml.text must contain(OperaVersion.toString)
-      xml.text must contain(SafariVersion.toString)
-      xml.text must contain(IeVersion.toString)
+      xml.text must contain(FirefoxMinVersion.toString)
+      xml.text must contain(OperaMinVersion.toString)
+      xml.text must contain(SafariMinVersion.toString)
+      xml.text must contain(IeMinVersion.toString)
     }
   }
 

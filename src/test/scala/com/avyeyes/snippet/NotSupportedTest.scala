@@ -16,11 +16,11 @@ class NotSupportedTest extends WebSpec2(Boot().boot _) with TemplateReader {
       val n = (renderedPage \\ "span" filter (span => (span\"@id").text == "browserNotSupportedMsg")).head
       val notSupportedMsg = n.text 
       
+      notSupportedMsg must contain(FirefoxMinVersion.toString)
+      notSupportedMsg must contain(OperaMinVersion.toString)
+      notSupportedMsg must contain(SafariMinVersion.toString)
+      notSupportedMsg must contain(IeMinVersion.toString)
       notSupportedMsg must contain(ChromeVersion.toString)
-      notSupportedMsg must contain(FirefoxVersion.toString)
-      notSupportedMsg must contain(OperaVersion.toString)
-      notSupportedMsg must contain(SafariVersion.toString)
-      notSupportedMsg must contain(IeVersion.toString)
     }
   }
   

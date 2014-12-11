@@ -85,19 +85,6 @@ define(['jasmine-jquery',
 			expect($("#avySearchCameraLat")).toHaveValue(cameraLat);
 			expect($("#avySearchCameraLng")).toHaveValue(cameraLng);
 		});
-		
-		it('shows search menu on initial page load', function() {
-			spyOn(view, 'showSearchDiv');
-			view.viewChangeEnd();
-			expect(view.showSearchDiv).toHaveBeenCalled();
-		});
-		
-		it('does not show search menu if not initial page load', function() {
-			spyOn(view, 'showSearchDiv');
-			view.aeFirstImpression = false;
-			view.viewChangeEnd();
-			expect(view.showSearchDiv).not.toHaveBeenCalled();
-		});
 	});
 	
 	describe('Geocode and fly to functionality', function() {

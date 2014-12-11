@@ -27,6 +27,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       initJsCalls must contain(s"avyeyes.flyTo($initAvalancheLat,$initAvalancheLng,"
         + s"${init.InitAvyAltMeters},${init.InitAvyCamTilt},270)")
       initJsCalls must contain(s"""avyeyes.showModalDialog(\"${S.?("title.infoDialog")}\",""")
+      initJsCalls must not contain("avyeyes.showSearchDiv")
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
     
@@ -39,6 +40,20 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       initJsCalls must not contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo(${init.InitViewLat},${init.InitViewLng},"
         + s"${init.InitViewAltMeters},${init.InitViewCamTilt},${init.InitViewHeading})")
+      initJsCalls must contain("avyeyes.showSearchDiv(3000)")
+      autocompleteInitCallCount(initJsCalls) must_== 8
+    }
+
+    "Initialize the view without an initial avalanche" withSFor("http://avyeyes.com") in {
+      val init = new Init
+      init.render
+      val initJsCalls = init.initJsCalls().toJsCmd
+
+      there was no(mockAvalancheDao).selectAvalanche(any[String])
+      initJsCalls must not contain("avyeyes.overlaySearchResultKml")
+      initJsCalls must contain(s"avyeyes.flyTo(${init.InitViewLat},${init.InitViewLng},"
+        + s"${init.InitViewAltMeters},${init.InitViewCamTilt},${init.InitViewHeading})")
+      initJsCalls must contain("avyeyes.showSearchDiv(3000)")
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
   }

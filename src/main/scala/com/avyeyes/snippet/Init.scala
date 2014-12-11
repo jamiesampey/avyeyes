@@ -26,7 +26,7 @@ class Init extends KmlCreator with Loggable {
   val InitViewCamTilt = 0
   val InitViewHeading = 0
     
-  val InitAvyAltMeters = 450
+  val InitAvyAltMeters = 350
   val InitAvyCamTilt = 75
 
   private var extId: Option[String] = None
@@ -54,7 +54,8 @@ class Init extends KmlCreator with Loggable {
     } else {
         logger.debug("Initial page view without an init avy")
         Call("avyeyes.flyTo", InitViewLat, InitViewLng, InitViewAltMeters, 
-          InitViewCamTilt, InitViewHeading).cmd
+          InitViewCamTilt, InitViewHeading).cmd &
+        Call("avyeyes.showSearchDiv", 3000).cmd
     }
   }
   

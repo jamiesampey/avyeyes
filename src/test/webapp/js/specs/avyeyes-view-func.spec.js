@@ -11,13 +11,6 @@ define(['gearth',
 	var view;
 	var geFeaturesMock = geplugin.getFeatures();
 	
-	describe('AvyEyesView creation', function() {
-		it('should set state booleans to correct initial values', function() {
-			view = new AvyEyesView(gearth, gmaps);
-	    	expect(view.aeFirstImpression).toEqual(true);
-	    });
-	});
-
 	describe('AvyEyesView initialization', function() {
 		beforeEach(function() {
 			view = new AvyEyesView(gearth, gmaps);
@@ -80,7 +73,6 @@ define(['gearth',
 		});
 
 		it('Cancels an existing report', function() {
-			spyOn(view, 'stopNavControlBlink');
 			spyOn(view, 'showSearchDiv');
 			
 			view.doReport();
@@ -95,7 +87,6 @@ define(['gearth',
 			expect(report.clearAllFields).toHaveBeenCalled();
 			expect(report.clearAvyDrawing).toHaveBeenCalled();
 			expect(view.currentReport).toBeNull();
-			expect(view.stopNavControlBlink).toHaveBeenCalled();
 		});
 	});
 

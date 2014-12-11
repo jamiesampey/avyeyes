@@ -8,7 +8,7 @@ function AvyReport(avyEyesView) {
 AvyReport.prototype.beginReportWizard = function() {
 	this.reserveExtId();
 	this.toggleClassification(false);
-	$('#avyReportGeocodeDialog').dialog('open');
+	$('#avyReportDrawStep1Dialog').dialog('open');
 }
 
 AvyReport.prototype.reserveExtId = function() {
@@ -51,13 +51,12 @@ AvyReport.prototype.beginReportWithGeocode = function() {
 	
 AvyReport.prototype.beginReport = function() {
 	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportBeginDrawDialog').dialog('open');
-	this.view.navControlBlink(50);
+	$('#avyReportDrawStep2Dialog').dialog('open');
 }
 	
 AvyReport.prototype.confirmDrawing = function() {
 	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportConfirmDrawDialog').dialog('open');
+	$('#avyReportDrawStep3Dialog').dialog('open');
 }
 
 AvyReport.prototype.enterAvyDetail = function() {

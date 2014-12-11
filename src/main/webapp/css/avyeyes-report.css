@@ -1,6 +1,12 @@
+#avyReportDrawStep2Dialog {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 #avyReportDialog {
 	margin: 5px 5px 0px 5px;
 	padding: 0px;
+	overflow: hidden;
 }
 
 .avyReportDetailsDialog {

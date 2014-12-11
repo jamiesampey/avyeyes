@@ -10,26 +10,25 @@ define(['avyeyes-wiring',
 function AvyEyesView(gearthInst, gmapsInst) {
   this.wiring = new AvyEyesWiring(this);
   
-	this.gearth = gearthInst;
-	this.gmaps = gmapsInst;
-	this.ge = null;
-	this.geocoder = null;   
-	
-	this.currentReport = null;
-	this.aeFirstImpression = true;
-	this.navControlBlinkInterval = null;
+  this.gearth = gearthInst;
+  this.gmaps = gmapsInst;
+  this.ge = null;
+  this.geocoder = null;
+  this.currentReport = null;
 }
 
-AvyEyesView.prototype.showSearchDiv = function() {
-	if (!$('#aeSearchControlContainer').is(':visible')) {
+AvyEyesView.prototype.showSearchDiv = function(delay) {
+	if (delay > 0) {
+	  setTimeout(function() {
 		$('#aeSearchControlContainer').slideDown("slow");
+	  }, delay);
+	} else {
+	  $('#aeSearchControlContainer').slideDown("slow");
 	}
 }
 
 AvyEyesView.prototype.hideSearchDiv = function() {
-	if ($('#aeSearchControlContainer').is(':visible')) {
-		$('#aeSearchControlContainer').slideUp("slow");
-	}
+  $('#aeSearchControlContainer').slideUp("slow");
 }
 
 AvyEyesView.prototype.resetView = function() {
@@ -71,7 +70,6 @@ AvyEyesView.prototype.cancelReport = function() {
 		this.currentReport.clearAvyDrawing();
 		this.currentReport = null;
 	}
-	this.stopNavControlBlink();
 }
 
 AvyEyesView.prototype.viewChangeEnd = function() {
@@ -86,11 +84,6 @@ AvyEyesView.prototype.viewChangeEnd = function() {
 	$("#avySearchCameraTilt").val(camera.getTilt());
 	$("#avySearchCameraLat").val(camera.getLatitude());
 	$("#avySearchCameraLng").val(camera.getLongitude());
-	
-	if (this.aeFirstImpression) {
-		this.showSearchDiv();
-		this.aeFirstImpression = false;
-	}
 }
 
 AvyEyesView.prototype.handleMapClick = function(event) {
@@ -233,28 +226,6 @@ AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, t
       this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
     }
   }.bind(this));
-}
-
-AvyEyesView.prototype.stopNavControlBlink = function() {
-	this.ge.getNavigationControl().setVisibility(this.ge.VISIBILITY_AUTO);
-	clearInterval(this.navControlBlinkInterval);
-}
-
-AvyEyesView.prototype.navControlBlink = function(numBlinks) {
-	var blinkCount = 0;
-	$('#map3d').focus();
-	this.navControlBlinkInterval = setInterval(function() {
-		if (this.ge.getNavigationControl().getVisibility() != this.ge.VISIBILITY_SHOW) {
-			this.ge.getNavigationControl().setVisibility(this.ge.VISIBILITY_SHOW);
-		} else {
-			this.ge.getNavigationControl().setVisibility(this.ge.VISIBILITY_AUTO);
-		}
-		
-		blinkCount++;
-		if (numBlinks && blinkCount >= (numBlinks*2)) {
-			this.stopNavControlBlink();
-		}
-	}.bind(this), 1000);
 }
 
 AvyEyesView.prototype.overlaySearchResultKml = function(kmlStr) {

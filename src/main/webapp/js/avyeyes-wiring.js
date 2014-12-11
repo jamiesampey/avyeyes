@@ -225,7 +225,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('#avyReportInitLocation').keydown(function (e) {
 	  if (e.keyCode == 13) {
-	    $('#avyReportGeocodeDialog').dialog('close');
+	    $('#avyReportDrawStep1Dialog').dialog('close');
 	    if ($('#avyReportInitLocation').val()) {
 	      aeView.currentReport.beginReportWithGeocode();
 	    } else {
@@ -234,8 +234,10 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  }
 	});
 	
-	$('#avyReportGeocodeDialog').dialog({
+	$('#avyReportDrawStep1Dialog').dialog({
 	  minWidth: 500,
+	  maxWidth: 500,
+	  minHeight: 400,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -263,8 +265,10 @@ AvyEyesWiring.prototype.wireUI = function() {
     }]
 	});
 	
-	$('#avyReportBeginDrawDialog').dialog({
+	$('#avyReportDrawStep2Dialog').dialog({
 	  minWidth: 500,
+	  maxWidth: 500,
+	  maxHeight: 600,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -277,7 +281,6 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Begin Drawing",
       click: function(event, ui) {
         $(this).dialog('close');
-        aeView.stopNavControlBlink();
         aeView.currentReport.doAvyDrawing();
       }
     },{
@@ -289,8 +292,9 @@ AvyEyesWiring.prototype.wireUI = function() {
     }]
 	});
 	
-	$('#avyReportConfirmDrawDialog').dialog({
-	  minWidth: 500,
+	$('#avyReportDrawStep3Dialog').dialog({
+ 	  minWidth: 500,
+   	  maxWidth: 500,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
