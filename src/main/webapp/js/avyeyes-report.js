@@ -22,6 +22,10 @@ AvyReport.prototype.reserveExtId = function() {
 	}.bind(this));
 }
 
+AvyReport.prototype.closeAllReportDialogs = function() {
+  $('.avyDialog, .avyReportDetailsDialog').children('.ui-dialog-content').dialog('close');
+}
+
 AvyReport.prototype.clearAllFields = function() {
     this.resetValidationHighlights();
 	$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');

@@ -263,7 +263,6 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Cancel",
       click: function(event, ui) {
         aeView.resetView();
-        $(this).dialog('close');
       }
     }]
 	});
@@ -290,7 +289,6 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Cancel",
       click: function(event, ui) {
         aeView.resetView();
-        $(this).dialog('close');
       }
     }]
 	});
@@ -338,7 +336,7 @@ AvyEyesWiring.prototype.wireUI = function() {
       click: function(event, ui) {
         $(this).dialog('close');
       }
-		}]
+	  }]
 	});
 	
 	$('#avyReportDialog').dialog({
@@ -374,7 +372,6 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Cancel",
       click: function(event, ui) {
         aeView.resetView();
-        $(this).dialog('close');
       }
     }]
   });	
@@ -414,8 +411,6 @@ AvyEyesWiring.prototype.wireReportAdminControls = function() {
       text: 'Yes',
       click: function(event, ui) {
         $('#avyReportDeleteBinding').click();
-        $(this).dialog('close');
-        $('#avyReportDialog').dialog('close');
         aeView.resetView();
       }
     },

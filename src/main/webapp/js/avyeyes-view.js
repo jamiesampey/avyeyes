@@ -65,6 +65,7 @@ AvyEyesView.prototype.doReport = function() {
 
 AvyEyesView.prototype.cancelReport = function() {
 	if (this.currentReport) {
+		this.currentReport.closeAllReportDialogs();
 		this.currentReport.clearAllFields();
 		this.currentReport.clearAvyDrawing();
 		this.currentReport = null;
@@ -161,7 +162,7 @@ AvyEyesView.prototype.displayDetails = function(kmlClickEvent, a) {
 
 	if (a.images.length > 0) {
 		$('#avyDetailImageRow').show();
-    $.each(a.images, function(i) {
+        $.each(a.images, function(i) {
 			var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
 			$('#avyDetailImageList').append('<li class="avyDetailImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="avyDetailImages"><img src="' + imgUrl + '" /></a></li>');
