@@ -58,7 +58,9 @@ class Search extends KmlCreator with Loggable {
 
       if (avyList.size > 0) {
         val kml = createCompositeKml(avyList:_*)
-        Call("avyeyes.overlaySearchResultKml", kml.toString).cmd & JsDialog.info("avySearchSuccess", avyList.size)
+        Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
+        Call("avyeyes.hideSearchDiv").cmd &
+        JsDialog.info("avySearchSuccess", avyList.size)
       } else {
         JsDialog.info("avySearchZeroMatches")
       } 

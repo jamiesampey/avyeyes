@@ -119,13 +119,16 @@
     border-spacing: 0px;
 }
 
-#avySearchButtonContainer {
-	position: relative;
-	width: 100%;
+#avySearchButtonsContainer {
+	float: right;
 }
 
 #avySearchButton {
-    float: right;
+    padding: 5px;
+    margin: 20px 10px 20px 0px;
+}
+
+#avySearchResetButton {
     padding: 5px;
     margin: 20px 10px 20px 0px;
 }

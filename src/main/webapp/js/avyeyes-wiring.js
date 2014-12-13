@@ -150,10 +150,13 @@ AvyEyesWiring.prototype.wireUI = function() {
       } else {
         $('#avyReportViewableTd').css('background', 'rgba(255, 0, 0, 0.3)');
       }
-  });
+    });
 	
 	$('.avyButton').button();
-	
+	$('#avySearchResetButton').click(function(){
+      aeView.clearSearchFields();
+    });
+
 	$('#multiDialog').dialog({
 	  minWidth: 500,
 	  autoOpen: false,

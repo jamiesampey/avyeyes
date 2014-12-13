@@ -32,7 +32,6 @@ AvyEyesView.prototype.hideSearchDiv = function() {
 }
 
 AvyEyesView.prototype.resetView = function() {
-	this.clearSearchFields();
 	this.clearKmlOverlay();
 	this.cancelReport();
 	this.showSearchDiv();
