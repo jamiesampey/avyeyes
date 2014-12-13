@@ -25,9 +25,11 @@ class Init extends KmlCreator with Loggable {
   val InitViewAltMeters = 2700000
   val InitViewCamTilt = 0
   val InitViewHeading = 0
-    
+  val InitViewSearchFormDelayMillis = 3500
+
   val InitAvyAltMeters = 350
   val InitAvyCamTilt = 75
+  val InitAvyMsgDelayMillis = 5000
 
   private var extId: Option[String] = None
   
@@ -49,13 +51,13 @@ class Init extends KmlCreator with Loggable {
       Call("avyeyes.overlaySearchResultKml", createCompositeKml(initAvalanche.get).toString).cmd &
       Call("avyeyes.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, InitAvyAltMeters, 
         InitAvyCamTilt, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd &
-      JsDialog.delayedInfo(5000, "initAvalancheFound", dateToStr(initAvalanche.get.avyDate), initAvalanche.get.areaName,
+      JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(initAvalanche.get.avyDate), initAvalanche.get.areaName,
         ExperienceLevel.getLabel(initAvalanche.get.submitterExp))
     } else {
         logger.debug("Initial page view without an init avy")
         Call("avyeyes.flyTo", InitViewLat, InitViewLng, InitViewAltMeters, 
           InitViewCamTilt, InitViewHeading).cmd &
-        Call("avyeyes.showSearchDiv", 3000).cmd
+        Call("avyeyes.showSearchDiv", InitViewSearchFormDelayMillis).cmd
     }
   }
   

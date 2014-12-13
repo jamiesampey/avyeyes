@@ -40,7 +40,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       initJsCalls must not contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo(${init.InitViewLat},${init.InitViewLng},"
         + s"${init.InitViewAltMeters},${init.InitViewCamTilt},${init.InitViewHeading})")
-      initJsCalls must contain("avyeyes.showSearchDiv(3000)")
+      initJsCalls must contain(s"avyeyes.showSearchDiv(${init.InitViewSearchFormDelayMillis})")
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
 
@@ -53,7 +53,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with Avalanc
       initJsCalls must not contain("avyeyes.overlaySearchResultKml")
       initJsCalls must contain(s"avyeyes.flyTo(${init.InitViewLat},${init.InitViewLng},"
         + s"${init.InitViewAltMeters},${init.InitViewCamTilt},${init.InitViewHeading})")
-      initJsCalls must contain("avyeyes.showSearchDiv(3000)")
+      initJsCalls must contain(s"avyeyes.showSearchDiv(${init.InitViewSearchFormDelayMillis})")
       autocompleteInitCallCount(initJsCalls) must_== 8
     }
   }
