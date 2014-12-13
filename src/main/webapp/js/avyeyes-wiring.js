@@ -225,14 +225,15 @@ AvyEyesWiring.prototype.wireUI = function() {
 	$('#aeControlContainer').css('visibility', 'visible');
 	$('#avyInitLiftCallback').submit();
 	
-	$('#avyReportInitLocation').keydown(function (e) {
-	  if (e.keyCode == 13) {
+	$('#avyReportInitLocation').keydown(function (event) {
+	  if (event.keyCode == 13) {
 	    $('#avyReportDrawStep1Dialog').dialog('close');
 	    if ($('#avyReportInitLocation').val()) {
 	      aeView.currentReport.beginReportWithGeocode();
 	    } else {
 	      aeView.currentReport.beginReport();
 	    }
+	    event.preventDefault();
 	  }
 	});
 	
@@ -248,6 +249,9 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  beforeclose: function (event, ui) { return false; },
 	  dialogClass: "avyReportDrawDialog",
 	  title: "Avalanche Report - Step 1",
+      open: function() {
+      	$('#avyReportInitLocation').focus();
+      },
 	  buttons: [{
       text: "Begin Report",
       click: function(event, ui) {
