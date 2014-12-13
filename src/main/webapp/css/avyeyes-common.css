@@ -121,6 +121,18 @@ textarea:focus, input:focus {
     background: transparent;
 }
 
+.ui-dialog {
+    font: normal 1em times,serif !important;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    display: none;
+}
+
+.ui-dialog .ui-dialog-content {
+    overflow: hidden;
+}
+
 .avyRawTextInput {
 	width: 200px;
     height: 20px;
@@ -180,18 +192,6 @@ textarea:focus, input:focus {
 	z-index: 101;
 }
 
-.ui-dialog {
-    font: normal 1em times,serif !important;
-}
-
-.ui-dialog .ui-dialog-titlebar-close {
-    display: none;
-}
-
-.ui-dialog .ui-dialog-content {
-    overflow: hidden;
-}
-
 #helpDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
@@ -219,10 +219,14 @@ textarea:focus, input:focus {
 	overflow-y: auto;
 }
 
+.avyMsg p, li {
+    margin: 0 0 1em 0;
+}
+
 .avyTooltip {
 	font: normal 1em times,serif !important;
 }
 
-.avyTooltip br, #helpDialog br {
-    line-height:32px;
+.avyTooltip p {
+    margin: 0 0 1em 0;
 }
