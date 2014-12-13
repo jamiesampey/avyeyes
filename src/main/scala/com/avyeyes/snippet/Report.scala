@@ -1,6 +1,7 @@
 package com.avyeyes.snippet
 
-import javax.mail.{PasswordAuthentication, Authenticator}
+import javax.mail.internet.MimeMessage
+import javax.mail.{Multipart, PasswordAuthentication, Authenticator}
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
@@ -102,7 +103,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
             dao.insertAvalanche(avalancheFromValues, submitterEmail)
             logger.info(s"Avalanche $extId successfully inserted")
             sendSubmissionNotifications(avalancheFromValues, submitterEmail)
-            JsDialog.info("avyReportInsertSuccess", getHttpBaseUrl + extId)  
+            JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtUrl)
           }
         }
       }
@@ -192,4 +193,14 @@ class Report extends ExternalIdService with Mailer with Loggable {
       }
     }
   }
+
+  devModeSend.default.set((m: MimeMessage) => {
+    val multipartContent = m.getContent.asInstanceOf[Multipart]
+    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
+    logger.info( s"""Dev mode report email:
+         From: ${m.getFrom()(0).toString}
+         To: ${m.getAllRecipients()(0).toString}
+         Subject: ${m.getSubject}
+         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+  })
 }

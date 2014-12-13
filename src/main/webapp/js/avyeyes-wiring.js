@@ -36,7 +36,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 		}
 	});
 
-	$('#avyReportDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#avyReportDialog');
+	$('#avyReportDetailsEntryDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#avyReportDetailsEntryDialog');
 	 
 	$('.avyAutoComplete').change(function() {
 		$(this).val('');
@@ -165,7 +165,6 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  draggable: false,
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
-	  dialogClass: 'avyDialog',
 	  buttons: [{
       text: 'OK',
       click: function(event, ui) {
@@ -247,7 +246,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  draggable: false,
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
-	  dialogClass: "avyDialog",
+	  dialogClass: "avyReportDrawDialog",
 	  title: "Avalanche Report - Step 1",
 	  buttons: [{
       text: "Begin Report",
@@ -277,7 +276,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  draggable: false,
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
-	  dialogClass: "avyDialog",
+	  dialogClass: "avyReportDrawDialog",
 	  title: "Avalanche Report - Step 2",
 	  buttons: [{
       text: "Begin Drawing",
@@ -302,7 +301,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  draggable: true,
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
-	  dialogClass: "avyDialog",
+	  dialogClass: "avyReportDrawDialog",
 	  title: "Avalanche Report - Step 3",
 	  buttons: [{
       text: "Accept Drawing",
@@ -339,7 +338,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  }]
 	});
 	
-	$('#avyReportDialog').dialog({
+	$('#avyReportDetailsEntryDialog').dialog({
       minWidth: 750,
       maxWidth: 750,
       minHeight: 800,
@@ -366,7 +365,7 @@ AvyEyesWiring.prototype.wireUI = function() {
     },{
       text: "Submit",
       click: function(event, ui) {
-    	  $("#avyReportDialog").children('form').submit();
+    	  $("#avyReportDetailsEntryDialog").children('form').submit();
       }
     },{
       text: "Cancel",
@@ -378,7 +377,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 }
 
 AvyEyesWiring.prototype.wireReportAdminControls = function() {
-  var reportDialogButtons = $('#avyReportDialog').dialog("option", "buttons");
+  var reportDialogButtons = $('#avyReportDetailsEntryDialog').dialog("option", "buttons");
   if (reportDialogButtons.length > 3) return; // already wired admin fields
   
   reportDialogButtons.push({ 
@@ -387,7 +386,7 @@ AvyEyesWiring.prototype.wireReportAdminControls = function() {
       $('#avyReportDeleteConfirmDialog').dialog('open');
     }
   });
-  $('#avyReportDialog').dialog('option', 'buttons', reportDialogButtons);
+  $('#avyReportDetailsEntryDialog').dialog('option', 'buttons', reportDialogButtons);
   
   $('#avyReportImageTable').show();
   
@@ -405,7 +404,7 @@ AvyEyesWiring.prototype.wireReportAdminControls = function() {
     draggable: false,
     closeOnEscape: false,
     beforeclose: function(event, ui) { return false; },
-    dialogClass: 'avyDialog',
+    dialogClass: 'avyReportDetailsDialog',
     open: function() { $('#avyReportDeleteConfirmNo').focus(); }, 
     buttons: [{
       text: 'Yes',

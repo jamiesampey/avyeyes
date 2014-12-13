@@ -23,14 +23,14 @@ AvyReport.prototype.reserveExtId = function() {
 }
 
 AvyReport.prototype.closeAllReportDialogs = function() {
-  $('.avyDialog, .avyReportDetailsDialog').children('.ui-dialog-content').dialog('close');
+  $('.avyReportDrawDialog, .avyReportDetailsDialog').children('.ui-dialog-content').dialog('close');
 }
 
 AvyReport.prototype.clearAllFields = function() {
     this.resetValidationHighlights();
-	$('#avyReportDialog').find('input:text, input:hidden, textarea').val('');
-	$('#avyReportDialog').find('.avyRDSliderValue').val('0');
-	$('#avyReportDialog').find('.avyRDSlider').slider('value', 0);
+	$('#avyReportDetailsEntryDialog').find('input:text, input:hidden, textarea').val('');
+	$('#avyReportDetailsEntryDialog').find('.avyRDSliderValue').val('0');
+	$('#avyReportDetailsEntryDialog').find('.avyRDSlider').slider('value', 0);
 	$('#avyReportImageTable > tbody').empty();
 }
 
@@ -66,7 +66,7 @@ AvyReport.prototype.confirmDrawing = function() {
 AvyReport.prototype.enterAvyDetail = function() {
     this.wireImageUpload();
 	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportDialog').dialog('open');
+	$('#avyReportDetailsEntryDialog').dialog('open');
 }
 
 AvyReport.prototype.highlightValidationFields = function(problemFieldIds) {
@@ -90,7 +90,7 @@ AvyReport.prototype.resetValidationHighlights = function() {
 }
 
 AvyReport.prototype.finishReport = function() {
-    $('#avyReportDialog').dialog('close');
+    $('#avyReportDetailsEntryDialog').dialog('close');
     this.view.resetView();
 }
 
@@ -186,7 +186,7 @@ AvyReport.prototype.displayDetails = function(a) {
   });
   
   $('#avyReportDeleteBinding').val(a.extId);
-  $('#avyReportDialog').dialog('open');
+  $('#avyReportDetailsEntryDialog').dialog('open');
 }
 
 AvyReport.prototype.setAutocomplete = function(hiddenSibling, enumObj) {

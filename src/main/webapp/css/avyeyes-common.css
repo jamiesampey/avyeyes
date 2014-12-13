@@ -180,12 +180,16 @@ textarea:focus, input:focus {
 	z-index: 101;
 }
 
-.avyDialog {
+.ui-dialog {
     font: normal 1em times,serif !important;
 }
 
-.avyDialog .ui-dialog-titlebar-close {
+.ui-dialog .ui-dialog-titlebar-close {
     display: none;
+}
+
+.ui-dialog .ui-dialog-content {
+    overflow: hidden;
 }
 
 #helpDialog {

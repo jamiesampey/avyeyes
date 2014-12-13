@@ -27,7 +27,7 @@ define(['gearth',
 			
 			expect(jquiAutocomplete.callCount).toEqual(2);
 	    expect(jquiAutocomplete.calls[0].object.selector).toEqual('.avyAutoComplete');
-			expect(jquiAutocomplete.calls[1].object.selector).toEqual('#avyReportDialog .avyAutoComplete');
+			expect(jquiAutocomplete.calls[1].object.selector).toEqual('#avyReportDetailsEntryDialog .avyAutoComplete');
 			
 			expect(jquiMenu.mostRecentCall.object.selector).toEqual('#aeMenu');
 			expect(jquiDatepicker.mostRecentCall.object.selector).toEqual('.avyDate');
@@ -47,7 +47,7 @@ define(['gearth',
 			expect(jquiDialog.calls[4].object.selector).toEqual('#avyReportDrawStep2Dialog');
 			expect(jquiDialog.calls[5].object.selector).toEqual('#avyReportDrawStep3Dialog');
 			expect(jquiDialog.calls[6].object.selector).toEqual('#avyReportImageDialog');
-			expect(jquiDialog.calls[7].object.selector).toEqual('#avyReportDialog');
+			expect(jquiDialog.calls[7].object.selector).toEqual('#avyReportDetailsEntryDialog');
 			
 			expect(jqCss.mostRecentCall.object.selector).toEqual("#aeControlContainer");
 			expect(jqSubmit.mostRecentCall.object.selector).toEqual("#avyInitLiftCallback");
