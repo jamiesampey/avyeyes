@@ -19,7 +19,7 @@ AvyDraw.prototype.clearDrawing = function() {
 }
 
 AvyDraw.prototype.startAvyDraw = function() {
-//	$('#map3d').css('cursor', 'pointer');
+//	$('#cesiumContainer').css('cursor', 'pointer');
 	this.drawingKmlObj = this.ge.createDocument('');
 	this.ge.getFeatures().appendChild(this.drawingKmlObj);
 	this.gearth.addEventListener(this.ge.getGlobe(), 'mousemove', (this.onMouseMove).bind(this)); 

@@ -1,3 +1,7 @@
+/* Cesium css imports */
+@import url(../js/lib/Cesium/Widgets/widgets.css);
+@import url(../js/lib/Cesium/Widgets/lighter.css);
+
 html {
 	height: 100%; 
     width: 100%;
@@ -16,12 +20,12 @@ body {
     width: 100%;
 }
 
-#map3d {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
+#cesiumContainer {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
 .avyAdminLoggedInDiv {

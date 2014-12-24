@@ -153,6 +153,10 @@ AvyEyesWiring.prototype.wireUI = function() {
     });
 	
 	$('.avyButton').button();
+	$('#avySearchButton').click(function(){
+	  aeView.setSearchGeoInputs();
+	  $(this).submit();
+	});
 	$('#avySearchResetButton').click(function(){
       aeView.clearSearchFields();
     });
@@ -219,7 +223,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	$('.avyLocation').geocomplete({types: ['geocode']});
 	
 	$('#avySearchLocation').blur(function(event) {
-	  aeView.geocodeAndFlyToLocation($('#avySearchLocation').val(), 4000.0, 20.0);
+	  aeView.geocodeAndFlyToLocation($('#avySearchLocation').val(), 12000.0, 70.0);
 	});
 	
 	$('#aeControlContainer').css('visibility', 'visible');

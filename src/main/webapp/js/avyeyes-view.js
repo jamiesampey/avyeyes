@@ -7,14 +7,43 @@ define(['avyeyes-wiring',
         'lightbox'
         ], function(AvyEyesWiring, AvyReport) {
 
-function AvyEyesView(gearthInst, gmapsInst) {
-  this.wiring = new AvyEyesWiring(this);
-  
-  this.gearth = gearthInst;
-  this.gmaps = gmapsInst;
-  this.ge = null;
+function AvyEyesView(cesiumInst) {
+  this.cesium = cesiumInst;
+
+  this.viewer = new this.cesium.Viewer('cesiumContainer', {
+  	sceneMode: this.cesium.SceneMode.SCENE3D,
+  	terrainProvider: new this.cesium.CesiumTerrainProvider({
+      url : '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
+    }),
+    imageryProvider: new this.cesium.BingMapsImageryProvider({
+	  url : '//dev.virtualearth.net',
+	  key : BING_API_KEY,
+	  mapStyle : this.cesium.BingMapsStyle.AERIAL_WITH_LABELS
+    }),
+    animation: false,
+    baseLayerPicker: false,
+    fullscreenButton: true,
+    geocoder: false,
+    homeButton: false,
+    infoBox: false,
+    sceneModePicker: false,
+    selectionIndicator: false,
+    timeline: false,
+    navigationHelpButton: true,
+    navigationInstructionsInitiallyVisible: false,
+	scene3DOnly: true
+  });
+
+  this.gmaps = null;
   this.geocoder = null;
   this.currentReport = null;
+}
+
+AvyEyesView.prototype.init = function(gmapsInst) {
+  this.gmaps = gmapsInst;
+  this.geocoder = new this.gmaps.Geocoder();
+  new AvyEyesWiring(this).wireUI();
+  $('#loadingDiv').fadeOut(500);
 }
 
 AvyEyesView.prototype.showSearchDiv = function(delay) {
@@ -32,7 +61,7 @@ AvyEyesView.prototype.hideSearchDiv = function() {
 }
 
 AvyEyesView.prototype.resetView = function() {
-	this.clearKmlOverlay();
+//	this.clearKmlOverlay();
 	this.cancelReport();
 	this.showSearchDiv();
 }
@@ -41,6 +70,51 @@ AvyEyesView.prototype.clearSearchFields = function() {
 	$('#aeSearchControlContainer').find('input:text').val('');
 	$('#aeSearchControlContainer').find('.avyRDSliderValue').val('0');
 	$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
+}
+
+AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
+  var camera = this.viewer.scene.camera;
+  var eye = new this.cesium.Cartesian3.fromDegrees(lng, lat, rangeMeters);
+  camera.flyTo({'destination': eye});
+
+//  camera.lookUp(this.cesium.Math.toRadians(tiltDegrees));
+//  camera.lookRight(this.cesium.Math.toRadians(headingDegrees));
+
+//  this.viewer.scene.primitives.add(new this.cesium.DebugModelMatrixPrimitive({
+//        modelMatrix : transform,
+//        length : 100000.0
+//    }));
+
+}
+
+AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
+  if (!address) {
+	  return;
+  }
+
+  this.geocoder.geocode( {'address': address}, function(results, status) {
+    if (status == this.gmaps.GeocoderStatus.OK && results.length) {
+		  var latLng = results[0].geometry.location;
+    	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
+    } else {
+      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
+    }
+  }.bind(this));
+}
+
+AvyEyesView.prototype.setSearchGeoInputs = function() {
+alert('setSearchGeoInputs');
+//	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
+//	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
+//	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
+//	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
+//	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
+//
+//	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
+//	$("#avySearchCameraAlt").val(camera.getAltitude());
+//	$("#avySearchCameraTilt").val(camera.getTilt());
+//	$("#avySearchCameraLat").val(camera.getLatitude());
+//	$("#avySearchCameraLng").val(camera.getLongitude());
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
@@ -70,20 +144,6 @@ AvyEyesView.prototype.cancelReport = function() {
 		this.currentReport.clearAvyDrawing();
 		this.currentReport = null;
 	}
-}
-
-AvyEyesView.prototype.viewChangeEnd = function() {
-	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
-	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
-	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
-	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
-	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
-	
-	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
-	$("#avySearchCameraAlt").val(camera.getAltitude());
-	$("#avySearchCameraTilt").val(camera.getTilt());
-	$("#avySearchCameraLat").val(camera.getLatitude());
-	$("#avySearchCameraLng").val(camera.getLongitude());
 }
 
 AvyEyesView.prototype.handleMapClick = function(event) {
@@ -202,78 +262,17 @@ AvyEyesView.prototype.showHelp = function(tab) {
 	$('#helpDialog').dialog('open');
 }
 
-AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
-	var lookAt = this.ge.createLookAt('');
-	lookAt.setLatitude(lat);
-	lookAt.setLongitude(lng);
-	lookAt.setRange(rangeMeters);
-	lookAt.setAltitudeMode(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
-	lookAt.setTilt(tiltDegrees);
-	lookAt.setHeading(headingDegrees);
-	this.ge.getView().setAbstractView(lookAt);
-}
-    
-AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
-  if (!address) {
-	  return;
-  }
-  
-  this.geocoder.geocode( {'address': address}, function(results, status) {
-    if (status == this.gmaps.GeocoderStatus.OK && results.length) {
-		  var latLng = results[0].geometry.location;
-    	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
-    } else {
-      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
-    }
-  }.bind(this));
-}
-
-AvyEyesView.prototype.overlaySearchResultKml = function(kmlStr) {
-	this.clearKmlOverlay();
-	this.ge.getFeatures().appendChild(this.ge.parseKml(kmlStr));
-}
+//AvyEyesView.prototype.overlaySearchResultKml = function(kmlStr) {
+//	this.clearKmlOverlay();
+//	this.ge.getFeatures().appendChild(this.ge.parseKml(kmlStr));
+//}
 	
-AvyEyesView.prototype.clearKmlOverlay = function() {
-	while (this.ge.getFeatures().hasChildNodes()) {
-		var child = this.ge.getFeatures().getFirstChild();
-		this.ge.getFeatures().removeChild(child);
-	}
-}
-
-AvyEyesView.prototype.viewChangeEndTimeout = function() {
-	var viewChangeEndTimer;
-	if(viewChangeEndTimer){
-	    clearTimeout(viewChangeEndTimer);
-	  }
-	viewChangeEndTimer = setTimeout(this.viewChangeEnd(), 200);
-}
-
-AvyEyesView.prototype.initEarthCB = function(instance) {
-	this.ge = instance;
-	this.geocoder = new this.gmaps.Geocoder();
-    
-	this.ge.getWindow().setVisibility(true);
-	this.ge.getOptions().setStatusBarVisibility(true);
-	this.ge.getOptions().setUnitsFeetMiles(true);
-	this.ge.getOptions().setFlyToSpeed(0.4);
-	this.ge.getNavigationControl().setVisibility(this.ge.VISIBILITY_AUTO);
-	this.ge.getLayerRoot().enableLayerById(this.ge.LAYER_BORDERS, true);
-	this.ge.getLayerRoot().enableLayerById(this.ge.LAYER_ROADS, true);
-  this.gearth.addEventListener(this.ge.getView(), 'viewchangeend', (this.viewChangeEndTimeout).bind(this));
-  this.gearth.addEventListener(this.ge.getGlobe(), 'click', (this.handleMapClick).bind(this));
-    
-  this.wiring.wireUI();
-  $('#loadingDiv').fadeOut(500);
-}
-	    
-AvyEyesView.prototype.failureEarthCB = function(errorCode) {
-  $('#loadingDiv').fadeOut(500); // allow the 'download Google Earth plugin' msg to be shown 
-	console.log('Failed to create an instance of Google Earth. Error code: ' + errorCode);
-}
-
-AvyEyesView.prototype.init = function() {
-  this.gearth.createInstance('map3d', (this.initEarthCB).bind(this), (this.failureEarthCB).bind(this), { 'language': 'en' });
-}
+//AvyEyesView.prototype.clearKmlOverlay = function() {
+//	while (this.ge.getFeatures().hasChildNodes()) {
+//		var child = this.ge.getFeatures().getFirstChild();
+//		this.ge.getFeatures().removeChild(child);
+//	}
+//}
 
 AvyEyesView.prototype.metersToFeet = function(meters) {
   return Math.round(meters * 3.28084);

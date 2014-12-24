@@ -7,11 +7,10 @@ object Constants {
   val BrowserNotSupportedPath = "whawha"
   val LoginPath = "whodat"
     
-  val ChromeVersion: Double = 35.0
+  val ChromeMinVersion: Double = 35.0
   val FirefoxMinVersion: Double = 30.0
   val OperaMinVersion: Double = 22.0
-  val SafariMinVersion: Double = 6.0
-  val IeMinVersion: Double = 9.0
+  val IeMinVersion: Double = 11.0
     
 	val EarliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val HumanNumberUnknown: Int = -1

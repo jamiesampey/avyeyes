@@ -16,7 +16,7 @@
 	    <link rel="shortcut icon" href="/favicon.ico"/>
 	</head>
 	<body class="lift:surround?with=default&amp;at=content">
-        <div id="map3d"></div>
+        <div id="cesiumContainer"></div>
         <div id="fb-root"></div>
 
 		<div id="liftContent" class="lift:Content">
@@ -310,7 +310,7 @@
                 <input id="avySearchCameraLng" type="hidden"/>
              </div>
 		     <div id="avySearchButtonsContainer">
-				 <input id="avySearchButton" type="submit" class="avyButton"/>
+				 <input id="avySearchButton" type="button" class="avyButton"/>
 				 <input id="avySearchSubmitBinding" type="hidden"/>
 				 <input id="avySearchResetButton" type="button" class="avyButton"/>
 		     </div>
@@ -553,7 +553,5 @@
 	   </div> <!-- END REPORT DIALOG DIV -->
 	   
 	   </div> <!-- END LIFT CONTENT -->
-	   
-	   <iframe id='aeControlIframe' frameBorder='0' scrolling='no' src='javascript:void(0);'/>
   </body>
 </html>

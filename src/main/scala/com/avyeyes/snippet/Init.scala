@@ -20,9 +20,9 @@ import net.liftweb.util.Helpers._
 class Init extends KmlCreator with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
     
-  val InitViewLat = 44
-  val InitViewLng = -115
-  val InitViewAltMeters = 2700000
+  val InitViewLat = 38
+  val InitViewLng = -100
+  val InitViewAltMeters = 7000000
   val InitViewCamTilt = 0
   val InitViewHeading = 0
   val InitViewSearchFormDelayMillis = 3500

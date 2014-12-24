@@ -105,9 +105,8 @@ class Boot extends Loggable {
   }
     
   private def browserSupported(req: Req): Boolean = (
-      unboxedBrowserVersion(req.chromeVersion) == ChromeVersion
+      unboxedBrowserVersion(req.chromeVersion) >= ChromeMinVersion
       || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxMinVersion
-      || unboxedBrowserVersion(req.safariVersion) >= SafariMinVersion
       || unboxedBrowserVersion(req.ieVersion) >= IeMinVersion)
 
   private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
