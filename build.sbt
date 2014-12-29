@@ -13,15 +13,14 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 
-// javascript compilation
-compile in Compile <<= (compile in Compile) map { result =>
+// r.js javascript compilation
+lazy val rjs = taskKey[Unit]("Runs r.js compilation and optimization")
+rjs := {
   import scala.sys.process._
   println("r.js -o build.js".!!)
-  result
 }
 
-// xsbt-web-plugin config
-jetty()
+compile in Compile <<= (compile in Compile) dependsOn(rjs)
 
 // sbt-jasmine config
 seq(jasmineSettings : _*)
@@ -38,9 +37,12 @@ jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js"
 
 jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
 
-(Keys.test in Test) <<= (Keys.test in Test) dependsOn (jasmine)
-
 parallelExecution in Test := false
+
+test in Test <<= (test in Test) dependsOn (jasmine)
+
+// xsbt-web-plugin config
+jetty()
 
 // jar dependencies
 libraryDependencies ++= {
