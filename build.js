@@ -2,6 +2,7 @@
     appDir: 'src/main/webapp',
     baseUrl: 'js',
     dir: 'target/webapp',
+    preserveLicenseComments: false,
     paths: {
       'earthAsyncLoad': 'lib/gearth-loader',
       'mapsAsyncLoad': 'lib/gmaps-loader',
