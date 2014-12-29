@@ -11,10 +11,19 @@ scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-unchecked", 
   "-deprecation"
-  )
+)
 
-seq(webSettings :_*)
+// javascript compilation
+compile in Compile <<= (compile in Compile) map { result =>
+  import scala.sys.process._
+  println("r.js -o build.js".!!)
+  result
+}
 
+// xsbt-web-plugin config
+jetty()
+
+// sbt-jasmine config
 seq(jasmineSettings : _*)
 
 appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "js" }
@@ -33,6 +42,7 @@ jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "j
 
 parallelExecution in Test := false
 
+// jar dependencies
 libraryDependencies ++= {
   val liftVersion = "2.6-RC2"
   Seq(
