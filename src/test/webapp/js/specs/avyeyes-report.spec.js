@@ -38,11 +38,11 @@ define(['jasmine-jquery',
 			var address = 'some mtn somewhere';
 			setFixtures('<input id="avyReportInitLocation" value="' + address + '">');
 			
-			spyOn(view, 'geocodeAndFlyToLocation');
+			spyOn(view, 'geocodeAndFlyTo');
 			
 			report.beginReportWithGeocode();
 			
-			expect(view.geocodeAndFlyToLocation).toHaveBeenCalledWith(address, 8000.0, 65.0);
+			expect(view.geocodeAndFlyTo).toHaveBeenCalledWith(address, 8000.0, 65.0);
 			expect($("#avyReportInitLocation")).toHaveValue('');
 			expect(window.setTimeout).toHaveBeenCalled();
 		});

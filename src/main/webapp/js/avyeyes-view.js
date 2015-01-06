@@ -203,6 +203,10 @@ AvyEyesView.prototype.showHelp = function(tab) {
 }
 
 AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
+	if ($('#loadingDiv').is(':visible')) {
+	  $('#loadingDiv').fadeOut(500);
+	}
+
 	var lookAt = this.ge.createLookAt('');
 	lookAt.setLatitude(lat);
 	lookAt.setLongitude(lng);
@@ -213,19 +217,46 @@ AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headi
 	this.ge.getView().setAbstractView(lookAt);
 }
     
-AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
+AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegrees) {
   if (!address) {
 	  return;
   }
   
   this.geocoder.geocode( {'address': address}, function(results, status) {
     if (status == this.gmaps.GeocoderStatus.OK && results.length) {
-		  var latLng = results[0].geometry.location;
+		var latLng = results[0].geometry.location;
     	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
     } else {
       this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
     }
   }.bind(this));
+}
+
+AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
+  var self = this;
+  var flown = false;
+  var DEFAULT_LAT = 44;
+  var DEFAULT_LNG = -115;
+
+  if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(pos) {
+			self.flyTo(pos.coords.latitude, pos.coords.longitude, rangeMeters, tiltDegrees, 0);
+			flown = true;
+		},
+		function(error) { // geolocation failure
+			self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
+			flown = true;
+		}, {timeout:5000, enableHighAccuracy:false});
+    } else { // geolocation not supported
+        self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
+		flown = true;
+    }
+
+    setTimeout(function() {
+      if (!flown) {
+        self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
+      }
+    }, 10000)
 }
 
 AvyEyesView.prototype.overlaySearchResultKml = function(kmlStr) {
@@ -263,7 +294,6 @@ AvyEyesView.prototype.initEarthCB = function(instance) {
   this.gearth.addEventListener(this.ge.getGlobe(), 'click', (this.handleMapClick).bind(this));
     
   this.wiring.wireUI();
-  $('#loadingDiv').fadeOut(500);
 }
 	    
 AvyEyesView.prototype.failureEarthCB = function(errorCode) {

@@ -25,7 +25,6 @@ define(['gearth',
 		it('initEarthCB should init GE plugin and geocoder', function() {
 			spyOn(gearth, 'addEventListener');
 			spyOn(view.wiring, 'wireUI');
-			var jqFadeOut = spyOn($.fn, 'fadeOut');
 
 			expect(view.ge).toBeNull();
 			expect(view.geocoder).toBeNull();
@@ -40,7 +39,6 @@ define(['gearth',
 			expect(gearth.addEventListener.calls[1].args[1]).toEqual('click');
 
 			expect(view.wiring.wireUI).toHaveBeenCalled();
-			expect(jqFadeOut.mostRecentCall.object.selector).toEqual('#loadingDiv');
 		});
 
 		it('failureEarthCB should fade out the loading div to display GE plugin message', function() {
