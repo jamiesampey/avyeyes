@@ -42,7 +42,7 @@ parallelExecution in Test := false
 test in Test <<= (test in Test) dependsOn (jasmine)
 
 // xsbt-web-plugin config
-jetty()
+jetty(config = "etc/jetty.xml")
 
 // jar dependencies
 libraryDependencies ++= {
@@ -59,7 +59,7 @@ libraryDependencies ++= {
     "com.h2database" % "h2" % "1.3.176" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.2",
     "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile",
-    "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",
+    "org.eclipse.jetty" % "jetty-webapp" % "9.2.1.v20140609" % "container,test",
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
   )
 }
