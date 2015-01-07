@@ -235,28 +235,22 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegre
 AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
   var self = this;
   var flown = false;
-  var DEFAULT_LAT = 44;
-  var DEFAULT_LNG = -115;
+
+  var flyToWesternUnitedStates = function() {
+    flown = true;
+  	self.flyTo(44, -115, rangeMeters, tiltDegrees, 0);
+  }
+
+  setTimeout(function() {if (!flown) flyToWesternUnitedStates();}, 10000) // 10 second 'ignore' timeout
 
   if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(function(pos) {
-			self.flyTo(pos.coords.latitude, pos.coords.longitude, rangeMeters, tiltDegrees, 0);
-			flown = true;
-		},
-		function(error) { // geolocation failure
-			self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
-			flown = true;
-		}, {timeout:5000, enableHighAccuracy:false});
-    } else { // geolocation not supported
-        self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
+      navigator.geolocation.getCurrentPosition(function(pos) {
 		flown = true;
-    }
-
-    setTimeout(function() {
-      if (!flown) {
-        self.flyTo(DEFAULT_LAT, DEFAULT_LNG, rangeMeters, tiltDegrees, 0);
-      }
-    }, 10000)
+		self.flyTo(pos.coords.latitude, pos.coords.longitude, rangeMeters, tiltDegrees, 0);
+	  }, flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
+  } else {
+      flyToWesternUnitedStates();
+  }
 }
 
 AvyEyesView.prototype.overlaySearchResultKml = function(kmlStr) {
