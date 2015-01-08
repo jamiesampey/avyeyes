@@ -20,7 +20,7 @@ import net.liftweb.util.{Props, Mailer}
 import net.liftweb.util.Mailer._
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils._
-import org.squeryl.PrimitiveTypeMode.transaction
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.XML

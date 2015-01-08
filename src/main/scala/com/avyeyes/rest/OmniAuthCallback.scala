@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import org.squeryl.PrimitiveTypeMode.transaction
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
 
 import com.avyeyes.persist._
 import com.avyeyes.util.Constants.LoginPath

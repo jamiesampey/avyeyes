@@ -1,7 +1,6 @@
 package com.avyeyes.persist
 
 import com.avyeyes.model._
-import net.liftweb.http.FileParamHolder
 
 trait AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche]

@@ -3,7 +3,7 @@ package com.avyeyes.persist
 import org.specs2.specification._
 import org.specs2.execute._
 import org.squeryl._
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 import org.squeryl.adapters.H2Adapter
 import java.sql.DriverManager
 

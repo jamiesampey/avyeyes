@@ -50,7 +50,7 @@ libraryDependencies ++= {
   Seq(
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-testkit" % liftVersion % "compile",
-    "org.squeryl" %% "squeryl" % "0.9.5-7", 
+    "org.squeryl" %% "squeryl" % "0.9.6-RC3",
     "org.postgresql" % "postgresql" % "9.3-1100-jdbc41",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
     "org.apache.commons" % "commons-lang3" % "3.3.2",

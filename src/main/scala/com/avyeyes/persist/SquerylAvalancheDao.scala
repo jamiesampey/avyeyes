@@ -10,7 +10,7 @@ import com.avyeyes.util.Constants._
 import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao with Loggable {
