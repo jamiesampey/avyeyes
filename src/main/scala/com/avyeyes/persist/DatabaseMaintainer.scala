@@ -2,7 +2,7 @@ package com.avyeyes.persist
 
 import akka.actor._
 import net.liftweb.common.Loggable
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 
 object DatabaseMaintainer {
   val PerformMaintenance = "performMaintenance"

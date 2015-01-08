@@ -72,21 +72,6 @@ AvyEyesView.prototype.clearSearchFields = function() {
 	$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
 }
 
-AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
-  var camera = this.viewer.scene.camera;
-  var eye = new this.cesium.Cartesian3.fromDegrees(lng, lat, rangeMeters);
-  camera.flyTo({'destination': eye});
-
-//  camera.lookUp(this.cesium.Math.toRadians(tiltDegrees));
-//  camera.lookRight(this.cesium.Math.toRadians(headingDegrees));
-
-//  this.viewer.scene.primitives.add(new this.cesium.DebugModelMatrixPrimitive({
-//        modelMatrix : transform,
-//        length : 100000.0
-//    }));
-
-}
-
 AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
   if (!address) {
 	  return;
@@ -273,6 +258,61 @@ AvyEyesView.prototype.showHelp = function(tab) {
 //		this.ge.getFeatures().removeChild(child);
 //	}
 //}
+
+AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
+	if ($('#loadingDiv').is(':visible')) {
+	  $('#loadingDiv').fadeOut(500);
+	}
+
+  var camera = this.viewer.scene.camera;
+  var eye = new this.cesium.Cartesian3.fromDegrees(lng, lat, rangeMeters);
+  camera.flyTo({'destination': eye});
+
+//  camera.lookUp(this.cesium.Math.toRadians(tiltDegrees));
+//  camera.lookRight(this.cesium.Math.toRadians(headingDegrees));
+
+//  this.viewer.scene.primitives.add(new this.cesium.DebugModelMatrixPrimitive({
+//        modelMatrix : transform,
+//        length : 100000.0
+//    }));
+
+}
+    
+AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegrees) {
+  if (!address) {
+	  return;
+  }
+  
+  this.geocoder.geocode( {'address': address}, function(results, status) {
+    if (status == this.gmaps.GeocoderStatus.OK && results.length) {
+		var latLng = results[0].geometry.location;
+    	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
+    } else {
+      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
+    }
+  }.bind(this));
+}
+
+AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
+  var self = this;
+  var flown = false;
+
+  var flyToWesternUnitedStates = function() {
+    flown = true;
+  	self.flyTo(44, -115, rangeMeters, tiltDegrees, 0);
+  }
+
+  setTimeout(function() {if (!flown) flyToWesternUnitedStates();}, 10000) // 10 second 'ignore' timeout
+
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(pos) {
+		flown = true;
+		self.flyTo(pos.coords.latitude, pos.coords.longitude, rangeMeters, tiltDegrees, 0);
+	  }, flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
+  } else {
+      flyToWesternUnitedStates();
+  }
+}
 
 AvyEyesView.prototype.metersToFeet = function(meters) {
   return Math.round(meters * 3.28084);

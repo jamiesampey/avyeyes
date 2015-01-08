@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import org.squeryl.PrimitiveTypeMode.transaction
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._

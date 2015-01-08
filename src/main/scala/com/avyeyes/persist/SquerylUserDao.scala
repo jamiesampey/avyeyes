@@ -3,7 +3,7 @@ package com.avyeyes.persist
 import com.avyeyes.model.{User, UserRole}
 import com.avyeyes.persist.AvyEyesSchema._
 import net.liftweb.common.Loggable
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 
 class SquerylUserDao extends UserDao with Loggable {
   def selectUser(email: String): Option[User] = {

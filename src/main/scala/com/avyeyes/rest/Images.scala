@@ -10,7 +10,7 @@ import com.avyeyes.util.UnauthorizedException
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 
 object Images extends RestHelper {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend

@@ -1,7 +1,7 @@
 package com.avyeyes.persist
 
 import com.avyeyes.model._
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 import org.squeryl.dsl.CompositeKey2
 import org.squeryl.{KeyedEntity, Schema}
 

@@ -20,7 +20,7 @@ rjs := {
   println("r.js -o build.js".!!)
 }
 
-compile in Compile <<= (compile in Compile) dependsOn(rjs)
+//compile in Compile <<= (compile in Compile) dependsOn(rjs)
 
 // sbt-jasmine config
 seq(jasmineSettings : _*)
@@ -42,7 +42,7 @@ parallelExecution in Test := false
 test in Test <<= (test in Test) dependsOn (jasmine)
 
 // xsbt-web-plugin config
-jetty()
+jetty(config = "etc/jetty.xml")
 
 // jar dependencies
 libraryDependencies ++= {
@@ -50,7 +50,7 @@ libraryDependencies ++= {
   Seq(
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-testkit" % liftVersion % "compile",
-    "org.squeryl" %% "squeryl" % "0.9.5-7", 
+    "org.squeryl" %% "squeryl" % "0.9.6-RC3",
     "org.postgresql" % "postgresql" % "9.3-1100-jdbc41",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
     "org.apache.commons" % "commons-lang3" % "3.3.2",
@@ -59,7 +59,7 @@ libraryDependencies ++= {
     "com.h2database" % "h2" % "1.3.176" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.2",
     "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile",
-    "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",
+    "org.eclipse.jetty" % "jetty-webapp" % "9.2.1.v20140609" % "container,test",
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
   )
 }

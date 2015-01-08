@@ -118,7 +118,7 @@ define(['jasmine-jquery',
 			view.geocoder = geocoderMock;
 			
 			var address = 'aspen, co';
-			view.geocodeAndFlyToLocation(address, 13000, 65.5);
+			view.geocodeAndFlyTo(address, 13000, 65.5);
 			expect(geocoderMock.geocode.mostRecentCall.args[0].address).toEqual(address);
 		});
 	});

@@ -1,6 +1,6 @@
 define([], function() {
   var mapsAsyncLoad = function(callbackFuncName) {
-    require(['http://maps.googleapis.com/maps/api/js?v=3&libraries=places&sensor=true&key='
+    require(['//maps.googleapis.com/maps/api/js?v=3&libraries=places&sensor=true&key='
              + GOOGLE_API_KEY + '&callback=' + callbackFuncName], function(){
     });
   }

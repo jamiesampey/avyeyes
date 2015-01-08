@@ -11,7 +11,7 @@ import net.liftweb.http._
 import net.liftweb.util._
 import net.liftweb.util.Helpers._
 import omniauth._
-import org.squeryl.PrimitiveTypeMode._
+import com.avyeyes.persist.AvyEyesSqueryl._
 import java.text.SimpleDateFormat
 
 object AdminConsole extends Loggable {
