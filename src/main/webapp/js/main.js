@@ -12,6 +12,7 @@ require.config({
     'jquery-geocomplete': 'lib/jquery.geocomplete.min',
     'jquery-fileupload': 'lib/jquery.fileupload',
     'jquery-iframe-transport': 'lib/jquery.iframe-transport',
+    'jquery-datatables': 'lib/jquery.datatables.min',
     'geojs': 'lib/geo.min',
     'lightbox': 'lib/lightbox.min'
   }
