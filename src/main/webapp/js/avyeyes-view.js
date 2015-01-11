@@ -4,7 +4,6 @@ define(['avyeyes-wiring',
         'jquery-geocomplete', 
         'jquery-fileupload', 
         'jquery-iframe-transport',
-        'jquery-datatables',
         'lightbox'
         ], function(AvyEyesWiring, AvyReport) {
 

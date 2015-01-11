@@ -9,12 +9,11 @@ require.config({
     'facebook': 'lib/facebook',
     'twitter': '//platform.twitter.com/widgets',
     'jquery-ui': 'lib/jquery-ui',
-    'jquery-geocomplete': 'lib/jquery.geocomplete.min',
+    'jquery-geocomplete': 'lib/jquery.geocomplete',
     'jquery-fileupload': 'lib/jquery.fileupload',
     'jquery-iframe-transport': 'lib/jquery.iframe-transport',
-    'jquery-datatables': 'lib/jquery.datatables.min',
-    'geojs': 'lib/geo.min',
-    'lightbox': 'lib/lightbox.min'
+    'geojs': 'lib/geo',
+    'lightbox': 'lib/lightbox'
   }
 });
     
