@@ -46,7 +46,7 @@ jetty(config = "etc/jetty.xml")
 
 // jar dependencies
 libraryDependencies ++= {
-  val liftVersion = "2.6-RC2"
+  val liftVersion = "2.6"
   Seq(
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-testkit" % liftVersion % "compile",
