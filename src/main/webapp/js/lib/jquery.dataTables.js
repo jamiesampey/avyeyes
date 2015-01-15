@@ -29,21 +29,21 @@
 (function( factory ) {
 	"use strict";
 
-	if ( typeof define === 'function' && define.amd ) {
-		// Define as an AMD module if possible
-		define( 'datatables', ['jquery'], factory );
-	}
-    else if ( typeof exports === 'object' ) {
-        // Node/CommonJS
-        factory( require( 'jquery' ) );
-    }
-	else if ( jQuery && !jQuery.fn.dataTable ) {
+//	if ( typeof define === 'function' && define.amd ) {
+//		// Define as an AMD module if possible
+//		define(['lib/jquery'], factory );
+//	}
+//    else if ( typeof exports === 'object' ) {
+//        // Node/CommonJS
+//        factory( require( 'lib/jquery' ) );
+//    }
+//	else if ( jQuery && !jQuery.fn.dataTable ) {
 		// Define using browser globals otherwise
 		// Prevent multiple instantiations if the script is loaded twice
 		factory( jQuery );
-	}
+//	}
 }
-(/** @lends <global> */function( $ ) {
+(/** @lends <global> */function($) {
 	"use strict";
 
 	/**
