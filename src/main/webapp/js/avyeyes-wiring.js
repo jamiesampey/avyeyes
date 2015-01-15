@@ -1,7 +1,7 @@
-define(['jquery-ui', 
-        'jquery-geocomplete', 
-        'jquery-fileupload', 
-        'jquery-iframe-transport'
+define(['lib/jquery-ui',
+        'lib/jquery.geocomplete',
+        'lib/jquery.fileupload',
+        'lib/jquery.iframe-transport'
         ], function() {
 
 var AvyEyesWiring = function(avyEyesView) {

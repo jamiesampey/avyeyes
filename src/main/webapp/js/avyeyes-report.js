@@ -1,4 +1,4 @@
-define(['avyeyes-draw', 'jquery-ui'], function(AvyDraw) {
+define(['avyeyes-draw', 'lib/jquery-ui'], function(AvyDraw) {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;

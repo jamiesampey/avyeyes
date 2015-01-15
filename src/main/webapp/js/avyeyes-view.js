@@ -1,10 +1,10 @@
 define(['avyeyes-wiring',
         'avyeyes-report',
-        'jquery-ui', 
-        'jquery-geocomplete', 
-        'jquery-fileupload', 
-        'jquery-iframe-transport',
-        'lightbox'
+        'lib/jquery-ui',
+        'lib/jquery.geocomplete',
+        'lib/jquery.fileupload',
+        'lib/jquery.iframe-transport',
+        'lib/lightbox'
         ], function(AvyEyesWiring, AvyReport) {
 
 function AvyEyesView(gearthInst, gmapsInst) {

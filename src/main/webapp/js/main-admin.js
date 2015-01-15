@@ -1,13 +1,18 @@
 'use strict';
 
 require.config({
-  baseUrl: '/js',
-  paths: {
-    'jquery-datatables': 'lib/jquery.dataTables'
-  }
+  baseUrl: '/js'
 });
     
 //Start the main app logic.
-requirejs(['jquery-datatables'], function () {
-  $('.avyAdminDataTable').dataTable();
+requirejs(['lib/jquery.dataTables'], function() {
+  var avyAdminTables;
+  if (adminLoggedIn()) {
+    avyAdminTables = $('.avyAdminDataTable').DataTable();
+  }
 });
+
+function adminLoggedIn() {
+  var adminEmailSpan = $('#avyAdminLoggedInEmail');
+  return adminEmailSpan.length > 0 && adminEmailSpan.text().length > 0;
+}

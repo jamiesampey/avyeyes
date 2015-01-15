@@ -1,30 +1,13 @@
 'use strict';
 
 require.config({
-  baseUrl: '/js',
-  paths: {
-    'earthAsyncLoad': 'lib/gearth-loader',
-    'mapsAsyncLoad': 'lib/gmaps-loader',
-    'analytics': 'lib/analytics',
-    'facebook': 'lib/facebook',
-    'twitter': '//platform.twitter.com/widgets',
-    'jquery-ui': 'lib/jquery-ui',
-    'jquery-geocomplete': 'lib/jquery.geocomplete',
-    'jquery-fileupload': 'lib/jquery.fileupload',
-    'jquery-iframe-transport': 'lib/jquery.iframe-transport',
-    'geojs': 'lib/geo',
-    'lightbox': 'lib/lightbox'
-  }
+  baseUrl: '/js'
 });
     
 var avyeyes = null;
 var avyeyesInitGate = $.Deferred();
 var earthLoaded = false;
 var mapsLoaded = false;
-
-var GA_TRACKING_CODE = 'UA-45548947-3';
-var GOOGLE_API_KEY = 'AIzaSyAHuPQo0kaoI-rEGr0q57EkOF2UPNpFP28';
-var FACEBOOK_APP_ID = '541063359326610';
 
 function earthLoadCB() {
   earthLoaded = true;
@@ -41,7 +24,8 @@ function mapsLoadCB() {
 }
     
 //Start the main app logic.
-requirejs(['avyeyes-view', 'earthAsyncLoad', 'mapsAsyncLoad', 'analytics', 'facebook', 'twitter'],
+requirejs(['avyeyes-view', 'lib/gearth-loader', 'lib/gmaps-loader',
+  'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
 	function (AvyEyesView, earthAsyncLoad, mapsAsyncLoad) {
     earthAsyncLoad(earthLoadCB);
     mapsAsyncLoad("mapsLoadCB");
