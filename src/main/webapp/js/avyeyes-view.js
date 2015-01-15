@@ -1,10 +1,10 @@
 define(['avyeyes-wiring',
         'avyeyes-report',
-        'jquery-ui', 
-        'jquery-geocomplete', 
-        'jquery-fileupload', 
-        'jquery-iframe-transport',
-        'lightbox'
+        'lib/jquery-ui',
+        'lib/jquery.geocomplete',
+        'lib/jquery.fileupload',
+        'lib/jquery.iframe-transport',
+        'lib/lightbox'
         ], function(AvyEyesWiring, AvyReport) {
 
 function AvyEyesView(cesiumInst) {
@@ -17,7 +17,7 @@ function AvyEyesView(cesiumInst) {
     }),
     imageryProvider: new this.cesium.BingMapsImageryProvider({
 	  url : '//dev.virtualearth.net',
-	  key : BING_API_KEY,
+	  key : 'AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr',
 	  mapStyle : this.cesium.BingMapsStyle.AERIAL_WITH_LABELS
     }),
     animation: false,

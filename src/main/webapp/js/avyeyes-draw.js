@@ -1,4 +1,4 @@
-define(['geojs'], function() {
+define(['lib/geo'], function() {
 
 function AvyDraw(avyReport) {
 	this.report = avyReport;

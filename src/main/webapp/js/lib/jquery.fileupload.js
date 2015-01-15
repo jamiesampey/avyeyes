@@ -17,7 +17,7 @@
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define([
-            'jquery-ui'
+            'lib/jquery-ui'
         ], factory);
     } else {
         // Browser globals:
