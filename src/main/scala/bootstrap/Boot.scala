@@ -58,6 +58,7 @@ class Boot extends Loggable {
     
     // setup REST endpoints
     LiftRules.dispatch.append(OmniAuthCallback)
+    LiftRules.dispatch.append(AdminTable)
     LiftRules.dispatch.append(AvyDetails)
     LiftRules.dispatch.append(Images)
     LiftRules.statelessDispatch.append(ExtIdVendor)

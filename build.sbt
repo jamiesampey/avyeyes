@@ -4,7 +4,7 @@ name := "AvyEyes"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.7", 
@@ -15,6 +15,7 @@ scalacOptions ++= Seq(
 
 // r.js javascript compilation
 lazy val rjs = taskKey[Unit]("Runs r.js compilation and optimization")
+
 rjs := {
   import scala.sys.process._
   println("r.js -o build.js".!!)

@@ -27,5 +27,6 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
 
   def getTitle() = s"${dateToStr(avyDate)}: ${areaName}"
 
-  def getExtUrl() = s"${getHttpBaseUrl}${extId}"
+  def getExtHttpUrl() = s"${getHttpBaseUrl}${extId}"
+  def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
 }

@@ -18,7 +18,7 @@ object AvyDetails extends RestHelper with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
-    case "rest" :: "avydetails" :: extId :: Nil Get req => {
+    case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
       val avyJsonOption = transaction {
           val avalancheOption = dao.selectAvalanche(extId)
           
@@ -44,7 +44,7 @@ object AvyDetails extends RestHelper with Loggable {
   private def getJson(a: Avalanche) = {
     val imagesMetadata = dao.selectAvalancheImagesMetadata(a.extId)
 
-    ("extId" -> a.extId) ~ ("extUrl" -> a.getExtUrl) ~
+    ("extId" -> a.extId) ~ ("extUrl" -> a.getExtHttpUrl) ~
     ("areaName" -> a.areaName) ~ ("avyDate" -> dateToStr(a.avyDate)) ~
     ("submitterExp" -> ExperienceLevel.toJObject(a.submitterExp)) ~ 
     ("sky" -> Sky.toJObject(a.sky)) ~ ("precip" -> Precip.toJObject(a.precip)) ~
