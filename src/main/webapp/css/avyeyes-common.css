@@ -1,7 +1,3 @@
-/* Cesium css imports */
-@import url(../js/lib/Cesium/Widgets/widgets.css);
-@import url(../js/lib/Cesium/Widgets/lighter.css);
-
 html {
 	height: 100%; 
     width: 100%;
