@@ -14,7 +14,7 @@ object ExtIdVendor extends RestHelper with ExternalIdService {
   implicit lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
   
   serve {
-    case "rest" :: "reserveExtId" :: Nil Get req => {
+    case "rest" :: "reserveExtId" :: Nil JsonGet req => {
       try {
         val newExtId = transaction {
           reserveNewExtId

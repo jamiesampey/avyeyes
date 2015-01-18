@@ -24,13 +24,6 @@ object AdminConsole extends Loggable {
   private val LocalAuthEmailHash = Props.get("localauth.email", "")
   private val LocalAuthPwHash = Props.get("localauth.pw", "")
   
-  private val unviewableQuery = AvalancheQuery.baseQuery.copy(
-    viewable = Some(false), orderBy = OrderBy.CreateTime, order = Order.Asc)
-  private val recentlyUpdatedQuery = AvalancheQuery.baseQuery.copy(
-    orderBy = OrderBy.UpdateTime, order = Order.Desc, offset = 0, limit = 50)
-  
-  private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    
   def isAuthorizedSession(): Boolean = isNotBlank(authorizedEmail)
   def authorizedEmail(): String = {
     localAuthorizedEmail.get match {
@@ -46,7 +39,7 @@ object AdminConsole extends Loggable {
     logger.info(s"logging out authorized user ${authorizedEmail}")
     localAuthorizedEmail.set(Empty)
     Omniauth.clearCurrentAuth
-    S.redirectTo(getHttpBaseUrl)
+    S.redirectTo(getHttpsBaseUrl)
   }
 
   def localLogIn = {
@@ -94,24 +87,4 @@ object AdminConsole extends Loggable {
   
   def unviewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(false)} }</span>
   def viewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(true)} }</span>
-  
-  def unviewableAvalanches() = {
-    val unviewableList = transaction { 
-      avyDao.selectAvalanches(unviewableQuery) 
-    }
-
-    "tbody tr" #> unviewableList.map(a => <tr><td>{s"${sdf.format(a.createTime)}:"}</td><td>{getAvalancheLink(a)}</td></tr>)
-  }
-  
-  def updatedAvalanches() = {
-    val recentlyUpdatedList = transaction { 
-      avyDao.selectAvalanches(recentlyUpdatedQuery)
-    }
-       
-    "tbody tr" #> recentlyUpdatedList.map(a => <tr><td>{s"${sdf.format(a.updateTime)}:"}</td><td>{getAvalancheLink(a)}</td></tr>)
-  }
-  
-  private def getAvalancheLink(a: Avalanche) = {
-    <a href={getHttpBaseUrl + a.extId} target="_blank">{s"${a.areaName} (${a.extId})"}</a>
-  }
 }
