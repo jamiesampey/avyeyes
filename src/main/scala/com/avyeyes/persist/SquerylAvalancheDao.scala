@@ -5,6 +5,7 @@ import java.sql.Timestamp
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
+import com.avyeyes.persist.OrderDirection._
 import com.avyeyes.service.ExternalIdMaitreD
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.UnauthorizedException
@@ -42,7 +43,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
         and (a.dSize gte (query.dSize).?)
         and (a.caught gte (query.numCaught).?)
         and (a.killed gte (query.numKilled).?))
-      select (a) orderBy (buildAvalancheOrderBy(a, query.orderBy, query.order)))
+      select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(a, orderTuple))))
       .page(query.offset, query.limit).toList
   }
 
@@ -146,26 +147,30 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     case _ => Some(true) // criteria: viewable == true
   }
 
-  private def buildAvalancheOrderBy(a: Avalanche, orderBy: OrderBy.Value,
-    order: Order.Value): OrderByArg = order match {
-    case Order.Asc => new OrderByArg(orderByToExpNode(a, orderBy)) asc
-    case Order.Desc => new OrderByArg(orderByToExpNode(a, orderBy)) desc
+  private def buildOrderByArg(a: Avalanche, orderTuple: (OrderField.Value, OrderDirection.Value)): ExpressionNode = {
+    orderTuple._2 match {
+      case Asc => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) asc
+      case Desc => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) desc
+    }
   }
 
-  private def orderByToExpNode(a: Avalanche, orderBy: OrderBy.Value): ExpressionNode = orderBy match {
-    case OrderBy.Id => a.id
-    case OrderBy.CreateTime => a.createTime
-    case OrderBy.UpdateTime => a.updateTime
-    case OrderBy.Lat => a.lat
-    case OrderBy.Lng => a.lng
-    case OrderBy.AreaName => a.areaName
-    case OrderBy.AvyDate => a.avyDate
-    case OrderBy.AvyType => a.avyType
-    case OrderBy.AvyTrigger => a.avyTrigger
-    case OrderBy.AvyInterface => a.avyInterface
-    case OrderBy.RSize => a.rSize
-    case OrderBy.DSize => a.dSize
-    case OrderBy.Caught => a.caught
-    case OrderBy.Killed => a.killed
+  private def orderFieldToExpNode(a: Avalanche, field: OrderField.Value): ExpressionNode = field match {
+    case OrderField.Id => a.id
+    case OrderField.CreateTime => a.createTime
+    case OrderField.UpdateTime => a.updateTime
+    case OrderField.ExternalId => a.extId
+    case OrderField.Viewable => a.viewable
+    case OrderField.Lat => a.lat
+    case OrderField.Lng => a.lng
+    case OrderField.AreaName => a.areaName
+    case OrderField.AvyDate => a.avyDate
+    case OrderField.AvyType => a.avyType
+    case OrderField.AvyTrigger => a.avyTrigger
+    case OrderField.AvyInterface => a.avyInterface
+    case OrderField.RSize => a.rSize
+    case OrderField.DSize => a.dSize
+    case OrderField.Caught => a.caught
+    case OrderField.Killed => a.killed
+    case OrderField.SubmitterEmail => a.submitter.single.email
   }
 }

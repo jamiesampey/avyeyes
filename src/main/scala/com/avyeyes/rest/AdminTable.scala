@@ -24,7 +24,8 @@ object AdminTable extends RestHelper with Loggable {
           case false => UnauthorizedResponse("Avy Eyes auth required")
           case true => {
             val avalanches = avyDao.selectAvalanches(AvalancheQuery.baseQuery.copy(
-              viewable = None, orderBy = OrderBy.CreateTime, order = Order.Desc))
+              viewable = None, orderBy = List((OrderField.Viewable, OrderDirection.Asc),
+                (OrderField.ExternalId, OrderDirection.Desc))))
             JsonResponse(toDataTablesJson(avalanches))
           }
         }
@@ -49,11 +50,11 @@ object AdminTable extends RestHelper with Loggable {
     ))
   }
 
-  private def getHttpsAvalancheLink(a: Avalanche): String = {
+  private def getHttpsAvalancheLink(a: Avalanche) = {
     <a href={getHttpsBaseUrl + a.extId} target="_blank">{s"${a.getTitle()}"}</a>.toString
   }
 
-  private def getViewableElem(viewable: Boolean): String = {
+  private def getViewableElem(viewable: Boolean) = {
     (if (viewable)
       <span style="color: green;">Yes</span>
     else
