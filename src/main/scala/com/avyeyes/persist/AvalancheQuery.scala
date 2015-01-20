@@ -13,9 +13,9 @@ case class AvalancheQuery(viewable: Option[Boolean] = None, geo: Option[GeoBound
   avyType: Option[AvalancheType.Value] = None, avyTrigger: Option[AvalancheTrigger.Value] = None, 
   rSize: Option[Double] = None, dSize: Option[Double] = None, 
   numCaught: Option[Int] = None, numKilled: Option[Int] = None,
-  orderBy: OrderBy.Value = OrderBy.Id, order: Order.Value = Order.Asc,
+  orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.Id, OrderDirection.Asc)),
   offset: Int = 0, limit: Int = Int.MaxValue)
- 
+
 case class GeoBounds(northStr: String, eastStr: String, southStr: String, westStr: String) {
   def northLimit = strToDblOrZero(northStr)
   def eastLimit = strToDblOrZero(eastStr)
@@ -23,13 +23,13 @@ case class GeoBounds(northStr: String, eastStr: String, southStr: String, westSt
   def westLimit = strToDblOrZero(westStr)
 }
 
-object OrderBy extends Enumeration {
-  type OrderBy = Value
-  val Id, CreateTime, UpdateTime, Lat, Lng, AreaName, AvyDate, AvyType, 
-    AvyTrigger, AvyInterface, RSize, DSize, Caught, Killed = Value
+object OrderField extends Enumeration {
+  type OrderField = Value
+  val Id, CreateTime, UpdateTime, ExternalId, Viewable, Lat, Lng, AreaName, AvyDate, AvyType,
+    AvyTrigger, AvyInterface, RSize, DSize, Caught, Killed, SubmitterEmail = Value
 }
 
-object Order extends Enumeration {
-  type Order = Value
+object OrderDirection extends Enumeration {
+  type OrderDirection = Value
   val Asc, Desc = Value
 }
