@@ -43,7 +43,10 @@ parallelExecution in Test := false
 test in Test <<= (test in Test) dependsOn (jasmine)
 
 // xsbt-web-plugin config
-jetty(config = "etc/jetty.xml")
+lazy val debugForkOptions = new ForkOptions(runJVMOptions =
+  Seq("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788"))
+
+jetty(config = "etc/jetty.xml", options = debugForkOptions)
 
 // jar dependencies
 libraryDependencies ++= {
@@ -59,8 +62,6 @@ libraryDependencies ++= {
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "com.h2database" % "h2" % "1.3.176" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.2",
-    "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile",
-    "org.eclipse.jetty" % "jetty-webapp" % "9.2.1.v20140609" % "container,test",
-    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
+    "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile"
   )
 }
