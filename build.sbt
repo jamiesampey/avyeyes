@@ -62,6 +62,7 @@ libraryDependencies ++= {
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "com.h2database" % "h2" % "1.3.176" % "test",
     "ch.qos.logback" % "logback-classic" % "1.1.2",
-    "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile"
+    "net.liftmodules" %% ("omniauth_2.6") % "0.15" % "compile",
+    "org.eclipse.jetty" % "jetty-webapp" % "9.2.1.v20140609" % "test"
   )
 }

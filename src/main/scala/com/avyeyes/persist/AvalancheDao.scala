@@ -7,7 +7,7 @@ trait AvalancheDao {
   
   def selectAvalanches(query: AvalancheQuery): List[Avalanche]
   
-  def countAvalanches(viewable: Boolean): Int
+  def countAvalanches(viewable: Option[Boolean]): Int
   
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String): Unit
 

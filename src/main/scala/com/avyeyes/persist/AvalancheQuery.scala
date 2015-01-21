@@ -13,7 +13,7 @@ case class AvalancheQuery(viewable: Option[Boolean] = None, geo: Option[GeoBound
   avyType: Option[AvalancheType.Value] = None, avyTrigger: Option[AvalancheTrigger.Value] = None, 
   rSize: Option[Double] = None, dSize: Option[Double] = None, 
   numCaught: Option[Int] = None, numKilled: Option[Int] = None,
-  orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.Id, OrderDirection.Asc)),
+  orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.Id, OrderDirection.asc)),
   offset: Int = 0, limit: Int = Int.MaxValue)
 
 case class GeoBounds(northStr: String, eastStr: String, southStr: String, westStr: String) {
@@ -31,5 +31,5 @@ object OrderField extends Enumeration {
 
 object OrderDirection extends Enumeration {
   type OrderDirection = Value
-  val Asc, Desc = Value
+  val asc, desc = Value
 }
