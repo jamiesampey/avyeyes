@@ -56,12 +56,12 @@ object AdminTable extends RestHelper with Loggable {
       }
     }
 
-    val orderByList: List[(OrderField.Value, OrderDirection.Value)] = {
+    val orderByList = {
       val listBuffer: ListBuffer[(OrderField.Value, OrderDirection.Value)] = new ListBuffer()
 
       val orderColumnEntries = req.params filterKeys(key => "order\\[\\d+\\]\\[column\\]".r.findFirstMatchIn(key) isDefined)
 
-      orderColumnEntries foreach (entryTuple => {
+      orderColumnEntries.toList sortBy (_._1) foreach (entryTuple => {
         val orderIdx = "order\\[(\\d+)\\]\\[column\\]".r.findFirstMatchIn(entryTuple._1) match {
           case Some(m) => m.group(1)
           case None => {
@@ -81,13 +81,13 @@ object AdminTable extends RestHelper with Loggable {
               }
               case None => {
                 logger.error("Table data error. Order direction param missing")
-                throw new IllegalArgumentException
+                throw new Exception
               }
             }
           }
           case None => {
-            logger.error("Table data error. Column name param missing")
-            throw new IllegalArgumentException
+            logger.error("Table data error. Order column name param missing")
+            throw new Exception
           }
         }
       })
