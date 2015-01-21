@@ -47,7 +47,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
       .page(query.offset, query.limit).toList
   }
 
-  def countAvalanches(viewable: Boolean) = from(avalanches)(a => where(a.viewable === viewable) compute (count)).toInt
+  def countAvalanches(viewable: Option[Boolean]) = from(avalanches)(a =>
+    where(a.viewable === viewable.?) compute (count)).toInt
 
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String) = {
     if (avalanche.viewable && !isAuthorizedSession()) {
@@ -149,8 +150,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
 
   private def buildOrderByArg(a: Avalanche, orderTuple: (OrderField.Value, OrderDirection.Value)): ExpressionNode = {
     orderTuple._2 match {
-      case Asc => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) asc
-      case Desc => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) desc
+      case `asc` => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) asc
+      case `desc` => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) desc
     }
   }
 

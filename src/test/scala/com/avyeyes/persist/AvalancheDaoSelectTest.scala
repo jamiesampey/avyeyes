@@ -174,8 +174,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, viewableAvalanche2)
       insertTestAvalanche(dao, unviewableAvalanche)
       
-      dao.countAvalanches(true) must_== 2
-      dao.countAvalanches(false) must_==1
+      dao.countAvalanches(Some(true)) must_== 2
+      dao.countAvalanches(Some(false)) must_==1
+      dao.countAvalanches(None) must_==3
     }
   }
   
@@ -191,7 +192,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, earliest)
       insertTestAvalanche(dao, middle)
       
-      val dateAscOrderQuery = baseQuery.copy(orderBy = List((OrderField.AvyDate, OrderDirection.Asc)))
+      val dateAscOrderQuery = baseQuery.copy(orderBy = List((OrderField.AvyDate, OrderDirection.asc)))
       val avyDateAscArray = dao.selectAvalanches(dateAscOrderQuery).toArray
       
       avyDateAscArray(0).extId must_== earliest.extId
@@ -204,7 +205,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, earliest)
       insertTestAvalanche(dao, middle)
 
-      val dateDescOrderQuery = baseQuery.copy(orderBy = List((OrderField.AvyDate, OrderDirection.Desc)))
+      val dateDescOrderQuery = baseQuery.copy(orderBy = List((OrderField.AvyDate, OrderDirection.desc)))
       val avyDateDescArray = dao.selectAvalanches(dateDescOrderQuery).toArray
       
       avyDateDescArray(0).extId must_== latest.extId

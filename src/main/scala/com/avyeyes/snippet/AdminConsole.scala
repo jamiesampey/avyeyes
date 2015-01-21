@@ -85,6 +85,6 @@ object AdminConsole extends Loggable {
   def loggedOutContent(html: NodeSeq) = if (!isAuthorizedSession) html else NodeSeq.Empty
   def loggedInContent(html: NodeSeq) = if (isAuthorizedSession) html else NodeSeq.Empty
   
-  def unviewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(false)} }</span>
-  def viewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(true)} }</span>
+  def unviewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(Some(false))} }</span>
+  def viewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(Some(true))} }</span>
 }
