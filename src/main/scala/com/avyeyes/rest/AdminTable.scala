@@ -3,6 +3,7 @@ package com.avyeyes.rest
 import java.text.SimpleDateFormat
 
 import com.avyeyes.model.Avalanche
+import com.avyeyes.persist
 import com.avyeyes.util.Helpers._
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.persist._
@@ -31,7 +32,7 @@ object AdminTable extends RestHelper with Loggable {
   private def buildResponse(req: Req) = {
     try {
       val query = buildQuery(req)
-      val avalanches = avyDao.selectAvalanches(query)
+      val avalanches = avyDao.adminSelectAvalanches(query)
       val jObj = toDataTablesJson(avalanches, req)
       JsonResponse(jObj)
     } catch {
@@ -39,7 +40,7 @@ object AdminTable extends RestHelper with Loggable {
     }
   }
 
-  private def buildQuery(req: Req): AvalancheQuery = {
+  private def buildQuery(req: Req): AdminAvalancheQuery = {
     val offsetVal = req.param("start") match {
       case Full(str) => str.toInt
       case _ => {
@@ -95,7 +96,7 @@ object AdminTable extends RestHelper with Loggable {
       listBuffer.toList
     }
 
-    AvalancheQuery.baseQuery.copy(viewable = None, orderBy = orderByList, offset = offsetVal, limit = limitVal)
+    AdminAvalancheQuery.defaultQuery.copy(orderBy = orderByList, offset = offsetVal, limit = limitVal)
   }
 
   private def toDataTablesJson(avalanches: List[Avalanche], req: Req): JObject = {

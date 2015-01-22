@@ -1,9 +1,9 @@
 package com.avyeyes.persist
 
-import org.specs2.mutable.Specification
-import com.avyeyes.test._
 import com.avyeyes.model.Avalanche
 import com.avyeyes.persist.AvalancheQuery._
+import com.avyeyes.test._
+import org.specs2.mutable.Specification
 
 class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
@@ -18,7 +18,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
     "NE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val neLatLngInBoundsCriteria = baseQuery.copy(geo = Some(createGeoBoundsToInclude(neHemisphereAvalanche)))
+      val neLatLngInBoundsCriteria = defaultQuery.copy(geo = Some(createGeoBoundsToInclude(neHemisphereAvalanche)))
       
       val resultList = dao.selectAvalanches(neLatLngInBoundsCriteria)
       

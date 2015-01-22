@@ -6,7 +6,9 @@ trait AvalancheDao {
   def selectAvalanche(extId: String): Option[Avalanche]
   
   def selectAvalanches(query: AvalancheQuery): List[Avalanche]
-  
+
+  def adminSelectAvalanches(query: AdminAvalancheQuery): List[Avalanche]
+
   def countAvalanches(viewable: Option[Boolean]): Int
   
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String): Unit
