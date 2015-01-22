@@ -5,13 +5,12 @@ import java.sql.Timestamp
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
-import com.avyeyes.persist.OrderDirection._
+import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.service.ExternalIdMaitreD
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today
-import com.avyeyes.persist.AvyEyesSqueryl._
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
 class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao with Loggable {
@@ -33,7 +32,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     val avyTriggerQueryVal = query.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
     
     from(avalanches)(a => where(
-      (a.viewable === getAvyViewableQueryVal(query.viewable).?)
+        (a.viewable === getAvyViewableQueryVal(query.viewable).?)
         and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
         and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
         and a.avyDate.between(fromDate, toDate)
@@ -43,8 +42,22 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
         and (a.dSize gte (query.dSize).?)
         and (a.caught gte (query.numCaught).?)
         and (a.killed gte (query.numKilled).?))
-      select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(a, orderTuple))))
-      .page(query.offset, query.limit).toList
+    select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
+    .page(query.offset, query.limit).toList
+  }
+
+  def adminSelectAvalanches(query: AdminAvalancheQuery) = {
+    if (!isAuthorizedSession()) {
+      throw new UnauthorizedException("Not authorized for admin select")
+    }
+
+    from(avalanches, users)((a,u) => where(
+      (a.submitterId === u.id)
+        and (a.extId like query.extId.?)
+        and (a.areaName like query.areaName.?)
+        and (u.email like query.submitterEmail.?))
+    select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
+    .page(query.offset, query.limit).toList
   }
 
   def countAvalanches(viewable: Option[Boolean]) = from(avalanches)(a =>
@@ -148,30 +161,36 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     case _ => Some(true) // criteria: viewable == true
   }
 
-  private def buildOrderByArg(a: Avalanche, orderTuple: (OrderField.Value, OrderDirection.Value)): ExpressionNode = {
+  private def buildOrderByArg(orderTuple: (OrderField.Value, OrderDirection.Value),
+                              a: Avalanche, userOpt: Option[User] = None): ExpressionNode = {
     orderTuple._2 match {
-      case `asc` => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) asc
-      case `desc` => new OrderByArg(orderFieldToExpNode(a, orderTuple._1)) desc
+      case OrderDirection.asc => new OrderByArg(orderFieldToExpNode(orderTuple._1, a, userOpt)) asc
+      case OrderDirection.desc => new OrderByArg(orderFieldToExpNode(orderTuple._1, a, userOpt)) desc
     }
   }
 
-  private def orderFieldToExpNode(a: Avalanche, field: OrderField.Value): ExpressionNode = field match {
-    case OrderField.Id => a.id
-    case OrderField.CreateTime => a.createTime
-    case OrderField.UpdateTime => a.updateTime
-    case OrderField.ExternalId => a.extId
-    case OrderField.Viewable => a.viewable
-    case OrderField.Lat => a.lat
-    case OrderField.Lng => a.lng
-    case OrderField.AreaName => a.areaName
-    case OrderField.AvyDate => a.avyDate
-    case OrderField.AvyType => a.avyType
-    case OrderField.AvyTrigger => a.avyTrigger
-    case OrderField.AvyInterface => a.avyInterface
-    case OrderField.RSize => a.rSize
-    case OrderField.DSize => a.dSize
-    case OrderField.Caught => a.caught
-    case OrderField.Killed => a.killed
-    case OrderField.SubmitterEmail => a.submitter.single.email
-  }
+  private def orderFieldToExpNode(field: OrderField.Value, a: Avalanche, userOpt: Option[User]): ExpressionNode =
+    field match {
+      case OrderField.id => a.id
+      case OrderField.createTime => a.createTime
+      case OrderField.updateTime => a.updateTime
+      case OrderField.extId => a.extId
+      case OrderField.viewable => a.viewable
+      case OrderField.lat => a.lat
+      case OrderField.lng => a.lng
+      case OrderField.areaName => a.areaName
+      case OrderField.avyDate => a.avyDate
+      case OrderField.avyType => a.avyType
+      case OrderField.avyTrigger => a.avyTrigger
+      case OrderField.avyInterface => a.avyInterface
+      case OrderField.rSize => a.rSize
+      case OrderField.dSize => a.dSize
+      case OrderField.caught => a.caught
+      case OrderField.killed => a.killed
+
+      case OrderField.submitterEmail => userOpt match {
+        case Some(u) => u.email
+        case None => a.id
+      }
+    }
 }

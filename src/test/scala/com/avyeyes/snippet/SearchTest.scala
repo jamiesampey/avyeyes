@@ -1,8 +1,9 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.persist.AvalancheQuery
+
 import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor
-import com.avyeyes.persist.AvalancheQuery
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._

@@ -1,9 +1,8 @@
 package com.avyeyes.snippet
 
-import scala.math._
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants._
@@ -16,6 +15,8 @@ import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp.strToJsExp
 import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils._
+
+import scala.math._
 
 class Search extends KmlCreator with Loggable {
   lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
@@ -68,7 +69,7 @@ class Search extends KmlCreator with Loggable {
   }
     
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val query = AvalancheQuery.baseQuery.copy(
+    val query = AvalancheQuery.defaultQuery.copy(
       viewable = Some(true), 
       geo = Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
       fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None, 
