@@ -96,7 +96,10 @@ object AdminTable extends RestHelper with Loggable {
       listBuffer.toList
     }
 
-    AdminAvalancheQuery.defaultQuery.copy(orderBy = orderByList, offset = offsetVal, limit = limitVal)
+    val searchTerm = getSearchTerm(req)
+
+    AdminAvalancheQuery.defaultQuery.copy(extId = searchTerm, areaName = searchTerm,
+      submitterEmail = searchTerm, orderBy = orderByList, offset = offsetVal, limit = limitVal)
   }
 
   private def toDataTablesJson(avalanches: List[Avalanche], req: Req): JObject = {
@@ -109,11 +112,12 @@ object AdminTable extends RestHelper with Loggable {
     }
 
     val totalAvalancheRecords = avyDao.countAvalanches(None)
+    val filteredRecords = totalAvalancheRecords //getSearchTerm(req)
 
     JObject(List(
       JField("draw", JInt(drawVal)),
       JField("recordsTotal", JInt(totalAvalancheRecords)),
-      JField("recordsFiltered", JInt(totalAvalancheRecords)),
+      JField("recordsFiltered", JInt(filteredRecords)),
       JField("data", JArray(
         avalanches map (a => JArray(List(
           JString(sdf.format(a.createTime)),
@@ -124,6 +128,14 @@ object AdminTable extends RestHelper with Loggable {
           JString(a.submitter.single.email)))
       )))
     ))
+  }
+
+  private def getSearchTerm(req: Req): Option[String] = {
+    (req.params find(entryTuple =>
+      "search\\[value\\]".r.findFirstMatchIn(entryTuple._1) isDefined)) match {
+      case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"%${entryTuple._2(0)}%")
+      case _ => None
+    }
   }
 
   private def getHttpsAvalancheLink(a: Avalanche) = {

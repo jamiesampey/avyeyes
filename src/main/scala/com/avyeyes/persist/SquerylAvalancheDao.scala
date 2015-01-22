@@ -41,8 +41,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
         and (a.rSize gte (query.rSize).?)
         and (a.dSize gte (query.dSize).?)
         and (a.caught gte (query.numCaught).?)
-        and (a.killed gte (query.numKilled).?))
-    select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
+        and (a.killed gte (query.numKilled).?)
+    ) select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
     .page(query.offset, query.limit).toList
   }
 
@@ -53,10 +53,10 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
 
     from(avalanches, users)((a,u) => where(
       (a.submitterId === u.id)
-        and (a.extId like query.extId.?)
-        and (a.areaName like query.areaName.?)
-        and (u.email like query.submitterEmail.?))
-    select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
+        and ((a.extId like query.extId.?)
+          or (a.areaName like query.areaName.?)
+          or (u.email like query.submitterEmail.?))
+    ) select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
     .page(query.offset, query.limit).toList
   }
 
