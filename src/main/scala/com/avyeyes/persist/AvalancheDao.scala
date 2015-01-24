@@ -7,7 +7,7 @@ trait AvalancheDao {
   
   def selectAvalanches(query: AvalancheQuery): List[Avalanche]
 
-  def adminSelectAvalanches(query: AdminAvalancheQuery): List[Avalanche]
+  def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int)
 
   def countAvalanches(viewable: Option[Boolean]): Int
   

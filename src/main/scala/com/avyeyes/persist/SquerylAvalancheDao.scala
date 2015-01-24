@@ -42,22 +42,23 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
         and (a.dSize gte (query.dSize).?)
         and (a.caught gte (query.numCaught).?)
         and (a.killed gte (query.numKilled).?)
-    ) select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
+    ) select(a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
     .page(query.offset, query.limit).toList
   }
 
-  def adminSelectAvalanches(query: AdminAvalancheQuery) = {
+  def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
     if (!isAuthorizedSession()) {
       throw new UnauthorizedException("Not authorized for admin select")
     }
 
-    from(avalanches, users)((a,u) => where(
+    val queryResult = from(avalanches, users)((a,u) => where(
       (a.submitterId === u.id)
-        and ((a.extId like query.extId.?)
-          or (a.areaName like query.areaName.?)
-          or (u.email like query.submitterEmail.?))
-    ) select (a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
-    .page(query.offset, query.limit).toList
+        and ((lower(a.extId) like lower(query.extId)).inhibitWhen(query.extId.isEmpty)
+          or (lower(a.areaName) like lower(query.areaName)).inhibitWhen(query.areaName.isEmpty)
+          or (lower(u.email) like lower(query.submitterEmail)).inhibitWhen(query.submitterEmail.isEmpty))
+    ) select(a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
+
+    (queryResult.page(query.offset, query.limit).toList, queryResult.size, countAvalanches(None))
   }
 
   def countAvalanches(viewable: Option[Boolean]) = from(avalanches)(a =>
