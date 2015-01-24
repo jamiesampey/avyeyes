@@ -27,7 +27,21 @@ requirejs(['lib/jquery.dataTables'], function() {
       }
     };
 
-    var adminTable = $('#avyAdminDataTable').dataTable(tableOptions);
+  var dataTableApi = $('#avyAdminDataTable').DataTable(tableOptions);
+  var dataTableAjaxFilterTimeout;
+
+  $('.dataTables_filter input').unbind().bind('input', function(e) {
+    clearTimeout(dataTableAjaxFilterTimeout);
+    if(this.value.length >= 3 || e.keyCode == 13) {
+        dataTableAjaxFilterTimeout = setTimeout(dataTableApi.search(this.value).draw, 500);
+    }
+
+    if(this.value == '') {
+        dataTableApi.search('').draw();
+    }
+    return;
+  });
+
   }
 });
 
