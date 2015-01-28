@@ -1,9 +1,5 @@
 package com.avyeyes.persist
 
-object AdminAvalancheQuery {
-  val defaultQuery = new AdminAvalancheQuery
-}
-
 case class AdminAvalancheQuery(
   extId: Option[String] = None,
   areaName: Option[String] = None,

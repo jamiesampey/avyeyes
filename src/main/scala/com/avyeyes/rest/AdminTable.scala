@@ -100,7 +100,7 @@ object AdminTable extends RestHelper with Loggable {
       case _ => None
     }
 
-    AdminAvalancheQuery.defaultQuery.copy(extId = searchTerm, areaName = searchTerm,
+    AdminAvalancheQuery(extId = searchTerm, areaName = searchTerm,
       submitterEmail = searchTerm, orderBy = orderByList, offset = offsetVal, limit = limitVal)
   }
 

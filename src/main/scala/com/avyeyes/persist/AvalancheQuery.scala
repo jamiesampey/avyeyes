@@ -5,10 +5,6 @@ import java.util.Date
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Helpers._
 
-object AvalancheQuery {
-  val defaultQuery = new AvalancheQuery
-}
-
 case class AvalancheQuery(
   viewable: Option[Boolean] = None, geo: Option[GeoBounds] = None,
   fromDate: Option[Date] = None, toDate: Option[Date] = None, 
