@@ -9,6 +9,7 @@ import com.avyeyes.persist.AvalancheDao
 trait AvalancheHelpers {
 
   def insertTestAvalanche(dao: AvalancheDao, a: Avalanche) = dao.insertAvalanche(a, "thomas.jefferson@gmail.com")
+  def insertTestAvalanche(dao: AvalancheDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
 
   def avalancheAtLocation(extId: String, viewable: Boolean, lat: Double, lng: Double): Avalanche = {
     Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
@@ -33,7 +34,13 @@ trait AvalancheHelpers {
       Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
       0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
   }
-  
+
+  def avalancheAtLocationWithName(extId: String, viewable: Boolean, lat: Double, lng: Double, areaName: String): Avalanche = {
+    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, areaName, new Date,
+      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U,
+      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  }
+
   def avalancheAtLocationWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double, 
     avyType: AvalancheType.Value, avyTrigger: AvalancheTrigger.Value): Avalanche = {
     Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,

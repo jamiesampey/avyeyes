@@ -69,7 +69,7 @@ class Search extends KmlCreator with Loggable {
   }
     
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val query = AvalancheQuery.defaultQuery.copy(
+    val query = AvalancheQuery(
       viewable = Some(true), 
       geo = Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
       fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None, 

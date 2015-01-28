@@ -31,10 +31,8 @@ object AdminTable extends RestHelper with Loggable {
 
   private def buildResponse(req: Req) = {
     try {
-      val query = buildQuery(req)
-      val avalanches = avyDao.adminSelectAvalanches(query)
-      val jObj = toDataTablesJson(avalanches, req)
-      JsonResponse(jObj)
+      val queryResult = avyDao.selectAvalanchesForAdminTable(buildQuery(req))
+      JsonResponse(toDataTablesJson(queryResult, req))
     } catch {
       case e: Exception => InternalServerErrorResponse()
     }
@@ -96,13 +94,17 @@ object AdminTable extends RestHelper with Loggable {
       listBuffer.toList
     }
 
-    val searchTerm = getSearchTerm(req)
+    val searchTerm = (req.params find(entryTuple =>
+      "search\\[value\\]".r.findFirstMatchIn(entryTuple._1) isDefined)) match {
+      case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"%${entryTuple._2(0)}%")
+      case _ => None
+    }
 
-    AdminAvalancheQuery.defaultQuery.copy(extId = searchTerm, areaName = searchTerm,
+    AdminAvalancheQuery(extId = searchTerm, areaName = searchTerm,
       submitterEmail = searchTerm, orderBy = orderByList, offset = offsetVal, limit = limitVal)
   }
 
-  private def toDataTablesJson(avalanches: List[Avalanche], req: Req): JObject = {
+  private def toDataTablesJson(queryResult: (List[Avalanche], Int, Int), req: Req): JObject = {
     val drawVal = req.param("draw") match {
       case Full(str) => str.toInt
       case _ => {
@@ -111,15 +113,16 @@ object AdminTable extends RestHelper with Loggable {
       }
     }
 
-    val totalAvalancheRecords = avyDao.countAvalanches(None)
-    val filteredRecords = totalAvalancheRecords //getSearchTerm(req)
+    val matchingAvalanches = queryResult._1
+    val filteredRecordCount = queryResult._2
+    val totalRecordCount = queryResult._3
 
     JObject(List(
       JField("draw", JInt(drawVal)),
-      JField("recordsTotal", JInt(totalAvalancheRecords)),
-      JField("recordsFiltered", JInt(filteredRecords)),
+      JField("recordsTotal", JInt(totalRecordCount)),
+      JField("recordsFiltered", JInt(filteredRecordCount)),
       JField("data", JArray(
-        avalanches map (a => JArray(List(
+        matchingAvalanches map (a => JArray(List(
           JString(sdf.format(a.createTime)),
           JString(sdf.format(a.updateTime)),
           JString(a.extId),
@@ -128,14 +131,6 @@ object AdminTable extends RestHelper with Loggable {
           JString(a.submitter.single.email)))
       )))
     ))
-  }
-
-  private def getSearchTerm(req: Req): Option[String] = {
-    (req.params find(entryTuple =>
-      "search\\[value\\]".r.findFirstMatchIn(entryTuple._1) isDefined)) match {
-      case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"%${entryTuple._2(0)}%")
-      case _ => None
-    }
   }
 
   private def getHttpsAvalancheLink(a: Avalanche) = {
