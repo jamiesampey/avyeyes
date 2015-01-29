@@ -3,9 +3,9 @@ package com.avyeyes.rest
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSqueryl.transaction
-import com.avyeyes.service.DependencyInjector
+import com.avyeyes.persist.DaoInjector
+import com.avyeyes.service.UserInjector
 import com.avyeyes.util.Helpers._
-import com.avyeyes.util.UserSession
 import net.liftweb.common.Loggable
 import net.liftweb.http.NotFoundResponse
 import net.liftweb.http.rest.RestHelper
@@ -14,8 +14,8 @@ import net.liftweb.json.JsonDSL._
 
 
 object AvyDetails extends RestHelper with Loggable {
-  lazy val dao = DependencyInjector.avalancheDao.vend
-  val userSession = new UserSession
+  lazy val dao = DaoInjector.avalancheDao.vend
+  lazy val userSession = UserInjector.userSession.vend
 
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {

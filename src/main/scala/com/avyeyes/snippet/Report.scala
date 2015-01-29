@@ -6,7 +6,8 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSqueryl.transaction
-import com.avyeyes.service.{DependencyInjector, ExternalIdService}
+import com.avyeyes.persist.DaoInjector
+import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
@@ -25,7 +26,7 @@ import scala.collection.mutable.ListBuffer
 import scala.xml.XML
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val dao = DependencyInjector.avalancheDao.vend
+  lazy val dao = DaoInjector.avalancheDao.vend
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";

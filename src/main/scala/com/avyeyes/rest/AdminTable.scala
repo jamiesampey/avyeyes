@@ -2,22 +2,21 @@ package com.avyeyes.rest
 
 import java.text.SimpleDateFormat
 
-import com.avyeyes.model.Avalanche
-import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.persist._
-import com.avyeyes.service.DependencyInjector
-import com.avyeyes.util.Helpers._
-import com.avyeyes.util.UserSession
-import net.liftweb.common.{Full, Loggable}
-import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
-import net.liftweb.json.JsonAST._
-
 import scala.collection.mutable.ListBuffer
 
+import com.avyeyes.model.Avalanche
+import com.avyeyes.persist._
+import com.avyeyes.persist.AvyEyesSqueryl._
+import com.avyeyes.service.UserInjector
+import com.avyeyes.util.Helpers._
+import net.liftweb.common.{Full, Loggable}
+import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
+import net.liftweb.http.rest.RestHelper
+import net.liftweb.json.JsonAST._
+
 object AdminTable extends RestHelper with Loggable {
-  lazy val avyDao = DependencyInjector.avalancheDao.vend
-  val userSession = new UserSession
+  lazy val avyDao = DaoInjector.avalancheDao.vend
+  lazy val userSession = UserInjector.userSession.vend
 
   private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
@@ -32,8 +31,10 @@ object AdminTable extends RestHelper with Loggable {
 
   private def buildResponse(req: Req) = {
     try {
-      val queryResult = avyDao.selectAvalanchesForAdminTable(buildQuery(req))
-      JsonResponse(toDataTablesJson(queryResult, req))
+      transaction {
+        val queryResult = avyDao.selectAvalanchesForAdminTable(buildQuery(req))
+        JsonResponse(toDataTablesJson(queryResult, req))
+      }
     } catch {
       case e: Exception => InternalServerErrorResponse()
     }
