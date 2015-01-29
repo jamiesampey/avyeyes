@@ -4,7 +4,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist._
-import com.avyeyes.service.KmlCreator
+import com.avyeyes.service.{DependencyInjector, KmlCreator}
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils._
 import scala.math._
 
 class Search extends KmlCreator with Loggable {
-  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao = DependencyInjector.avalancheDao.vend
   
   var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
   var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 

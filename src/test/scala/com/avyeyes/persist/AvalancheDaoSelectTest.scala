@@ -17,24 +17,29 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   
   "Unviewable avalanche select" >> {
     "Not allowed with unauthorized session" >> {
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(() => false)
       insertTestAvalanche(dao, nonviewableAvalanche)
+
       dao.selectAvalanche(nonviewableAvalanche.extId) must beNone
     }
     
     "Allowed with authorized session" >> {
+      val dao = new SquerylAvalancheDao(Authorized)
+
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(() => true)
       insertTestAvalanche(dao, nonviewableAvalanche)
+
       dao.selectAvalanche(nonviewableAvalanche.extId) must beSome
     }
   }
     
   "Date filtering" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val jan1Avalanche = avalancheAtLocationOnDate("94jfi449", true, commonLat, commonLng, strToDate("01-01-2014"))
     val jan5Avalanche = avalancheAtLocationOnDate("42rtir54", true, commonLat, commonLng, strToDate("01-05-2014"))  
-    val dao = new SquerylAvalancheDao(() => true)
 
     "From date filtering" >> {
       insertTestAvalanche(dao, jan1Avalanche)
@@ -65,10 +70,11 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   }
   
   "Type/Trigger filtering" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val hsAsAvalanche = avalancheAtLocationWithTypeAndTrigger("943isfki", true, commonLat, commonLng, AvalancheType.HS, AvalancheTrigger.AS)
     val wsNeAvalanche = avalancheAtLocationWithTypeAndTrigger("m5ie56ko", true, commonLat, commonLng, AvalancheType.WS, AvalancheTrigger.NE)
-    val dao = new SquerylAvalancheDao(() => true)
-    
+
     "Type filtering" >> {
       insertTestAvalanche(dao, hsAsAvalanche)
       insertTestAvalanche(dao, wsNeAvalanche)
@@ -98,10 +104,11 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   }
   
   "R/D size filtering" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val r4d15Avalanche = avalancheAtLocationWithSize("94ik4of1", true, commonLat, commonLng, 4.0, 1.5)
     val r15d3Avalanche = avalancheAtLocationWithSize("43ufj4id", true, commonLat, commonLng, 1.5, 3.0)
-    val dao = new SquerylAvalancheDao(() => true)
-    
+
     "R size filtering" >> {
       insertTestAvalanche(dao, r4d15Avalanche)
       insertTestAvalanche(dao, r15d3Avalanche)
@@ -131,10 +138,11 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   }
   
   "Human numbers filtering" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val c4k0Avalanche = avalancheAtLocationWithCaughtKilledNumbers("349tgo94", true, commonLat, commonLng, 4, 0)
     val c3k2Avalanche = avalancheAtLocationWithCaughtKilledNumbers("e32fi417", true, commonLat, commonLng, 3, 2)
-    val dao = new SquerylAvalancheDao(() => true)
-    
+
     "Number caught filtering" >> {
       insertTestAvalanche(dao, c4k0Avalanche)
       insertTestAvalanche(dao, c3k2Avalanche)
@@ -165,11 +173,12 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   
   "Avalanche count" >> {
     "Counts avalanches by viewability" >> {
+      val dao = new SquerylAvalancheDao(Authorized)
+
       val viewableAvalanche1 = avalancheAtLocation("94jfi449", true, commonLat, commonLng)
       val viewableAvalanche2 = avalancheAtLocation("42rtir54", true, commonLat, commonLng)
       val unviewableAvalanche = avalancheAtLocation("6903k2fh", false, commonLat, commonLng)
     
-      val dao = new SquerylAvalancheDao(() => true)
       insertTestAvalanche(dao, viewableAvalanche1)
       insertTestAvalanche(dao, viewableAvalanche2)
       insertTestAvalanche(dao, unviewableAvalanche)
@@ -181,12 +190,12 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   }
   
   "Ordering" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val latest = avalancheAtLocationOnDate("94jfi449", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).toDate)
     val earliest = avalancheAtLocationOnDate("42rtir54", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(20).toDate)
     val middle = avalancheAtLocationOnDate("6903k2fh", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(10).toDate)
 
-    val dao = new SquerylAvalancheDao(() => true)
-    
     "Selects can be ordered by date ascending" >> {
       insertTestAvalanche(dao, latest)
       insertTestAvalanche(dao, earliest)
@@ -215,12 +224,12 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   }
   
   "Pagination" >> {
+    val dao = new SquerylAvalancheDao(Authorized)
+
     val avalanche1 = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
     val avalanche2 = avalancheAtLocation("42rtir54", false, commonLat, commonLng)
     val avalanche3 = avalancheAtLocation("6903k2fh", false, commonLat, commonLng)
-    
-    val dao = new SquerylAvalancheDao(() => true)
-    
+
     "Selects can be paginated" >> {
       insertTestAvalanche(dao, avalanche1)
       insertTestAvalanche(dao, avalanche2)

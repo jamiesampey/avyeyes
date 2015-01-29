@@ -1,22 +1,22 @@
 package com.avyeyes.rest
 
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist._
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
+import com.avyeyes.service.DependencyInjector
 import com.avyeyes.util.Helpers._
-import com.avyeyes.snippet.AdminConsole._
-
+import com.avyeyes.util.UserSession
+import net.liftweb.common.Loggable
+import net.liftweb.http.NotFoundResponse
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
-import net.liftweb.common.Loggable
-import net.liftweb.http.NotFoundResponse
 
 
 object AvyDetails extends RestHelper with Loggable {
-  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
-  
+  lazy val dao = DependencyInjector.avalancheDao.vend
+  val userSession = new UserSession
+
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
       val avyJsonOption = transaction {
@@ -24,7 +24,7 @@ object AvyDetails extends RestHelper with Loggable {
           
           if (avalancheOption.isDefined) {
             val avalanche = avalancheOption.get
-            isAuthorizedSession match {
+            userSession.isAuthorizedSession match {
               case true => Some(getJson(avalanche) ~ getJsonAdminFields(avalanche))
               case false => Some(getJson(avalanche))
             }

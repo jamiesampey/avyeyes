@@ -3,25 +3,28 @@ package com.avyeyes.rest
 import java.text.SimpleDateFormat
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.persist
-import com.avyeyes.util.Helpers._
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.persist._
-import com.avyeyes.snippet.AdminConsole._
+import com.avyeyes.service.DependencyInjector
+import com.avyeyes.util.Helpers._
+import com.avyeyes.util.UserSession
 import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.{InternalServerErrorResponse, Req, JsonResponse, UnauthorizedResponse}
+import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
 import net.liftweb.json.JsonAST._
+
 import scala.collection.mutable.ListBuffer
 
 object AdminTable extends RestHelper with Loggable {
-  lazy val avyDao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val avyDao = DependencyInjector.avalancheDao.vend
+  val userSession = new UserSession
+
   private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
   serve {
     case "rest" :: "admintable" :: Nil JsonGet req => {
       transaction {
-        isAuthorizedSession match {
+        userSession.isAuthorizedSession() match {
           case false => UnauthorizedResponse("Avy Eyes auth required")
           case true => buildResponse(req)
         }

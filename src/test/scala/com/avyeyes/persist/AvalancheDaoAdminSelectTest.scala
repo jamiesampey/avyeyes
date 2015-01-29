@@ -14,14 +14,14 @@ class AvalancheDaoAdminSelectTest extends Specification with InMemoryDB with Ava
   "Admin avalanche select auth check" >> {
     "Admin select not allowed with unauthorized session" >> {
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
       insertTestAvalanche(dao, nonviewableAvalanche)
       dao.selectAvalanchesForAdminTable(AdminAvalancheQuery()) must throwA[UnauthorizedException]
     }
 
     "Admin select allowed with authorized session" >> {
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
       insertTestAvalanche(dao, nonviewableAvalanche)
       dao.selectAvalanchesForAdminTable(AdminAvalancheQuery())._1.size must_== 1
       dao.selectAvalanchesForAdminTable(AdminAvalancheQuery())._2 must_== 1
@@ -30,7 +30,7 @@ class AvalancheDaoAdminSelectTest extends Specification with InMemoryDB with Ava
   }
 
   "Admin avalanche select filtering" >> {
-    val dao = new SquerylAvalancheDao(() => true)
+    val dao = new SquerylAvalancheDao(Authorized)
 
     val a1 = avalancheAtLocationWithName("94jfi449", false, commonLat, commonLng, "JoNeS Bowl")
     val a2 = avalancheAtLocationWithName("95fsov7p", false, commonLat, commonLng, "Highland Bowl")

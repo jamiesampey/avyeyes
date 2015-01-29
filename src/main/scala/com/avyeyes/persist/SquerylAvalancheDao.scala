@@ -8,15 +8,17 @@ import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.service.ExternalIdMaitreD
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.UnauthorizedException
+import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import net.liftweb.util.Helpers.today
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
-class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheDao with Loggable {
+class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Loggable {
+  def isAuthorizedSession(): Boolean = userSession.isAuthorizedSession()
+
   def selectAvalanche(extId: String): Option[Avalanche] = {
     avalanches.where(a => a.extId === extId
-      and (a.viewable === true).inhibitWhen(isAuthorizedSession())).headOption
+      and (a.viewable === true).inhibitWhen(isAuthorizedSession)).headOption
   }
 
   def selectAvalanches(query: AvalancheQuery) = {
@@ -47,7 +49,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   }
 
   def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
-    if (!isAuthorizedSession()) {
+    if (!isAuthorizedSession) {
       throw new UnauthorizedException("Not authorized for admin select")
     }
 
@@ -65,7 +67,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
     where(a.viewable === viewable.?) compute (count)).toInt
 
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String) = {
-    if (avalanche.viewable && !isAuthorizedSession()) {
+    if (avalanche.viewable && !isAuthorizedSession) {
       throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
 
@@ -81,7 +83,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   }
 
   def updateAvalanche(updated: Avalanche) = {
-    if (!isAuthorizedSession()) {
+    if (!isAuthorizedSession) {
       throw new UnauthorizedException("Not authorized to update avalanche")
     }
 
@@ -99,7 +101,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   }
 
   def deleteAvalanche(extId: String) = {
-    isAuthorizedSession() match {
+    isAuthorizedSession match {
       case false => throw new UnauthorizedException("Not authorized to delete avalanches")
       case true => {
         avalancheImages deleteWhere (img => img.avyExtId === extId)
@@ -116,7 +118,7 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   def selectAvalancheImage(avyExtId: String, filename: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
-        and (a.viewable === true).inhibitWhen(isAuthorizedSession())
+        and (a.viewable === true).inhibitWhen(isAuthorizedSession)
         and img.avyExtId === a.extId
         and img.filename === filename)
       select (img)).headOption
@@ -127,13 +129,13 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   def selectAvalancheImagesMetadata(avyExtId: String) = {
     from(avalancheImages, avalanches)((img, a) => where(
       a.extId === avyExtId
-        and (a.viewable === true).inhibitWhen(isAuthorizedSession())
+        and (a.viewable === true).inhibitWhen(isAuthorizedSession)
         and img.avyExtId === a.extId)
       select (img.filename, img.mimeType, img.size)).toList
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
-    isAuthorizedSession() match {
+    isAuthorizedSession match {
       case false => throw new UnauthorizedException("Not authorized to delete image")
       case true => {
         avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
@@ -157,8 +159,8 @@ class SquerylAvalancheDao(isAuthorizedSession: () => Boolean) extends AvalancheD
   }
 
   private def getAvyViewableQueryVal(viewable: Option[Boolean]): Option[Boolean] = viewable match {
-    case None if isAuthorizedSession() => None // viewable criteria will NOT apply (ADMIN ONLY)
-    case Some(bool) if (!bool && isAuthorizedSession()) => Some(false) // criteria: viewable == false (ADMIN ONLY)
+    case None if isAuthorizedSession => None // viewable criteria will NOT apply (ADMIN ONLY)
+    case Some(bool) if (!bool && isAuthorizedSession) => Some(false) // criteria: viewable == false (ADMIN ONLY)
     case _ => Some(true) // criteria: viewable == true
   }
 
