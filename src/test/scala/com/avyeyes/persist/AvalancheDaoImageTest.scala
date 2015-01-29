@@ -1,9 +1,9 @@
 package com.avyeyes.persist
 
-import org.specs2.mutable.Specification
-import com.avyeyes.test._
 import com.avyeyes.model._
+import com.avyeyes.test._
 import com.avyeyes.util.UnauthorizedException
+import org.specs2.mutable.Specification
 
 
 class AvalancheDaoImageTest extends Specification with InMemoryDB with AvalancheHelpers {
@@ -20,7 +20,8 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", img2Bytes.length, img2Bytes)
   
     "Image insert and select works" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       val returnedImage = dao.selectAvalancheImage(testAvalanche.extId, img1.filename).get
@@ -32,13 +33,15 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Image without corresponding avalanche is not selected" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       dao insertAvalancheImage img2
       dao.selectAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
     "Image metadata search works" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
@@ -49,7 +52,8 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Image delete works for authorized session" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       
@@ -59,12 +63,14 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Image delete does not work for unauthorized session" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       dao.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
 
     "Image count works" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
       dao insertAvalancheImage(AvalancheImage(img1.avyExtId, "anotherImg", "image/jpeg", img1Bytes.length, img1Bytes))
@@ -73,7 +79,8 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     }
 
     "Database maintenance deletes orphan images" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       insertTestAvalanche(dao, testAvalanche)
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2 // orphan image

@@ -1,12 +1,12 @@
 package com.avyeyes.snippet
 
 import javax.mail.internet.MimeMessage
-import javax.mail.{Multipart, PasswordAuthentication, Authenticator}
+import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist._
-import com.avyeyes.service.ExternalIdService
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
+import com.avyeyes.service.{DependencyInjector, ExternalIdService}
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
@@ -16,17 +16,16 @@ import net.liftweb.http.js.JsCmd
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
-import net.liftweb.util.{Props, Mailer}
 import net.liftweb.util.Mailer._
+import net.liftweb.util.{Mailer, Props}
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.StringUtils._
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 
 import scala.collection.mutable.ListBuffer
 import scala.xml.XML
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao = DependencyInjector.avalancheDao.vend
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";

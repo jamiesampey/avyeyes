@@ -1,8 +1,8 @@
 package bootstrap.liftweb
 
 import akka.actor.{ActorSystem, Props}
-import com.avyeyes.persist.DatabaseMaintainer
 import com.avyeyes.rest._
+import com.avyeyes.service.DatabaseMaintainer
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import net.liftweb.common._

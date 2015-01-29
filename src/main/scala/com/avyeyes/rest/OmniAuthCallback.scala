@@ -1,39 +1,29 @@
 package com.avyeyes.rest
 
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
-
-import com.avyeyes.persist._
 import com.avyeyes.util.Constants.LoginPath
-
+import com.avyeyes.util.UserSession
 import net.liftweb.common._
 import net.liftweb.http.RedirectResponse
 import net.liftweb.http.rest.RestHelper
 import omniauth.Omniauth
 
 object OmniAuthCallback extends RestHelper with Loggable {
-  lazy val userDao: UserDao = PersistenceInjector.userDao.vend
-  
+  val userSession = new UserSession
+
   serve {
     case "auth" :: "omnisuccess" :: Nil Get req => {
-      var provider = ""
-      val omniauthEmail = Omniauth.currentAuth match {
-        case Full(authInfo) => provider = authInfo.provider; authInfo.email
-        case _ => None
-      }
-      
-      omniauthEmail match {
-        case Some(email) => {
-          logger.info(s"Oauth2 authentication success from $provider: $email")
-          
-          transaction {
-            userDao.isUserAuthorized(email) match {
-              case false => Omniauth.clearCurrentAuth
-              case _ => // authorization success, leave Omniauth.currentAuth intact
-            }
+      Omniauth.currentAuth match {
+        case Full(authInfo) =>  authInfo.email match {
+          case Some(email) => {
+            logger.info(s"Oauth2 authentication success from ${authInfo.provider} for $email")
+            userSession.attemptLogin(email)
           }
+          case None => logger.warn("Received Oauth2 response without an email address")
         }
-        case _ => Omniauth.clearCurrentAuth
+        case _ => logger.warn("Received REST call to omnisuccess endpoint with no authInfo")
       }
+
+      Omniauth.clearCurrentAuth
       RedirectResponse("/" + LoginPath)
     }
     

@@ -1,14 +1,11 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.util.JsDialog
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
-
 import com.avyeyes.model.enums._
-import com.avyeyes.persist._
-import com.avyeyes.service.KmlCreator
+import com.avyeyes.persist.AvyEyesSqueryl.transaction
+import com.avyeyes.service.{DependencyInjector, KmlCreator}
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._
-
+import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JE._
@@ -18,7 +15,7 @@ import net.liftweb.util.Helpers._
 
 
 class Init extends KmlCreator with Loggable {
-  lazy val dao: AvalancheDao = PersistenceInjector.avalancheDao.vend
+  lazy val dao = DependencyInjector.avalancheDao.vend
     
   val InitViewAltMeters = 2700000
   val InitViewCamTilt = 0

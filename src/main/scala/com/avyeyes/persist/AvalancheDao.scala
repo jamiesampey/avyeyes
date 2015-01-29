@@ -3,6 +3,8 @@ package com.avyeyes.persist
 import com.avyeyes.model._
 
 trait AvalancheDao {
+  def isAuthorizedSession(): Boolean
+
   def selectAvalanche(extId: String): Option[Avalanche]
   
   def selectAvalanches(query: AvalancheQuery): List[Avalanche]

@@ -1,13 +1,13 @@
 package com.avyeyes.persist
 
-import org.specs2.execute.Result
-import org.specs2.mutable.Specification
+import java.util.Date
+
+import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test.AvalancheHelpers
-import java.util.Date
 import com.avyeyes.util.UnauthorizedException
-import com.avyeyes.model.Avalanche
 import org.joda.time.DateTime
+import org.specs2.mutable.Specification
 
 class AvalancheDaoWriteTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
@@ -19,7 +19,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
 
   "Avalanche insert" >> {
     "Inserts an avalanche" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
       
       dao insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail)
       val selectResult = dao.selectAvalanche(extId).get
@@ -30,14 +30,16 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       dao.insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail) must throwA[UnauthorizedException]
     }
   }
     
   "Avalanche update" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
       val updatedAvalanche = avalancheAtLocation(extId, true, commonLat, commonLng)
       
@@ -45,9 +47,9 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Allowed with authorized session" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
-      
       val updatedAvalanche = avalancheAtLocationWithSize(extId, true, commonLat, commonLng, 2.5, 4)
       dao.updateAvalanche(updatedAvalanche)
       
@@ -57,7 +59,8 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
     }
     
     "Modifies all updatable avalanche fields" >> {
-      val dao = new SquerylAvalancheDao(() => true)
+      val dao = new SquerylAvalancheDao(Authorized)
+
       dao insertAvalanche(avalancheAtLocationWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
       
       val updatedAvalanche = Avalanche(extId, true, ExperienceLevel.P1,
@@ -97,15 +100,17 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
   
   "Avalanche delete" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new SquerylAvalancheDao(() => false)
+      val dao = new SquerylAvalancheDao(NotAuthorized)
+
       dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
 
       dao.deleteAvalanche(extId) must throwA[UnauthorizedException]
     }
     
     "Allowed (and works) with authorized session" >> {
+      val dao = new SquerylAvalancheDao(Authorized)
+
       val extId2 = "3a9s59de"
-      val dao = new SquerylAvalancheDao(() => true)
       dao insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail)
       dao insertAvalanche(avalancheAtLocation(extId2, true, commonLat, commonLng), submitterEmail)
       dao.selectAvalanche(extId) must beSome

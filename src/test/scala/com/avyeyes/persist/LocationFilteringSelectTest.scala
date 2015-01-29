@@ -1,14 +1,14 @@
 package com.avyeyes.persist
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.persist.AvalancheQuery._
 import com.avyeyes.test._
 import org.specs2.mutable.Specification
 
 class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
   sequential
-  val dao = new SquerylAvalancheDao(() => true)
-  
+
+  val dao = new SquerylAvalancheDao(Authorized)
+
   val neHemisphereAvalanche = avalancheAtLocation("4a3jr23k", true, 47.59349550, 7.59349050)
   val seHemisphereAvalanche = avalancheAtLocation("83j859j3", true, -44.5943285, 170.2395494)
   val swHemisphereAvalanche = avalancheAtLocation("2r8f883s", true, -25.5349550, -69.59349050)
