@@ -23,11 +23,9 @@ object AdminTable extends RestHelper with Loggable {
 
   serve {
     case "rest" :: "admintable" :: Nil JsonGet req => {
-      transaction {
-        userSession.isAuthorizedSession() match {
-          case false => UnauthorizedResponse("Avy Eyes auth required")
-          case true => buildResponse(req)
-        }
+      userSession.isAuthorizedSession() match {
+        case false => UnauthorizedResponse("Avy Eyes auth required")
+        case true => buildResponse(req)
       }
     }
   }
