@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream
 
 import com.avyeyes.model._
 import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.service.DependencyInjector
+import com.avyeyes.persist.DaoInjector
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.UnauthorizedException
@@ -13,7 +13,7 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
 
 object Images extends RestHelper {
-  lazy val dao = DependencyInjector.avalancheDao.vend
+  lazy val dao = DaoInjector.avalancheDao.vend
 
   serve {
     case "rest" :: "images" :: avyExtId :: filename :: Nil Get req => {

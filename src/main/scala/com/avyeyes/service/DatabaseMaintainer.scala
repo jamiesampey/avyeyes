@@ -2,6 +2,7 @@ package com.avyeyes.service
 
 import akka.actor._
 import com.avyeyes.persist.AvyEyesSqueryl._
+import com.avyeyes.persist.DaoInjector
 import net.liftweb.common.Loggable
 
 object DatabaseMaintainer {
@@ -9,7 +10,7 @@ object DatabaseMaintainer {
 }
 
 class DatabaseMaintainer extends Actor with Loggable {
-  lazy val dao = DependencyInjector.avalancheDao.vend
+  lazy val dao = DaoInjector.avalancheDao.vend
 
   def receive = {
     case DatabaseMaintainer.PerformMaintenance => {

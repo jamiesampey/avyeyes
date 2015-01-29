@@ -1,7 +1,7 @@
 package com.avyeyes.util
 
 import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.service.DependencyInjector
+import com.avyeyes.persist.DaoInjector
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
@@ -9,7 +9,7 @@ import omniauth.Omniauth
 private object authorizedEmail extends SessionVar[Box[String]](Empty)
 
 class UserSession extends Loggable {
-  val userDao = DependencyInjector.userDao.vend
+  lazy val userDao = DaoInjector.userDao.vend
 
   def isAuthorizedSession() = authorizedEmail.get.isDefined
 
