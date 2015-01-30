@@ -28,10 +28,17 @@ trait LiftHelpers {
   def extractJsonDoubleField(resp: LiftResponse, field: String): Double = extractJsonField(resp, field).extract[Double]
   def extractJsonLongField(resp: LiftResponse, field: String): Long = extractJsonField(resp, field).extract[Long]
   def extractJsonField(resp: LiftResponse, field: String): JValue = jsonResponseAsJValue(resp) \\ field
-      
-  def addFileUploadToReq(orig: Req, fph: FileParamHolder): Req = {
-    val fphParamCalcInfo = new ParamCalcInfo(Nil, null, fph :: Nil, Empty)
+
+  def addParamsToReq(orig: Req, params: Map[String, String]): Req = {
     new Req(orig.path, orig.contextPath, orig.requestType, orig.contentType, orig.request,
-      orig.nanoStart, orig.nanoEnd, orig.stateless_?, () => fphParamCalcInfo, Map.empty)
+      orig.nanoStart, orig.nanoEnd, orig.stateless_?, () =>
+        new ParamCalcInfo(params.keys.toList, params map (entry => (entry._1, List(entry._2))), orig.uploadedFiles, Empty),
+      Map.empty)
+  }
+
+  def addFileUploadToReq(orig: Req, fph: FileParamHolder): Req = {
+    new Req(orig.path, orig.contextPath, orig.requestType, orig.contentType, orig.request,
+      orig.nanoStart, orig.nanoEnd, orig.stateless_?,
+      () => new ParamCalcInfo(Nil, null, fph :: Nil, Empty), Map.empty)
   }
 }

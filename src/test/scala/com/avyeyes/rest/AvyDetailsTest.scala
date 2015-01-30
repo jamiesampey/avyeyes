@@ -3,11 +3,9 @@ package com.avyeyes.rest
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import com.avyeyes.util.Helpers._
-
 import net.liftweb.http._
 
-class AvyDetailsTest extends WebSpec2 with MockPersistence with AvalancheHelpers with LiftHelpers {
+class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers with LiftHelpers {
   // Testing an OBJECT (singleton), so the mockAvalancheDao is inserted ONCE. 
   // Only one chance to mock all methods.
 
