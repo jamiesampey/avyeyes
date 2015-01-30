@@ -8,7 +8,7 @@ import net.liftweb.http._
 
 import org.mockito.Mockito._
 
-class ExtIdVendorTest extends WebSpec2 with MockPersistence with LiftHelpers {
+class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
   val noAvalanche: Option[Avalanche] = None
   
   // first avalanche lookup returns None, so the new reservation can be made.

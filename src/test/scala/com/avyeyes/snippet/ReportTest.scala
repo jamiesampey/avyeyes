@@ -11,7 +11,7 @@ import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import net.liftweb.http.S
 
-class ReportTest extends WebSpec2(Boot().boot _) with MockPersistence with TemplateReader {
+class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 

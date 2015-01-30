@@ -9,7 +9,7 @@ import net.liftweb.mocks.MockHttpServletRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
 
-class ImagesTest extends WebSpec2(Boot().boot _) with MockPersistence with LiftHelpers {
+class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHelpers {
   sequential
 
   // Testing an OBJECT (singleton), so the mockAvalancheDao is inserted ONCE. 

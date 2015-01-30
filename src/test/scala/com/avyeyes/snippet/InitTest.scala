@@ -5,7 +5,7 @@ import com.avyeyes.test._
 import net.liftweb.http.S
 import bootstrap.liftweb.Boot
 
-class InitTest extends WebSpec2(Boot().boot _) with MockPersistence with AvalancheHelpers {
+class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with AvalancheHelpers {
   "Initial JsCmd" should {
     isolated 
     
