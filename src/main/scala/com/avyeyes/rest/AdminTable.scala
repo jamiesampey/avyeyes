@@ -130,7 +130,7 @@ object AdminTable extends RestHelper with Loggable {
           JString(a.extId),
           JString(getViewableElem(a.viewable)),
           JString(getHttpsAvalancheLink(a)),
-          JString(a.submitter.single.email)))
+          JString(a.getSubmitter.email)))
       )))
     ))
   }

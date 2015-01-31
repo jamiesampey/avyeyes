@@ -38,8 +38,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "Date filtering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val jan1Avalanche = avalancheAtLocationOnDate("94jfi449", true, commonLat, commonLng, strToDate("01-01-2014"))
-    val jan5Avalanche = avalancheAtLocationOnDate("42rtir54", true, commonLat, commonLng, strToDate("01-05-2014"))  
+    val jan1Avalanche = avalancheOnDate("94jfi449", true, commonLat, commonLng, strToDate("01-01-2014"))
+    val jan5Avalanche = avalancheOnDate("42rtir54", true, commonLat, commonLng, strToDate("01-05-2014"))
 
     "From date filtering" >> {
       insertTestAvalanche(dao, jan1Avalanche)
@@ -72,8 +72,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "Type/Trigger filtering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val hsAsAvalanche = avalancheAtLocationWithTypeAndTrigger("943isfki", true, commonLat, commonLng, AvalancheType.HS, AvalancheTrigger.AS)
-    val wsNeAvalanche = avalancheAtLocationWithTypeAndTrigger("m5ie56ko", true, commonLat, commonLng, AvalancheType.WS, AvalancheTrigger.NE)
+    val hsAsAvalanche = avalancheWithTypeAndTrigger("943isfki", true, commonLat, commonLng, AvalancheType.HS, AvalancheTrigger.AS)
+    val wsNeAvalanche = avalancheWithTypeAndTrigger("m5ie56ko", true, commonLat, commonLng, AvalancheType.WS, AvalancheTrigger.NE)
 
     "Type filtering" >> {
       insertTestAvalanche(dao, hsAsAvalanche)
@@ -106,8 +106,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "R/D size filtering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val r4d15Avalanche = avalancheAtLocationWithSize("94ik4of1", true, commonLat, commonLng, 4.0, 1.5)
-    val r15d3Avalanche = avalancheAtLocationWithSize("43ufj4id", true, commonLat, commonLng, 1.5, 3.0)
+    val r4d15Avalanche = avalancheWithSize("94ik4of1", true, commonLat, commonLng, 4.0, 1.5)
+    val r15d3Avalanche = avalancheWithSize("43ufj4id", true, commonLat, commonLng, 1.5, 3.0)
 
     "R size filtering" >> {
       insertTestAvalanche(dao, r4d15Avalanche)
@@ -140,8 +140,8 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "Human numbers filtering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val c4k0Avalanche = avalancheAtLocationWithCaughtKilledNumbers("349tgo94", true, commonLat, commonLng, 4, 0)
-    val c3k2Avalanche = avalancheAtLocationWithCaughtKilledNumbers("e32fi417", true, commonLat, commonLng, 3, 2)
+    val c4k0Avalanche = avalancheWithCaughtKilledNumbers("349tgo94", true, commonLat, commonLng, 4, 0)
+    val c3k2Avalanche = avalancheWithCaughtKilledNumbers("e32fi417", true, commonLat, commonLng, 3, 2)
 
     "Number caught filtering" >> {
       insertTestAvalanche(dao, c4k0Avalanche)
@@ -192,9 +192,9 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "Ordering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val latest = avalancheAtLocationOnDate("94jfi449", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).toDate)
-    val earliest = avalancheAtLocationOnDate("42rtir54", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(20).toDate)
-    val middle = avalancheAtLocationOnDate("6903k2fh", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(10).toDate)
+    val latest = avalancheOnDate("94jfi449", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).toDate)
+    val earliest = avalancheOnDate("42rtir54", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(20).toDate)
+    val middle = avalancheOnDate("6903k2fh", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(10).toDate)
 
     "Selects can be ordered by date ascending" >> {
       insertTestAvalanche(dao, latest)

@@ -14,7 +14,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanche
     "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
       val initAvalancheLat = 35.59939321
       val initAvalancheLng = -104.323455342
-      val initAvalanche = avalancheAtLocationWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
+      val initAvalanche = avalancheWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
       
       mockAvalancheDao.selectAvalanche(any[String]) returns Some(initAvalanche)
       

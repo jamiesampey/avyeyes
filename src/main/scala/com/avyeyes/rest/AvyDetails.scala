@@ -67,6 +67,6 @@ object AvyDetails extends RestHelper with Loggable {
   ))
   
   private def getJsonAdminFields(a: Avalanche) = {
-    ("viewable", a.viewable) ~ ("submitterEmail", a.submitter.single.email)
+    ("viewable", a.viewable) ~ ("submitterEmail", a.getSubmitter.email)
   }
 }
