@@ -12,42 +12,42 @@ trait AvalancheHelpers {
   def insertTestAvalanche(dao: AvalancheDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
 
   def avalancheAtLocation(extId: String, viewable: Boolean, lat: Double, lng: Double): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng)
+    testAvalanche(extId, viewable, lat, lng)
   }
   
   def avalancheWithAspect(extId: String, viewable: Boolean, lat: Double, lng: Double, aspect: Aspect.Value) = {
-    getTestAvalanche(extId, viewable, lat, lng, aspect = aspect)
+    testAvalanche(extId, viewable, lat, lng, aspect = aspect)
   }
   
   def avalancheWithCoords(extId: String, viewable: Boolean, lat: Double, lng: Double, coords: String): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, coords = coords)
+    testAvalanche(extId, viewable, lat, lng, coords = coords)
   }
   
   def avalancheOnDate(extId: String, viewable: Boolean, lat: Double, lng: Double, date: Date): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, avyDate = date)
+    testAvalanche(extId, viewable, lat, lng, avyDate = date)
   }
 
   def avalancheWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double,
     avyType: AvalancheType.Value, avyTrigger: AvalancheTrigger.Value): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, avyType = avyType, avyTrigger = avyTrigger)
+    testAvalanche(extId, viewable, lat, lng, avyType = avyType, avyTrigger = avyTrigger)
   }
   
   def avalancheWithSize(extId: String, viewable: Boolean, lat: Double, lng: Double, 
     rSize: Double, dSize: Double): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, rSize = rSize, dSize = dSize)
+    testAvalanche(extId, viewable, lat, lng, rSize = rSize, dSize = dSize)
   }
   
   def avalancheWithCaughtKilledNumbers(extId: String, viewable: Boolean, lat: Double, lng: Double, 
     caught: Int, killed: Int): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, caught = caught, killed = killed)
+    testAvalanche(extId, viewable, lat, lng, caught = caught, killed = killed)
   }
 
   def avalancheWithNameAndSubmitter(extId: String, viewable: Boolean, lat: Double, lng: Double,
     areaName: String, email: String): Avalanche = {
-    getTestAvalanche(extId, viewable, lat, lng, areaName = areaName, submitterEmail = email)
+    testAvalanche(extId, viewable, lat, lng, areaName = areaName, submitterEmail = email)
   }
   
-  private def getTestAvalanche(testExtId: String, viewable: Boolean, lat: Double, lng: Double, 
+  private def testAvalanche(testExtId: String, viewable: Boolean, lat: Double, lng: Double,
     submitterExp: ExperienceLevel.Value = ExperienceLevel.A0, areaName: String = "", avyDate: Date = new Date, 
     sky: Sky.Value = Sky.U, precip: Precip.Value = Precip.U, elevation: Int = 2849, aspect: Aspect.Value = Aspect.N, 
     angle: Int = 45, avyType: AvalancheType.Value = AvalancheType.U, avyTrigger: AvalancheTrigger.Value = AvalancheTrigger.U, 

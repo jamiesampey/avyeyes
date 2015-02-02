@@ -3,6 +3,7 @@ package com.avyeyes.rest
 import com.avyeyes.persist.{AdminAvalancheQuery, OrderDirection, OrderField}
 import com.avyeyes.test._
 import net.liftweb.http._
+import net.liftweb.json.JsonParser
 import org.mockito.Mockito._
 
 class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers with LiftHelpers {
@@ -16,7 +17,10 @@ class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
   val a1 = avalancheWithNameAndSubmitter("950503kf", true, commonLat, commonLng, "West side of berthoud", "jeffery.lebowski@yahoo.com")
   val a2 = avalancheWithNameAndSubmitter("jh984f9d", false, commonLat, commonLng, "New York mtn", "walter_sobchak@gmail.com")
   val a3 = avalancheWithNameAndSubmitter("g4ifj390", true, commonLat, commonLng, "Vail Pass, black lakes ridge", "donny@hiselement.com")
-  mockAvalancheDao.selectAvalanchesForAdminTable(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, 3, 84923))
+
+  val totalRecordsInDb = 84923
+  val filteredRecords = 3
+  mockAvalancheDao.selectAvalanchesForAdminTable(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, filteredRecords, totalRecordsInDb))
 
   when(mockUserSession.isAuthorizedSession).thenReturn(false).thenReturn(true)
 
@@ -36,14 +40,15 @@ class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
   }
 
   "Admin table query" should {
-    val searchTerm = "gmail.com"
-    val dataTablesParams = Map("draw" -> "43", "start" -> "10", "length" -> "20",
+    var drawParam = "43"
+    val searchParam = "gmail.com"
+    val dataTablesParams = Map("draw" -> drawParam, "start" -> "10", "length" -> "20",
       "order[0][column]" -> "3", "order[1][column]" -> "0",
       "order[0][dir]" -> "desc", "order[1][dir]" -> "asc",
       "columns[0][name]" -> "createTime", "columns[3][name]" -> "viewable",
-      "search[value]" -> searchTerm)
+      "search[value]" -> searchParam)
 
-    "Extracts offset, limit, orderby, and search params from request" withSFor (adminTableUrl) in {
+    "Extract offset, limit, orderby, and search params from request" withSFor (adminTableUrl) in {
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)
       AdminTable(req)()
 
@@ -55,16 +60,29 @@ class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
       adminQuery.limit must_== 20
       adminQuery.orderBy(0) must_==(OrderField.viewable, OrderDirection.desc)
       adminQuery.orderBy(1) must_==(OrderField.createTime, OrderDirection.asc)
-      adminQuery.extId must_== Some(s"%$searchTerm%")
-      adminQuery.areaName must_== Some(s"%$searchTerm%")
-      adminQuery.submitterEmail must_== Some(s"%$searchTerm%")
+      adminQuery.extId must_== Some(s"%$searchParam%")
+      adminQuery.areaName must_== Some(s"%$searchParam%")
+      adminQuery.submitterEmail must_== Some(s"%$searchParam%")
     }
 
-    "Constructs a JSON response" withSFor (adminTableUrl) in {
+    "Construct a JSON response" withSFor (adminTableUrl) in {
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)
       val resp = openLiftRespBox(AdminTable(req)())
 
-      resp must beAnInstanceOf[JsonResponse]
+      val generatedJson = resp.asInstanceOf[JsonResponse].json.toJsCmd
+
+      extractJsonIntField(resp, "draw") must_== drawParam.toInt
+      extractJsonIntField(resp, "recordsTotal") must_== totalRecordsInDb
+      extractJsonIntField(resp, "recordsFiltered") must_== filteredRecords
+      generatedJson must contain(a1.extId)
+      generatedJson must contain(a2.extId)
+      generatedJson must contain(a3.extId)
+      generatedJson must contain(a1.areaName)
+      generatedJson must contain(a2.areaName)
+      generatedJson must contain(a3.areaName)
+      generatedJson must contain(a1.getSubmitter.email)
+      generatedJson must contain(a2.getSubmitter.email)
+      generatedJson must contain(a3.getSubmitter.email)
     }
   }
 }
