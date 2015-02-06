@@ -9,7 +9,7 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 
 
-object ExtIdVendor extends RestHelper with ExternalIdService {
+class ExtIdVendor extends RestHelper with ExternalIdService {
   implicit lazy val dao = DaoInjector.avalancheDao.vend
   
   serve {

@@ -13,7 +13,7 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 
 
-object AvyDetails extends RestHelper with Loggable {
+class AvyDetails extends RestHelper with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
   lazy val userSession = UserInjector.userSession.vend
 

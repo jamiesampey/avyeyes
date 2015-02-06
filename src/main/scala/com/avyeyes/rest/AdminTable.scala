@@ -14,7 +14,7 @@ import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, Unautho
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 
-object AdminTable extends RestHelper with Loggable {
+class AdminTable extends RestHelper with Loggable {
   lazy val avyDao = DaoInjector.avalancheDao.vend
   lazy val userSession = UserInjector.userSession.vend
 

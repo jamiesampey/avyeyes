@@ -12,7 +12,7 @@ import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
 
-object Images extends RestHelper {
+class Images extends RestHelper {
   lazy val dao = DaoInjector.avalancheDao.vend
 
   serve {
