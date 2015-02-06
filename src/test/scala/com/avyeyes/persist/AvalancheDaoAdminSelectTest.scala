@@ -32,9 +32,9 @@ class AvalancheDaoAdminSelectTest extends Specification with InMemoryDB with Ava
   "Admin avalanche select filtering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val a1 = avalancheAtLocationWithName("94jfi449", false, commonLat, commonLng, "JoNeS Bowl")
-    val a2 = avalancheAtLocationWithName("95fsov7p", false, commonLat, commonLng, "Highland Bowl")
-    val a3 = avalancheAtLocationWithName("3wksovtq", false, commonLat, commonLng, "jones pass")
+    val a1 = avalancheWithNameAndSubmitter("94jfi449", false, commonLat, commonLng, "JoNeS Bowl", "")
+    val a2 = avalancheWithNameAndSubmitter("95fsov7p", false, commonLat, commonLng, "Highland Bowl", "")
+    val a3 = avalancheWithNameAndSubmitter("3wksovtq", false, commonLat, commonLng, "jones pass", "")
 
     "Filters by external ID" >> {
       insertTestAvalanche(dao, a1)

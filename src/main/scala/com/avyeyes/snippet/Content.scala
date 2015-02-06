@@ -1,14 +1,14 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.service.UserInjector
 import com.avyeyes.util.Helpers._
-import com.avyeyes.util.UserSession
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 
 import scala.xml._
 
 class Content {
-  val userSession = new UserSession
+  val userSession = UserInjector.userSession.vend
 
   def render = {
     "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text, asBoolean((ns\"@data-required").text) openOr false)) &

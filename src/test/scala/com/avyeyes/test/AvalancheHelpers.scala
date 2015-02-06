@@ -1,9 +1,9 @@
 package com.avyeyes.test
 
-import com.avyeyes.model._
-import com.avyeyes.model.enums._
 import java.util.Date
 
+import com.avyeyes.model._
+import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvalancheDao
 
 trait AvalancheHelpers {
@@ -12,53 +12,53 @@ trait AvalancheHelpers {
   def insertTestAvalanche(dao: AvalancheDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
 
   def avalancheAtLocation(extId: String, viewable: Boolean, lat: Double, lng: Double): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+    testAvalanche(extId, viewable, lat, lng)
   }
   
-  def avalancheAtLocationWithAspect(extId: String, viewable: Boolean, lat: Double, lng: Double, aspect: Aspect.Value) = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, aspect, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  def avalancheWithAspect(extId: String, viewable: Boolean, lat: Double, lng: Double, aspect: Aspect.Value) = {
+    testAvalanche(extId, viewable, lat, lng, aspect = aspect)
   }
   
-  def avalancheAtLocationWithCoords(extId: String, viewable: Boolean, lat: Double, lng: Double, coords: String): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", coords)
+  def avalancheWithCoords(extId: String, viewable: Boolean, lat: Double, lng: Double, coords: String): Avalanche = {
+    testAvalanche(extId, viewable, lat, lng, coords = coords)
   }
   
-  def avalancheAtLocationOnDate(extId: String, viewable: Boolean, lat: Double, lng: Double, date: Date): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+  def avalancheOnDate(extId: String, viewable: Boolean, lat: Double, lng: Double, date: Date): Avalanche = {
+    testAvalanche(extId, viewable, lat, lng, avyDate = date)
   }
 
-  def avalancheAtLocationWithName(extId: String, viewable: Boolean, lat: Double, lng: Double, areaName: String): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, areaName, new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U,
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
-  }
-
-  def avalancheAtLocationWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+  def avalancheWithTypeAndTrigger(extId: String, viewable: Boolean, lat: Double, lng: Double,
     avyType: AvalancheType.Value, avyTrigger: AvalancheTrigger.Value): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, avyType, avyTrigger, AvalancheInterface.U, 
-      0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+    testAvalanche(extId, viewable, lat, lng, avyType = avyType, avyTrigger = avyTrigger)
   }
   
-  def avalancheAtLocationWithSize(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+  def avalancheWithSize(extId: String, viewable: Boolean, lat: Double, lng: Double, 
     rSize: Double, dSize: Double): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      rSize, dSize, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
+    testAvalanche(extId, viewable, lat, lng, rSize = rSize, dSize = dSize)
   }
   
-  def avalancheAtLocationWithCaughtKilledNumbers(extId: String, viewable: Boolean, lat: Double, lng: Double, 
+  def avalancheWithCaughtKilledNumbers(extId: String, viewable: Boolean, lat: Double, lng: Double, 
     caught: Int, killed: Int): Avalanche = {
-    Avalanche(extId, viewable, ExperienceLevel.A0, lat, lng, "test title", new Date,
-      Sky.U, Precip.U, 2849, Aspect.N, 45, AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
-      0.0, 0.0, caught, -1, -1, -1, killed, ModeOfTravel.U, "", "")
+    testAvalanche(extId, viewable, lat, lng, caught = caught, killed = killed)
+  }
+
+  def avalancheWithNameAndSubmitter(extId: String, viewable: Boolean, lat: Double, lng: Double,
+    areaName: String, email: String): Avalanche = {
+    testAvalanche(extId, viewable, lat, lng, areaName = areaName, submitterEmail = email)
+  }
+  
+  private def testAvalanche(testExtId: String, viewable: Boolean, lat: Double, lng: Double,
+    submitterExp: ExperienceLevel.Value = ExperienceLevel.A0, areaName: String = "", avyDate: Date = new Date, 
+    sky: Sky.Value = Sky.U, precip: Precip.Value = Precip.U, elevation: Int = 2849, aspect: Aspect.Value = Aspect.N, 
+    angle: Int = 45, avyType: AvalancheType.Value = AvalancheType.U, avyTrigger: AvalancheTrigger.Value = AvalancheTrigger.U, 
+    avyInterface: AvalancheInterface.Value = AvalancheInterface.U, rSize: Double = 0.0, dSize: Double = 0.0,
+    caught: Int = 0, partiallyBuried: Int = 0, fullyBuried: Int = 0, injured: Int = 0, killed: Int = 0,
+    modeOfTravel: ModeOfTravel.Value = ModeOfTravel.U, comments: String = "", coords: String = "", 
+    submitterEmail: String = ""): Avalanche = {
+  
+    new Avalanche(testExtId, viewable, submitterExp, lat, lng, areaName, avyDate, sky, precip, 
+      elevation, aspect, angle, avyType, avyTrigger, avyInterface, rSize, dSize,
+      caught, partiallyBuried, fullyBuried, injured, killed, modeOfTravel, comments, coords) {
+      override def getSubmitter() = new User(submitterEmail)}
   }
 }

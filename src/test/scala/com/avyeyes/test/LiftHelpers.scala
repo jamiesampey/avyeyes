@@ -25,7 +25,7 @@ trait LiftHelpers {
   }
   
   def extractJsonStringField(resp: LiftResponse, field: String):String = extractJsonField(resp, field).extract[String]
-  def extractJsonDoubleField(resp: LiftResponse, field: String): Double = extractJsonField(resp, field).extract[Double]
+  def extractJsonIntField(resp: LiftResponse, field: String): Int = extractJsonField(resp, field).extract[Int]
   def extractJsonLongField(resp: LiftResponse, field: String): Long = extractJsonField(resp, field).extract[Long]
   def extractJsonField(resp: LiftResponse, field: String): JValue = jsonResponseAsJValue(resp) \\ field
 

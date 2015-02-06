@@ -50,7 +50,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
       val dao = new SquerylAvalancheDao(Authorized)
 
       dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
-      val updatedAvalanche = avalancheAtLocationWithSize(extId, true, commonLat, commonLng, 2.5, 4)
+      val updatedAvalanche = avalancheWithSize(extId, true, commonLat, commonLng, 2.5, 4)
       dao.updateAvalanche(updatedAvalanche)
       
       val selectResult = dao.selectAvalanche(extId).get
@@ -61,7 +61,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
     "Modifies all updatable avalanche fields" >> {
       val dao = new SquerylAvalancheDao(Authorized)
 
-      dao insertAvalanche(avalancheAtLocationWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
+      dao insertAvalanche(avalancheWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
       
       val updatedAvalanche = Avalanche(extId, true, ExperienceLevel.P1,
         commonLat, commonLng, "A totally new name!", new Date, Sky.Few, Precip.SN, 2354, Aspect.SW, 45,
@@ -94,7 +94,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
       selectResult.killed must_== updatedAvalanche.killed
       selectResult.modeOfTravel must_== updatedAvalanche.modeOfTravel
       selectResult.comments must_== updatedAvalanche.comments
-      selectResult.submitter.single.email must_== submitterEmail
+      selectResult.getSubmitter.email must_== submitterEmail
     }
   }
   

@@ -13,7 +13,7 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 
 
-object AvyDetails extends RestHelper with Loggable {
+class AvyDetails extends RestHelper with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
   lazy val userSession = UserInjector.userSession.vend
 
@@ -67,6 +67,6 @@ object AvyDetails extends RestHelper with Loggable {
   ))
   
   private def getJsonAdminFields(a: Avalanche) = {
-    ("viewable", a.viewable) ~ ("submitterEmail", a.submitter.single.email)
+    ("viewable", a.viewable) ~ ("submitterEmail", a.getSubmitter.email)
   }
 }

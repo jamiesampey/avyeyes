@@ -23,10 +23,13 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
       AvalancheType.U, AvalancheTrigger.U, AvalancheInterface.U, 
       0.0, 0.0, -1, -1, -1, -1, -1, ModeOfTravel.U, "", "")
 
-  lazy val submitter: ManyToOne[User] = AvyEyesSchema.userToAvalanches.right(this)
+  lazy private val submitterRelation: ManyToOne[User] = AvyEyesSchema.userToAvalanches.right(this)
+
+  def getSubmitter(): User = submitterRelation.single
 
   def getTitle() = s"${dateToStr(avyDate)}: ${areaName}"
 
   def getExtHttpUrl() = s"${getHttpBaseUrl}${extId}"
+
   def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
 }
