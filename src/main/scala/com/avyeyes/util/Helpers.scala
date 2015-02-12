@@ -1,32 +1,30 @@
 package com.avyeyes.util
 
-import java.text.{ParseException, SimpleDateFormat}
 import javax.mail.internet.{AddressException, InternetAddress}
-import org.apache.commons.lang3.Validate
 
-import scala.xml.Unparsed
 import com.avyeyes.util.Constants._
 import net.liftweb.common.Box
-import net.liftweb.http.S
 import net.liftweb.http.provider.HTTPRequest
-import net.liftweb.util.Helpers.asDouble
-import net.liftweb.util.Helpers.asInt
+import net.liftweb.http.{LiftRules, S}
+import net.liftweb.util.Helpers.{asDouble, asInt}
 import net.liftweb.util.Props
-import java.util.Date
-import net.liftweb.http.LiftRules
-import scala.xml.NodeSeq
+import org.apache.commons.lang3.Validate
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
+
+import scala.xml.{NodeSeq, Unparsed}
 
 
 object Helpers {
-  val DatePattern = "MM-dd-yyyy"
+  val dtFormat = DateTimeFormat.forPattern("MM-dd-yyyy")
   
   val UnknownEnumCode = "enum.U"
   
   def getProp(prop: String) = Props.get(prop) openOr(prop)
     
-  def strToDate(str: String): Date = new SimpleDateFormat(DatePattern).parse(str)
+  def strToDate(str: String): DateTime = dtFormat.parseDateTime(str)
 	
-  def dateToStr(d: Date): String = new SimpleDateFormat(DatePattern).format(d)
+  def dateToStr(dt: DateTime): String = dtFormat.print(dt)
   
   def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
     
@@ -76,7 +74,7 @@ object Helpers {
       Validate.exclusiveBetween(0, 90, angle.toInt)
       true
     } catch {
-      case e: IllegalArgumentException => false
+      case iae: IllegalArgumentException => false
     }
     isValid
   }
@@ -86,7 +84,7 @@ object Helpers {
       strToDate(dateStr)
       true
     } catch {
-      case pe: ParseException => false
+      case iae: IllegalArgumentException => false
     }
     isValid
   }

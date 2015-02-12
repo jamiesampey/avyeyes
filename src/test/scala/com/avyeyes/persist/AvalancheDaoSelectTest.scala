@@ -192,9 +192,10 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
   "Ordering" >> {
     val dao = new SquerylAvalancheDao(Authorized)
 
-    val latest = avalancheOnDate("94jfi449", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).toDate)
-    val earliest = avalancheOnDate("42rtir54", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(20).toDate)
-    val middle = avalancheOnDate("6903k2fh", false, commonLat, commonLng, new DateTime(System.currentTimeMillis).minusDays(10).toDate)
+    val now = DateTime.now
+    val latest = avalancheOnDate("94jfi449", false, commonLat, commonLng, now)
+    val earliest = avalancheOnDate("42rtir54", false, commonLat, commonLng, now.minusDays(20))
+    val middle = avalancheOnDate("6903k2fh", false, commonLat, commonLng, now.minusDays(10))
 
     "Selects can be ordered by date ascending" >> {
       insertTestAvalanche(dao, latest)

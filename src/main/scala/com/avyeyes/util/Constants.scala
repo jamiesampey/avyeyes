@@ -1,7 +1,5 @@
 package com.avyeyes.util
 
-import java.util.Date
-
 object Constants {
   val IndexPath = "index"
   val BrowserNotSupportedPath = "whawha"
@@ -13,7 +11,6 @@ object Constants {
   val SafariMinVersion: Double = 6.0
   val IeMinVersion: Double = 9.0
     
-	val EarliestAvyDate = new Date(0) // start of Epoch time. Midnight on Jan 1, 1970 GMT
 	val HumanNumberUnknown: Int = -1
 
 	val CamTiltRangeCutoff = 45.0

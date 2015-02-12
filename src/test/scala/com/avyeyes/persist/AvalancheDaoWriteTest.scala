@@ -1,7 +1,5 @@
 package com.avyeyes.persist
 
-import java.util.Date
-
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test.AvalancheHelpers
@@ -64,7 +62,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
       dao insertAvalanche(avalancheWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
       
       val updatedAvalanche = Avalanche(extId, true, ExperienceLevel.P1,
-        commonLat, commonLng, "A totally new name!", new Date, Sky.Few, Precip.SN, 2354, Aspect.SW, 45,
+        commonLat, commonLng, "A totally new name!", DateTime.now, Sky.Few, Precip.SN, 2354, Aspect.SW, 45,
         AvalancheType.SF, AvalancheTrigger.AS, AvalancheInterface.O, 1.5, 3, 
         5, 3, 2, 3, 2, ModeOfTravel.Snowshoer, "some totally different comments", 
         "-105.875489242241,39.66464854369643,3709.514235071098")
@@ -77,7 +75,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
       selectResult.lat must_== updatedAvalanche.lat
       selectResult.lng must_== updatedAvalanche.lng
       selectResult.areaName must_== updatedAvalanche.areaName
-      selectResult.avyDate must_== (new DateTime(updatedAvalanche.avyDate)).withTimeAtStartOfDay.toDate
+      selectResult.avyDate must_== new DateTime(updatedAvalanche.avyDate)
       selectResult.sky must_== updatedAvalanche.sky
       selectResult.precip must_== updatedAvalanche.precip
       selectResult.aspect must_== updatedAvalanche.aspect

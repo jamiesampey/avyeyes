@@ -7,10 +7,9 @@ import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.service.ExternalIdMaitreD
-import com.avyeyes.util.Constants._
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
-import net.liftweb.util.Helpers.today
+import org.joda.time.DateTime
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
 class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Loggable {
@@ -27,8 +26,8 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
     val southLimit = if (query.geo.isDefined) query.geo.get.southLimit else 0
     val westLimit = if (query.geo.isDefined) query.geo.get.westLimit else 0
     
-    val fromDate = query.fromDate match {case Some(date) => date; case None => EarliestAvyDate}
-    val toDate = query.toDate match {case Some(date) => date; case None => today.getTime}
+    val fromDate = query.fromDate match {case Some(dt) => dt; case None => new DateTime(0)}
+    val toDate = query.toDate match {case Some(dt) => dt; case None => DateTime.now}
 
     val avyTypeQueryVal = query.avyType match {case Some(avyType) => avyType; case None => AvalancheType.U}
     val avyTriggerQueryVal = query.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
@@ -182,7 +181,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
       case OrderField.lat => a.lat
       case OrderField.lng => a.lng
       case OrderField.areaName => a.areaName
-      case OrderField.avyDate => a.avyDate
+      case OrderField.avyDate => a.avyDate.toDate
       case OrderField.avyType => a.avyType
       case OrderField.avyTrigger => a.avyTrigger
       case OrderField.avyInterface => a.avyInterface
