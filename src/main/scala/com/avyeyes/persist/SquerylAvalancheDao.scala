@@ -181,7 +181,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
       case OrderField.lat => a.lat
       case OrderField.lng => a.lng
       case OrderField.areaName => a.areaName
-      case OrderField.avyDate => a.avyDate.toDate
+      case OrderField.avyDate => a.avyDate
       case OrderField.avyType => a.avyType
       case OrderField.avyTrigger => a.avyTrigger
       case OrderField.avyInterface => a.avyInterface
