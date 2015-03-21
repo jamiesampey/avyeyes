@@ -1,17 +1,15 @@
 package com.avyeyes.service
 
-import java.util.Date
 import java.util.concurrent.TimeUnit
-
-import org.apache.commons.lang3.RandomStringUtils
 
 import com.avyeyes.persist.AvalancheDao
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.google.common.cache._
-
 import net.liftweb.common.Loggable
 import net.liftweb.util.Props
+import org.apache.commons.lang3.RandomStringUtils
+import org.joda.time.DateTime
 
 trait ExternalIdService extends Loggable {
   
@@ -29,7 +27,7 @@ trait ExternalIdService extends Loggable {
         || dao.selectAvalanche(extIdAttempt).isDefined
         || containsBadWord(extIdAttempt))
       
-    ExternalIdMaitreD.reserve(extIdAttempt, new Date())
+    ExternalIdMaitreD.reserve(extIdAttempt, new DateTime)
     logger.info(s"Reserved new extId $extIdAttempt. Current extIds reserve cache size is ${ExternalIdMaitreD.reservations}")
       
     extIdAttempt
@@ -42,10 +40,10 @@ trait ExternalIdService extends Loggable {
 }
 
 object ExternalIdMaitreD {
-  private val reservedExtIds: Cache[String, Date] = 
+  private val reservedExtIds: Cache[String, DateTime] =
     CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 24), TimeUnit.HOURS).build()
   
-  def reserve(extId: String, date: Date) = reservedExtIds.put(extId, date)
+  def reserve(extId: String, dt: DateTime) = reservedExtIds.put(extId, dt)
 
   def unreserve(extId: String) = reservedExtIds.invalidate(extId)
     

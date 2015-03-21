@@ -1,13 +1,12 @@
 package com.avyeyes.persist
 
-import java.util.Date
-
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Helpers._
+import org.joda.time.DateTime
 
 case class AvalancheQuery(
   viewable: Option[Boolean] = None, geo: Option[GeoBounds] = None,
-  fromDate: Option[Date] = None, toDate: Option[Date] = None, 
+  fromDate: Option[DateTime] = None, toDate: Option[DateTime] = None,
   avyType: Option[AvalancheType.Value] = None, avyTrigger: Option[AvalancheTrigger.Value] = None, 
   rSize: Option[Double] = None, dSize: Option[Double] = None, 
   numCaught: Option[Int] = None, numKilled: Option[Int] = None,

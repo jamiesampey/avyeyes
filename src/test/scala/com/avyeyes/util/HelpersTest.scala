@@ -1,32 +1,26 @@
 package com.avyeyes.util
 
-import java.util.Calendar
-
 import bootstrap.liftweb.Boot
-import com.avyeyes.model.enums.{AvalancheTrigger, AvalancheType, Sky}
+import com.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
 import net.liftweb.http.S
 import org.apache.commons.lang3.RandomStringUtils
+import org.joda.time.DateTime
 
 class HelpersTest extends WebSpec2(Boot().boot _) {
   "Date parsing, formatting, and validation" should {
     "Parse a string to a date" withSFor("/") in {
-      val cal: Calendar = Calendar.getInstance
-      cal.setTime(Helpers.strToDate("08-26-2014"))
+      val dt = Helpers.strToDate("08-26-2014")
 
-      cal.get(Calendar.DAY_OF_MONTH) must_== 26
-      cal.get(Calendar.MONTH) must_== Calendar.AUGUST
-      cal.get(Calendar.YEAR) must_== 2014
+      dt.dayOfMonth.get must_== 26
+      dt.monthOfYear.get must_== 8
+      dt.year.get must_== 2014
     }
 
     "Format date to a string" withSFor("/") in {
-      val cal: Calendar = Calendar.getInstance
-      cal.set(Calendar.YEAR, 2014)
-      cal.set(Calendar.MONTH, Calendar.SEPTEMBER)
-      cal.set(Calendar.DAY_OF_MONTH, 8)
-
-      Helpers.dateToStr(cal.getTime) must_== "09-08-2014"
+      val dt = new DateTime(2014, 9, 8, 0, 0)
+      Helpers.dateToStr(dt) must_== "09-08-2014"
     }
 
     "Validate date strings" withSFor("/") in {
