@@ -1,35 +1,123 @@
 /*global define*/
 define([
+        '../Core/Cartesian3',
         '../Core/createGuid',
         '../Core/defaultValue',
         '../Core/defined',
         '../Core/defineProperties',
         '../Core/DeveloperError',
         '../Core/Event',
-        './createPropertyDescriptor'
+        '../Core/Matrix3',
+        '../Core/Matrix4',
+        '../Core/Quaternion',
+        '../Core/Transforms',
+        './BillboardGraphics',
+        './BoxGraphics',
+        './ConstantPositionProperty',
+        './CorridorGraphics',
+        './createPropertyDescriptor',
+        './createRawPropertyDescriptor',
+        './CylinderGraphics',
+        './EllipseGraphics',
+        './EllipsoidGraphics',
+        './LabelGraphics',
+        './ModelGraphics',
+        './PathGraphics',
+        './PointGraphics',
+        './PolygonGraphics',
+        './PolylineGraphics',
+        './PolylineVolumeGraphics',
+        './Property',
+        './RectangleGraphics',
+        './WallGraphics'
     ], function(
+        Cartesian3,
         createGuid,
         defaultValue,
         defined,
         defineProperties,
         DeveloperError,
         Event,
-        createPropertyDescriptor) {
+        Matrix3,
+        Matrix4,
+        Quaternion,
+        Transforms,
+        BillboardGraphics,
+        BoxGraphics,
+        ConstantPositionProperty,
+        CorridorGraphics,
+        createPropertyDescriptor,
+        createRawPropertyDescriptor,
+        CylinderGraphics,
+        EllipseGraphics,
+        EllipsoidGraphics,
+        LabelGraphics,
+        ModelGraphics,
+        PathGraphics,
+        PointGraphics,
+        PolygonGraphics,
+        PolylineGraphics,
+        PolylineVolumeGraphics,
+        Property,
+        RectangleGraphics,
+        WallGraphics) {
     "use strict";
 
+    function createConstantPositionProperty(value) {
+        return new ConstantPositionProperty(value);
+    }
+
+    function createPositionPropertyDescriptor(name) {
+        return createPropertyDescriptor(name, undefined, createConstantPositionProperty);
+    }
+
+    function createPropertyTypeDescriptor(name, Type) {
+        return createPropertyDescriptor(name, undefined, function(value) {
+            if (value instanceof Type) {
+                return value;
+            }
+            return new Type(value);
+        });
+    }
+
     /**
-     * Entity instances are the primary data store for processed data.
-     * They are used primarily by the visualizers to create and maintain graphic
-     * primitives that represent the Entity's properties at a specific time.
+     * Entity instances aggregate multiple forms of visualization into a single high-level object.
+     * They can be created manually and added to {@link Viewer#entities} or be produced by
+     * data sources, such as {@link CzmlDataSource} and {@link GeoJsonDataSource}.
      * @alias Entity
      * @constructor
      *
-     * @param {String} [id] A unique identifier for this object.  If no id is provided, a GUID is generated.
+     * @param {Object} [options] Object with the following properties:
+     * @param {String} [options.id] A unique identifier for this object. If none is provided, a GUID is generated.
+     * @param {String} [options.name] A human readable name to display to users. It does not have to be unique.
+     * @param {Boolean} [options.show] A boolean value indicating if the entity and its children are displayed.
+     * @param {Property} [options.description] A string Property specifying an HTML description for this entity.
+     * @param {PositionProperty} [options.position] A Property specifying the entity position.
+     * @param {Property} [options.orientation] A Property specifying the entity orientation.
+     * @param {Property} [options.viewFrom] A suggested initial offset for viewing this object.
+     * @param {Entity} [options.parent] A parent entity to associate with this entity.
+     * @param {BillboardGraphics} [options.billboard] A billboard to associate with this entity.
+     * @param {BoxGraphics} [options.box] A box to associate with this entity.
+     * @param {CorridorGraphics} [options.corridor] A corridor to associate with this entity.
+     * @param {CylinderGraphics} [options.cylinder] A cylinder to associate with this entity.
+     * @param {EllipseGraphics} [options.ellipse] A ellipse to associate with this entity.
+     * @param {EllipsoidGraphics} [options.ellipsoid] A ellipsoid to associate with this entity.
+     * @param {LabelGraphics} [options.label] A options.label to associate with this entity.
+     * @param {ModelGraphics} [options.model] A model to associate with this entity.
+     * @param {PathGraphics} [options.path] A path to associate with this entity.
+     * @param {PointGraphics} [options.point] A point to associate with this entity.
+     * @param {PolygonGraphics} [options.polygon] A polygon to associate with this entity.
+     * @param {PolylineGraphics} [options.polyline] A polyline to associate with this entity.
+     * @param {PolylineVolumeGraphics} [options.polylineVolume] A polylineVolume to associate with this entity.
+     * @param {RectangleGraphics} [options.rectangle] A rectangle to associate with this entity.
+     * @param {WallGraphics} [options.wall] A wall to associate with this entity.
      *
-     * @see Property
-     * @see EntityCollection
+     * @see {@link http://cesiumjs.org/2015/02/02/Visualizing-Spatial-Data/|Visualizing Special Data}
      */
-    var Entity = function(id) {
+    var Entity = function(options) {
+        options = defaultValue(options, defaultValue.EMPTY_OBJECT);
+
+        var id = options.id;
         if (!defined(id)) {
             id = createGuid();
         }
@@ -37,14 +125,21 @@ define([
         this._availability = undefined;
         this._id = id;
         this._definitionChanged = new Event();
-        this._name = undefined;
+        this._name = options.name;
+        this._show = defaultValue(options.show, true);
         this._parent = undefined;
-        this._propertyNames = ['billboard', 'description', 'ellipse', 'ellipsoid', 'label', 'model', //
-                               'orientation', 'path', 'point', 'polygon', 'polyline', 'position', //
-                               'rectangle', 'viewFrom', 'wall'];
+        this._propertyNames = ['billboard', 'box', 'corridor', 'cylinder', 'description', 'ellipse', //
+                               'ellipsoid', 'label', 'model', 'orientation', 'path', 'point', 'polygon', //
+                               'polyline', 'polylineVolume', 'position', 'rectangle', 'viewFrom', 'wall'];
 
         this._billboard = undefined;
         this._billboardSubscription = undefined;
+        this._box = undefined;
+        this._boxSubscription = undefined;
+        this._corridor = undefined;
+        this._corridorSubscription = undefined;
+        this._cylinder = undefined;
+        this._cylinderSubscription = undefined;
         this._description = undefined;
         this._descriptionSubscription = undefined;
         this._ellipse = undefined;
@@ -65,6 +160,8 @@ define([
         this._polygonSubscription = undefined;
         this._polyline = undefined;
         this._polylineSubscription = undefined;
+        this._polylineVolume = undefined;
+        this._polylineVolumeSubscription = undefined;
         this._position = undefined;
         this._positionSubscription = undefined;
         this._rectangle = undefined;
@@ -73,7 +170,26 @@ define([
         this._viewFromSubscription = undefined;
         this._wall = undefined;
         this._wallSubscription = undefined;
+        this._children = [];
+
+        this.parent = options.parent;
+        this.merge(options);
     };
+
+    function updateShow(entity, isShowing) {
+        var children = entity._children;
+        var length = children.length;
+        for (var i = 0; i < length; i++) {
+            var child = children[i];
+            var childShow = child._show;
+            var oldValue = !isShowing && childShow;
+            var newValue = isShowing && childShow;
+            if (oldValue !== newValue) {
+                child._definitionChanged.raiseEvent(child, 'isShowing', newValue, oldValue);
+            }
+        }
+        entity._definitionChanged.raiseEvent(entity, 'isShowing', isShowing, !isShowing);
+    }
 
     defineProperties(Entity.prototype, {
         /**
@@ -85,7 +201,7 @@ define([
          * @memberof Entity.prototype
          * @type {TimeIntervalCollection}
          */
-        availability : createPropertyDescriptor('availability'),
+        availability : createRawPropertyDescriptor('availability'),
         /**
          * Gets the unique ID associated with this object.
          * @memberof Entity.prototype
@@ -97,7 +213,7 @@ define([
             }
         },
         /**
-         * Gets the event that is raised whenever a new property is assigned.
+         * Gets the event that is raised whenever a property or sub-property is changed or modified.
          * @memberof Entity.prototype
          *
          * @type {Event}
@@ -114,17 +230,48 @@ define([
          * @memberof Entity.prototype
          * @type {String}
          */
-        name : {
-            configurable : false,
+        name : createRawPropertyDescriptor('name'),
+        /**
+         * Gets or sets whether this entity should be displayed. When set to true,
+         * the entity is only displayed if the parent entity's show property is also true.
+         * @memberof Entity.prototype
+         * @type {Boolean}
+         */
+        show : {
             get : function() {
-                return this._name;
+                return this._show;
             },
             set : function(value) {
-                var oldValue = this._name;
-                if (oldValue !== value) {
-                    this._name = value;
-                    this._definitionChanged.raiseEvent(this, 'name', value, oldValue);
+                //>>includeStart('debug', pragmas.debug);
+                if (!defined(value)) {
+                    throw new DeveloperError('value is required.');
                 }
+                //>>includeEnd('debug');
+
+                if (value === this._show) {
+                    return;
+                }
+
+                var wasShowing = this.isShowing;
+                this._show = value;
+                var isShowing = this.isShowing;
+
+                if (wasShowing !== isShowing) {
+                    updateShow(this, isShowing);
+                }
+
+                this._definitionChanged.raiseEvent(this, 'show', value, !value);
+            }
+        },
+        /**
+         * Gets whether this entity is being displayed, taking into account
+         * the visibility of any ancestor entities.
+         * @memberof Entity.prototype
+         * @type {Boolean}
+         */
+        isShowing : {
+            get : function() {
+                return this._show && (!defined(this._parent) || this._parent._show);
             }
         },
         /**
@@ -132,9 +279,37 @@ define([
          * @memberof Entity.prototype
          * @type {Entity}
          */
-        parent : createPropertyDescriptor('parent'),
+        parent : {
+            get : function() {
+                return this._parent;
+            },
+            set : function(value) {
+                var oldValue = this._parent;
+
+                if (oldValue === value) {
+                    return;
+                }
+
+                var wasShowing = this.isShowing;
+                if (defined(oldValue)) {
+                    var index = oldValue._children.indexOf(this);
+                    oldValue._children.splice(index, 1);
+                }
+
+                this._parent = value;
+                value._children.push(this);
+
+                var isShowing = this.isShowing;
+
+                if (wasShowing !== isShowing) {
+                    updateShow(this, isShowing);
+                }
+
+                this._definitionChanged.raiseEvent(this, 'parent', value, oldValue);
+            }
+        },
         /**
-         * Gets the names of all properties registed on this instance.
+         * Gets the names of all properties registered on this instance.
          * @memberof Entity.prototype
          * @type {Event}
          */
@@ -148,7 +323,25 @@ define([
          * @memberof Entity.prototype
          * @type {BillboardGraphics}
          */
-        billboard : createPropertyDescriptor('billboard'),
+        billboard : createPropertyTypeDescriptor('billboard', BillboardGraphics),
+        /**
+         * Gets or sets the box.
+         * @memberof Entity.prototype
+         * @type {BoxGraphics}
+         */
+        box : createPropertyTypeDescriptor('box', BoxGraphics),
+        /**
+         * Gets or sets the corridor.
+         * @memberof Entity.prototype
+         * @type {CorridorGraphics}
+         */
+        corridor : createPropertyTypeDescriptor('corridor', CorridorGraphics),
+        /**
+         * Gets or sets the cylinder.
+         * @memberof Entity.prototype
+         * @type {CylinderGraphics}
+         */
+        cylinder : createPropertyTypeDescriptor('cylinder', CylinderGraphics),
         /**
          * Gets or sets the description.
          * @memberof Entity.prototype
@@ -160,25 +353,25 @@ define([
          * @memberof Entity.prototype
          * @type {EllipseGraphics}
          */
-        ellipse : createPropertyDescriptor('ellipse'),
+        ellipse : createPropertyTypeDescriptor('ellipse', EllipseGraphics),
         /**
          * Gets or sets the ellipsoid.
          * @memberof Entity.prototype
          * @type {EllipsoidGraphics}
          */
-        ellipsoid : createPropertyDescriptor('ellipsoid'),
+        ellipsoid : createPropertyTypeDescriptor('ellipsoid', EllipsoidGraphics),
         /**
          * Gets or sets the label.
          * @memberof Entity.prototype
          * @type {LabelGraphics}
          */
-        label : createPropertyDescriptor('label'),
+        label : createPropertyTypeDescriptor('label', LabelGraphics),
         /**
          * Gets or sets the model.
          * @memberof Entity.prototype
-         * @type {LabelGraphics}
+         * @type {ModelGraphics}
          */
-        model : createPropertyDescriptor('model'),
+        model : createPropertyTypeDescriptor('model', ModelGraphics),
         /**
          * Gets or sets the orientation.
          * @memberof Entity.prototype
@@ -190,42 +383,48 @@ define([
          * @memberof Entity.prototype
          * @type {PathGraphics}
          */
-        path : createPropertyDescriptor('path'),
+        path : createPropertyTypeDescriptor('path', PathGraphics),
         /**
          * Gets or sets the point graphic.
          * @memberof Entity.prototype
          * @type {PointGraphics}
          */
-        point : createPropertyDescriptor('point'),
+        point : createPropertyTypeDescriptor('point', PointGraphics),
         /**
          * Gets or sets the polygon.
          * @memberof Entity.prototype
          * @type {PolygonGraphics}
          */
-        polygon : createPropertyDescriptor('polygon'),
+        polygon : createPropertyTypeDescriptor('polygon', PolygonGraphics),
         /**
          * Gets or sets the polyline.
          * @memberof Entity.prototype
          * @type {PolylineGraphics}
          */
-        polyline : createPropertyDescriptor('polyline'),
+        polyline : createPropertyTypeDescriptor('polyline', PolylineGraphics),
+        /**
+         * Gets or sets the polyline volume.
+         * @memberof Entity.prototype
+         * @type {PolylineVolumeGraphics}
+         */
+        polylineVolume : createPropertyTypeDescriptor('polylineVolume', PolylineVolumeGraphics),
         /**
          * Gets or sets the position.
          * @memberof Entity.prototype
          * @type {PositionProperty}
          */
-        position : createPropertyDescriptor('position'),
+        position : createPositionPropertyDescriptor('position'),
         /**
          * Gets or sets the rectangle.
          * @memberof Entity.prototype
          * @type {RectangleGraphics}
          */
-        rectangle : createPropertyDescriptor('rectangle'),
+        rectangle : createPropertyTypeDescriptor('rectangle', RectangleGraphics),
         /**
          * Gets or sets the suggested initial offset for viewing this object
          * with the camera.  The offset is defined in the east-north-up reference frame.
          * @memberof Entity.prototype
-         * @type {Cartesian3}
+         * @type {Property}
          */
         viewFrom : createPropertyDescriptor('viewFrom'),
         /**
@@ -233,7 +432,7 @@ define([
          * @memberof Entity.prototype
          * @type {WallGraphics}
          */
-        wall : createPropertyDescriptor('wall')
+        wall : createPropertyTypeDescriptor('wall', WallGraphics)
     });
 
     /**
@@ -279,7 +478,7 @@ define([
         //>>includeEnd('debug');
 
         propertyNames.push(propertyName);
-        Object.defineProperty(this, propertyName, createPropertyDescriptor(propertyName, true));
+        Object.defineProperty(this, propertyName, createRawPropertyDescriptor(propertyName, true));
     };
 
     /**
@@ -319,15 +518,22 @@ define([
         }
         //>>includeEnd('debug');
 
-        //Name and availability are not Property objects and are currently handled differently.
+        //Name, show, and availability are not Property objects and are currently handled differently.
+        //source.show is intentionally ignored because this.show always has a value.
         this.name = defaultValue(this.name, source.name);
         this.availability = defaultValue(source.availability, this.availability);
 
         var propertyNames = this._propertyNames;
-        var sourcePropertyNames = source._propertyNames;
+        var sourcePropertyNames = defined(source._propertyNames) ? source._propertyNames : Object.keys(source);
         var propertyNamesLength = sourcePropertyNames.length;
         for (var i = 0; i < propertyNamesLength; i++) {
             var name = sourcePropertyNames[i];
+
+            //Ignore parent when merging, this only happens at construction time.
+            if (name === 'parent') {
+                continue;
+            }
+
             var targetProperty = this[name];
             var sourceProperty = source[name];
 
@@ -349,6 +555,27 @@ define([
                 }
             }
         }
+    };
+
+    var matrix3Scratch = new Matrix3();
+    var positionScratch = new Cartesian3();
+    var orientationScratch = new Quaternion();
+
+    /**
+     * @private
+     */
+    Entity.prototype._getModelMatrix = function(time, result) {
+        var position = Property.getValueOrUndefined(this._position, time, positionScratch);
+        if (!defined(position)) {
+            return undefined;
+        }
+        var orientation = Property.getValueOrUndefined(this._orientation, time, orientationScratch);
+        if (!defined(orientation)) {
+            result = Transforms.eastNorthUpToFixedFrame(position, undefined, result);
+        } else {
+            result = Matrix4.fromRotationTranslation(Matrix3.fromQuaternion(orientation, matrix3Scratch), position, result);
+        }
+        return result;
     };
 
     return Entity;

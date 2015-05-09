@@ -22,31 +22,16 @@ define([
     /**
      * A {@link MaterialProperty} that maps to solid color {@link Material} uniforms.
      *
-     * @param {Property} [color] The {@link Color} property to be used.
+     * @param {Property} [color=Color.WHITE] The {@link Color} Property to be used.
      *
      * @alias ColorMaterialProperty
      * @constructor
      */
-    var ColorMaterialProperty = function(colorProperty) {
+    var ColorMaterialProperty = function(color) {
         this._definitionChanged = new Event();
         this._color = undefined;
         this._colorSubscription = undefined;
-        this.color = colorProperty;
-    };
-
-    /**
-     * Creates a new instance that represents a constant color.
-     *
-     * @param {Color} color The color.
-     * @returns {ColorMaterialProperty} A new instance configured to represent the provided color.
-     */
-    ColorMaterialProperty.fromColor = function(color) {
-        //>>includeStart('debug', pragmas.debug);
-        if (!defined(color)) {
-            throw new DeveloperError('color is required');
-        }
-        //>>includeEnd('debug');
-        return new ColorMaterialProperty(new ConstantProperty(color));
+        this.color = color;
     };
 
     defineProperties(ColorMaterialProperty.prototype, {
@@ -78,9 +63,10 @@ define([
             }
         },
         /**
-         * A {@link Color} {@link Property} which determines the material's color.
+         * Gets or sets the {@link Color} {@link Property}.
          * @memberof ColorMaterialProperty.prototype
          * @type {Property}
+         * @default Color.WHITE
          */
         color : createPropertyDescriptor('color')
     });
@@ -121,13 +107,6 @@ define([
         return this === other || //
                (other instanceof ColorMaterialProperty && //
                 Property.equals(this._color, other._color));
-    };
-
-    /**
-     * @private
-     */
-    ColorMaterialProperty.prototype._raiseDefinitionChanged = function() {
-        this._definitionChanged.raiseEvent(this);
     };
 
     return ColorMaterialProperty;

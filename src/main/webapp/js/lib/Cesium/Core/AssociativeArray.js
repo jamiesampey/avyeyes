@@ -107,7 +107,7 @@ define([
      */
     AssociativeArray.prototype.remove = function(key) {
         //>>includeStart('debug', pragmas.debug);
-        if (typeof key !== 'string' && typeof key !== 'number') {
+        if (defined(key) && typeof key !== 'string' && typeof key !== 'number') {
             throw new DeveloperError('key is required to be a string or number.');
         }
         //>>includeEnd('debug');
@@ -126,8 +126,11 @@ define([
      * Clears the collection.
      */
     AssociativeArray.prototype.removeAll = function() {
-        this._hash = {};
-        this._array.length = 0;
+        var array = this._array;
+        if (array.length > 0) {
+            this._hash = {};
+            array.length = 0;
+        }
     };
 
     return AssociativeArray;

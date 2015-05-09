@@ -193,7 +193,7 @@ define([
      *  <li>Fade</li>
      *  <ul>
      *      <li><code>fadeInColor</code>: diffuse color and alpha at <code>time</code></li>
-     *      <li><code>fadeOutColor</code>: diffuse color and alpha at <code>maximumDistance<code> from <code>time</code></li>
+     *      <li><code>fadeOutColor</code>: diffuse color and alpha at <code>maximumDistance</code> from <code>time</code></li>
      *      <li><code>maximumDistance</code>: Number between 0.0 and 1.0 where the <code>fadeInColor</code> becomes the <code>fadeOutColor</code>. A value of 0.0 gives the entire material a color of <code>fadeOutColor</code> and a value of 1.0 gives the the entire material a color of <code>fadeInColor</code></li>
      *      <li><code>repeat</code>: true if the fade should wrap around the texture coodinates.</li>
      *      <li><code>fadeDirection</code>: Object with x and y values specifying if the fade should be in the x and y directions.</li>
@@ -702,12 +702,17 @@ define([
                 if (defined(newTexture)) {
                     Material._textureCache.releaseTexture(material._texturePaths[uniformId]);
                     material._textures[uniformId] = newTexture;
-                } else {
+                } else if (typeof uniformValue === 'string') {
                     when(loadImage(uniformValue), function(image) {
                         material._loadedImages.push({
                             id : uniformId,
                             image : image
                         });
+                    });
+                } else if (uniformValue instanceof HTMLCanvasElement) {
+                    material._loadedImages.push({
+                        id : uniformId,
+                        image : uniformValue
                     });
                 }
 
@@ -853,7 +858,7 @@ define([
                 uniformType = 'float';
             } else if (type === 'boolean') {
                 uniformType = 'bool';
-            } else if (type === 'string') {
+            } else if (type === 'string' || uniformValue instanceof HTMLCanvasElement) {
                 if (/^([rgba]){1,4}$/i.test(uniformValue)) {
                     uniformType = 'channels';
                 } else if (uniformValue === Material.DefaultCubeMapId) {
