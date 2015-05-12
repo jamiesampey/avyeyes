@@ -223,7 +223,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	$('.avyLocation').geocomplete({types: ['geocode']});
 	
 	$('#avySearchLocation').blur(function(event) {
-	  aeView.geocodeAndFlyToLocation($('#avySearchLocation').val(), 12000.0, 70.0);
+	  aeView.geocodeAndFlyTo($('#avySearchLocation').val(), 6000.0, -70.0);
 	});
 	
 	$('#aeControlContainer').css('visibility', 'visible');

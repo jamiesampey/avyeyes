@@ -48,7 +48,7 @@ AvyReport.prototype.doAvyDrawing = function() {
 }
 
 AvyReport.prototype.beginReportWithGeocode = function() {
-	this.view.geocodeAndFlyToLocation($('#avyReportInitLocation').val(), 12000.0, 65.0);
+	this.view.geocodeAndFlyToLocation($('#avyReportInitLocation').val(), 8000.0, -65.0);
 	$('#avyReportInitLocation').val('');
 	setTimeout((this.beginReport).bind(this), 5000);
 }

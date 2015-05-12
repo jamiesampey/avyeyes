@@ -1,24 +1,23 @@
-define(['avyeyes-wiring',
+define(['lib/Cesium/Cesium',
+		'avyeyes-wiring',
         'avyeyes-report',
         'lib/jquery-ui',
         'lib/jquery.geocomplete',
         'lib/jquery.fileupload',
         'lib/jquery.iframe-transport',
         'lib/lightbox'
-        ], function(AvyEyesWiring, AvyReport) {
+        ], function(Cesium, AvyEyesWiring, AvyReport) {
 
-function AvyEyesView(cesiumInst) {
-  this.cesium = cesiumInst;
-
-  this.viewer = new this.cesium.Viewer('cesiumContainer', {
-  	sceneMode: this.cesium.SceneMode.SCENE3D,
-  	terrainProvider: new this.cesium.CesiumTerrainProvider({
+function AvyEyesView() {
+  this.viewer = new Cesium.Viewer('cesiumContainer', {
+  	sceneMode: Cesium.SceneMode.SCENE3D,
+  	terrainProvider: new Cesium.CesiumTerrainProvider({
       url : '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
     }),
-    imageryProvider: new this.cesium.BingMapsImageryProvider({
+    imageryProvider: new Cesium.BingMapsImageryProvider({
 	  url : '//dev.virtualearth.net',
 	  key : 'AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr',
-	  mapStyle : this.cesium.BingMapsStyle.AERIAL_WITH_LABELS
+	  mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
     }),
     animation: false,
     baseLayerPicker: false,
@@ -34,6 +33,7 @@ function AvyEyesView(cesiumInst) {
 	scene3DOnly: true
   });
 
+  this.lastPosition = null;
   this.gmaps = null;
   this.geocoder = null;
   this.currentReport = null;
@@ -42,8 +42,30 @@ function AvyEyesView(cesiumInst) {
 AvyEyesView.prototype.init = function(gmapsInst) {
   this.gmaps = gmapsInst;
   this.geocoder = new this.gmaps.Geocoder();
+  this.viewer.scene.preRender.addEventListener(this.viewChangeListener);
+
   new AvyEyesWiring(this).wireUI();
   $('#loadingDiv').fadeOut(500);
+}
+
+AvyEyesView.prototype.viewChangeListener = function(scene) {
+	var position = scene.camera.position;
+    if (!Cesium.Cartesian3.equalsEpsilon(this.lastPosition, position, Cesium.Math.EPSILON4)) {
+		this.lastPosition = position;
+		alert('JDS view change end');
+
+        //	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
+        //	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
+        //	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
+        //	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
+        //	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
+        //
+        //	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
+        //	$("#avySearchCameraAlt").val(camera.getAltitude());
+        //	$("#avySearchCameraTilt").val(camera.getTilt());
+        //	$("#avySearchCameraLat").val(camera.getLatitude());
+        //	$("#avySearchCameraLng").val(camera.getLongitude());
+	}
 }
 
 AvyEyesView.prototype.showSearchDiv = function(delay) {
@@ -70,36 +92,6 @@ AvyEyesView.prototype.clearSearchFields = function() {
 	$('#aeSearchControlContainer').find('input:text').val('');
 	$('#aeSearchControlContainer').find('.avyRDSliderValue').val('0');
 	$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
-}
-
-AvyEyesView.prototype.geocodeAndFlyToLocation = function(address, rangeMeters, tiltDegrees) {
-  if (!address) {
-	  return;
-  }
-
-  this.geocoder.geocode( {'address': address}, function(results, status) {
-    if (status == this.gmaps.GeocoderStatus.OK && results.length) {
-		  var latLng = results[0].geometry.location;
-    	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
-    } else {
-      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
-    }
-  }.bind(this));
-}
-
-AvyEyesView.prototype.setSearchGeoInputs = function() {
-alert('setSearchGeoInputs');
-//	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
-//	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
-//	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
-//	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
-//	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
-//
-//	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
-//	$("#avySearchCameraAlt").val(camera.getAltitude());
-//	$("#avySearchCameraTilt").val(camera.getTilt());
-//	$("#avySearchCameraLat").val(camera.getLatitude());
-//	$("#avySearchCameraLng").val(camera.getLongitude());
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
@@ -259,25 +251,32 @@ AvyEyesView.prototype.showHelp = function(tab) {
 //	}
 //}
 
-AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, tiltDegrees, headingDegrees) {
+AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, pitch, heading) {
 	if ($('#loadingDiv').is(':visible')) {
 	  $('#loadingDiv').fadeOut(500);
 	}
 
-  var camera = this.viewer.scene.camera;
-  var eye = new this.cesium.Cartesian3.fromDegrees(lng, lat, rangeMeters);
-  camera.flyTo({'destination': eye});
+    var alt = this.viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
+    var target = Cesium.Cartesian3.fromDegrees(lng, lat, alt);
+	var headingPitchRange = new Cesium.HeadingPitchRange(
+		Cesium.Math.toRadians(heading),
+		Cesium.Math.toRadians(pitch),
+		rangeMeters);
+	this.viewer.camera.lookAt(target, headingPitchRange);
+	this.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
 
-//  camera.lookUp(this.cesium.Math.toRadians(tiltDegrees));
-//  camera.lookRight(this.cesium.Math.toRadians(headingDegrees));
-
-//  this.viewer.scene.primitives.add(new this.cesium.DebugModelMatrixPrimitive({
-//        modelMatrix : transform,
-//        length : 100000.0
-//    }));
+//	this.viewer.camera.flyTo({
+//		lookAt : target,
+//		range: rangeMeters,
+//		orientation : {
+//			heading : Cesium.Math.toRadians(heading),
+//			pitch : Cesium.Math.toRadians(pitch),
+//			roll : 0.0
+//		}
+//	});
 
 }
-    
+
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegrees) {
   if (!address) {
 	  return;

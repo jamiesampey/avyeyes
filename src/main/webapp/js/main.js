@@ -11,10 +11,10 @@ function gmapsLoadCB() {
 }
 
 //Start the main app logic.
-requirejs(['avyeyes-view', 'lib/Cesium/Cesium', 'lib/gmaps-loader',
+requirejs(['avyeyes-view', 'lib/gmaps-loader',
   'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
-	function (AvyEyesView, amdCesium, gmapsAsyncLoad) {
-      avyeyes = new AvyEyesView(amdCesium);
+	function (AvyEyesView, gmapsAsyncLoad) {
+      avyeyes = new AvyEyesView();
       gmapsAsyncLoad('gmapsLoadCB');
     }
 );
