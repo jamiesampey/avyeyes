@@ -21,19 +21,19 @@ import scala.math._
 class Search extends KmlCreator with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
   
-  var northLimit = ""; var eastLimit = ""; var southLimit = ""; var westLimit = ""
-  var camAlt = ""; var camTilt = ""; var camLat = ""; var camLng = "" 
+  var latTop = ""; var latBottom = ""; var lngLeft = ""; var lngRight = ""
+  var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
   var fromDate = ""; var toDate = ""
   var avyType = ""; var avyTrigger = ""; var rSize = ""; var dSize = ""
   var numCaught = ""; var numKilled = ""
     
 	def render = {
-		"#avySearchNorthLimit" #> SHtml.hidden(northLimit = _, northLimit) &
-		"#avySearchEastLimit" #> SHtml.hidden(eastLimit = _, eastLimit) &
-		"#avySearchSouthLimit" #> SHtml.hidden(southLimit = _, southLimit) &
-		"#avySearchWestLimit" #> SHtml.hidden(westLimit = _, westLimit) &
+		"#avySearchLatTop" #> SHtml.hidden(latTop = _, latTop) &
+		"#avySearchLatBottom" #> SHtml.hidden(latBottom = _, latBottom) &
+		"#avySearchLngLeft" #> SHtml.hidden(lngLeft = _, lngLeft) &
+		"#avySearchLngRight" #> SHtml.hidden(lngRight = _, lngRight) &
 		"#avySearchCameraAlt" #> SHtml.hidden(camAlt = _, camAlt) &
-		"#avySearchCameraTilt" #> SHtml.hidden(camTilt = _, camTilt) &
+		"#avySearchCameraPitch" #> SHtml.hidden(camPitch = _, camPitch) &
 		"#avySearchCameraLat" #> SHtml.hidden(camLat = _, camLat) &
 		"#avySearchCameraLng" #> SHtml.hidden(camLng = _, camLng) &
 		"#avySearchFromDate" #> SHtml.text(fromDate, fromDate = _) &
@@ -71,7 +71,7 @@ class Search extends KmlCreator with Loggable {
   private def matchingAvalanchesInRange: List[Avalanche] = {
     val query = AvalancheQuery(
       viewable = Some(true), 
-      geo = Some(GeoBounds(northLimit, eastLimit, southLimit, westLimit)), 
+      geo = Some(GeoBounds(latTop, latBottom, lngLeft, lngRight)),
       fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None, 
       toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None, 
       avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None, 
@@ -85,7 +85,7 @@ class Search extends KmlCreator with Loggable {
       dao.selectAvalanches(query)
     }
     
-    if (strToDblOrZero(camTilt) < CamTiltRangeCutoff)  {
+    if (strToDblOrZero(camPitch) > CamPitchCutoff)  {
       matchingAvalanches
     } else { 
       matchingAvalanches filter (a => haversineDist(a) < AvyDistRangeMiles)

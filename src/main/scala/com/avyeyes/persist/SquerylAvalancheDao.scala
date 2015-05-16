@@ -21,10 +21,10 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def selectAvalanches(query: AvalancheQuery) = {
-    val northLimit = if (query.geo.isDefined) query.geo.get.northLimit else 0
-    val eastLimit = if (query.geo.isDefined) query.geo.get.eastLimit else 0
-    val southLimit = if (query.geo.isDefined) query.geo.get.southLimit else 0
-    val westLimit = if (query.geo.isDefined) query.geo.get.westLimit else 0
+    val latMax = if (query.geo.isDefined) query.geo.get.latMax else 0
+    val latMin = if (query.geo.isDefined) query.geo.get.latMin else 0
+    val lngMax = if (query.geo.isDefined) query.geo.get.lngMax else 0
+    val lngMin = if (query.geo.isDefined) query.geo.get.lngMin else 0
     
     val fromDate = query.fromDate match {case Some(dt) => dt; case None => new DateTime(0)}
     val toDate = query.toDate match {case Some(dt) => dt; case None => DateTime.now}
@@ -34,8 +34,8 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
     
     from(avalanches)(a => where(
         (a.viewable === getAvyViewableQueryVal(query.viewable).?)
-        and (a.lat.between(southLimit, northLimit)).inhibitWhen(query.geo.isEmpty)
-        and (a.lng.between(westLimit, eastLimit)).inhibitWhen(query.geo.isEmpty)
+        and (a.lat.between(latMin, latMax)).inhibitWhen(query.geo.isEmpty)
+        and (a.lng.between(lngMin, lngMax)).inhibitWhen(query.geo.isEmpty)
         and a.avyDate.between(fromDate, toDate)
         and (a.avyType === avyTypeQueryVal).inhibitWhen(query.avyType.isEmpty)
         and (a.avyTrigger === avyTriggerQueryVal).inhibitWhen(query.avyTrigger.isEmpty)

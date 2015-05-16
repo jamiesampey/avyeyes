@@ -26,12 +26,12 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
         (n\"@value").text must_== value
       }
       
-      assertInputValue(renderedPage, HiddenInputType, "avySearchNorthLimit", search.northLimit)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchEastLimit", search.eastLimit)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchSouthLimit", search.southLimit)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchWestLimit", search.westLimit)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLatTop", search.latTop)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLatBottom", search.latBottom)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLngLeft", search.lngLeft)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLngRight", search.lngRight)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraAlt", search.camAlt)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchCameraTilt", search.camTilt)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchCameraPitch", search.camPitch)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraLat", search.camLat)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraLng", search.camLng)
       assertInputValue(renderedPage, TextInputType, "avySearchFromDate", search.fromDate)
@@ -69,10 +69,10 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
       there was one(mockAvalancheDao).selectAvalanches(queryArg.capture())
       val passedQuery = queryArg.getValue
       
-      passedQuery.geo.get.northLimit must_== strToDblOrZero(search.northLimit)
-      passedQuery.geo.get.eastLimit must_== strToDblOrZero(search.eastLimit)
-      passedQuery.geo.get.southLimit must_== strToDblOrZero(search.southLimit)
-      passedQuery.geo.get.westLimit must_== strToDblOrZero(search.westLimit)
+      passedQuery.geo.get.latMax must_== strToDblOrZero(search.latTop)
+      passedQuery.geo.get.latMin must_== strToDblOrZero(search.latBottom)
+      passedQuery.geo.get.lngMax must_== strToDblOrZero(search.lngLeft)
+      passedQuery.geo.get.lngMin must_== strToDblOrZero(search.lngRight)
       passedQuery.fromDate.get must_== strToDate(search.fromDate)
       passedQuery.toDate.get must_== strToDate(search.toDate)
       passedQuery.avyType.get must_== AvalancheType.withName(search.avyType)
@@ -93,7 +93,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
       mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
-      search.camTilt = "10"
+      search.camPitch = "10"
       val jsCmd = search.doSearch()
 
       jsCmd.toJsCmd must contain(inRangeExtId)
@@ -110,7 +110,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
       mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
-      search.camTilt = (CamTiltRangeCutoff + 1).toString
+      search.camPitch = (CamPitchCutoff + 1).toString
       val jsCmd = search.doSearch()
 
       jsCmd.toJsCmd must contain(inRangeExtId)
@@ -121,13 +121,13 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
   private def newSearchWithTestData(): Search = {
       val search = new Search
       
-      search.northLimit = "39.76999580282912"
-      search.eastLimit = "-105.74790739483988"
-      search.southLimit = "39.624208600404096"
-      search.westLimit = "-106.0104492051601"
+      search.latTop = "39.76999580282912"
+      search.latBottom = "-105.74790739483988"
+      search.lngLeft = "39.624208600404096"
+      search.lngRight = "-106.0104492051601"
       
       search.camAlt = "7364.194647056396"
-      search.camTilt = "39.94"
+      search.camPitch = "39.94"
       search.camLat = "39.609381090080554"
       search.camLng = "-105.87917829999999"
       

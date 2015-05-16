@@ -154,7 +154,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('.avyButton').button();
 	$('#avySearchButton').click(function(){
-	  aeView.setSearchGeoInputs();
+	  aeView.setSearchViewBounds();
 	  $(this).submit();
 	});
 	$('#avySearchResetButton').click(function(){

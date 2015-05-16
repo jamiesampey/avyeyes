@@ -33,44 +33,14 @@ function AvyEyesView() {
 	scene3DOnly: true
   });
 
-  this.lastCameraPosition;
-  this.lastCameraTime = Cesium.getTimestamp();
-
   this.gmaps = null;
   this.geocoder = null;
   this.currentReport = null;
 }
 
 AvyEyesView.prototype.init = function(gmapsInst) {
-//  this.viewer.scene.preRender.addEventListener(function(scene) {
-//	  var time = Cesium.getTimestamp();
-//      var position = scene.camera.position;
-//
-//      if (!Cesium.Cartesian3.equalsEpsilon(this.lastCameraPosition, position, Cesium.Math.EPSILON4)) {
-//        this.lastCameraTime = time;
-//      } else if (time - this.lastCameraTime > 500) {
-//        alert('view change end');
-//      	this.lastCameraTime = time;
-//      }
-//
-//      this.lastCameraPosition = position.clone();
-//
-//	  //	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
-//	  //	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
-//	  //	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
-//	  //	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
-//	  //	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
-//	  //
-//	  //	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
-//	  //	$("#avySearchCameraAlt").val(camera.getAltitude());
-//	  //	$("#avySearchCameraTilt").val(camera.getTilt());
-//	  //	$("#avySearchCameraLat").val(camera.getLatitude());
-//	  //	$("#avySearchCameraLng").val(camera.getLongitude());
-//  	}.bind(this));
-
   this.gmaps = gmapsInst;
   this.geocoder = new this.gmaps.Geocoder();
-
   new AvyEyesWiring(this).wireUI();
   $('#loadingDiv').fadeOut(500);
 }
@@ -99,6 +69,25 @@ AvyEyesView.prototype.clearSearchFields = function() {
 	$('#aeSearchControlContainer').find('input:text').val('');
 	$('#aeSearchControlContainer').find('.avyRDSliderValue').val('0');
 	$('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
+}
+
+AvyEyesView.prototype.setSearchViewBounds = function() {
+	var upperLeft = Cesium.Ellipsoid.WGS84.cartesianToCartographic(
+		this.viewer.camera.pickEllipsoid(new Cesium.Cartesian2(0, 0), Cesium.Ellipsoid.WGS84));
+	var lowerRight = Cesium.Ellipsoid.WGS84.cartesianToCartographic(
+		this.viewer.camera.pickEllipsoid(new Cesium.Cartesian2(this.viewer.canvas.width,
+		this.viewer.canvas.height), Cesium.Ellipsoid.WGS84));
+	var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.viewer.camera.position);
+
+	$("#avySearchLatTop").val(radToDeg(upperLeft.latitude));
+	$("#avySearchLatBottom").val(radToDeg(lowerRight.latitude));
+	$("#avySearchLngLeft").val(radToDeg(upperLeft.longitude));
+	$("#avySearchLngRight").val(radToDeg(lowerRight.longitude));
+
+  	$("#avySearchCameraAlt").val(this.viewer.scene.globe.getHeight(camPos));
+  	$("#avySearchCameraPitch").val(radToDeg(this.viewer.camera.pitch));
+  	$("#avySearchCameraLat").val(radToDeg(camPos.latitude));
+  	$("#avySearchCameraLng").val(radToDeg(camPos.longitude));
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
@@ -324,6 +313,10 @@ AvyEyesView.prototype.metersToFeet = function(meters) {
 
 function degToRad(degrees) {
 	return Cesium.Math.toRadians(degrees);
+}
+
+function radToDeg(radians) {
+	return Cesium.Math.toDegrees(radians);
 }
 
 return AvyEyesView;

@@ -13,9 +13,14 @@ case class AvalancheQuery(
   orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.id, OrderDirection.asc)),
   offset: Int = 0, limit: Int = Int.MaxValue) extends BaseAvalancheQuery(orderBy, offset, limit)
 
-case class GeoBounds(northStr: String, eastStr: String, southStr: String, westStr: String) {
-  def northLimit = strToDblOrZero(northStr)
-  def eastLimit = strToDblOrZero(eastStr)
-  def southLimit = strToDblOrZero(southStr)
-  def westLimit = strToDblOrZero(westStr)
+case class GeoBounds(latTopStr: String, latBottomStr: String, lngLeftStr: String, lngRightStr: String) {
+  val latTop = strToDblOrZero(latTopStr);
+  val latBottom = strToDblOrZero(latBottomStr)
+  val lngLeft = strToDblOrZero(lngLeftStr)
+  val lngRight = strToDblOrZero(lngRightStr)
+
+  def latMax = latTop.max(latBottom)
+  def latMin = latTop.min(latBottom)
+  def lngMax = lngLeft.max(lngRight)
+  def lngMin = lngLeft.min(lngRight)
 }
