@@ -33,39 +33,46 @@ function AvyEyesView() {
 	scene3DOnly: true
   });
 
-  this.lastPosition = null;
+  this.lastCameraPosition;
+  this.lastCameraTime = Cesium.getTimestamp();
+
   this.gmaps = null;
   this.geocoder = null;
   this.currentReport = null;
 }
 
 AvyEyesView.prototype.init = function(gmapsInst) {
+//  this.viewer.scene.preRender.addEventListener(function(scene) {
+//	  var time = Cesium.getTimestamp();
+//      var position = scene.camera.position;
+//
+//      if (!Cesium.Cartesian3.equalsEpsilon(this.lastCameraPosition, position, Cesium.Math.EPSILON4)) {
+//        this.lastCameraTime = time;
+//      } else if (time - this.lastCameraTime > 500) {
+//        alert('view change end');
+//      	this.lastCameraTime = time;
+//      }
+//
+//      this.lastCameraPosition = position.clone();
+//
+//	  //	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
+//	  //	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
+//	  //	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
+//	  //	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
+//	  //	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
+//	  //
+//	  //	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
+//	  //	$("#avySearchCameraAlt").val(camera.getAltitude());
+//	  //	$("#avySearchCameraTilt").val(camera.getTilt());
+//	  //	$("#avySearchCameraLat").val(camera.getLatitude());
+//	  //	$("#avySearchCameraLng").val(camera.getLongitude());
+//  	}.bind(this));
+
   this.gmaps = gmapsInst;
   this.geocoder = new this.gmaps.Geocoder();
-  this.viewer.scene.preRender.addEventListener(this.viewChangeListener);
 
   new AvyEyesWiring(this).wireUI();
   $('#loadingDiv').fadeOut(500);
-}
-
-AvyEyesView.prototype.viewChangeListener = function(scene) {
-	var position = scene.camera.position;
-    if (!Cesium.Cartesian3.equalsEpsilon(this.lastPosition, position, Cesium.Math.EPSILON4)) {
-		this.lastPosition = position;
-		alert('JDS view change end');
-
-        //	var viewBoundsBox = this.ge.getView().getViewportGlobeBounds();
-        //	$("#avySearchNorthLimit").val(viewBoundsBox.getNorth());
-        //	$("#avySearchEastLimit").val(viewBoundsBox.getEast());
-        //	$("#avySearchSouthLimit").val(viewBoundsBox.getSouth());
-        //	$("#avySearchWestLimit").val(viewBoundsBox.getWest());
-        //
-        //	var camera = this.ge.getView().copyAsCamera(this.ge.ALTITUDE_RELATIVE_TO_GROUND);
-        //	$("#avySearchCameraAlt").val(camera.getAltitude());
-        //	$("#avySearchCameraTilt").val(camera.getTilt());
-        //	$("#avySearchCameraLat").val(camera.getLatitude());
-        //	$("#avySearchCameraLng").val(camera.getLongitude());
-	}
 }
 
 AvyEyesView.prototype.showSearchDiv = function(delay) {
@@ -251,30 +258,28 @@ AvyEyesView.prototype.showHelp = function(tab) {
 //	}
 //}
 
-AvyEyesView.prototype.flyTo = function(lat, lng, rangeMeters, pitch, heading) {
+AvyEyesView.prototype.flyTo = function(lng, lat, range, pitch, heading) {
 	if ($('#loadingDiv').is(':visible')) {
 	  $('#loadingDiv').fadeOut(500);
 	}
 
     var alt = this.viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
-    var target = Cesium.Cartesian3.fromDegrees(lng, lat, alt);
-	var headingPitchRange = new Cesium.HeadingPitchRange(
-		Cesium.Math.toRadians(heading),
-		Cesium.Math.toRadians(pitch),
-		rangeMeters);
-	this.viewer.camera.lookAt(target, headingPitchRange);
-	this.viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
+	var targetEntity = this.viewer.entities.add({
+    	position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
+    	billboard: {image: '/images/blue-flyto-pin.png'}
+    });
 
-//	this.viewer.camera.flyTo({
-//		lookAt : target,
-//		range: rangeMeters,
-//		orientation : {
-//			heading : Cesium.Math.toRadians(heading),
-//			pitch : Cesium.Math.toRadians(pitch),
-//			roll : 0.0
-//		}
-//	});
+	var flightDurationSeconds = 3.0;
+	var headingPitchRange = new Cesium.HeadingPitchRange(degToRad(heading), degToRad(pitch), range);
 
+	this.viewer.flyTo(targetEntity, {
+		duration: flightDurationSeconds,
+		offset: headingPitchRange
+	});
+
+	setTimeout(function() {
+		this.viewer.entities.remove(targetEntity)
+	}.bind(this), flightDurationSeconds * 1500);
 }
 
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegrees) {
@@ -285,7 +290,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegre
   this.geocoder.geocode( {'address': address}, function(results, status) {
     if (status == this.gmaps.GeocoderStatus.OK && results.length) {
 		var latLng = results[0].geometry.location;
-    	this.flyTo(latLng.lat(), latLng.lng(), rangeMeters, tiltDegrees, 0);
+    	this.flyTo(latLng.lng(), latLng.lat(), rangeMeters, tiltDegrees, 0);
     } else {
       this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
     }
@@ -298,7 +303,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
 
   var flyToWesternUnitedStates = function() {
     flown = true;
-  	self.flyTo(44, -115, rangeMeters, tiltDegrees, 0);
+  	self.flyTo(-115, 44, rangeMeters, tiltDegrees, 0);
   }
 
   setTimeout(function() {if (!flown) flyToWesternUnitedStates();}, 10000) // 10 second 'ignore' timeout
@@ -306,7 +311,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(pos) {
 		flown = true;
-		self.flyTo(pos.coords.latitude, pos.coords.longitude, rangeMeters, tiltDegrees, 0);
+		self.flyTo(pos.coords.longitude, pos.coords.latitude, rangeMeters, tiltDegrees, 0);
 	  }, flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
   } else {
       flyToWesternUnitedStates();
@@ -315,6 +320,10 @@ AvyEyesView.prototype.geolocateAndFlyTo = function(rangeMeters, tiltDegrees) {
 
 AvyEyesView.prototype.metersToFeet = function(meters) {
   return Math.round(meters * 3.28084);
+}
+
+function degToRad(degrees) {
+	return Cesium.Math.toRadians(degrees);
 }
 
 return AvyEyesView;

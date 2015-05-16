@@ -2,12 +2,12 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "1.0-SNAPSHOT"
+version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.5"
 
 scalacOptions ++= Seq(
-  "-target:jvm-1.7", 
+  "-target:jvm-1.8",
   "-encoding", "UTF-8",
   "-unchecked", 
   "-deprecation"

@@ -2248,28 +2248,47 @@ define([
         options = defaultValue(options, defaultValue.EMPTY_OBJECT);
 
         var destination = options.destination;
+        var lookAt = options.lookAt;
+        var orientation = defaultValue(options.orientation, defaultValue.EMPTY_OBJECT);
+        var offset = defaultValue(options.offset, defaultValue.EMPTY_OBJECT);
+
         //>>includeStart('debug', pragmas.debug);
-        if (!defined(destination)) {
-            throw new DeveloperError('destination is required.');
+        if (!defined(destination) && !defined(lookAt)) {
+            throw new DeveloperError('either destination or lookAt is required.');
         }
         //>>includeEnd('debug');
 
         var scene = this._scene;
 
-        var isRectangle = defined(destination.west);
-        if (isRectangle) {
+        var isRectangle = defined(destination) && defined(destination.west);
+
+        if (defined(lookAt)) {
+            var hprOffset = options.offset;
+            var cartesianOffset = offsetFromHeadingPitchRange(hprOffset.heading, hprOffset.pitch, hprOffset.range);
+            destination = Cartesian3.add(lookAt, cartesianOffset, new Cartesian3());
+        } else if (isRectangle) {
             destination = scene.camera.getRectangleCameraCoordinates(destination, scratchFlyToDestination);
         }
 
         var direction;
         var up;
+        var heading;
+        var pitch;
+        var roll;
+        var range;
 
-        var orientation = defaultValue(options.orientation, defaultValue.EMPTY_OBJECT);
         if (defined(orientation.heading)) {
-            var heading = defaultValue(orientation.heading, 0.0);
-            var pitch = defaultValue(orientation.pitch, -CesiumMath.PI_OVER_TWO);
-            var roll = defaultValue(orientation.roll, 0.0);
+            heading = defaultValue(orientation.heading, 0.0);
+            pitch = defaultValue(orientation.pitch, -CesiumMath.PI_OVER_TWO);
+            roll = defaultValue(orientation.roll, 0.0);
+        } else if (defined(offset.heading)) {
+            heading = defaultValue(offset.heading, 0.0);
+            pitch = defaultValue(offset.pitch, -CesiumMath.PI_OVER_TWO);
+            roll = 0.0;
+            range = defaultValue(offset.range, 0.0);
+        }
 
+        if (defined(heading)) {
             var rotQuat = Quaternion.fromHeadingPitchRoll(heading - CesiumMath.PI_OVER_TWO, pitch, roll, scratchFlyToQuaternion);
             var rotMat = Matrix3.fromQuaternion(rotQuat, scratchFlyToMatrix3);
 
