@@ -4,7 +4,6 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist._
-import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
@@ -12,13 +11,13 @@ import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.JsExp.strToJsExp
+import net.liftweb.json.JsonAST.JArray
 import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils._
 
 import scala.math._
 
-class Search extends KmlCreator with Loggable {
+class Search extends Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
   
   var latTop = ""; var latBottom = ""; var lngLeft = ""; var lngRight = ""
@@ -58,9 +57,7 @@ class Search extends KmlCreator with Loggable {
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
       if (avyList.size > 0) {
-        val kml = createCompositeKml(avyList:_*)
-        Call("avyeyes.overlaySearchResultKml", kml.toString).cmd &
-        Call("avyeyes.hideSearchDiv").cmd &
+        Call("avyeyes.addAvalanches", JArray(avyList.map(_.toSearchResultJsonObj))).cmd &
         JsDialog.info("avySearchSuccess", avyList.size)
       } else {
         JsDialog.info("avySearchZeroMatches")

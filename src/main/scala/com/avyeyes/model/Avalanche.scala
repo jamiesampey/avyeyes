@@ -1,9 +1,9 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums._
-
-import com.avyeyes.util.Helpers._
 import com.avyeyes.persist.AvyEyesSchema
+import com.avyeyes.util.Helpers._
+import net.liftweb.json.JsonAST._
 import org.joda.time.DateTime
 import org.squeryl.dsl.ManyToOne
 
@@ -32,4 +32,11 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
   def getExtHttpUrl() = s"${getHttpBaseUrl}${extId}"
 
   def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
+
+  def toSearchResultJsonObj = JObject(List(
+    JField("extId", JString(extId)),
+    JField("coords", JArray(kmlCoords.split(Array(',',' '))
+      .toList.map(str => JDouble(str.toDouble))))
+  ))
+
 }

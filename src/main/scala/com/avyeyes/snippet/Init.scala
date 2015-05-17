@@ -22,8 +22,6 @@ class Init extends KmlCreator with Loggable {
   val InitViewCamTilt = -90
   val InitViewSearchFormDelayMillis = 3500
 
-  val InitAvyAltMeters = 350
-  val InitAvyCamTilt = -15
   val InitAvyMsgDelayMillis = 5000
 
   private var extId: Option[String] = None
@@ -43,9 +41,7 @@ class Init extends KmlCreator with Loggable {
     
     if (initAvalanche.isDefined) {
       logger.debug("Initial page view with init avy " + extId)
-      Call("avyeyes.overlaySearchResultKml", createCompositeKml(initAvalanche.get).toString).cmd &
-      Call("avyeyes.flyTo", initAvalanche.get.lat, initAvalanche.get.lng, InitAvyAltMeters, 
-        InitAvyCamTilt, getLookAtHeadingForAspect(initAvalanche.get.aspect)).cmd &
+      Call("avyeyes.addAvalancheAndFlyTo", initAvalanche.get.toSearchResultJsonObj).cmd &
       JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(initAvalanche.get.avyDate), initAvalanche.get.areaName,
         ExperienceLevel.getLabel(initAvalanche.get.submitterExp))
     } else {
@@ -63,7 +59,8 @@ class Init extends KmlCreator with Loggable {
       + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${AvalancheInterface.toAutoCompleteSourceJson});"
       + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${Aspect.toAutoCompleteSourceJson});"
       + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${ModeOfTravel.toAutoCompleteSourceJson});"
-      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toAutoCompleteSourceJson});").cmd
+      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toAutoCompleteSourceJson});")
+      .cmd
   }
   
   private def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {

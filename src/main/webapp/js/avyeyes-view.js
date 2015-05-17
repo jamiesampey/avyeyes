@@ -235,8 +235,23 @@ AvyEyesView.prototype.showHelp = function(tab) {
 	$('#helpDialog').dialog('open');
 }
 
-AvyEyesView.prototype.addAvalanches = function(avalanchesJson) {
-	
+AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
+    $.each(avalancheArray, function(i, avalanche) {
+        this.addAvalanche(avalanche);
+    }.bind(this));
+
+    this.hideSearchDiv();
+}
+
+AvyEyesView.prototype.addAvalanche = function(avalanche) {
+	return this.viewer.entities.add({
+	    id: avalanche.extId,
+	    polygon: {
+            material: Cesium.Color.RED.withAlpha(0.4),
+            perPositionHeight: true,
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(avalanche.coords)
+        }
+    });
 }
 
 AvyEyesView.prototype.flyTo = function(targetEntity, range, pitch, heading, removeTargetAfterFlight) {
@@ -257,6 +272,11 @@ AvyEyesView.prototype.flyTo = function(targetEntity, range, pitch, heading, remo
 			this.viewer.entities.remove(targetEntity)
 		}.bind(this), flightDurationSeconds * 1500);
 	}
+}
+
+AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
+    var avalancheEntity = this.addAvalanche(avalanche);
+    this.flyTo(avalancheEntity, 350, -25, 0, false);
 }
 
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, rangeMeters, tiltDegrees) {
