@@ -13,7 +13,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
 
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
-  val commonGeoBounds = GeoBounds((commonLat+.01).toString, (commonLng+.01).toString, (commonLat-.01).toString, (commonLng-.01).toString)
+  val commonGeoBounds = GeoBounds(commonLat+.01, commonLng+.01, commonLat-.01, commonLng-.01)
   
   "Unviewable avalanche select" >> {
     "Not allowed with unauthorized session" >> {

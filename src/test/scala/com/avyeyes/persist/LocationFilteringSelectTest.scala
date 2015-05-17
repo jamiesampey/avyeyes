@@ -61,7 +61,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
   }
   
   private def createGeoBoundsToInclude(a: Avalanche) = {
-    GeoBounds((a.lat+.01).toString, (a.lng+.01).toString, (a.lat-.01).toString, (a.lng-.01).toString)
+    GeoBounds(a.lat+.01, a.lng+.01, a.lat-.01, a.lng-.01)
   }
   
   private def insertAllAvalanches() = {

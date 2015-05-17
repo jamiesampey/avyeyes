@@ -9,7 +9,7 @@ class AvalancheDaoAdminSelectTest extends Specification with InMemoryDB with Ava
 
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
-  val commonGeoBounds = GeoBounds((commonLat+.01).toString, (commonLng+.01).toString, (commonLat-.01).toString, (commonLng-.01).toString)
+  val commonGeoBounds = GeoBounds(commonLat+.01, commonLng+.01, commonLat-.01, commonLng-.01)
   
   "Admin avalanche select auth check" >> {
     "Admin select not allowed with unauthorized session" >> {
