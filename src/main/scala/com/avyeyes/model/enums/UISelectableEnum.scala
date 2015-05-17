@@ -11,9 +11,7 @@ trait UISelectableEnum {
   private val JQAC_VALUE = "value"
   private val UNKNOWN_CODE = "U"
   
-	def toAutoCompleteSourceJson(): String = {
-		Printer.compact(render(JArray(values.toList.map(toJObject))))
-	}
+	def toAutoCompleteSourceJson() = Printer.compact(render(JArray(values.toList.map(toJObject))))
   
   def toJObject(v: Enumeration#Value): JObject = JObject(List(
     JField(JQAC_VALUE, JString(v.toString)),
