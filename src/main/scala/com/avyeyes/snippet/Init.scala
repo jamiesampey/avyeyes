@@ -62,15 +62,4 @@ class Init extends KmlCreator with Loggable {
       + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${ExperienceLevel.toAutoCompleteSourceJson});")
       .cmd
   }
-  
-  private def getLookAtHeadingForAspect(aspect: Aspect.Value): Int = aspect match {
-    case Aspect.N => 180
-    case Aspect.NE => 225
-    case Aspect.E => 270
-    case Aspect.SE => 315
-    case Aspect.S => 0
-    case Aspect.SW => 45
-    case Aspect.W => 90
-    case Aspect.NW => 135
-  }
 }

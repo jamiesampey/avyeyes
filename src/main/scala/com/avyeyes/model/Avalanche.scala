@@ -35,6 +35,7 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
 
   def toSearchResultJsonObj = JObject(List(
     JField("extId", JString(extId)),
+    JField("aspect", JString(aspect.toString)),
     JField("coords", JArray(kmlCoords.split(Array(',',' '))
       .toList.map(str => JDouble(str.toDouble))))
   ))
