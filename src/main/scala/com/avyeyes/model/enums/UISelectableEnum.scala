@@ -1,9 +1,8 @@
 package com.avyeyes.model.enums
 
-import scala.collection.mutable.ListBuffer
+import net.liftweb.http.S
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.Printer
-import net.liftweb.http.S
 
 trait UISelectableEnum {
   this: Enumeration =>
@@ -13,9 +12,7 @@ trait UISelectableEnum {
   private val UNKNOWN_CODE = "U"
   
 	def toAutoCompleteSourceJson(): String = {
-		val listBuffer = new ListBuffer[JObject]()
-		values.foreach(v => listBuffer.append(toJObject(v)))
-		Printer.compact(render(JArray(listBuffer.toList)))
+		Printer.compact(render(JArray(values.toList.map(toJObject))))
 	}
   
   def toJObject(v: Enumeration#Value): JObject = JObject(List(
