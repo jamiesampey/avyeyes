@@ -279,7 +279,10 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var range = 2500000;
 
   var flyToWesternUnitedStates = function() {
-    this.flyTo(this.targetEntityFromCoords(-120, 44), heading, pitch, range, true);
+    this.flyTo(this.targetEntityFromCoords(-120, 44),
+        heading, pitch, range, true).then(function() {
+        this.showSearchDiv();
+    }.bind(this));
     flown = true;
   }.bind(this)
 
@@ -288,15 +291,16 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(pos) {
         if (flown) return;
-		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude), 0.0, pitch, range, true);
+		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude),
+		    0.0, pitch, range, true).then(function() {
+		    this.showSearchDiv();
+		}.bind(this));
 		flown = true;
 	  }.bind(this), flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
   } else {
       if (flown) return;
       flyToWesternUnitedStates();
   }
-
-  this.showSearchDiv(4500);
 }
 
 AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat) {
@@ -308,21 +312,17 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat) {
 }
 
 AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, removeTargetAfterFlight) {
-	if ($('#loadingDiv').is(':visible')) {
-	  $('#loadingDiv').fadeOut(500);
-	}
-
 	var flightDurationSeconds = 3.0;
-	this.viewer.flyTo(targetEntity, {
-		duration: flightDurationSeconds,
-		offset: new Cesium.HeadingPitchRange(degToRad(heading), degToRad(pitch), range)
-	});
-
 	if (removeTargetAfterFlight) {
 		setTimeout(function() {
 			this.viewer.entities.remove(targetEntity)
-		}.bind(this), flightDurationSeconds * 1500);
+		}.bind(this), flightDurationSeconds * 2000);
 	}
+
+	return this.viewer.flyTo(targetEntity, {
+        duration: flightDurationSeconds,
+        offset: new Cesium.HeadingPitchRange(degToRad(heading), degToRad(pitch), range)
+    });
 }
 
 function flyToHeadingFromAspect(aspect) {
