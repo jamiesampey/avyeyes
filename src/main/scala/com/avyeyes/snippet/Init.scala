@@ -18,10 +18,6 @@ import net.liftweb.util.Helpers._
 class Init extends KmlCreator with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
     
-  val InitViewAltMeters = 2700000
-  val InitViewCamTilt = -90
-  val InitViewSearchFormDelayMillis = 3500
-
   val InitAvyMsgDelayMillis = 5000
 
   private var extId: Option[String] = None
@@ -46,8 +42,7 @@ class Init extends KmlCreator with Loggable {
         ExperienceLevel.getLabel(initAvalanche.get.submitterExp))
     } else {
         logger.debug("Initial page view without an init avy")
-        Call("avyeyes.geolocateAndFlyTo", InitViewAltMeters, InitViewCamTilt).cmd &
-        Call("avyeyes.showSearchDiv", InitViewSearchFormDelayMillis).cmd
+        Call("avyeyes.geolocateAndFlyTo").cmd
     }
   }
   
