@@ -275,11 +275,11 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var flown = false;
 
   var heading = 0.0;
-  var pitch = -90.0;
+  var pitch = -89.9;
   var range = 2500000;
 
   var flyToWesternUnitedStates = function() {
-    this.flyTo(this.targetEntityFromCoords(-120, 44),
+    this.flyTo(this.targetEntityFromCoords(-115, 44),
         heading, pitch, range, true).then(function() {
         this.showSearchDiv();
     }.bind(this));
@@ -298,7 +298,6 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 		flown = true;
 	  }.bind(this), flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
   } else {
-      if (flown) return;
       flyToWesternUnitedStates();
   }
 }
