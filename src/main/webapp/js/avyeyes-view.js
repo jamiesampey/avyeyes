@@ -263,7 +263,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, range, pitch) {
   this.geocoder.geocode( {'address': address}, function(results, status) {
     if (status == this.gmaps.GeocoderStatus.OK && results.length) {
 		var latLng = results[0].geometry.location;
-    	this.flyTo(this.targetEntityFromCoords(latLng.lng(), latLng.lat()),	0.0, pitch, range, true);
+    	this.flyTo(this.targetEntityFromCoords(latLng.lng(), latLng.lat(), true),	0.0, pitch, range, true);
     } else {
       this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
     }
@@ -272,41 +272,42 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, range, pitch) {
 
 AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var self = this;
-  var flown = false;
 
   var heading = 0.0;
-  var pitch = -89.9;
+  var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
   var range = 2500000;
 
-  var flyToWesternUnitedStates = function() {
-    this.flyTo(this.targetEntityFromCoords(-115, 44),
+  var flyToWesternUS = function() {
+    this.flyTo(this.targetEntityFromCoords(-115, 44, false),
         heading, pitch, range, true).then(function() {
         this.showSearchDiv();
     }.bind(this));
-    flown = true;
   }.bind(this)
-
-  setTimeout(function() {if (!flown) flyToWesternUnitedStates();}, 10000) // 10 second 'ignore' timeout
 
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(pos) {
-        if (flown) return;
-		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude),
+		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true),
 		    0.0, pitch, range, true).then(function() {
 		    this.showSearchDiv();
 		}.bind(this));
-		flown = true;
-	  }.bind(this), flyToWesternUnitedStates, {timeout:5000, enableHighAccuracy:false});
+	  }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
   } else {
-      flyToWesternUnitedStates();
+      flyToWesternUS();
   }
 }
 
-AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat) {
+AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
+    var imageUri;
+    if (showPin) {
+        imageUri = '/images/flyto-pin.png';
+    } else {
+        imageUri = '/images/flyto-1px.png';
+    }
+
     var alt = this.viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
 	return this.viewer.entities.add({
     	position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-    	billboard: {image: '/images/blue-flyto-pin.png'}
+    	billboard: {image: imageUri}
     });
 }
 
