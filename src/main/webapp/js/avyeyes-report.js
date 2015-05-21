@@ -44,6 +44,7 @@ AvyReport.prototype.doAvyDrawing = function() {
 AvyReport.prototype.beginReport = function() {
 	this.reserveExtId();
 	this.toggleTechnicalFields(false);
+    $('#avyReportInitLocation').val('');
 	$('#avyReportLocationDialog').dialog('open');
 	$('#avyReportDrawButtonContainer').css('visibility', 'visible');
 }

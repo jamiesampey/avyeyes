@@ -235,14 +235,13 @@ AvyEyesWiring.prototype.wireUI = function() {
 	    if ($('#avyReportInitLocation').val()) {
             aeView.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
         }
-        $('#avyReportInitLocation').val('');
 	    event.preventDefault();
 	  }
 	});
 	
 	$('#avyReportLocationDialog').dialog({
-	  minWidth: 650,
-	  maxWidth: 650,
+	  minWidth: 700,
+	  maxWidth: 700,
 	  minHeight: 500,
 	  maxHeight: 500,
 	  autoOpen: false,
@@ -263,7 +262,6 @@ AvyEyesWiring.prototype.wireUI = function() {
         if ($('#avyReportInitLocation').val()) {
           aeView.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
         }
-        $('#avyReportInitLocation').val('');
       }
 	  },{
       text: "Cancel",
