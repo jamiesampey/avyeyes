@@ -1,11 +1,31 @@
-#avyReportDrawStep2Dialog {
+#avyReportLocationDialog {
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+#avyReportLocationDialog div {
+    margin-bottom: 15px;
+}
+
+#avyReportDrawButton {
+    background: #458B00;
 }
 
 .avyReportDrawDialog {
 	margin: 5px 5px 0px 5px;
 	padding: 0px;
+}
+
+#avyReportDrawButtonContainer {
+    position: absolute;
+    visibility: hidden;
+    top: 5px;
+    right: 80px;
+    z-index: 10;
+}
+
+#avyReportDrawButton {
+    font-size: 1.1em;
 }
 
 .avyReportDetailsDialog {

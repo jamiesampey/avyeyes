@@ -10,6 +10,7 @@
 	</head>
 	<body class="lift:surround?with=default&amp;at=content">
         <div id="cesiumContainer"></div>
+
         <div id="fb-root"></div>
 
 		<div id="liftContent" class="lift:Content">
@@ -312,19 +313,24 @@
 			</form> <!-- END LIFT FORM -->
 		</div> <!--  END SEARCH DIV -->
 		
-	   <div id="avyReportDrawStep1Dialog">
-	      <span id="avyReportDrawStep1Instruction" class="avyMsg"></span>
-		  <label for="avyReportInitLocation"></label>
-		  <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text"/>
+	   <div id="avyReportLocationDialog">
+	      <span id="avyReportLocationInstructions1" class="avyMsg"></span>
+          <div>
+              <label for="avyReportInitLocation"></label>
+              <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text"/>
+          </div>
+          <span id="avyReportLocationInstructions2" class="avyMsg"></span>
 	   </div>
-	   <div id="avyReportDrawStep2Dialog">
-	       <span id="avyReportDrawStep2Instruction" class="avyMsg"></span>
+       <div id="avyReportDrawButtonContainer">
+           <button id="avyReportDrawButton" onclick="javascript:alert('Jamie was here!')" class="cesium-button">
+               Start Avalanche Drawing
+           </button>
        </div>
-       <div id="avyReportDrawStep3Dialog">
-           <span id="avyReportDrawStep3Instruction" class="avyMsg"></span>
+       <div id="avyReportDrawingConfirmationDialog">
+           <span id="avyReportDrawingConfirmationInstructions" class="avyMsg"></span>
        </div>
-       
-	   <div id="avyReportDetailsEntryDialog">
+
+       <div id="avyReportDetailsEntryDialog">
 	   <form class="lift:form.ajax">
 	   <div class="lift:Report">
 	       <table id="avyReportDetailsMainTable">

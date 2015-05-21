@@ -49,9 +49,9 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
-		  aeView.currentReport.toggleClassification(true); 
+		  aeView.currentReport.toggleTechnicalFields(true);
 		} else {
-		  aeView.currentReport.toggleClassification(false); 
+		  aeView.currentReport.toggleTechnicalFields(false);
 		}
 		return false;
 	});
@@ -231,20 +231,20 @@ AvyEyesWiring.prototype.wireUI = function() {
 	
 	$('#avyReportInitLocation').keydown(function (event) {
 	  if (event.keyCode == 13) {
-	    $('#avyReportDrawStep1Dialog').dialog('close');
+	    $('#avyReportLocationDialog').dialog('close');
 	    if ($('#avyReportInitLocation').val()) {
-	      aeView.currentReport.beginReportWithGeocode();
-	    } else {
-	      aeView.currentReport.beginReport();
-	    }
+            aeView.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
+        }
+        $('#avyReportInitLocation').val('');
 	    event.preventDefault();
 	  }
 	});
 	
-	$('#avyReportDrawStep1Dialog').dialog({
-	  minWidth: 500,
-	  maxWidth: 500,
-	  minHeight: 400,
+	$('#avyReportLocationDialog').dialog({
+	  minWidth: 650,
+	  maxWidth: 650,
+	  minHeight: 500,
+	  maxHeight: 500,
 	  autoOpen: false,
 	  modal: true,
 	  resizable: false,
@@ -252,7 +252,7 @@ AvyEyesWiring.prototype.wireUI = function() {
 	  closeOnEscape: false,
 	  beforeclose: function (event, ui) { return false; },
 	  dialogClass: "avyReportDrawDialog",
-	  title: "Avalanche Report - Step 1",
+	  title: "Avalanche Report",
       open: function() {
       	$('#avyReportInitLocation').focus();
       },
@@ -260,11 +260,10 @@ AvyEyesWiring.prototype.wireUI = function() {
       text: "Begin Report",
       click: function(event, ui) {
       	$(this).dialog('close');
-    		if ($('#avyReportInitLocation').val()) {
-    		  aeView.currentReport.beginReportWithGeocode();
-    		} else {
-    		  aeView.currentReport.beginReport();
-    		}
+        if ($('#avyReportInitLocation').val()) {
+          aeView.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
+        }
+        $('#avyReportInitLocation').val('');
       }
 	  },{
       text: "Cancel",
@@ -274,33 +273,7 @@ AvyEyesWiring.prototype.wireUI = function() {
     }]
 	});
 	
-	$('#avyReportDrawStep2Dialog').dialog({
-	  minWidth: 500,
-	  maxWidth: 500,
-	  maxHeight: 600,
-	  autoOpen: false,
-	  modal: true,
-	  resizable: false,
-	  draggable: false,
-	  closeOnEscape: false,
-	  beforeclose: function (event, ui) { return false; },
-	  dialogClass: "avyReportDrawDialog",
-	  title: "Avalanche Report - Step 2",
-	  buttons: [{
-      text: "Begin Drawing",
-      click: function(event, ui) {
-        $(this).dialog('close');
-        aeView.currentReport.doAvyDrawing();
-      }
-    },{
-      text: "Cancel",
-      click: function(event, ui) {
-        aeView.resetView();
-      }
-    }]
-	});
-	
-	$('#avyReportDrawStep3Dialog').dialog({
+	$('#avyReportDrawingConfirmationDialog').dialog({
  	  minWidth: 500,
    	  maxWidth: 500,
 	  autoOpen: false,

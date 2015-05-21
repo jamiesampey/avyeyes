@@ -70,7 +70,6 @@ AvyEyesView.prototype.init = function(gmapsInst) {
   }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
   new AvyEyesWiring(this).wireUI();
-  $('#loadingDiv').fadeOut(500);
 }
 
 AvyEyesView.prototype.showSearchDiv = function(delay) {
@@ -135,7 +134,7 @@ AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
 AvyEyesView.prototype.doReport = function() {
 	this.cancelReport();
 	this.currentReport = new AvyReport(this);
-	this.currentReport.beginReportWizard();
+	this.currentReport.beginReport();
 }
 
 AvyEyesView.prototype.cancelReport = function() {
@@ -277,7 +276,12 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
   var range = 2500000;
 
+  var raiseTheCurtain = function() {
+    $('#loadingDiv').fadeOut(500);
+  }
+
   var flyToWesternUS = function() {
+    raiseTheCurtain();
     this.flyTo(this.targetEntityFromCoords(-115, 44, false),
         heading, pitch, range, true).then(function() {
         this.showSearchDiv();
@@ -286,6 +290,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(pos) {
+        raiseTheCurtain();
 		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true),
 		    0.0, pitch, range, true).then(function() {
 		    this.showSearchDiv();

@@ -5,12 +5,6 @@ function AvyReport(avyEyesView) {
 	this.currentDrawing = null;
 }
 
-AvyReport.prototype.beginReportWizard = function() {
-	this.reserveExtId();
-	this.toggleClassification(false);
-	$('#avyReportDrawStep1Dialog').dialog('open');
-}
-
 AvyReport.prototype.reserveExtId = function() {
 	$.getJSON('/rest/reserveExtId', function(data) {
 		$('#avyReportExtId').val(data.extId);
@@ -47,20 +41,16 @@ AvyReport.prototype.doAvyDrawing = function() {
 	this.currentDrawing.startAvyDraw();
 }
 
-AvyReport.prototype.beginReportWithGeocode = function() {
-	this.view.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
-	$('#avyReportInitLocation').val('');
-	setTimeout((this.beginReport).bind(this), 5000);
-}
-	
 AvyReport.prototype.beginReport = function() {
-	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportDrawStep2Dialog').dialog('open');
+	this.reserveExtId();
+	this.toggleTechnicalFields(false);
+	$('#avyReportLocationDialog').dialog('open');
+	$('#avyReportDrawButtonContainer').css('visibility', 'visible');
 }
-	
+
 AvyReport.prototype.confirmDrawing = function() {
 	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportDrawStep3Dialog').dialog('open');
+	$('#avyReportDrawingConfirmationDialog').dialog('open');
 }
 
 AvyReport.prototype.enterAvyDetail = function() {
@@ -105,7 +95,7 @@ AvyReport.prototype.setAvyDrawingHiddenInputs = function(lat, lng, elev, aspect,
 	$('#avyReportKml').val(kmlStr);
 }
 
-AvyReport.prototype.toggleClassification = function(enabled) {
+AvyReport.prototype.toggleTechnicalFields = function(enabled) {
   if (enabled) {
     $('#avyReportClassification .avyHeader').css('color', 'white');
     $('#avyReportClassification label').css('color', 'white');
