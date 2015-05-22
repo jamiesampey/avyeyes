@@ -253,6 +253,7 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
     var avalancheEntity = this.addAvalanche(avalanche);
+    raiseTheCurtain();
     this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 500, false);
 }
 
@@ -276,13 +277,9 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
   var range = 2500000;
 
-  var raiseTheCurtain = function() {
-    $('#loadingDiv').fadeOut(500);
-  }
-
   var flyToWesternUS = function() {
     raiseTheCurtain();
-    this.flyTo(this.targetEntityFromCoords(-115, 44, false),
+    this.flyTo(this.targetEntityFromCoords(-112, 44, false),
         heading, pitch, range, true).then(function() {
         this.showSearchDiv();
     }.bind(this));
@@ -339,6 +336,12 @@ function flyToHeadingFromAspect(aspect) {
     else if (aspect === "W") return 90.0;
     else if (aspect === "NW") return 135.0;
     else return 0.0;
+}
+
+function raiseTheCurtain() {
+    if ($('#loadingDiv').is(':visible')) {
+        $('#loadingDiv').fadeOut(500);
+    }
 }
 
 AvyEyesView.prototype.metersToFeet = function(meters) {
