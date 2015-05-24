@@ -4,17 +4,22 @@ require.config({
   baseUrl: '/js'
 });
     
-var avyeyes = null;
+var avyEyesView;
+var gmapsLoadedGate = $.Deferred();
 
 function gmapsLoadCB() {
-    avyeyes.init(google.maps);
+    gmapsLoadedGate.resolve();
 }
 
 //Start the main app logic.
-requirejs(['avyeyes-view', 'lib/gmaps-loader',
-  'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
-	function (AvyEyesView, gmapsAsyncLoad) {
-      avyeyes = new AvyEyesView();
-      gmapsAsyncLoad('gmapsLoadCB');
+requirejs(['avyeyes', 'avyeyes-view', 'lib/gmaps-loader',
+    'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
+    function (AvyEyes, AvyEyesView, gmapsAsyncLoad) {
+        gmapsAsyncLoad('gmapsLoadCB');
+        gmapsLoadedGate.done(function() {
+            avyEyesView = new AvyEyesView(google.maps);
+            AvyEyes.wire(avyEyesView);
+            $('#avyInitLiftCallback').submit();
+        });
     }
 );

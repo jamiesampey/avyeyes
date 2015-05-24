@@ -81,7 +81,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
     } else {
       var problemFieldJsonArray = Printer.compact(
         JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
-      JsRaw(s"avyeyes.currentReport.highlightValidationFields($problemFieldJsonArray)").cmd &
+      JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd &
       JsDialog.error("avyReportValidationError")
     }
   }
@@ -116,7 +116,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       unreserveExtId(extId)
     }
 
-    jsDialogCmd & Call("avyeyes.currentReport.finishReport").cmd
+    jsDialogCmd & Call("avyEyesView.currentReport.finishReport").cmd
   }
   
   def deleteReport(extIdToDelete: String) = {
