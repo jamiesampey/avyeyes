@@ -1,8 +1,7 @@
-define(['avyeyes.form',
-        'lib/Cesium/Cesium',
+define(['lib/Cesium/Cesium',
         'lib/jquery-ui',
         'lib/jquery.geocomplete'
-        ], function(AvyForm, Cesium) {
+        ], function(Cesium) {
 
 var AvyEyes = {};
 
@@ -115,9 +114,9 @@ function wireAutoCompletes() {
 
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
-		  AvyForm.toggleTechnicalReportFields(true);
+		  toggleTechnicalReportFields(true);
 		} else {
-		  AvyForm.toggleTechnicalReportFields(false);
+		  toggleTechnicalReportFields(false);
 		}
 		return false;
 	});
@@ -340,6 +339,7 @@ function wireDialogs(view) {
             click: function(event, ui) {
                 $(this).dialog('close');
                 $.ui.dialog.prototype._focusTabbable = function(){};
+                toggleTechnicalReportFields(false);
                 $('#rwAvyFormDialog').dialog('open');
             }
         },{
@@ -415,6 +415,25 @@ function wireDialogs(view) {
             }
         }]
     });
+}
+
+function toggleTechnicalReportFields(enabled) {
+    if (enabled) {
+        $('#rwAvyFormClassification .avyHeader').css('color', 'white');
+        $('#rwAvyFormClassification label').css('color', 'white');
+        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'white');
+        $('#rwAvyFormClassification :input').prop('disabled', false);
+        $('#rwAvyFormClassification .avyRDSlider').slider('enable');
+    } else {
+        $('#rwAvyFormClassification .avyHeader').css('color', 'gray');
+        $('#rwAvyFormClassification label').css('color', 'gray');
+        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'gray');
+        $('#rwAvyFormClassification :input').val('');
+        $('#rwAvyFormClassification :input').prop("disabled", true);
+        $('#rwAvyFormClassification .avyRDSlider').slider('disable');
+        $('#rwAvyFormClassification .avyRDSliderValue').val('0');
+        $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
+    }
 }
 
 AvyEyes.raiseTheCurtain = function() {

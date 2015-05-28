@@ -82,7 +82,6 @@ AvyForm.hideReadOnlyForm = function() {
 
 AvyForm.displayReadWriteForm = function(a) {
     resetImageUploadForm();
-    toggleTechnicalReportFields(false);
 
     $('#rwAvyFormExtId').val(a.extId);
     
@@ -214,26 +213,6 @@ AvyForm.deleteImage = function(extId, filename) {
       alert('Failed to delete ' + filename + '. Error: ' + err);
     }
   });
-}
-
-AvyForm.toggleTechnicalReportFields = toggleTechnicalReportFields;
-function toggleTechnicalReportFields(enabled) {
-    if (enabled) {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'white');
-        $('#rwAvyFormClassification label').css('color', 'white');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'white');
-        $('#rwAvyFormClassification :input').prop('disabled', false);
-        $('#rwAvyFormClassification .avyRDSlider').slider('enable');
-    } else {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'gray');
-        $('#rwAvyFormClassification label').css('color', 'gray');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'gray');
-        $('#rwAvyFormClassification :input').val('');
-        $('#rwAvyFormClassification :input').prop("disabled", true);
-        $('#rwAvyFormClassification .avyRDSlider').slider('disable');
-        $('#rwAvyFormClassification .avyRDSliderValue').val('0');
-        $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
-    }
 }
 
 AvyForm.highlightReportErrorFields = function(errorFields) {
