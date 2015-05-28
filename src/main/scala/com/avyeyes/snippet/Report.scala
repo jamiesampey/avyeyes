@@ -116,7 +116,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       unreserveExtId(extId)
     }
 
-    jsDialogCmd & Call("avyEyesView.currentReport.finishReport").cmd
+    jsDialogCmd & Call("avyEyesView.resetView").cmd
   }
   
   def deleteReport(extIdToDelete: String) = {

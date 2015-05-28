@@ -331,19 +331,19 @@ function wireDialogs(view) {
             return false;
         },
         dialogClass: "avyReportDrawDialog",
-        title: "Avalanche Report - Step 3",
+        title: "Avalanche Report",
         buttons: [{
             text: "Accept Drawing",
             click: function(event, ui) {
                 $(this).dialog('close');
-                view.currentReport.enterAvyDetail();
+                view.currentReport.enterReportDetails();
             }
         },{
             text: "Redraw",
             click: function(event, ui) {
                 $(this).dialog('close');
+                $('#avyReportDrawButtonContainer').css('visibility', 'visible');
                 view.currentReport.clearDrawing();
-                view.currentReport.startDrawing();
             }
         }]
     });
@@ -400,11 +400,13 @@ function wireDialogs(view) {
         },{
             text: "Submit",
             click: function(event, ui) {
+                $(this).dialog('close');
                 $("#avyReportDetailsEntryDialog").children('form').submit();
             }
         },{
             text: "Cancel",
             click: function(event, ui) {
+                $(this).dialog('close');
                 view.resetView();
             }
         }]
@@ -468,6 +470,21 @@ AvyEyes.wireReportAdminControls = function(view) {
     });
 }
 
+AvyEyes.resetReportImageUpload = function(view) {
+  $('#avyReportImageTable > tbody').empty();
+
+  var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
+  $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
+      fail: function(e, data) {
+        view.showModalDialog("Error", data.errorThrown);
+      },
+      done: function(e, data) {
+        $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>'
+          + bytesToFileSize(data.result.fileSize) + '</td></tr>');
+      }
+  });
+}
+
 AvyEyes.raiseTheCurtain = function() {
     if ($('#loadingDiv').is(':visible')) {
         $('#loadingDiv').fadeOut(500);
@@ -521,11 +538,24 @@ function resetReportErrorFields() {
 
 AvyEyes.clearReportFields = function() {
     resetReportErrorFields();
+    setReportDrawingInputs('', '', '', '', '', '');
 	$('#avyReportDetailsEntryDialog').find('input:text, input:hidden, textarea').val('');
 	$('#avyReportDetailsEntryDialog').find('.avyRDSliderValue').val('0');
 	$('#avyReportDetailsEntryDialog').find('.avyRDSlider').slider('value', 0);
 	$('#avyReportImageTable > tbody').empty();
 	$('#avyReportDrawButtonContainer').css('visibility', 'hidden');
+}
+
+AvyEyes.setReportDrawingInputs = setReportDrawingInputs;
+function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
+	$('#avyReportLng').val(lng);
+	$('#avyReportLat').val(lat);
+	$('#avyReportElevation').val(elevation);
+	$('#avyReportElevationFt').val(AvyEyes.metersToFeet(elevation));
+	$('#avyReportAspectAC').val(aspect);
+	$('#avyReportAspect').val(aspect);
+	$('#avyReportAngle').val(angle);
+	$('#avyReportCoords').val(coordStr);
 }
 
 AvyEyes.closeReportDialogs = function() {
@@ -537,7 +567,8 @@ AvyEyes.metersToFeet = function(meters) {
     return Math.round(meters * 3.28084);
 }
 
-AvyEyes.bytesToFileSize = function(numBytes) {
+AvyEyes.bytesToFileSize = bytesToFileSize;
+function bytesToFileSize(numBytes) {
     var thresh = 1000;
     if(numBytes < thresh) return numBytes + ' B';
 

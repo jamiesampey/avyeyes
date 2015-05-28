@@ -25,7 +25,7 @@ AvyReport.prototype.beginReport = function() {
 }
 
 AvyReport.prototype.startDrawing = function() {
-    $('avyReportDrawButtonContainer').css('visibility', 'hidden');
+    $('#avyReportDrawButtonContainer').css('visibility', 'hidden');
     this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     var isDrawing = false;
@@ -37,6 +37,11 @@ AvyReport.prototype.startDrawing = function() {
 
     this.view.cesiumEventHandler.setInputAction(function(click) {
         if (isDrawing) {
+            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+            this.view.setAvySelectEventHandler();
+
+            this.view.cesiumViewer.entities.remove(drawingPolyline);
             this.drawingPolygon = this.view.cesiumViewer.entities.add({
                 polygon: {
                     hierarchy: {
@@ -48,16 +53,12 @@ AvyReport.prototype.startDrawing = function() {
                 }
             });
 
-            this.view.cesiumViewer.entities.remove(drawingPolyline);
-            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.view.setAvySelectEventHandler();
-
-            this.digestDrawing(cartesian3Array);
-            this.confirmDrawing();
+            digestDrawing(cartesian3Array);
+            $.ui.dialog.prototype._focusTabbable = function(){};
+           	$('#avyReportDrawingConfirmationDialog').dialog('open');
         } else {
             drawingPolyline = this.view.cesiumViewer.entities.add({
-                drawingPolyline: {
+                polyline: {
                     positions: new Cesium.CallbackProperty(function() {
                         return cartesian3Array;
                     }, false),
@@ -82,21 +83,70 @@ AvyReport.prototype.startDrawing = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 }
 
+function digestDrawing(cartesian3Array) {
+    var coordStr = "";
+    var highestCartesian;
+    var highestCartographic;
+    var lowestCartesian;
+    var lowestCartographic;
+
+    $.each(cartesian3Array, function(i, cartesianPos) {
+        var cartographicPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesianPos);
+
+        if (!highestCartographic || cartographicPos.height > highestCartographic.height) {
+            highestCartesian = cartesianPos;
+            highestCartographic = cartographicPos;
+        }
+        if (!lowestCartographic || cartographicPos.height < lowestCartographic.height) {
+            lowestCartesian = cartesianPos;
+            lowestCartographic = cartographicPos;
+        }
+
+        coordStr += Cesium.Math.toDegrees(cartographicPos.longitude).toFixed(8)
+        + "," + Cesium.Math.toDegrees(cartographicPos.latitude).toFixed(8)
+        + "," + cartographicPos.height.toFixed(2) + " ";
+    });
+
+    var hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
+    var opposite = highestCartographic.height - lowestCartographic.height;
+
+    AvyEyes.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+        Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
+        Math.round(highestCartographic.height),
+        getAspect(highestCartographic, lowestCartographic),
+        Math.round(Cesium.Math.toDegrees(Math.asin(opposite/hypotenuse))),
+        coordStr.trim());
+}
+
+function getAspect(highestCartographic, lowestCartographic) {
+    var lat1 = highestCartographic.latitude;
+    var lat2 = lowestCartographic.latitude;
+    var dLon = lowestCartographic.longitude - highestCartographic.longitude;
+
+    var y = Math.sin(dLon) * Math.cos(lat2);
+    var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    var heading = (Cesium.Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+
+	if (heading > 22.5 && heading <= 67.5) return "NE";
+	if (heading > 67.5 && heading <= 112.5) return "E";
+	if (heading > 112.5 && heading <= 157.5) return "SE";
+	if (heading > 157.5 && heading <= 202.5) return "S";
+	if (heading > 202.5 && heading <= 247.5) return "SW";
+	if (heading > 247.5 && heading <= 292.5) return "W";
+	if (heading > 292.5 && heading <= 337.5) return "NW";
+	return "N";
+}
+
 AvyReport.prototype.clearDrawing = function() {
-	setDrawingInputs('', '', '', '', '', '');
+	AvyEyes.setReportDrawingInputs('', '', '', '', '', '');
 	if (this.drawingPolygon) {
-    	this.cesiumViewer.entities.remove(this.drawingPolygon);
+    	this.view.cesiumViewer.entities.remove(this.drawingPolygon);
     	this.drawingPolygon = null;
 	}
 }
 
-AvyReport.prototype.confirmDrawing = function() {
-	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportDrawingConfirmationDialog').dialog('open');
-}
-
-AvyReport.prototype.enterAvyDetail = function() {
-    this.wireImageUpload(this.view);
+AvyReport.prototype.enterReportDetails = function() {
+    AvyEyes.resetReportImageUpload(this.view);
 	$.ui.dialog.prototype._focusTabbable = function(){};
 	$('#avyReportDetailsEntryDialog').dialog('open');
 }
@@ -110,50 +160,6 @@ AvyReport.prototype.highlightErrorFields = function(errorFields) {
             $('#' + errorFields[i]).css('border', '1px solid red');
         }
     });
-}
-
-AvyReport.prototype.finishReport = function() {
-    $('#avyReportDetailsEntryDialog').dialog('close');
-    this.view.resetView();
-}
-
-AvyReport.prototype.digestDrawing = function(cartesian3Array) {
-    var coordStr = "";
-    var highestAltitude = 0;
-    var highestCartesian = cartesian3Array[0];
-    var highestCartographic;
-    var lowestAltitude = 9000;
-    var lowestCartesian = cartesian3Array[0];
-    var lowestCartographic;
-
-    $.each(cartesian3Array, function(i, cartesianPos) {
-        var cartographicPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesianPos);
-
-        if (cartographicPos.height > highestAltitude) {
-            highestAltitude = cartographicPos.height;
-            highestCartesian = cartesianPos;
-            highestCartographic = cartographicPos;
-        }
-        if (cartographicPos.height < lowestAltitude) {
-            lowestAltitude = cartographicPos.height;
-            lowestCartesian = cartesianPos;
-            lowestCartographic = cartographicPos;
-        }
-
-        coordStr += Cesium.Math.toDegrees(cartographicPos.longitude).toFixed(8)
-        + "," + Cesium.Math.toDegrees(cartographicPos.latitude).toFixed(8)
-        + "," + cartographicPos.height.toFixed(2) + " ";
-    });
-
-    var elevation = Math.round(highestAltitude);
-    var aspect = getAspect(highestCartesian, lowestCartesian);
-
-    var hDist = highestCartesian.distance(lowestCartesian);
-    var vDist = highestCartographic.height - lowestCartographic.height;
-    var angle = Cesium.Math.toDegrees(Math.asin(vDist/hDist));
-
-    setDrawingInputs(highestCartographic.longitude, highestCartographic.latitude,
-        elevation, aspect, angle, coordStr.trim());
 }
 
 AvyReport.prototype.displayDetails = function(a) {
@@ -204,21 +210,6 @@ AvyReport.prototype.displayDetails = function(a) {
   $('#avyReportDetailsEntryDialog').dialog('open');
 }
 
-AvyReport.prototype.wireImageUpload = function(view) {
-  $('#avyReportImageTable > tbody').empty();
-
-  var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
-  $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
-      fail: function(e, data) {
-        view.showModalDialog("Error", data.errorThrown);
-      },
-      done: function(e, data) {
-        $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>'
-          + AvyEyes.bytesToFileSize(data.result.fileSize) + '</td></tr>');
-      }
-  });
-}
-
 AvyReport.prototype.deleteImage = function(extId, filename) {
   $.ajax({
     url: '/rest/images/' + extId + '/' + filename,
@@ -249,33 +240,6 @@ function setSpinnerVal(inputElem, value) {
   } else {
     $(inputElem).val(value);
   }
-}
-
-function getAspect(highestCartesian, lowestCartesian) {
-    var y = Math.sin(lowestCartesian.x - highestCartesian.x) * Math.cos(lowestCartesian.y);
-    var x = Math.cos(highestCartesian.y) * Math.sin(lowestCartesian.y) -
-        Math.sin(highestCartesian.y) * Math.cos(lowestCartesian.y) * Math.cos(lowestCartesian.x - highestCartesian.x);
-    var heading = Math.atan2(y, x).toDegrees().toFixed(1);
-
-	if (heading > 22.5 && heading <= 67.5) return "NE";
-	if (heading > 67.5 && heading <= 112.5) return "E";
-	if (heading > 112.5 && heading <= 157.5) return "SE";
-	if (heading > 157.5 && heading <= 202.5) return "S";
-	if (heading > 202.5 && heading <= 247.5) return "SW";
-	if (heading > 247.5 && heading <= 292.5) return "W";
-	if (heading > 292.5 && heading <= 337.5) return "NW";
-	return "N";
-}
-
-function setDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
-	$('#avyReportLng').val(lng);
-	$('#avyReportLat').val(lat);
-	$('#avyReportElevation').val(elevation);
-	$('#avyReportElevationFt').val(AvyEyes.metersToFeet(elevation));
-	$('#avyReportAspectAC').val(aspect);
-	$('#avyReportAspect').val(aspect);
-	$('#avyReportAngle').val(angle);
-	$('#avyReportCoords').val(coordStr);
 }
 
 return AvyReport;

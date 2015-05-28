@@ -1,12 +1,12 @@
 define(['avyeyes',
-        'lib/Cesium/Cesium',
         'avyeyes-report',
+        'lib/Cesium/Cesium',
         'lib/jquery-ui',
         'lib/jquery.geocomplete',
         'lib/jquery.fileupload',
         'lib/jquery.iframe-transport',
         'lib/lightbox'
-        ], function(AvyEyes, Cesium, AvyReport) {
+        ], function(AvyEyes, AvyReport, Cesium) {
 
 function AvyEyesView(gmapsInst) {
     this.gmaps = gmapsInst;
