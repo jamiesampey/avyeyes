@@ -12,7 +12,7 @@ function gmapsLoadCB() {
 }
 
 //Start the main app logic.
-requirejs(['avyeyes', 'avyeyes-view', 'lib/gmaps-loader',
+requirejs(['avyeyes', 'avyeyes.view', 'lib/gmaps-loader',
     'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
     function (AvyEyes, AvyEyesView, gmapsAsyncLoad) {
         gmapsAsyncLoad('gmapsLoadCB');

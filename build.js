@@ -24,7 +24,7 @@
             name: 'main'
         },
         {
-            name: 'main-admin'
+            name: 'main.admin'
         }
     ]
 })

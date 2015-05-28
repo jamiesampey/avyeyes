@@ -1,12 +1,12 @@
 define(['avyeyes',
-        'avyeyes-report',
+        'avyeyes.report',
         'lib/Cesium/Cesium',
         'lib/jquery-ui',
         'lib/jquery.geocomplete',
         'lib/jquery.fileupload',
         'lib/jquery.iframe-transport',
         'lib/lightbox'
-        ], function(AvyEyes, AvyReport, Cesium) {
+        ], function(AvyEyes, AvyEyesReport, Cesium) {
 
 function AvyEyesView(gmapsInst) {
     this.gmaps = gmapsInst;
@@ -54,7 +54,7 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
                 if ($('#avyAdminLoggedInEmail').length) {
                     AvyEyes.wireReportAdminControls();
                     this.cancelReport();
-                    this.currentReport = new AvyReport(this);
+                    this.currentReport = new AvyEyesReport(this);
                     this.currentReport.displayDetails(data);
                 } else {
                     this.displayDetails(movement.position, data);
@@ -90,7 +90,7 @@ AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
 
 AvyEyesView.prototype.doReport = function() {
 	this.cancelReport();
-	this.currentReport = new AvyReport(this);
+	this.currentReport = new AvyEyesReport(this);
 	this.currentReport.beginReport();
 }
 
