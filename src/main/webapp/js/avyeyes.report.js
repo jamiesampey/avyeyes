@@ -1,4 +1,7 @@
-define(['avyeyes', 'lib/Cesium/Cesium', 'lib/jquery-ui'], function(AvyEyes, Cesium) {
+define(['avyeyes.form',
+        'lib/Cesium/Cesium',
+        'lib/jquery-ui'],
+        function(AvyForm, Cesium) {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
@@ -18,7 +21,6 @@ AvyReport.prototype.reserveExtId = function() {
 
 AvyReport.prototype.beginReport = function() {
 	this.reserveExtId();
-	AvyEyes.toggleTechnicalReportFields(false);
     $('#avyReportInitLocation').val('');
 	$('#avyReportLocationDialog').dialog('open');
 	$('#avyReportDrawButtonContainer').css('visibility', 'visible');
@@ -41,7 +43,6 @@ AvyReport.prototype.startDrawing = function() {
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
             this.view.setAvySelectEventHandler();
 
-            this.view.cesiumViewer.entities.remove(drawingPolyline);
             this.drawingPolygon = this.view.cesiumViewer.entities.add({
                 polygon: {
                     hierarchy: {
@@ -52,6 +53,7 @@ AvyReport.prototype.startDrawing = function() {
                     outline: true
                 }
             });
+            this.view.cesiumViewer.entities.remove(drawingPolyline);
 
             digestDrawing(cartesian3Array);
             $.ui.dialog.prototype._focusTabbable = function(){};
@@ -110,7 +112,7 @@ function digestDrawing(cartesian3Array) {
     var hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
     var opposite = highestCartographic.height - lowestCartographic.height;
 
-    AvyEyes.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+    AvyForm.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
         Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
         Math.round(highestCartographic.height),
         getAspect(highestCartographic, lowestCartographic),
@@ -138,108 +140,15 @@ function getAspect(highestCartographic, lowestCartographic) {
 }
 
 AvyReport.prototype.clearDrawing = function() {
-	AvyEyes.setReportDrawingInputs('', '', '', '', '', '');
+	AvyForm.setReportDrawingInputs('', '', '', '', '', '');
 	if (this.drawingPolygon) {
     	this.view.cesiumViewer.entities.remove(this.drawingPolygon);
     	this.drawingPolygon = null;
 	}
 }
 
-AvyReport.prototype.enterReportDetails = function() {
-    AvyEyes.resetReportImageUpload(this.view);
-	$.ui.dialog.prototype._focusTabbable = function(){};
-	$('#avyReportDetailsEntryDialog').dialog('open');
-}
-
 AvyReport.prototype.highlightErrorFields = function(errorFields) {
-    AvyEyes.resetReportErrorFields();
-    $.each(errorFields, function(i) {
-        if (errorFields[i] === 'avyReportAngle') {
-            $('#' + errorFields[i]).parent().css('border', '1px solid red');
-        } else {
-            $('#' + errorFields[i]).css('border', '1px solid red');
-        }
-    });
-}
-
-AvyReport.prototype.displayDetails = function(a) {
-  $('#avyReportExtId').val(a.extId);
-  this.wireImageUpload(this.view);
-  
-  $('#avyReportViewableTd').children(':checkbox').attr('checked', a.viewable);
-  $('#avyReportViewableTd').children(':checkbox').trigger('change');
-    
-  $('#avyReportSubmitterEmail').val(a.submitterEmail);
-  setAutocompleteVal('#avyReportSubmitterExp', a.submitterExp);
-    
-  $('#avyReportAreaName').val(a.areaName);
-  $('#avyReportDate').val(a.avyDate);
-  setAutocompleteVal('#avyReportSky', a.sky);
-  setAutocompleteVal('#avyReportPrecip', a.precip);
-    
-  setAutocompleteVal('#avyReportType', a.avyType);
-  setAutocompleteVal('#avyReportTrigger', a.avyTrigger);
-  setAutocompleteVal('#avyReportInterface', a.avyInterface);
-  setSliderVal('#avyReportRsizeValue', a.rSize);
-  setSliderVal('#avyReportDsizeValue', a.dSize);
-  
-  $('#avyReportElevation').val(a.elevation);
-  $('#avyReportElevationFt').val(AvyEyes.metersToFeet(a.elevation));
-  setAutocompleteVal('#avyReportAspect', a.aspect);
-  $('#avyReportAngle').val(a.angle);
-  
-  setSpinnerVal('#avyReportNumCaught', a.caught);
-  setSpinnerVal('#avyReportNumPartiallyBuried', a.partiallyBuried);
-  setSpinnerVal('#avyReportNumFullyBuried', a.fullyBuried);
-  setSpinnerVal('#avyReportNumInjured', a.injured);
-  setSpinnerVal('#avyReportNumKilled', a.killed);
-  setAutocompleteVal('#avyReportModeOfTravel', a.modeOfTravel);
-  
-  $('#avyReportComments').val(a.comments);
-  
-  $.each(a.images, function(i) {
-    var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
-    $('#avyReportImageTable').append('<tr id="' + a.images[i].filename + '">' 
-      + '<td><a href="' + imgUrl + '" target="_blank">' + a.images[i].filename 
-      + '</a></td><td>' + AvyEyes.bytesToFileSize(a.images[i].size) + '<div class="avyReportImageDeleteWrapper">'
-      + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
-      + a.extId + '\',\'' + a.images[i].filename + '\')"/></div></td></tr>');
-  });
-  
-  $('#avyReportDeleteBinding').val(a.extId);
-  $('#avyReportDetailsEntryDialog').dialog('open');
-}
-
-AvyReport.prototype.deleteImage = function(extId, filename) {
-  $.ajax({
-    url: '/rest/images/' + extId + '/' + filename,
-    type: 'DELETE',
-    success: function(result) {
-      $('#avyReportImageTable').find('#' + filename).remove();
-    },
-    fail: function(jqxhr, textStatus, error) {
-      var err = textStatus + ", " + error;
-      alert('Failed to delete ' + filename + '. Error: ' + err);
-    }
-  });  
-}
-
-function setAutocompleteVal(hiddenSibling, enumObj) {
-  $(hiddenSibling).val(enumObj.value);
-  $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
-}
-
-function setSliderVal(inputElem, value) {
-  $(inputElem).val(value);
-  $(inputElem).siblings('.avyRDSlider').slider('value', value);
-}
-
-function setSpinnerVal(inputElem, value) {
-  if (value == -1) {
-    $(inputElem).val('');
-  } else {
-    $(inputElem).val(value);
-  }
+    AvyForm.highlightReportErrorFields(errorFields);
 }
 
 return AvyReport;

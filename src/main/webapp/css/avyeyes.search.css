@@ -127,48 +127,52 @@
     margin: 20px 10px 20px 0px;
 }
 
-#avyDetailDialog {
+#roAvyFormDialog {
     margin: 5px 5px 0px 5px;
     padding: 0px;
 }
 
-#avyDetailTable {
+.roAvyFormDialog .ui-dialog-titlebar {
+	display: none;
+}
+
+#roAvyFormTable {
     width: 740px;
     overflow-x: hidden;
 }
 
-#avyDetailTable > tbody > tr > td {
+#roAvyFormTable > tbody > tr > td {
     vertical-align: top;
 }
 
-#avyDetailTitleTable {
+#roAvyFormTitleTable {
     width: 100%;
 }
 
-#avyDetailTitleTable > tbody > tr > td {
+#roAvyFormTitleTable > tbody > tr > td {
     vertical-align: top;
     padding: 0px;
     margin: 0px;
 }
 
-#avyDetailTitleAndSubmitterTable {
+#roAvyFormTitleAndSubmitterTable {
     width: 530px;
 }
 
-#avyDetailTitle {
+#roAvyFormTitle {
     font: bold 1.2em times,serif !important;
 }
 
-#avyDetailSubmitterExpTd {
+#roAvyFormSubmitterExpTd {
 	font: italic .8em times,serif !important;
 }
 
-#avyDetailExtLink {
+#roAvyFormExtLink {
     font: normal .8em times,serif !important;
     text-decoration: none;
 }
 
-#avyDetailSocialButtonsTable > tbody > tr > td {
+#roAvyFormSocialButtonsTable > tbody > tr > td {
     vertical-align: top;
     padding: 0px 5px 0px 0px;
     margin: 0px;
@@ -178,16 +182,16 @@
     width: 85px !important;
 }
 
-#avyDetailTable hr {
+#roAvyFormTable hr {
     padding: 0px;
     margin: 0px 0px 10px 0px;
 }
 
-.avyDetailSubTable {
+.roAvyFormSubTable {
 	margin: 0px;
 }
 
-.avyDetailFieldsSubTable {
+.roAvyFormFieldsSubTable {
 	padding: 5px;
     margin: 0px;
     border: 1px solid #555555;
@@ -195,15 +199,15 @@
     text-align: left;
 }
 
-#avyDetailCommentsRow {
+#roAvyFormCommentsRow {
 	display: none;
 }
 
-#avyDetailCommentsRow table {
+#roAvyFormCommentsRow table {
 	width: 100%;
 }
 
-#avyDetailComments pre {
+#roAvyFormComments pre {
 	padding: 0px;
 	margin: 0px;
 	font: normal 1em times,serif !important;
@@ -211,26 +215,26 @@
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
-#avyDetailComments {
+#roAvyFormComments {
 	width: 100%; 
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
 
-#avyDetailImageRow {
+#roAvyFormImageRow {
     display: none;
 }
 
-#avyDetailImageRow table {
+#roAvyFormImageRow table {
     width: 100%;
 }
 
-#avyDetailImageDiv {
+#roAvyFormImageDiv {
 	width: 100%;
 }
 
-#avyDetailImageList {
+#roAvyFormImageList {
 	max-height: 90px;
 	margin: 0px;
 	padding: 0px;
@@ -240,14 +244,14 @@
     white-space: nowrap;
 }
 
-.avyDetailImageListItem {
+.roAvyFormImageListItem {
     max-width: 110px;
     max-height: 110px;
     display: inline-block;
     margin: 0px 5px 0px 0px;
 }
 
-.avyDetailImageListItem img {
+.roAvyFormImageListItem img {
     max-width: 100px;
     max-height: 70px;
 }

@@ -12,13 +12,13 @@ function gmapsLoadCB() {
 }
 
 //Start the main app logic.
-requirejs(['avyeyes', 'avyeyes.view', 'lib/gmaps-loader',
-    'lib/analytics', 'lib/facebook', '//platform.twitter.com/widgets.js'],
-    function (AvyEyes, AvyEyesView, gmapsAsyncLoad) {
+requirejs(['avyeyes.ui', 'avyeyes.view', 'lib/gmaps-loader',
+    'lib/facebook', '//platform.twitter.com/widgets.js', 'lib/analytics'],
+    function (AvyEyesUI, AvyEyesView, gmapsAsyncLoad) {
         gmapsAsyncLoad('gmapsLoadCB');
         gmapsLoadedGate.done(function() {
             avyEyesView = new AvyEyesView(google.maps);
-            AvyEyes.wire(avyEyesView);
+            AvyEyesUI.wire(avyEyesView);
             $('#avyInitLiftCallback').submit();
         });
     }

@@ -1,9 +1,8 @@
-define(['lib/Cesium/Cesium',
+define(['avyeyes.form',
+        'lib/Cesium/Cesium',
         'lib/jquery-ui',
-        'lib/jquery.geocomplete',
-        'lib/jquery.fileupload',
-        'lib/jquery.iframe-transport'
-        ], function(Cesium) {
+        'lib/jquery.geocomplete'
+        ], function(AvyForm, Cesium) {
 
 var AvyEyes = {};
 
@@ -99,7 +98,7 @@ function wireAutoCompletes() {
 		}
 	});
 
-	$('#avyReportDetailsEntryDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#avyReportDetailsEntryDialog');
+	$('#rwAvyFormDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#rwAvyFormDialog');
 
 	$('.avyAutoComplete').change(function() {
 		$(this).val('');
@@ -110,11 +109,15 @@ function wireAutoCompletes() {
 		$(this).autocomplete("search");
     });
 
+	$('.avyAutoComplete').click(function(){
+		$(this).select();
+    });
+
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
-		  toggleTechnicalReportFields(true);
+		  AvyForm.toggleTechnicalReportFields(true);
 		} else {
-		  toggleTechnicalReportFields(false);
+		  AvyForm.toggleTechnicalReportFields(false);
 		}
 		return false;
 	});
@@ -254,7 +257,7 @@ function wireDialogs(view) {
         }]
 	});
 
-	$('#avyDetailDialog').dialog({
+	$('#roAvyFormDialog').dialog({
         minWidth: 750,
         maxWidth: 750,
         autoOpen: false,
@@ -262,7 +265,7 @@ function wireDialogs(view) {
         resizable: false,
         draggable: false,
         closeOnEscape: false,
-        dialogClass: 'avyReportDetailsDialog'
+        dialogClass: "roAvyFormDialog"
 	});
 
 	$('#helpDialog').dialog({
@@ -274,7 +277,7 @@ function wireDialogs(view) {
         resizable: false,
         draggable: false,
         closeOnEscape: true,
-        dialogClass: "avyReportDetailsDialog",
+        dialogClass: "rwAvyFormDialog",
         buttons: [{
             text: 'Close',
             click: function(event, ui) {
@@ -336,7 +339,8 @@ function wireDialogs(view) {
             text: "Accept Drawing",
             click: function(event, ui) {
                 $(this).dialog('close');
-                view.currentReport.enterReportDetails();
+                $.ui.dialog.prototype._focusTabbable = function(){};
+                $('#rwAvyFormDialog').dialog('open');
             }
         },{
             text: "Redraw",
@@ -348,7 +352,7 @@ function wireDialogs(view) {
         }]
     });
 
-    $('#avyReportImageDialog').dialog({
+    $('#rwAvyFormImageDialog').dialog({
         minWidth: 750,
         minHeight: 810,
         autoOpen: false,
@@ -356,7 +360,7 @@ function wireDialogs(view) {
         resizable: false,
         draggable: false,
         closeOnEscape: false,
-        dialogClass: "avyReportDetailsDialog",
+        dialogClass: "rwAvyFormDialog",
         show: {
             effect: "slide",
             duration: 500
@@ -373,7 +377,7 @@ function wireDialogs(view) {
         }]
     });
 
-    $('#avyReportDetailsEntryDialog').dialog({
+    $('#rwAvyFormDialog').dialog({
         minWidth: 750,
         maxWidth: 750,
         minHeight: 800,
@@ -383,7 +387,7 @@ function wireDialogs(view) {
         resizable: false,
         draggable: false,
         closeOnEscape: false,
-        dialogClass: "avyReportDetailsDialog",
+        dialogClass: "rwAvyFormDialog",
         open: function(ev, ui) {
             $('.ui-widget-overlay').css({opacity: .60});
             $(this).parent().find('.ui-dialog-buttonset').css({'width':'100%','text-align':'right'});
@@ -395,13 +399,13 @@ function wireDialogs(view) {
         buttons: [{
             text: "Image Attachment",
             click: function(event, ui) {
-                $('#avyReportImageDialog').dialog('open');
+                $('#rwAvyFormImageDialog').dialog('open');
             }
         },{
             text: "Submit",
             click: function(event, ui) {
                 $(this).dialog('close');
-                $("#avyReportDetailsEntryDialog").children('form').submit();
+                $("#rwAvyFormDialog").children('form').submit();
             }
         },{
             text: "Cancel",
@@ -411,78 +415,6 @@ function wireDialogs(view) {
             }
         }]
     });
-}
-
-AvyEyes.wireReportAdminControls = function(view) {
-    $('#avyReportViewableTd').children(':checkbox').change(function(){
-        if ($(this).is(':checked')) {
-            $('#avyReportViewableTd').css('background', 'rgba(0, 255, 0, 0.3)');
-        } else {
-            $('#avyReportViewableTd').css('background', 'rgba(255, 0, 0, 0.3)');
-        }
-    });
-
-    var reportDialogButtons = $('#avyReportDetailsEntryDialog').dialog("option", "buttons");
-    if (reportDialogButtons.length > 3) return; // already wired admin fields
-
-    reportDialogButtons.push({
-        text: "Delete",
-        click: function(event, ui) {
-            $('#avyReportDeleteConfirmDialog').dialog('open');
-        }
-    });
-    $('#avyReportDetailsEntryDialog').dialog('option', 'buttons', reportDialogButtons);
-
-    $('#avyReportImageTable').show();
-
-    $('#avyReportViewableTd').css('display', 'table-cell');
-    $('#avyReportDeleteConfirmDialog').css('visibility', 'visible');
-
-    $('#avyReportDeleteConfirmDialog').dialog({
-        title: "Confirm",
-        minWidth: 500,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        beforeclose: function(event, ui) {
-            return false;
-        },
-        dialogClass: 'avyReportDetailsDialog',
-        open: function() {
-            $('#avyReportDeleteConfirmNo').focus();
-        },
-        buttons: [{
-            text: 'Yes',
-            click: function(event, ui) {
-                $('#avyReportDeleteBinding').click();
-                view.resetView();
-            }
-        },
-        {
-            id: 'avyReportDeleteConfirmNo',
-            text: 'No',
-            click: function(event, ui) {
-                $(this).dialog('close');
-            }
-        }]
-    });
-}
-
-AvyEyes.resetReportImageUpload = function(view) {
-  $('#avyReportImageTable > tbody').empty();
-
-  var imgUploadUrl = '/rest/images/' + $('#avyReportExtId').val();
-  $("#avyReportImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#avyReportImageDropZone'),
-      fail: function(e, data) {
-        view.showModalDialog("Error", data.errorThrown);
-      },
-      done: function(e, data) {
-        $('#avyReportImageTable').append('<tr><td>' + data.result.fileName + '</td><td>'
-          + bytesToFileSize(data.result.fileSize) + '</td></tr>');
-      }
-  });
 }
 
 AvyEyes.raiseTheCurtain = function() {
@@ -504,82 +436,6 @@ AvyEyes.showSearchDiv = function(delay) {
 AvyEyes.hideSearchDiv = hideSearchDiv;
 function hideSearchDiv() {
     $('#aeSearchControlContainer').slideUp("slow");
-}
-
-AvyEyes.toggleTechnicalReportFields = toggleTechnicalReportFields;
-function toggleTechnicalReportFields(enabled) {
-    if (enabled) {
-        $('#avyReportClassification .avyHeader').css('color', 'white');
-        $('#avyReportClassification label').css('color', 'white');
-        $('#avyReportClassification .avyRDSliderValue').css('color', 'white');
-        $('#avyReportClassification :input').prop('disabled', false);
-        $('#avyReportClassification .avyRDSlider').slider('enable');
-    } else {
-        $('#avyReportClassification .avyHeader').css('color', 'gray');
-        $('#avyReportClassification label').css('color', 'gray');
-        $('#avyReportClassification .avyRDSliderValue').css('color', 'gray');
-        $('#avyReportClassification :input').val('');
-        $('#avyReportClassification :input').prop("disabled", true);
-        $('#avyReportClassification .avyRDSlider').slider('disable');
-        $('#avyReportClassification .avyRDSliderValue').val('0');
-        $('#avyReportClassification .avyRDSlider').slider('value', 0);
-    }
-};
-
-AvyEyes.resetReportErrorFields = resetReportErrorFields;
-function resetReportErrorFields() {
-    $('#avyReportSubmitterEmail').css('border', '1px solid #555555');
-    $('#avyReportSubmitterExpAC').css('border', '1px solid #555555');
-    $('#avyReportAspectAC').css('border', '1px solid #555555');
-    $('#avyReportAreaName').css('border', '1px solid #555555');
-    $('#avyReportDate').css('border', '1px solid #555555');
-    $('#avyReportAngle').parent().css('border', '1px solid #555555');
-}
-
-AvyEyes.clearReportFields = function() {
-    resetReportErrorFields();
-    setReportDrawingInputs('', '', '', '', '', '');
-	$('#avyReportDetailsEntryDialog').find('input:text, input:hidden, textarea').val('');
-	$('#avyReportDetailsEntryDialog').find('.avyRDSliderValue').val('0');
-	$('#avyReportDetailsEntryDialog').find('.avyRDSlider').slider('value', 0);
-	$('#avyReportImageTable > tbody').empty();
-	$('#avyReportDrawButtonContainer').css('visibility', 'hidden');
-}
-
-AvyEyes.setReportDrawingInputs = setReportDrawingInputs;
-function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
-	$('#avyReportLng').val(lng);
-	$('#avyReportLat').val(lat);
-	$('#avyReportElevation').val(elevation);
-	$('#avyReportElevationFt').val(AvyEyes.metersToFeet(elevation));
-	$('#avyReportAspectAC').val(aspect);
-	$('#avyReportAspect').val(aspect);
-	$('#avyReportAngle').val(angle);
-	$('#avyReportCoords').val(coordStr);
-}
-
-AvyEyes.closeReportDialogs = function() {
-    $('.avyReportDrawDialog, .avyReportDetailsDialog')
-        .children('.ui-dialog-content').dialog('close');
-}
-
-AvyEyes.metersToFeet = function(meters) {
-    return Math.round(meters * 3.28084);
-}
-
-AvyEyes.bytesToFileSize = bytesToFileSize;
-function bytesToFileSize(numBytes) {
-    var thresh = 1000;
-    if(numBytes < thresh) return numBytes + ' B';
-
-    var units = ['KB','MB','GB'];
-    var u = -1;
-
-    do {
-        numBytes /= thresh;
-        ++u;
-    } while(numBytes >= thresh);
-    return numBytes.toFixed(1) + ' ' + units[u];
 }
 
 return AvyEyes;

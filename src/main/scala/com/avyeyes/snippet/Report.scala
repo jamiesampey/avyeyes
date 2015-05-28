@@ -37,44 +37,44 @@ class Report extends ExternalIdService with Mailer with Loggable {
   var modeOfTravel = ""; var comments = ""; var kmlStr = ""
   
   def render = {
-    "#avyReportExtId" #> SHtml.hidden(extId = _, extId) &
-    "#avyReportLat" #> SHtml.hidden(lat = _, lat) &
-    "#avyReportLng" #> SHtml.hidden(lng = _, lng) &
-    "#avyReportViewable" #> SHtml.checkbox(viewable, (bool) => viewable = bool) &
-    "#avyReportSubmitterEmail" #> SHtml.text(submitterEmail, submitterEmail = _) &
-    "#avyReportSubmitterExp" #> SHtml.hidden(submitterExp = _, submitterExp) &
-    "#avyReportAreaName" #> SHtml.text(areaName, areaName = _) &
-    "#avyReportDate" #> SHtml.text(dateStr, dateStr = _) &
-    "#avyReportSky" #> SHtml.hidden(sky = _, sky) &
-    "#avyReportPrecip" #> SHtml.hidden(precip = _, precip) &
-    "#avyReportElevation" #> SHtml.text(elevation, elevation = _) &
-    "#avyReportAspect" #> SHtml.hidden(aspect = _, aspect) &
-    "#avyReportAngle" #> SHtml.text(angle, angle = _) &
-    "#avyReportType" #> SHtml.hidden(avyType = _, avyType) & 
-    "#avyReportTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
-    "#avyReportInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
-    "#avyReportRsizeValue" #> SHtml.text(rSize, rSize = _) &
-    "#avyReportDsizeValue" #> SHtml.text(dSize, dSize = _) &
-    "#avyReportNumCaught" #> SHtml.text(caught, caught = _) &
-    "#avyReportNumPartiallyBuried" #> SHtml.text(partiallyBuried, partiallyBuried = _) &
-    "#avyReportNumFullyBuried" #> SHtml.text(fullyBuried, fullyBuried = _) &
-    "#avyReportNumInjured" #> SHtml.text(injured, injured = _) &
-    "#avyReportNumKilled" #> SHtml.text(killed, killed = _) &
-    "#avyReportModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
-    "#avyReportComments" #> SHtml.textarea(comments, comments = _) &
-    "#avyReportKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
-    "#avyReportSubmitBinding" #> SHtml.hidden(validateFields) &
-    "#avyReportDeleteBinding [onClick]" #> SHtml.onEvent((value) => deleteReport(value))
+    "#rwAvyFormExtId" #> SHtml.hidden(extId = _, extId) &
+    "#rwAvyFormLat" #> SHtml.hidden(lat = _, lat) &
+    "#rwAvyFormLng" #> SHtml.hidden(lng = _, lng) &
+    "#rwAvyFormViewable" #> SHtml.checkbox(viewable, (bool) => viewable = bool) &
+    "#rwAvyFormSubmitterEmail" #> SHtml.text(submitterEmail, submitterEmail = _) &
+    "#rwAvyFormSubmitterExp" #> SHtml.hidden(submitterExp = _, submitterExp) &
+    "#rwAvyFormAreaName" #> SHtml.text(areaName, areaName = _) &
+    "#rwAvyFormDate" #> SHtml.text(dateStr, dateStr = _) &
+    "#rwAvyFormSky" #> SHtml.hidden(sky = _, sky) &
+    "#rwAvyFormPrecip" #> SHtml.hidden(precip = _, precip) &
+    "#rwAvyFormElevation" #> SHtml.text(elevation, elevation = _) &
+    "#rwAvyFormAspect" #> SHtml.hidden(aspect = _, aspect) &
+    "#rwAvyFormAngle" #> SHtml.text(angle, angle = _) &
+    "#rwAvyFormType" #> SHtml.hidden(avyType = _, avyType) &
+    "#rwAvyFormTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
+    "#rwAvyFormInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
+    "#rwAvyFormRsizeValue" #> SHtml.text(rSize, rSize = _) &
+    "#rwAvyFormDsizeValue" #> SHtml.text(dSize, dSize = _) &
+    "#rwAvyFormNumCaught" #> SHtml.text(caught, caught = _) &
+    "#rwAvyFormNumPartiallyBuried" #> SHtml.text(partiallyBuried, partiallyBuried = _) &
+    "#rwAvyFormNumFullyBuried" #> SHtml.text(fullyBuried, fullyBuried = _) &
+    "#rwAvyFormNumInjured" #> SHtml.text(injured, injured = _) &
+    "#rwAvyFormNumKilled" #> SHtml.text(killed, killed = _) &
+    "#rwAvyFormModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
+    "#rwAvyFormComments" #> SHtml.textarea(comments, comments = _) &
+    "#rwAvyFormKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
+    "#rwAvyFormSubmitBinding" #> SHtml.hidden(validateFields) &
+    "#rwAvyFormDeleteBinding [onClick]" #> SHtml.onEvent((value) => deleteReport(value))
   }
 
   def validateFields(): JsCmd = {
     val problemFields = new ListBuffer[String]
-    if (!isValidEmail(submitterEmail)) problemFields.append("avyReportSubmitterEmail")
-    if (!isValidEnumValue(ExperienceLevel, submitterExp)) problemFields.append("avyReportSubmitterExpAC")
-    if (StringUtils.isBlank(areaName)) problemFields.append("avyReportAreaName")
-    if (!isValidDate(dateStr)) problemFields.append("avyReportDate")
-    if (!isValidEnumValue(Aspect, aspect)) problemFields.append("avyReportAspectAC")
-    if (!isValidSlopeAngle(angle)) problemFields.append("avyReportAngle")
+    if (!isValidEmail(submitterEmail)) problemFields.append("rwAvyFormSubmitterEmail")
+    if (!isValidEnumValue(ExperienceLevel, submitterExp)) problemFields.append("rwAvyFormSubmitterExpAC")
+    if (StringUtils.isBlank(areaName)) problemFields.append("rwAvyFormAreaName")
+    if (!isValidDate(dateStr)) problemFields.append("rwAvyFormDate")
+    if (!isValidEnumValue(Aspect, aspect)) problemFields.append("rwAvyFormAspectAC")
+    if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
 
     if (problemFields.size == 0) {
       saveReport()
@@ -82,7 +82,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       var problemFieldJsonArray = Printer.compact(
         JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
       JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd &
-      JsDialog.error("avyReportValidationError")
+      JsDialog.error("rwAvyFormValidationError")
     }
   }
 
