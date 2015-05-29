@@ -1,7 +1,8 @@
-define(['lib/Cesium/Cesium',
+define(['avyeyes.form',
+        'lib/Cesium/Cesium',
         'lib/jquery-ui',
         'lib/jquery.geocomplete'
-        ], function(Cesium) {
+        ], function(AvyForm, Cesium) {
 
 var AvyEyesUI = {};
 
@@ -114,9 +115,9 @@ function wireAutoCompletes() {
 
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
-		  toggleTechnicalReportFields(true);
+		  AvyForm.toggleTechnicalReportFields(true);
 		} else {
-		  toggleTechnicalReportFields(false);
+		  AvyForm.toggleTechnicalReportFields(false);
 		}
 		return false;
 	});
@@ -339,8 +340,8 @@ function wireDialogs(view) {
             click: function(event, ui) {
                 $(this).dialog('close');
                 $.ui.dialog.prototype._focusTabbable = function(){};
-                toggleTechnicalReportFields(false);
-                $('#rwAvyFormDialog').dialog('open');
+                AvyForm.toggleTechnicalReportFields(false);
+                AvyForm.displayReadWriteForm();
             }
         },{
             text: "Redraw",
@@ -414,25 +415,37 @@ function wireDialogs(view) {
             }
         }]
     });
-}
 
-function toggleTechnicalReportFields(enabled) {
-    if (enabled) {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'white');
-        $('#rwAvyFormClassification label').css('color', 'white');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'white');
-        $('#rwAvyFormClassification :input').prop('disabled', false);
-        $('#rwAvyFormClassification .avyRDSlider').slider('enable');
-    } else {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'gray');
-        $('#rwAvyFormClassification label').css('color', 'gray');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'gray');
-        $('#rwAvyFormClassification :input').val('');
-        $('#rwAvyFormClassification :input').prop("disabled", true);
-        $('#rwAvyFormClassification .avyRDSlider').slider('disable');
-        $('#rwAvyFormClassification .avyRDSliderValue').val('0');
-        $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
-    }
+    $('#rwAvyFormDeleteConfirmDialog').dialog({
+        title: "Confirm",
+        minWidth: 500,
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        draggable: false,
+        closeOnEscape: false,
+        beforeclose: function(event, ui) {
+            return false;
+        },
+        dialogClass: 'rwAvyFormDetailsDialog',
+        open: function() {
+            $('#rwAvyFormDeleteConfirmNo').focus();
+        },
+        buttons: [{
+            text: 'Yes',
+            click: function(event, ui) {
+                $('#rwAvyFormDeleteBinding').click();
+                view.resetView();
+            }
+        },
+        {
+            id: 'rwAvyFormDeleteConfirmNo',
+            text: 'No',
+            click: function(event, ui) {
+                $(this).dialog('close');
+            }
+        }]
+    });
 }
 
 AvyEyesUI.raiseTheCurtain = function() {

@@ -81,7 +81,13 @@ AvyForm.hideReadOnlyForm = function() {
 }
 
 AvyForm.displayReadWriteForm = function(a) {
-    resetImageUploadForm();
+    if (!a) { // new report case
+        resetImageUploadForm($('#rwAvyFormExtId').val());
+        $('#rwAvyFormDialog').dialog('open');
+        return;
+    } else { // admin view case
+        resetImageUploadForm(a.extId);
+    }
 
     $('#rwAvyFormExtId').val(a.extId);
     
@@ -116,23 +122,23 @@ AvyForm.displayReadWriteForm = function(a) {
     
     $('#rwAvyFormComments').val(a.comments);
     
-    $.each(a.images, function(i) {
-    var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
-    $('#rwAvyFormImageTable').append('<tr id="' + a.images[i].filename + '">' 
-    + '<td><a href="' + imgUrl + '" target="_blank">' + a.images[i].filename 
-    + '</a></td><td>' + bytesToFileSize(a.images[i].size) + '<div class="rwAvyFormImageDeleteWrapper">'
-    + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
-    + a.extId + '\',\'' + a.images[i].filename + '\')"/></div></td></tr>');
+    $.each(a.images, function(i, image) {
+        var imgUrl = '/rest/images/' + a.extId + '/' + image.filename;
+        $('#rwAvyFormImageTable').append('<tr id="' + image.filename + '">'
+            + '<td><a href="' + imgUrl + '" target="_blank">' + image.filename
+            + '</a></td><td>' + bytesToFileSize(image.size) + '<div class="rwAvyFormImageDeleteWrapper">'
+            + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
+            + a.extId + '\',\'' + image.filename + '\')"/></div></td></tr>');
     });
     
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
 }
 
-function resetImageUploadForm() {
+function resetImageUploadForm(extId) {
   $('#rwAvyFormImageTable > tbody').empty();
 
-  var imgUploadUrl = '/rest/images/' + $('#rwAvyFormExtId').val();
+  var imgUploadUrl = '/rest/images/' + extId;
   $("#rwAvyFormImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#rwAvyFormImageDropZone'),
       fail: function(e, data) {
         console.log("Error", data.errorThrown);
@@ -168,37 +174,6 @@ AvyForm.wireReadWriteFormAdminControls = function(view) {
 
     $('#rwAvyFormViewableTd').css('display', 'table-cell');
     $('#rwAvyFormDeleteConfirmDialog').css('visibility', 'visible');
-
-    $('#rwAvyFormDeleteConfirmDialog').dialog({
-        title: "Confirm",
-        minWidth: 500,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        beforeclose: function(event, ui) {
-            return false;
-        },
-        dialogClass: 'rwAvyFormDetailsDialog',
-        open: function() {
-            $('#rwAvyFormDeleteConfirmNo').focus();
-        },
-        buttons: [{
-            text: 'Yes',
-            click: function(event, ui) {
-                $('#rwAvyFormDeleteBinding').click();
-                view.resetView();
-            }
-        },
-        {
-            id: 'rwAvyFormDeleteConfirmNo',
-            text: 'No',
-            click: function(event, ui) {
-                $(this).dialog('close');
-            }
-        }]
-    });
 }
 
 AvyForm.deleteImage = function(extId, filename) {
@@ -260,6 +235,25 @@ function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
 AvyForm.closeReportDialogs = function() {
     $('.avyReportDrawDialog, .rwAvyFormDialog')
         .children('.ui-dialog-content').dialog('close');
+}
+
+AvyForm.toggleTechnicalReportFields = function(enabled) {
+    if (enabled) {
+        $('#rwAvyFormClassification .avyHeader').css('color', 'white');
+        $('#rwAvyFormClassification label').css('color', 'white');
+        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'white');
+        $('#rwAvyFormClassification :input').prop('disabled', false);
+        $('#rwAvyFormClassification .avyRDSlider').slider('enable');
+    } else {
+        $('#rwAvyFormClassification .avyHeader').css('color', 'gray');
+        $('#rwAvyFormClassification label').css('color', 'gray');
+        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'gray');
+        $('#rwAvyFormClassification :input').val('');
+        $('#rwAvyFormClassification :input').prop("disabled", true);
+        $('#rwAvyFormClassification .avyRDSlider').slider('disable');
+        $('#rwAvyFormClassification .avyRDSliderValue').val('0');
+        $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
+    }
 }
 
 function setReadOnlySpinnerVal(inputElem, value) {
