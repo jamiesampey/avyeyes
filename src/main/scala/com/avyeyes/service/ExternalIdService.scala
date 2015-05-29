@@ -23,31 +23,31 @@ trait ExternalIdService extends Loggable {
       if (attemptCount >= Props.getInt("extId.newIdAttemptLimit", 100)) {
         throw new RuntimeException("Could not find an available ID")
       }
-    } while (ExternalIdMaitreD.reservationExists(extIdAttempt) 
+    } while (ExtIdReservationCache.reservationExists(extIdAttempt)
         || dao.selectAvalanche(extIdAttempt).isDefined
         || containsBadWord(extIdAttempt))
       
-    ExternalIdMaitreD.reserve(extIdAttempt, new DateTime)
-    logger.info(s"Reserved new extId $extIdAttempt. Current extIds reserve cache size is ${ExternalIdMaitreD.reservations}")
+    ExtIdReservationCache.reserve(extIdAttempt, new DateTime)
+    logger.info(s"Reserved new extId $extIdAttempt. Current extIds reserve cache size is ${ExtIdReservationCache.reservations}")
       
     extIdAttempt
   }
     
   def unreserveExtId(extId: String) {
-    ExternalIdMaitreD.unreserve(extId)
+    ExtIdReservationCache.unreserve(extId)
     logger.info(s"Unreserved extId $extId")
   }
 }
 
-object ExternalIdMaitreD {
-  private val reservedExtIds: Cache[String, DateTime] =
+object ExtIdReservationCache {
+  private val cache: Cache[String, DateTime] =
     CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 24), TimeUnit.HOURS).build()
   
-  def reserve(extId: String, dt: DateTime) = reservedExtIds.put(extId, dt)
+  def reserve(extId: String, dt: DateTime) = cache.put(extId, dt)
 
-  def unreserve(extId: String) = reservedExtIds.invalidate(extId)
+  def unreserve(extId: String) = cache.invalidate(extId)
     
-  def reservationExists(extId: String): Boolean = reservedExtIds.getIfPresent(extId) != null
+  def reservationExists(extId: String): Boolean = cache.getIfPresent(extId) != null
   
-  def reservations = reservedExtIds.size
+  def reservations = cache.size
 }

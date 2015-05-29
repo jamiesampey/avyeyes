@@ -6,7 +6,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.service.ExternalIdMaitreD
+import com.avyeyes.service.ExtIdReservationCache
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
@@ -115,7 +115,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def selectAvalancheImage(avyExtId: String, filename: String) = {
-    if (ExternalIdMaitreD.reservationExists(avyExtId)) {
+    if (ExtIdReservationCache.reservationExists(avyExtId)) {
       from(avalancheImages)(img => where(
         img.avyExtId === avyExtId and img.filename === filename)
         select img).headOption
@@ -140,7 +140,9 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
-    isAuthorizedSession match {
+    val deleteAllowed = isAuthorizedSession || ExtIdReservationCache.reservationExists(avyExtId)
+
+    deleteAllowed match {
       case false => throw new UnauthorizedException("Not authorized to delete image")
       case true => {
         avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
@@ -150,11 +152,17 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def performMaintenance() = {
-    val orphanImageAvyExtIdsFromDb = from(avalancheImages)(img => where(
+    val orphanImageAvyExtIds = from(avalancheImages)(img => where(
       img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toList
-    val orphanImageAvyExtIds = orphanImageAvyExtIdsFromDb filter(extId => !ExternalIdMaitreD.reservationExists(extId))
+    val orphanImageAvyExtIdsForDeletion = orphanImageAvyExtIds filter(
+      extId => !ExtIdReservationCache.reservationExists(extId))
 
-    logger.info(s"Deleting orphan images for ${orphanImageAvyExtIds.size} unfinished avalanche reports")
+    val orphanImageCount = from(avalancheImages)(img => where(
+      img.avyExtId in orphanImageAvyExtIds) compute count).toInt
+
+    logger.info(s"Deleting $orphanImageCount orphan images for ${orphanImageAvyExtIds.size}"
+      + " unfinished avalanche reports")
+
     avalancheImages.deleteWhere(img => img.avyExtId in orphanImageAvyExtIds)
   }
 
