@@ -3,9 +3,9 @@ define(['lib/Cesium/Cesium',
         'lib/jquery.geocomplete'
         ], function(Cesium) {
 
-var AvyEyes = {};
+var AvyEyesUI = {};
 
-AvyEyes.wire = function(view) {
+AvyEyesUI.wire = function(view) {
     wireMainMenu(view);
     wireTooltips();
     wireAutoCompletes();
@@ -404,7 +404,6 @@ function wireDialogs(view) {
         },{
             text: "Submit",
             click: function(event, ui) {
-                $(this).dialog('close');
                 $("#rwAvyFormDialog").children('form').submit();
             }
         },{
@@ -436,13 +435,13 @@ function toggleTechnicalReportFields(enabled) {
     }
 }
 
-AvyEyes.raiseTheCurtain = function() {
+AvyEyesUI.raiseTheCurtain = function() {
     if ($('#loadingDiv').is(':visible')) {
         $('#loadingDiv').fadeOut(500);
     }
 }
 
-AvyEyes.showSearchDiv = function(delay) {
+AvyEyesUI.showSearchDiv = function(delay) {
     if (delay > 0) {
         setTimeout(function() {
             $('#aeSearchControlContainer').slideDown("slow");
@@ -452,10 +451,10 @@ AvyEyes.showSearchDiv = function(delay) {
     }
 }
 
-AvyEyes.hideSearchDiv = hideSearchDiv;
+AvyEyesUI.hideSearchDiv = hideSearchDiv;
 function hideSearchDiv() {
     $('#aeSearchControlContainer').slideUp("slow");
 }
 
-return AvyEyes;
+return AvyEyesUI;
 });

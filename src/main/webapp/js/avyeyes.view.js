@@ -119,7 +119,7 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
     var avalancheEntity = this.addAvalanche(avalanche);
     AvyEyesUI.raiseTheCurtain();
-    this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 500, false);
+    this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
 }
 
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, range, pitch) {
@@ -140,7 +140,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 
   var heading = 0.0;
   var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
-  var range = 2500000;
+  var range = 2000000;
 
   var flyToWesternUS = function() {
     AvyEyesUI.raiseTheCurtain();

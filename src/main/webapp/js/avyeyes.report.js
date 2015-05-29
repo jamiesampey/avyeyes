@@ -10,7 +10,7 @@ function AvyReport(avyEyesView) {
 
 AvyReport.prototype.reserveExtId = function() {
 	$.getJSON('/rest/reserveExtId', function(data) {
-		$('#avyReportExtId').val(data.extId);
+		$('#rwAvyFormExtId').val(data.extId);
 	})
 	.fail(function(jqxhr, textStatus, error) {
 		var err = textStatus + ", " + error;

@@ -217,11 +217,11 @@ AvyForm.deleteImage = function(extId, filename) {
 
 AvyForm.highlightReportErrorFields = function(errorFields) {
     resetReportErrorFields();
-    $.each(errorFields, function(i) {
-        if (errorFields[i] === 'avyReportAngle') {
-            $('#' + errorFields[i]).parent().css('border', '1px solid red');
+    $.each(errorFields, function(i, fieldId) {
+        if (fieldId === 'rwAvyFormAngle') {
+            $('#' + fieldId).parent().css('border', '1px solid red');
         } else {
-            $('#' + errorFields[i]).css('border', '1px solid red');
+            $('#' + fieldId).css('border', '1px solid red');
         }
     });
 }

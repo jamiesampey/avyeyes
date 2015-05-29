@@ -5,6 +5,5 @@
 @import url("../js/lib/Cesium/Widgets/widgets.css");
 @import url("../js/lib/Cesium/Widgets/lighter.css");
 
-@import url("avyeyes.common.css");
-@import url("avyeyes.search.css");
-@import url("avyeyes.report.css");
+@import url("avyeyes.ui.css");
+@import url("avyeyes.form.css");

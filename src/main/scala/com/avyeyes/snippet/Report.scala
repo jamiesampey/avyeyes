@@ -34,7 +34,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   var elevation = ""; var aspect = ""; var angle = ""    
   var avyType = ""; var avyTrigger = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
-  var modeOfTravel = ""; var comments = ""; var kmlStr = ""
+  var modeOfTravel = ""; var comments = ""; var coordStr = ""
   
   def render = {
     "#rwAvyFormExtId" #> SHtml.hidden(extId = _, extId) &
@@ -62,7 +62,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
     "#rwAvyFormNumKilled" #> SHtml.text(killed, killed = _) &
     "#rwAvyFormModeOfTravel" #> SHtml.hidden(modeOfTravel = _, modeOfTravel) &
     "#rwAvyFormComments" #> SHtml.textarea(comments, comments = _) &
-    "#rwAvyFormKml" #> SHtml.hidden(kmlStr = _, kmlStr) &
+    "#rwAvyFormCoords" #> SHtml.hidden(coordStr = _, coordStr) &
     "#rwAvyFormSubmitBinding" #> SHtml.hidden(validateFields) &
     "#rwAvyFormDeleteBinding [onClick]" #> SHtml.onEvent((value) => deleteReport(value))
   }
@@ -135,11 +135,6 @@ class Report extends ExternalIdService with Mailer with Loggable {
   }
   
   private def createAvalancheFromValues() = {
-    val coords = kmlStr match {
-      case str if (isNotBlank(str)) => (XML.loadString(str) \\ "LinearRing" \ "coordinates").head.text.trim
-      case _ => ""
-    }
-    
     Avalanche(extId, viewable, ExperienceLevel.withName(submitterExp),
       strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr),
       enumWithNameOr(Sky, sky, Sky.U),
@@ -152,7 +147,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       strToIntOrNegOne(caught), strToIntOrNegOne(partiallyBuried), strToIntOrNegOne(fullyBuried), 
       strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
       enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
-      comments, coords)
+      comments, coordStr)
   }
 
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {

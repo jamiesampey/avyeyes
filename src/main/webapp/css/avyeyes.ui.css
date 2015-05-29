@@ -161,6 +161,18 @@ textarea:focus, input:focus {
     margin-top: 5px;
 }
 
+.avyMsg p, li {
+    margin: 0 0 1em 0;
+}
+
+.avyTooltip {
+	font: normal 1em times,serif !important;
+}
+
+.avyTooltip p {
+    margin: 0 0 1em 0;
+}
+
 #loadingDiv {
   position: absolute;
   left: 0;
@@ -217,14 +229,161 @@ textarea:focus, input:focus {
 	overflow-y: auto;
 }
 
-.avyMsg p, li {
-    margin: 0 0 1em 0;
+#aeControlContainer {
+	position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 300px;
+    height: 60px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
 }
 
-.avyTooltip {
-	font: normal 1em times,serif !important;
+#aeTitleContainer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: inherit;
+    height: 60px;
+    margin: 0px;
+    padding: 0px;
+    box-sizing:border-box;
 }
 
-.avyTooltip p {
-    margin: 0 0 1em 0;
+#aeTitleContainer img {
+    width: inherit;
+    padding: 0px;
+    margin: 0px 0px 0px 25px;
+}
+
+#aeMenuButtonContainer {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: auto;
+    height: auto;
+    margin: 0px;
+    padding: 0px;
+}
+
+#aeMenuList {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    margin: 0px;
+    font: normal 1em times,serif !important;
+}
+
+#aeSearchControlContainer {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#aeSearchControlContainer hr {
+    margin: 0px 10px 0px 10px;
+    padding: 0px;
+}
+
+#howItWorks :link, :visited {
+    color: white;
+}
+
+.avySearchHeaderContainer {
+    position: relative;
+    padding: 15px 0px 25px 10px;
+}
+
+.avySearchHeader {
+    position: fixed;
+    font-size: 1.1em;
+    font-weight: bold;
+    width: 150px;
+}
+
+#avySearchHowItWorksDiv {
+    float: right;
+    font-size: .9em;
+    padding: 3px 10px 0px 0px;
+}
+
+.avySearchTableLabel {
+	width: 70px;
+	padding: 5px 0px 0px 0px;
+    margin: 0px;
+}
+
+.avySearchTableInput {
+	width:210px;
+	padding: 5px 0px 0px 0px;
+    margin: 0px;
+}
+
+#aeSearchControlContainer table {
+    padding: 0px 10px 0px 10px;
+    margin: 0px;
+    width: 100%;
+}
+
+.avySearchSubHeader {
+	padding: 20px 0px 5px 0px;
+}
+
+#avySearchHumanNumbersTable {
+	float: left;
+	width: 100%;
+    padding: 0px;
+    margin: 0px;
+    border-spacing: 0px;
+}
+
+#avySearchButtonsContainer {
+	float: right;
+}
+
+#avySearchButton {
+    padding: 5px;
+    margin: 20px 10px 20px 0px;
+}
+
+#avySearchResetButton {
+    padding: 5px;
+    margin: 20px 10px 20px 0px;
+}
+
+#avyReportLocationDialog {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#avyReportLocationDialog div {
+    margin-bottom: 15px;
+}
+
+#avyReportStartDrawingButton {
+    background: #458B00;
+}
+
+.avyReportDrawDialog {
+	margin: 5px 5px 0px 5px;
+	padding: 0px;
+}
+
+#avyReportDrawButtonContainer {
+    position: absolute;
+    visibility: hidden;
+    top: 5px;
+    right: 80px;
+    z-index: 10;
+}
+
+#avyReportDrawButton {
+    font-size: 1.1em;
 }
