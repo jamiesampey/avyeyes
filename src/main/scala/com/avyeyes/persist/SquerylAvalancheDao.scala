@@ -115,12 +115,18 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def selectAvalancheImage(avyExtId: String, filename: String) = {
-    from(avalancheImages, avalanches)((img, a) => where(
-      a.extId === avyExtId
-        and (a.viewable === true).inhibitWhen(isAuthorizedSession)
-        and img.avyExtId === a.extId
-        and img.filename === filename)
-      select (img)).headOption
+    if (ExternalIdMaitreD.reservationExists(avyExtId)) {
+      from(avalancheImages)(img => where(
+        img.avyExtId === avyExtId and img.filename === filename)
+        select img).headOption
+    } else {
+      from(avalancheImages, avalanches)((img, a) => where(
+        a.extId === avyExtId
+          and (a.viewable === true).inhibitWhen(isAuthorizedSession)
+          and img.avyExtId === avyExtId
+          and img.filename === filename)
+        select img).headOption
+    }
   }
 
   def countAvalancheImages(extId: String) = from(avalancheImages)(img => where(img.avyExtId === extId) compute (count)).toInt

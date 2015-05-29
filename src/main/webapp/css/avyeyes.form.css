@@ -143,32 +143,15 @@
 	display: none;
 }
 
-#rwAvyFormImageTable {
-	width: 100%;
-	vertical-align: top;
-}
-
-#rwAvyFormImageTable th {
-    text-align: left;
-}
-
-#rwAvyFormImageTable tr {
-	width: 100%;
-    height: 30px;
-    padding: 0px 0px 0px 5px;
-    margin: 0px;
-    vertical-align: top;
-}
-
-#rwAvyFormImageTable td {
-    vertical-align: middle;
-    border-top: 1px solid #555555;
-}
-
-#rwAvyFormImageTable .rwAvyFormImageDeleteWrapper {
-    float: right;
-    margin: 0px;
-    padding: 0px;
+#rwAvyFormImageDropZone {
+	display: block;
+	margin: 0 auto;
+	padding: 0px;
+	background-color: transparent;
+	border: 3px solid #555555;
+	color: white;
+	width: 650px;
+	height: 500px;
 }
 
 #rwAvyFormImageDropZoneMsgDiv {
@@ -183,15 +166,29 @@
     font-size: 1.5em;
 }
 
-#rwAvyFormImageDropZone {
-	display: block;
-	margin: 0 auto;
-	padding: 5px;
-	background-color: transparent;
-	border: 3px solid #555555;
-	color: white;
-	width: 650px;
-	height: 500px;
+#rwAvyFormImageTable {
+    vertical-align: top;
+    width: 640px;
+    margin: 0 auto;
+}
+
+#rwAvyFormImageTable tr {
+    vertical-align: top;
+    height: 115px;
+    padding: 0px;
+    margin: 0px;
+}
+
+#rwAvyFormImageTable td {
+    width: 155px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 3px;
+}
+
+#rwAvyFormImageTable img {
+    max-width: 155px;
+    max-height: 115px;
 }
 
 #rwAvyFormImageOldSchoolImgUpload {

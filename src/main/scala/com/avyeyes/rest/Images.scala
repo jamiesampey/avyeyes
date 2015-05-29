@@ -37,7 +37,7 @@ class Images extends RestHelper {
           val fph = req.uploadedFiles(0)
           dao insertAvalancheImage AvalancheImage(avyExtId,
             fph.fileName.split("\\.")(0), fph.mimeType, fph.length.toInt, fph.file)
-          JsonResponse(("extId" -> avyExtId) ~ ("fileName" -> fph.fileName) ~ ("fileSize" -> fph.length))
+          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> fph.fileName) ~ ("size" -> fph.length))
         }
       }
       response

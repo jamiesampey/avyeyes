@@ -51,8 +51,8 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
 
 	if (a.images.length > 0) {
 		$('#roAvyFormImageRow').show();
-        $.each(a.images, function(i) {
-			var imgUrl = '/rest/images/' + a.extId + '/' + a.images[i].filename;
+        $.each(a.images, function(i, image) {
+			var imgUrl = '/rest/images/' + a.extId + '/' + image.filename;
 			$('#roAvyFormImageList').append('<li class="roAvyFormImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="roAvyFormImages"><img src="' + imgUrl + '" /></a></li>');
 		});
@@ -82,11 +82,11 @@ AvyForm.hideReadOnlyForm = function() {
 
 AvyForm.displayReadWriteForm = function(a) {
     if (!a) { // new report case
-        resetImageUploadForm($('#rwAvyFormExtId').val());
+        resetReadWriteImageUpload($('#rwAvyFormExtId').val());
         $('#rwAvyFormDialog').dialog('open');
         return;
     } else { // admin view case
-        resetImageUploadForm(a.extId);
+        resetReadWriteImageUpload(a.extId);
     }
 
     $('#rwAvyFormExtId').val(a.extId);
@@ -123,31 +123,45 @@ AvyForm.displayReadWriteForm = function(a) {
     $('#rwAvyFormComments').val(a.comments);
     
     $.each(a.images, function(i, image) {
-        var imgUrl = '/rest/images/' + a.extId + '/' + image.filename;
-        $('#rwAvyFormImageTable').append('<tr id="' + image.filename + '">'
-            + '<td><a href="' + imgUrl + '" target="_blank">' + image.filename
-            + '</a></td><td>' + bytesToFileSize(image.size) + '<div class="rwAvyFormImageDeleteWrapper">'
-            + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
-            + a.extId + '\',\'' + image.filename + '\')"/></div></td></tr>');
+        appendToReadWriteImageTable(a.extId, image.filename, image.size);
+//        $('#rwAvyFormImageTable').append('<tr id="' + image.filename + '">'
+//            + '<td><a href="' + imgUrl + '" target="_blank">' + image.filename
+//            + '</a></td><td>' + bytesToFileSize(image.size) + '<div class="rwAvyFormImageDeleteWrapper">'
+//            + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
+//            + a.extId + '\',\'' + image.filename + '\')"/></div></td></tr>');
     });
     
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
 }
 
-function resetImageUploadForm(extId) {
-  $('#rwAvyFormImageTable > tbody').empty();
+function resetReadWriteImageUpload(extId) {
+    $('#rwAvyFormImageTable > tbody').empty();
 
-  var imgUploadUrl = '/rest/images/' + extId;
-  $("#rwAvyFormImageUploadForm").fileupload({dataType:'json', url:imgUploadUrl, dropZone:$('#rwAvyFormImageDropZone'),
-      fail: function(e, data) {
-        console.log("Error", data.errorThrown);
-      },
-      done: function(e, data) {
-        $('#rwAvyFormImageTable').append('<tr><td>' + data.result.fileName + '</td><td>'
-          + bytesToFileSize(data.result.fileSize) + '</td></tr>');
-      }
-  });
+    var imgUploadUrl = '/rest/images/' + extId;
+    $("#rwAvyFormImageUploadForm").fileupload({
+        dataType:'json',
+        url:imgUploadUrl,
+        dropZone:$('#rwAvyFormImageDropZone'),
+        fail: function(e, data) {
+            console.log("Error", data.errorThrown);
+        },
+        done: function(e, data) {
+            appendToReadWriteImageTable(extId, data.result.filename, data.result.size);
+        }
+    });
+}
+
+function appendToReadWriteImageTable(extId, fileName, fileSize) {
+    var imgUrl = '/rest/images/' + extId + '/' + fileName;
+    var imageTableData = '<td><a href="' + imgUrl + '" data-lightbox="rwAvyFormImages"'
+        + 'data-title="' + fileName + ' - ' + bytesToFileSize(fileSize) + '"><img src="' + imgUrl + '" /></a></td>';
+
+    var lastTableRow = $('#rwAvyFormImageTable tr:last');
+    if(!lastTableRow.length || lastTableRow.find('td').length >= 4) {
+        $('#rwAvyFormImageTable').append('<tr>');
+    }
+    $('#rwAvyFormImageTable tr:last').append(imageTableData);
 }
 
 AvyForm.wireReadWriteFormAdminControls = function(view) {
