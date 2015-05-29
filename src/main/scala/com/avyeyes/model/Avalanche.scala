@@ -14,7 +14,7 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
   avyType: AvalancheType.Value, avyTrigger: AvalancheTrigger.Value, avyInterface: AvalancheInterface.Value,
   rSize: Double, dSize: Double, // avy characteristics
   caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int, // human numbers
-  modeOfTravel: ModeOfTravel.Value, comments: String, kmlCoords: String, var submitterId: Long = -1)
+  modeOfTravel: ModeOfTravel.Value, comments: String, coords: String, var submitterId: Long = -1)
   extends UpdatableSquerylDbObj {
   
   def this() = this("", false, ExperienceLevel.A0,
@@ -36,7 +36,7 @@ case class Avalanche(extId: String, viewable: Boolean, submitterExp: ExperienceL
   def toSearchResultJsonObj = JObject(List(
     JField("extId", JString(extId)),
     JField("aspect", JString(aspect.toString)),
-    JField("coords", JArray(kmlCoords.split(Array(',',' '))
+    JField("coords", JArray(coords.split(Array(',',' '))
       .toList.map(str => JDouble(str.toDouble))))
   ))
 

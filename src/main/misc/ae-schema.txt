@@ -26,7 +26,7 @@ create table "avalanche" (
     "killed" integer not null,
     "modeOfTravel" integer not null,
     "comments" text not null,
-    "kmlCoords" text not null,
+    "coords" text not null,
     "submitterId" bigint not null
   );
 create sequence "s_avalanche_id";

@@ -12,8 +12,8 @@ class KmlCreatorTest extends WebSpec2 with AvalancheHelpers {
       val kml = kmlCreatorTester.createCompositeKml(a1, a2)
      
       (kml \\ "Placemark").length must_== 2
-      getPlacemarkCoords(kml, a1.extId) must_== a1.kmlCoords
-      getPlacemarkCoords(kml, a2.extId) must_== a2.kmlCoords
+      getPlacemarkCoords(kml, a1.extId) must_== a1.coords
+      getPlacemarkCoords(kml, a2.extId) must_== a2.coords
     }
     
     "Create a single Style element that is referrenced by each Placemark" in {

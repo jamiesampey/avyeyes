@@ -170,7 +170,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       passedAvalanche.killed must_== strToIntOrNegOne(report.killed)
       passedAvalanche.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
       passedAvalanche.comments must_== report.comments
-      passedAvalanche.kmlCoords must_== testCoords
+      passedAvalanche.coords must_== testCoords
       emailArg.getValue must_== report.submitterEmail
     }
     
