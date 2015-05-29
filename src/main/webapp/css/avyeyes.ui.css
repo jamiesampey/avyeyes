@@ -292,7 +292,7 @@ textarea:focus, input:focus {
     padding: 0px;
 }
 
-#howItWorks :link, :visited {
+#howItWorks:link, #howItWorks:visited {
     color: white;
 }
 
