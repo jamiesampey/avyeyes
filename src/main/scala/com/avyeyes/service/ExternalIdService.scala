@@ -37,9 +37,11 @@ trait ExternalIdService extends Loggable {
     ExtIdReservationCache.unreserve(extId)
     logger.info(s"Unreserved extId $extId")
   }
+
+  def reservationExists(extId: String) = ExtIdReservationCache.reservationExists(extId)
 }
 
-object ExtIdReservationCache {
+private object ExtIdReservationCache {
   private val cache: Cache[String, DateTime] =
     CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 24), TimeUnit.HOURS).build()
   

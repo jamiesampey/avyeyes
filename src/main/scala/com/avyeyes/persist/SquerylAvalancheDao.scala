@@ -6,13 +6,13 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSchema._
 import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.service.ExtIdReservationCache
+import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
 import org.squeryl.dsl.ast.{ExpressionNode, OrderByArg}
 
-class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Loggable {
+class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with ExternalIdService with Loggable {
   def isAuthorizedSession(): Boolean = userSession.isAuthorizedSession()
 
   def selectAvalanche(extId: String): Option[Avalanche] = {
@@ -115,7 +115,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def selectAvalancheImage(avyExtId: String, filename: String) = {
-    if (ExtIdReservationCache.reservationExists(avyExtId)) {
+    if (reservationExists(avyExtId)) {
       from(avalancheImages)(img => where(
         img.avyExtId === avyExtId and img.filename === filename)
         select img).headOption
@@ -140,7 +140,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
-    val deleteAllowed = isAuthorizedSession || ExtIdReservationCache.reservationExists(avyExtId)
+    val deleteAllowed = isAuthorizedSession || reservationExists(avyExtId)
 
     deleteAllowed match {
       case false => throw new UnauthorizedException("Not authorized to delete image")
@@ -155,7 +155,7 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Lo
     val orphanImageAvyExtIds = from(avalancheImages)(img => where(
       img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toList
     val orphanImageAvyExtIdsForDeletion = orphanImageAvyExtIds filter(
-      extId => !ExtIdReservationCache.reservationExists(extId))
+      extId => !reservationExists(extId))
 
     val orphanImageCount = from(avalancheImages)(img => where(
       img.avyExtId in orphanImageAvyExtIds) compute count).toInt
