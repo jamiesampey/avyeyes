@@ -123,12 +123,7 @@ AvyForm.displayReadWriteForm = function(a) {
     $('#rwAvyFormComments').val(a.comments);
     
     $.each(a.images, function(i, image) {
-        appendToReadWriteImageTable(a.extId, image.filename, image.size);
-//        $('#rwAvyFormImageTable').append('<tr id="' + image.filename + '">'
-//            + '<td><a href="' + imgUrl + '" target="_blank">' + image.filename
-//            + '</a></td><td>' + bytesToFileSize(image.size) + '<div class="rwAvyFormImageDeleteWrapper">'
-//            + '<input type="button" value="Delete" onclick="avyEyesView.currentReport.deleteImage(\''
-//            + a.extId + '\',\'' + image.filename + '\')"/></div></td></tr>');
+        appendImageToReadWriteForm(a.extId, image.filename, image.size);
     });
     
     $('#rwAvyFormDeleteBinding').val(a.extId);
@@ -147,21 +142,39 @@ function resetReadWriteImageUpload(extId) {
             console.log("Error", data.errorThrown);
         },
         done: function(e, data) {
-            appendToReadWriteImageTable(extId, data.result.filename, data.result.size);
+            appendImageToReadWriteForm(extId, data.result.filename, data.result.size);
         }
     });
 }
 
-function appendToReadWriteImageTable(extId, fileName, fileSize) {
+function appendImageToReadWriteForm(extId, fileName, fileSize) {
     var imgUrl = '/rest/images/' + extId + '/' + fileName;
-    var imageTableData = '<td><a href="' + imgUrl + '" data-lightbox="rwAvyFormImages"'
-        + 'data-title="' + fileName + ' - ' + bytesToFileSize(fileSize) + '"><img src="' + imgUrl + '" /></a></td>';
+    var imageTableData = '<td id="' + fileName + '"><div class="rwAvyFormImageWrapper">'
+        + '<a href="' + imgUrl + '" data-lightbox="rwAvyFormImages" data-title="' + fileName + ' - '
+        + bytesToFileSize(fileSize) + '"><img class="rwAvyFormImage" src="' + imgUrl + '" /></a>'
+        + '<img class="rwAvyFormImageDeleteIcon" onclick="javascript:alert(\'Delete icon clicked!\');" src="/images/img-delete-icon.png" /></div></td>';
 
     var lastTableRow = $('#rwAvyFormImageTable tr:last');
     if(!lastTableRow.length || lastTableRow.find('td').length >= 4) {
         $('#rwAvyFormImageTable').append('<tr>');
     }
     $('#rwAvyFormImageTable tr:last').append(imageTableData);
+}
+
+AvyForm.deleteImageFromReadWriteForm = function(extId, filename) {
+    var confirmation = confirm('Delete image ' + filename + '?');
+    if (confirmation) {
+        $.ajax({
+            url: '/rest/images/' + extId + '/' + filename,
+            type: 'DELETE',
+            success: function(result) {
+                $('#rwAvyFormImageTable').find('#' + filename).remove();
+            },
+            fail: function(jqxhr, textStatus, error) {
+                alert('Failed to delete ' + filename + '. Error: ' + textStatus + ", " + error);
+            }
+        });
+    }
 }
 
 AvyForm.wireReadWriteFormAdminControls = function(view) {
@@ -188,20 +201,6 @@ AvyForm.wireReadWriteFormAdminControls = function(view) {
 
     $('#rwAvyFormViewableTd').css('display', 'table-cell');
     $('#rwAvyFormDeleteConfirmDialog').css('visibility', 'visible');
-}
-
-AvyForm.deleteImage = function(extId, filename) {
-  $.ajax({
-    url: '/rest/images/' + extId + '/' + filename,
-    type: 'DELETE',
-    success: function(result) {
-      $('#rwAvyFormImageTable').find('#' + filename).remove();
-    },
-    fail: function(jqxhr, textStatus, error) {
-      var err = textStatus + ", " + error;
-      alert('Failed to delete ' + filename + '. Error: ' + err);
-    }
-  });
 }
 
 AvyForm.highlightReportErrorFields = function(errorFields) {

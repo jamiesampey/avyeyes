@@ -186,9 +186,25 @@
     margin: 3px;
 }
 
-#rwAvyFormImageTable img {
+.rwAvyFormImageWrapper {
+    display: inline-block;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+img.rwAvyFormImage {
     max-width: 155px;
     max-height: 115px;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+img.rwAvyFormImageDeleteIcon {
+    position: absolute;
+    top: 0px;
+    right: 0px;
 }
 
 #rwAvyFormImageOldSchoolImgUpload {
