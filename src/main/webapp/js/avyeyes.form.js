@@ -52,7 +52,7 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
 	if (a.images.length > 0) {
 		$('#roAvyFormImageRow').show();
         $.each(a.images, function(i, image) {
-			var imgUrl = '/rest/images/' + a.extId + '/' + image.filename;
+			var imgUrl = getImageRestUrl(a.extId, image.filename);
 			$('#roAvyFormImageList').append('<li class="roAvyFormImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="roAvyFormImages"><img src="' + imgUrl + '" /></a></li>');
 		});
@@ -148,29 +148,33 @@ function resetReadWriteImageUpload(extId) {
 }
 
 function appendImageToReadWriteForm(extId, filename, size) {
-    var tdUniqueId = extId + '_' + filename;
-    var deleteIconUniqueId = tdUniqueId + '_delete';
-    var imgUrl = '/rest/images/' + extId + '/' + filename;
+    var imageUniqueId = getImageUniqueId(extId, filename);
+    var imgUrl = getImageRestUrl(extId, filename);
 
-    var imageTableData = '<td id=\'' + tdUniqueId + '\'><div class=\'rwAvyFormImageWrapper\'>'
+    var imageTableData = '<td id=\'' + imageUniqueId + '\'><div class=\'rwAvyFormImageWrapper\'>'
         + '<a href=\'' + imgUrl + '\' data-lightbox=\'rwAvyFormImages\' data-title=\'' + filename + ' - '
         + bytesToFileSize(size) + '\'><img class=\'rwAvyFormImage\' src=\'' + imgUrl + '\' /></a>'
-        + '<img id=\'' + deleteIconUniqueId + '\' class=\'rwAvyFormImageDeleteIcon\''
+        + '<img id=\'' + getImageDeleteIconUniqueId(imageUniqueId) + '\' class=\'rwAvyFormImageDeleteIcon\''
         + 'src=\'/images/img-delete-icon.png\' /></div></td>';
 
     var lastTableRow = $('#rwAvyFormImageTable tr:last');
     if(!lastTableRow.length || lastTableRow.find('td').length >= 4) {
         $('#rwAvyFormImageTable').append('<tr>');
     }
-    $('#rwAvyFormImageTable tr:last').append(imageTableData);
 
-    $('#' + deleteIconUniqueId).click(function() {
+    $('#rwAvyFormImageTable tr:last').append(imageTableData);
+    setImageDeleteOnClick(extId, filename);
+}
+
+function setImageDeleteOnClick(extId, filename) {
+    var imageUniqueId = getImageUniqueId(extId, filename);
+    $('#' + getImageDeleteIconUniqueId(imageUniqueId)).click(function() {
         if (confirm('Delete image ' + filename + '?')) {
             $.ajax({
-                url: imgUrl,
+                url: getImageRestUrl(extId, filename),
                 type: 'DELETE',
                 success: function(result) {
-                    removeReadWriteFormImage(tdUniqueId);
+                    removeReadWriteFormImage(imageUniqueId);
                 },
                 fail: function(jqxhr, textStatus, error) {
                     alert('Failed to delete ' + filename + '. Error: ' + textStatus + ", " + error);
@@ -180,8 +184,8 @@ function appendImageToReadWriteForm(extId, filename, size) {
     });
 }
 
-function removeReadWriteFormImage(tdUniqueId) {
-    $('#rwAvyFormImageTable').find('#' + tdUniqueId).remove();
+function removeReadWriteFormImage(imageUniqueId) {
+    $('#rwAvyFormImageTable').find('#' + imageUniqueId).remove();
     $('#rwAvyFormImageTable tr').each(function(i) {
         var tds = $(this).find('td');
         if (tds.length < 4) {
@@ -190,12 +194,33 @@ function removeReadWriteFormImage(tdUniqueId) {
 
             var nextTd = nextTr.find('td').first();
             var nextTdId = nextTd.attr('id');
-            var nextTdHtml = nextTd.html().toString();
 
-            nextTr.find('#' + nextTdId).remove();
-            $(this).append('<td id=\'' + nextTdId + '\'>' + nextTdHtml + '</td>');
+            $(this).append('<td id=\'' + nextTdId + '\'>' + nextTd.html().toString() + '</td>');
+            var nextTdIdTokens = tokenizeImageUniqueId(nextTdId);
+            setImageDeleteOnClick(nextTdIdTokens[0], nextTdIdTokens[1]);
+
+            nextTd.remove();
+            if (nextTr.find('td').length == 0) {
+                nextTr.remove();
+            }
         }
     });
+}
+
+function getImageRestUrl(extId, filename) {
+    return '/rest/images/' + extId + '/' + filename;
+}
+
+function getImageUniqueId(extId, filename) {
+    return extId + '-_-' + filename;
+}
+
+function tokenizeImageUniqueId(imageUniqueId) {
+    return imageUniqueId.split('-_-');
+}
+
+function getImageDeleteIconUniqueId(imageUniqueId) {
+    return imageUniqueId + "_delete";
 }
 
 AvyForm.wireReadWriteFormAdminControls = function(view) {
