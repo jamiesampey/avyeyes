@@ -45,7 +45,7 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
             var selectedAvalanche = pick.id;
 
             $.getJSON('/rest/avydetails/' + selectedAvalanche.id, function(data) {
-                if ($('#avyAdminLoggedInEmail').length) {
+                if (adminLogin()) {
                     AvyForm.wireReadWriteFormAdminControls(this);
                     AvyForm.displayReadWriteForm(data);
                 } else {
@@ -118,8 +118,16 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
     var avalancheEntity = this.addAvalanche(avalanche);
-    AvyEyesUI.raiseTheCurtain();
-    this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
+
+    if (adminLogin()) {
+        this.cesiumViewer.zoomTo(avalancheEntity,
+            toHeadingPitchRange(flyToHeadingFromAspect(avalanche.aspect), -25, 700)).then(function() {
+                AvyEyesUI.raiseTheCurtain();
+            });
+    } else {
+        AvyEyesUI.raiseTheCurtain();
+        this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
+    }
 }
 
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, range, pitch) {
@@ -188,8 +196,12 @@ AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, rem
 
 	return this.cesiumViewer.flyTo(targetEntity, {
         duration: flightDurationSeconds,
-        offset: new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range)
+        offset: toHeadingPitchRange(heading, pitch, range)
     });
+}
+
+function toHeadingPitchRange(heading, pitch, range) {
+    return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
 }
 
 function flyToHeadingFromAspect(aspect) {
@@ -201,6 +213,11 @@ function flyToHeadingFromAspect(aspect) {
     else if (aspect === "W") return 90.0;
     else if (aspect === "NW") return 135.0;
     else return 0.0;
+}
+
+function adminLogin() {
+  var adminEmailSpan = $('#avyAdminLoggedInEmail');
+  return adminEmailSpan.length > 0 && adminEmailSpan.text().length > 0;
 }
 
 return AvyEyesView;

@@ -415,37 +415,6 @@ function wireDialogs(view) {
             }
         }]
     });
-
-    $('#rwAvyFormDeleteConfirmDialog').dialog({
-        title: "Confirm",
-        minWidth: 500,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        beforeclose: function(event, ui) {
-            return false;
-        },
-        dialogClass: 'rwAvyFormDetailsDialog',
-        open: function() {
-            $('#rwAvyFormDeleteConfirmNo').focus();
-        },
-        buttons: [{
-            text: 'Yes',
-            click: function(event, ui) {
-                $('#rwAvyFormDeleteBinding').click();
-                view.resetView();
-            }
-        },
-        {
-            id: 'rwAvyFormDeleteConfirmNo',
-            text: 'No',
-            click: function(event, ui) {
-                $(this).dialog('close');
-            }
-        }]
-    });
 }
 
 AvyEyesUI.raiseTheCurtain = function() {

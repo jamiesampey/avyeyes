@@ -147,34 +147,55 @@ function resetReadWriteImageUpload(extId) {
     });
 }
 
-function appendImageToReadWriteForm(extId, fileName, fileSize) {
-    var imgUrl = '/rest/images/' + extId + '/' + fileName;
-    var imageTableData = '<td id="' + fileName + '"><div class="rwAvyFormImageWrapper">'
-        + '<a href="' + imgUrl + '" data-lightbox="rwAvyFormImages" data-title="' + fileName + ' - '
-        + bytesToFileSize(fileSize) + '"><img class="rwAvyFormImage" src="' + imgUrl + '" /></a>'
-        + '<img class="rwAvyFormImageDeleteIcon" onclick="javascript:alert(\'Delete icon clicked!\');" src="/images/img-delete-icon.png" /></div></td>';
+function appendImageToReadWriteForm(extId, filename, size) {
+    var tdUniqueId = extId + '_' + filename;
+    var deleteIconUniqueId = tdUniqueId + '_delete';
+    var imgUrl = '/rest/images/' + extId + '/' + filename;
+
+    var imageTableData = '<td id=\'' + tdUniqueId + '\'><div class=\'rwAvyFormImageWrapper\'>'
+        + '<a href=\'' + imgUrl + '\' data-lightbox=\'rwAvyFormImages\' data-title=\'' + filename + ' - '
+        + bytesToFileSize(size) + '\'><img class=\'rwAvyFormImage\' src=\'' + imgUrl + '\' /></a>'
+        + '<img id=\'' + deleteIconUniqueId + '\' class=\'rwAvyFormImageDeleteIcon\''
+        + 'src=\'/images/img-delete-icon.png\' /></div></td>';
 
     var lastTableRow = $('#rwAvyFormImageTable tr:last');
     if(!lastTableRow.length || lastTableRow.find('td').length >= 4) {
         $('#rwAvyFormImageTable').append('<tr>');
     }
     $('#rwAvyFormImageTable tr:last').append(imageTableData);
+
+    $('#' + deleteIconUniqueId).click(function() {
+        if (confirm('Delete image ' + filename + '?')) {
+            $.ajax({
+                url: imgUrl,
+                type: 'DELETE',
+                success: function(result) {
+                    removeReadWriteFormImage(tdUniqueId);
+                },
+                fail: function(jqxhr, textStatus, error) {
+                    alert('Failed to delete ' + filename + '. Error: ' + textStatus + ", " + error);
+                }
+            });
+        }
+    });
 }
 
-AvyForm.deleteImageFromReadWriteForm = function(extId, filename) {
-    var confirmation = confirm('Delete image ' + filename + '?');
-    if (confirmation) {
-        $.ajax({
-            url: '/rest/images/' + extId + '/' + filename,
-            type: 'DELETE',
-            success: function(result) {
-                $('#rwAvyFormImageTable').find('#' + filename).remove();
-            },
-            fail: function(jqxhr, textStatus, error) {
-                alert('Failed to delete ' + filename + '. Error: ' + textStatus + ", " + error);
-            }
-        });
-    }
+function removeReadWriteFormImage(tdUniqueId) {
+    $('#rwAvyFormImageTable').find('#' + tdUniqueId).remove();
+    $('#rwAvyFormImageTable tr').each(function(i) {
+        var tds = $(this).find('td');
+        if (tds.length < 4) {
+            var nextTr = $(this).next();
+            if (!nextTr.length) return;
+
+            var nextTd = nextTr.find('td').first();
+            var nextTdId = nextTd.attr('id');
+            var nextTdHtml = nextTd.html().toString();
+
+            nextTr.find('#' + nextTdId).remove();
+            $(this).append('<td id=\'' + nextTdId + '\'>' + nextTdHtml + '</td>');
+        }
+    });
 }
 
 AvyForm.wireReadWriteFormAdminControls = function(view) {
@@ -192,15 +213,15 @@ AvyForm.wireReadWriteFormAdminControls = function(view) {
     reportDialogButtons.push({
         text: "Delete",
         click: function(event, ui) {
-            $('#rwAvyFormDeleteConfirmDialog').dialog('open');
+            if (confirm("Are you sure you want to delete report " + $('#rwAvyFormExtId').val())) {
+                $('#rwAvyFormDeleteBinding').click();
+                view.resetView();
+            }
         }
     });
     $('#rwAvyFormDialog').dialog('option', 'buttons', reportDialogButtons);
 
-    $('#rwAvyFormImageTable').show();
-
     $('#rwAvyFormViewableTd').css('display', 'table-cell');
-    $('#rwAvyFormDeleteConfirmDialog').css('visibility', 'visible');
 }
 
 AvyForm.highlightReportErrorFields = function(errorFields) {
