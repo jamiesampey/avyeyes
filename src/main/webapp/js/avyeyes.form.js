@@ -175,10 +175,9 @@ function removeImageFromReadWriteForm(imageUniqueId) {
             if (!nextImageRow.length) return;
 
             var nextImage = nextImageRow.find('.rwAvyFormImageCell').first();
-            $(this).append(nextImage.clone(true));
-            nextImage.remove();
+            $(this).append(nextImage.detach());
 
-            if (nextImageRow.find('.rwAvyFormImageCell').length == 0) {
+            if (nextImageRow.find('.rwAvyFormImageCell').length === 0) {
                 nextImageRow.remove();
             }
         }
