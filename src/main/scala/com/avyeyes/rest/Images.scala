@@ -32,12 +32,14 @@ class Images extends RestHelper {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       val response = transaction {
         if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
-          ResponseWithReason(BadResponse(), getMessage("avyReportMaxImagesExceeded", MaxImagesPerAvalanche).toString)
+          ResponseWithReason(BadResponse(), getMessage("rwAvyFormMaxImagesExceeded",
+            MaxImagesPerAvalanche).toString)
         } else {
           val fph = req.uploadedFiles(0)
-          dao insertAvalancheImage AvalancheImage(avyExtId,
-            fph.fileName.split("\\.")(0), fph.mimeType, fph.length.toInt, fph.file)
-          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> fph.fileName) ~ ("size" -> fph.length))
+          val filename = fph.fileName.split("\\.")(0)
+          dao insertAvalancheImage AvalancheImage(avyExtId, filename, fph.mimeType,
+            fph.length.toInt, fph.file)
+          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> filename) ~ ("size" -> fph.length))
         }
       }
       response

@@ -166,21 +166,22 @@
     font-size: 1.5em;
 }
 
-#rwAvyFormImageTable {
+#rwAvyFormImageGrid {
     vertical-align: top;
     width: 640px;
     margin: 0 auto;
 }
 
-#rwAvyFormImageTable tr {
+.rwAvyFormImageRow {
     vertical-align: top;
     height: 115px;
     padding: 0px;
     margin: 0px;
 }
 
-#rwAvyFormImageTable td {
-    width: 155px;
+.rwAvyFormImageCell {
+    display: inline-block;
+    width: 154px;
     text-align: center;
     vertical-align: middle;
     margin: 3px;
@@ -194,8 +195,8 @@
 }
 
 img.rwAvyFormImage {
-    max-width: 155px;
-    max-height: 115px;
+    max-width: 150px;
+    max-height: 105px;
     position: relative;
     top: 0;
     left: 0;
