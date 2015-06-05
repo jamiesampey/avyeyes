@@ -67,7 +67,6 @@ AvyEyesView.prototype.resetView = function() {
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
-    $.ui.dialog.prototype._focusTabbable = function(){};
     $('#multiDialog').html(msg);
     $('#multiDialog').dialog('option', 'title', title);
 

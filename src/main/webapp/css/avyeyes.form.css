@@ -108,6 +108,7 @@
 }
 
 #roAvyFormImageList {
+    max-width: 700px;
 	max-height: 90px;
 	margin: 0px;
 	padding: 0px;

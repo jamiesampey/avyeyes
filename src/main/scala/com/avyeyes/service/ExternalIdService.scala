@@ -43,7 +43,7 @@ trait ExternalIdService extends Loggable {
 
 private object ExtIdReservationCache {
   private val cache: Cache[String, DateTime] =
-    CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 24), TimeUnit.HOURS).build()
+    CacheBuilder.newBuilder().expireAfterWrite(Props.getInt("extId.cacheExpireHours", 4), TimeUnit.HOURS).build()
   
   def reserve(extId: String, dt: DateTime) = cache.put(extId, dt)
 
