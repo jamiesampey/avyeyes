@@ -52,7 +52,7 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
 	if (a.images.length > 0) {
 		$('#roAvyFormImageRow').show();
         $.each(a.images, function(i, image) {
-			var imgUrl = getImageRestUrl(a.extId, image.filename);
+			var imgUrl = getImageUrl(a.extId, filename);
 			$('#roAvyFormImageList').append('<li class="roAvyFormImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="roAvyFormImages"><img src="' + imgUrl + '" /></a></li>');
 		});
@@ -148,8 +148,8 @@ function resetReadWriteImageUpload(extId) {
 }
 
 function appendImageToReadWriteForm(extId, filename, size) {
-    var imageUniqueId = getImageUniqueId(extId, filename);
-    var imgUrl = getImageRestUrl(extId, filename);
+    var imageUniqueId = getFileBaseName(filename);
+    var imgUrl = getImageUrl(extId, filename);
 
     var imageTableData = '<div id=\'' + imageUniqueId + '\' class=\'rwAvyFormImageCell\'>'
         + '<div class=\'rwAvyFormImageWrapper\'><a href=\'' + imgUrl + '\' data-lightbox=\'rwAvyFormImages\' data-title=\'' + filename + ' - '
@@ -185,7 +185,7 @@ function removeImageFromReadWriteForm(imageUniqueId) {
 }
 
 function setImageDeleteOnClick(extId, filename) {
-    var imageUniqueId = getImageUniqueId(extId, filename);
+    var imageUniqueId = getFileBaseName(filename);
     $('#' + getImageDeleteIconUniqueId(imageUniqueId)).click(function() {
         if (confirm('Delete image ' + filename + '?')) {
             $.ajax({
@@ -202,12 +202,16 @@ function setImageDeleteOnClick(extId, filename) {
     });
 }
 
-function getImageRestUrl(extId, filename) {
-    return '/rest/images/' + extId + '/' + filename;
+function getImageUrl(extId, filename) {
+    return 'http://avyeyes-images.s3.amazonaws.com/' + extId + '/' + filename;
 }
 
-function getImageUniqueId(extId, filename) {
-    return extId + '-' + filename;
+function getImageRestUrl(extId, filename) {
+    return '/rest/images/' + extId + '/' + getFileBaseName(filename);
+}
+
+function getFileBaseName(filename) {
+    return filename.substring(0, filename.lastIndexOf('.'));
 }
 
 function getImageDeleteIconUniqueId(imageUniqueId) {

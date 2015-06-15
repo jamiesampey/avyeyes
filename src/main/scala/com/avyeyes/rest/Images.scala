@@ -1,34 +1,24 @@
 package com.avyeyes.rest
 
-import java.io.ByteArrayInputStream
+import java.util.UUID
 
-import com.avyeyes.model._
+import com.avyeyes.model.AvalancheImage
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.persist.DaoInjector
+import com.avyeyes.service.AmazonS3ImageService
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.UnauthorizedException
+import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
 
-class Images extends RestHelper {
+class Images extends RestHelper with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
+  val s3 = new AmazonS3ImageService
 
   serve {
-    case "rest" :: "images" :: avyExtId :: filename :: Nil Get req => {
-      val returnedImg = transaction { 
-        dao.selectAvalancheImage(avyExtId, filename) 
-      }
-      
-      returnedImg match {
-        case Some(avyImg) => val byteStream = new ByteArrayInputStream(avyImg.bytes)
-          StreamingResponse(byteStream, () => byteStream.close(), avyImg.bytes.length, 
-            ("Content-Type", avyImg.mimeType) :: Nil, Nil, 200)
-        case _ => NotFoundResponse(s"Image $avyExtId/$filename not found")
-      }
-    }
-    
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       val response = transaction {
         if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
@@ -36,19 +26,24 @@ class Images extends RestHelper {
             MaxImagesPerAvalanche).toString)
         } else {
           val fph = req.uploadedFiles(0)
-          val filename = fph.fileName.split("\\.")(0)
+          val filename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
+
+          s3.uploadImage(avyExtId, filename, fph.mimeType, fph.file)
+
           dao insertAvalancheImage AvalancheImage(avyExtId, filename, fph.mimeType,
-            fph.length.toInt, fph.file)
+            fph.length.toInt)
+
           JsonResponse(("extId" -> avyExtId) ~ ("filename" -> filename) ~ ("size" -> fph.length))
         }
       }
       response
     }
     
-    case "rest" :: "images" :: avyExtId :: filename :: Nil Delete req => {
+    case "rest" :: "images" :: avyExtId :: fileBaseName :: Nil Delete req => {
       try {
-        transaction { 
-          dao.deleteAvalancheImage(avyExtId, filename) 
+        s3.deleteImage(avyExtId, fileBaseName)
+        transaction {
+          dao.deleteAvalancheImage(avyExtId, fileBaseName)
         }
         OkResponse()
       } catch {

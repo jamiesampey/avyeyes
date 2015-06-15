@@ -1,0 +1,81 @@
+package com.avyeyes.service
+
+import java.io.ByteArrayInputStream
+
+import com.amazonaws.AmazonServiceException
+import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model._
+import com.avyeyes.util.Helpers._
+import net.liftweb.common.Loggable
+import scala.collection.JavaConversions._
+
+class AmazonS3ImageService extends Loggable {
+  private val s3ImageBucket = getProp("s3.imageBucket")
+  private val s3Client = new AmazonS3Client(new BasicAWSCredentials(getProp("s3.accessKeyId"),
+    getProp("s3.secretAccessKey")))
+
+  def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
+    val key = toS3Key(avyExtId, filename)
+
+    try {
+      val metadata = new ObjectMetadata()
+      metadata.setContentLength(bytes.length)
+      metadata.setContentType(mimeType)
+
+      val acl = new AccessControlList
+      acl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
+
+      val putObjectRequest = new PutObjectRequest(s3ImageBucket, key,
+        new ByteArrayInputStream(bytes), metadata).withAccessControlList(acl)
+      s3Client.putObject(putObjectRequest)
+
+      logger.info(s"Uploaded image $key to AWS S3")
+    } catch {
+      case ase: AmazonServiceException => logger.error(s"Unable to upload image $key to AWS S3", ase)
+    }
+  }
+
+  def deleteImage(avyExtId: String, fileBaseName: String) {
+    val key = s3Client.listObjects(s3ImageBucket, toS3Key(avyExtId, fileBaseName))
+      .getObjectSummaries.get(0).getKey
+
+    try {
+      s3Client.deleteObject(s3ImageBucket, key)
+      logger.info(s"Deleted image $key from AWS S3")
+    } catch {
+      case ase: AmazonServiceException => logger.error(s"Unable to delete image $key from AWS S3", ase)
+    }
+  }
+
+  def deleteAllImages(avyExtId: String) {
+    try {
+      val imageKeyList = getAllAvalancheImageKeys(avyExtId)
+
+      val deleteObjectsRequest = new DeleteObjectsRequest(s3ImageBucket)
+      deleteObjectsRequest.withKeys(imageKeyList:_*)
+      s3Client.deleteObjects(deleteObjectsRequest)
+
+      logger.info(s"Deleted all ${imageKeyList.size} images for avalanche $avyExtId from AWS S3")
+    } catch {
+      case ase: AmazonServiceException => logger.error(s"Unable to delete ALL images for avalanche $avyExtId from AWS S3", ase)
+    }
+  }
+
+  def allowImageAccess(avyExtId: String) {
+    val acl = new AccessControlList()
+    acl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
+    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _, acl))
+  }
+
+  def denyImageAccess(avyExtId: String) {
+    val acl = new AccessControlList()
+    acl.revokeAllPermissions(GroupGrantee.AllUsers)
+    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _, acl))
+  }
+
+  private def toS3Key(avyExtId: String, filename: String) = s"$avyExtId/$filename"
+
+  private def getAllAvalancheImageKeys(avyExtId: String) =
+    s3Client.listObjects(s3ImageBucket, avyExtId).getObjectSummaries.map(_.getKey)
+}

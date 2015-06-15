@@ -7,7 +7,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist.DaoInjector
-import com.avyeyes.service.ExternalIdService
+import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
@@ -20,13 +20,13 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util.Mailer._
 import net.liftweb.util.{Mailer, Props}
 import org.apache.commons.lang3.StringUtils
-import org.apache.commons.lang3.StringUtils._
 
 import scala.collection.mutable.ListBuffer
-import scala.xml.XML
 
 class Report extends ExternalIdService with Mailer with Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
+  private val s3 = new AmazonS3ImageService
+
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
@@ -124,6 +124,9 @@ class Report extends ExternalIdService with Mailer with Loggable {
       transaction {
         dao.deleteAvalanche(extIdToDelete)
       }
+
+      s3.deleteAllImages(extIdToDelete)
+
       logger.info(s"Avalanche $extIdToDelete deleted")
       JsDialog.info("avyReportDeleteSuccess")  
     } catch {

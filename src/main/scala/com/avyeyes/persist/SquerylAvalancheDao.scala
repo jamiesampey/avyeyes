@@ -139,31 +139,36 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Ex
       select (img.filename, img.mimeType, img.size)).toList
   }
 
-  def deleteAvalancheImage(avyExtId: String, filename: String) = {
+  def deleteAvalancheImage(avyExtId: String, fileBaseName: String) = {
     val deleteAllowed = isAuthorizedSession || reservationExists(avyExtId)
 
     deleteAllowed match {
       case false => throw new UnauthorizedException("Not authorized to delete image")
       case true => {
-        avalancheImages deleteWhere (img => img.avyExtId === avyExtId and img.filename === filename)
+        avalancheImages deleteWhere (img => img.filename like s"$fileBaseName%" and img.avyExtId === avyExtId)
         setAvalancheUpdateTime(avyExtId)
       }
     }
   }
 
-  def performMaintenance() = {
-    val orphanImageAvyExtIds = from(avalancheImages)(img => where(
-      img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toList
-    val orphanImageAvyExtIdsForDeletion = orphanImageAvyExtIds filter(
-      extId => !reservationExists(extId))
+  def pruneImages(): Set[String] = {
+    val orphanImageExtIds = from(avalancheImages)(img => where(
+      img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toSet
 
-    val orphanImageCount = from(avalancheImages)(img => where(
-      img.avyExtId in orphanImageAvyExtIds) compute count).toInt
+    val imageExtIdsForDelete = orphanImageExtIds filter(!reservationExists(_))
 
-    logger.info(s"Deleting $orphanImageCount orphan images for ${orphanImageAvyExtIds.size}"
-      + " unfinished avalanche reports")
+    if (imageExtIdsForDelete.size > 0) {
+      val orphanImageCount = from(avalancheImages)(img => where(
+        img.avyExtId in imageExtIdsForDelete) compute count).toInt
 
-    avalancheImages.deleteWhere(img => img.avyExtId in orphanImageAvyExtIds)
+      logger.info(s"Pruning $orphanImageCount orphan images for ${imageExtIdsForDelete.size}"
+        + " unfinished avalanche report(s)")
+      avalancheImages.deleteWhere(img => img.avyExtId in imageExtIdsForDelete)
+    } else {
+      logger.info("No orphan images found for pruning")
+    }
+
+    imageExtIdsForDelete
   }
 
   private def setAvalancheUpdateTime(extId: String) = {

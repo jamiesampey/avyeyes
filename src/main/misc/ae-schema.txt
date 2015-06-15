@@ -39,8 +39,7 @@ create table "avalanche_image" (
     "avyExtId" varchar(8) not null,
     "filename" varchar(128) not null,
     "mimeType" varchar(20) not null,
-    "size" integer not null,
-    "bytes" bytea not null
+    "size" integer not null
 );
 create sequence "s_avalanche_image_id";
 -- indexes on avalanche_image

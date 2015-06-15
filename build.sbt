@@ -57,6 +57,7 @@ libraryDependencies ++= {
     "org.squeryl" %% "squeryl" % "0.9.6-RC3",
     "org.postgresql" % "postgresql" % "9.3-1100-jdbc41",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
+    "com.amazonaws" % "aws-java-sdk-s3" % "1.10.0",
     "org.apache.commons" % "commons-lang3" % "3.3.2",
     "com.google.guava" % "guava" % "17.0",
     "org.specs2" %% "specs2" % "2.4.1" % "test",
