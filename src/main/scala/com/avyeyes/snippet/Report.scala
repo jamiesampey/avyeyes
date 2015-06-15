@@ -94,14 +94,20 @@ class Report extends ExternalIdService with Mailer with Loggable {
           case Some(existingAvalanche) => {
             dao.updateAvalanche(avalancheFromValues)
             logger.info(s"Avalanche $extId successfully updated")
+
             if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
               sendApprovalNotification(avalancheFromValues, submitterEmail)
+              s3.allowImageAccess(avalancheFromValues.extId)
+            } else if (existingAvalanche.viewable && !avalancheFromValues.viewable) {
+              s3.denyImageAccess(avalancheFromValues.extId)
             }
-            JsDialog.info("avyReportUpdateSuccess")                
+
+            JsDialog.info("avyReportUpdateSuccess")
           }
           case None => {
             dao.insertAvalanche(avalancheFromValues, submitterEmail)
             logger.info(s"Avalanche $extId successfully inserted")
+            s3.denyImageAccess(avalancheFromValues.extId)
             sendSubmissionNotifications(avalancheFromValues, submitterEmail)
             JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtHttpUrl)
           }

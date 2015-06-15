@@ -187,7 +187,7 @@ function removeImageFromReadWriteForm(imageUniqueId) {
 function setImageDeleteOnClick(extId, filename) {
     var imageUniqueId = getFileBaseName(filename);
     $('#' + getImageDeleteIconUniqueId(imageUniqueId)).click(function() {
-        if (confirm('Delete image ' + filename + '?')) {
+        if (confirm('Delete image ' + filename + ' from avalanche ' + extId + '?')) {
             $.ajax({
                 url: getImageRestUrl(extId, filename),
                 type: 'DELETE',
