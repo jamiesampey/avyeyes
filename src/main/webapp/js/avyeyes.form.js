@@ -1,6 +1,7 @@
 define(['lib/lightbox',
         'lib/jquery.fileupload',
-        'lib/jquery.iframe-transport'
+        'lib/jquery.iframe-transport',
+        '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
         ], function() {
 
 var AvyForm = {};
@@ -52,7 +53,7 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
 	if (a.images.length > 0) {
 		$('#roAvyFormImageRow').show();
         $.each(a.images, function(i, image) {
-			var imgUrl = getImageUrl(a.extId, filename);
+			var imgUrl = getImageUrl(a.extId, image.filename);
 			$('#roAvyFormImageList').append('<li class="roAvyFormImageListItem"><a href="' + imgUrl 
 				+ '" data-lightbox="roAvyFormImages"><img src="' + imgUrl + '" /></a></li>');
 		});
@@ -149,7 +150,7 @@ function resetReadWriteImageUpload(extId) {
 
 function appendImageToReadWriteForm(extId, filename, size) {
     var imageUniqueId = getFileBaseName(filename);
-    var imgUrl = getImageUrl(extId, filename);
+    var imgUrl = getSignedImageUrl(extId, filename);
 
     var imageTableData = '<div id=\'' + imageUniqueId + '\' class=\'rwAvyFormImageCell\'>'
         + '<div class=\'rwAvyFormImageWrapper\'><a href=\'' + imgUrl + '\' data-lightbox=\'rwAvyFormImages\' data-title=\'' + filename + ' - '
@@ -204,6 +205,20 @@ function setImageDeleteOnClick(extId, filename) {
 
 function getImageUrl(extId, filename) {
     return 'http://avyeyes-images.s3.amazonaws.com/' + extId + '/' + filename;
+}
+
+var s3Client;
+function getSignedImageUrl(extId, filename) {
+    if (!s3Client) {
+        s3Client = new AWS.S3({
+            accessKeyId: 'AKIAIGF6JECD4PNKHYOQ',
+            secretAccessKey: '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',
+            region: 'us-west-1'
+        });
+    }
+
+    return s3Client.getSignedUrl('getObject', {
+        Bucket: 'avyeyes-images', Key: extId + '/' + filename});
 }
 
 function getImageRestUrl(extId, filename) {

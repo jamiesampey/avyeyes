@@ -12,8 +12,9 @@ import scala.collection.JavaConversions._
 
 class AmazonS3ImageService extends Loggable {
   private val s3ImageBucket = getProp("s3.imageBucket")
-  private val s3Client = new AmazonS3Client(new BasicAWSCredentials(getProp("s3.accessKeyId"),
-    getProp("s3.secretAccessKey")))
+  private val s3Client = new AmazonS3Client(new BasicAWSCredentials(
+    getProp("s3.fullaccess.accessKeyId"),
+    getProp("s3.fullaccess.secretAccessKey")))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
     val key = toS3Key(avyExtId, filename)
@@ -23,11 +24,8 @@ class AmazonS3ImageService extends Loggable {
       metadata.setContentLength(bytes.length)
       metadata.setContentType(mimeType)
 
-      val acl = new AccessControlList
-      acl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
-
       val putObjectRequest = new PutObjectRequest(s3ImageBucket, key,
-        new ByteArrayInputStream(bytes), metadata).withAccessControlList(acl)
+        new ByteArrayInputStream(bytes), metadata)
       s3Client.putObject(putObjectRequest)
 
       logger.info(s"Uploaded image $key to AWS S3")
@@ -62,16 +60,14 @@ class AmazonS3ImageService extends Loggable {
     }
   }
 
-  def allowImageAccess(avyExtId: String) {
-    val acl = new AccessControlList()
-    acl.grantPermission(GroupGrantee.AllUsers, Permission.Read)
-    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _, acl))
+  def allowPublicImageAccess(avyExtId: String) {
+    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _,
+      CannedAccessControlList.PublicRead))
   }
 
-  def denyImageAccess(avyExtId: String) {
-    val acl = new AccessControlList()
-    acl.revokeAllPermissions(GroupGrantee.AllUsers)
-    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _, acl))
+  def denyPublicImageAccess(avyExtId: String) {
+    getAllAvalancheImageKeys(avyExtId).foreach(s3Client.setObjectAcl(s3ImageBucket, _,
+      CannedAccessControlList.Private))
   }
 
   private def toS3Key(avyExtId: String, filename: String) = s"$avyExtId/$filename"
