@@ -236,11 +236,10 @@ function getCoordsAtWindowPos(view, x, y) {
     var cart3 = view.cesiumViewer.scene.globe.pick(ray, view.cesiumViewer.scene);
 
     if (cart3) {
-        view.cesiumViewer.entities.add({
-            position: cart3,
-            billboard: {image: '/images/flyto-pin.png'}
-        });
-
+//        view.cesiumViewer.entities.add({
+//            position: cart3,
+//            billboard: {image: '/images/flyto-pin.png'}
+//        });
         return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
     }
 }
