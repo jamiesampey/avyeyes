@@ -212,7 +212,7 @@ function wireButtons(view) {
 
         var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(view.cesiumViewer.camera.position);
 
-        $("#avySearchCameraAlt").val(view.cesiumViewer.scene.globe.getHeight(camPos));
+        $("#avySearchCameraAlt").val(camPos.height);
         $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch));
         $("#avySearchCameraLat").val(Cesium.Math.toDegrees(camPos.latitude));
         $("#avySearchCameraLng").val(Cesium.Math.toDegrees(camPos.longitude));
