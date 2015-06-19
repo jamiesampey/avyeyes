@@ -26,10 +26,10 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
         (n\"@value").text must_== value
       }
       
-      assertInputValue(renderedPage, HiddenInputType, "avySearchLatTop", search.latTop)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchLatBottom", search.latBottom)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchLngLeft", search.lngLeft)
-      assertInputValue(renderedPage, HiddenInputType, "avySearchLngRight", search.lngRight)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLatMax", search.latMax)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLatMin", search.latMin)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLngMax", search.lngMax)
+      assertInputValue(renderedPage, HiddenInputType, "avySearchLngMin", search.lngMin)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraAlt", search.camAlt)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraPitch", search.camPitch)
       assertInputValue(renderedPage, HiddenInputType, "avySearchCameraLat", search.camLat)
@@ -69,10 +69,10 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
       there was one(mockAvalancheDao).selectAvalanches(queryArg.capture())
       val passedQuery = queryArg.getValue
       
-      passedQuery.geo.get.latMax must_== strToDblOrZero(search.latTop)
-      passedQuery.geo.get.latMin must_== strToDblOrZero(search.latBottom)
-      passedQuery.geo.get.lngMax must_== strToDblOrZero(search.lngLeft)
-      passedQuery.geo.get.lngMin must_== strToDblOrZero(search.lngRight)
+      passedQuery.geo.get.latMax must_== strToDblOrZero(search.latMax)
+      passedQuery.geo.get.latMin must_== strToDblOrZero(search.latMin)
+      passedQuery.geo.get.lngMax must_== strToDblOrZero(search.lngMax)
+      passedQuery.geo.get.lngMin must_== strToDblOrZero(search.lngMin)
       passedQuery.fromDate.get must_== strToDate(search.fromDate)
       passedQuery.toDate.get must_== strToDate(search.toDate)
       passedQuery.avyType.get must_== AvalancheType.withName(search.avyType)
@@ -121,10 +121,10 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
   private def newSearchWithTestData(): Search = {
       val search = new Search
       
-      search.latTop = "39.76999580282912"
-      search.latBottom = "-105.74790739483988"
-      search.lngLeft = "39.624208600404096"
-      search.lngRight = "-106.0104492051601"
+      search.latMax = "39.76999580282912"
+      search.latMin = "-105.74790739483988"
+      search.lngMax = "39.624208600404096"
+      search.lngMin = "-106.0104492051601"
       
       search.camAlt = "7364.194647056396"
       search.camPitch = "39.94"

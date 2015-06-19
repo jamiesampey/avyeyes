@@ -20,17 +20,17 @@ import scala.math._
 class Search extends Loggable {
   lazy val dao = DaoInjector.avalancheDao.vend
   
-  var latTop = ""; var latBottom = ""; var lngLeft = ""; var lngRight = ""
+  var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
   var fromDate = ""; var toDate = ""
   var avyType = ""; var avyTrigger = ""; var rSize = ""; var dSize = ""
   var numCaught = ""; var numKilled = ""
     
 	def render = {
-		"#avySearchLatTop" #> SHtml.hidden(latTop = _, latTop) &
-		"#avySearchLatBottom" #> SHtml.hidden(latBottom = _, latBottom) &
-		"#avySearchLngLeft" #> SHtml.hidden(lngLeft = _, lngLeft) &
-		"#avySearchLngRight" #> SHtml.hidden(lngRight = _, lngRight) &
+		"#avySearchLatMax" #> SHtml.hidden(latMax = _, latMax) &
+		"#avySearchLatMin" #> SHtml.hidden(latMin = _, latMin) &
+		"#avySearchLngMax" #> SHtml.hidden(lngMax = _, lngMax) &
+		"#avySearchLngMin" #> SHtml.hidden(lngMin = _, lngMin) &
 		"#avySearchCameraAlt" #> SHtml.hidden(camAlt = _, camAlt) &
 		"#avySearchCameraPitch" #> SHtml.hidden(camPitch = _, camPitch) &
 		"#avySearchCameraLat" #> SHtml.hidden(camLat = _, camLat) &
@@ -68,8 +68,8 @@ class Search extends Loggable {
   private def matchingAvalanchesInRange: List[Avalanche] = {
     val query = AvalancheQuery(
       viewable = Some(true), 
-      geo = Some(GeoBounds(strToDblOrZero(latTop), strToDblOrZero(latBottom),
-        strToDblOrZero(lngLeft), strToDblOrZero(lngRight))),
+      geo = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
+        strToDblOrZero(lngMax), strToDblOrZero(lngMin))),
       fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None, 
       toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None, 
       avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None, 
