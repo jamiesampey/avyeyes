@@ -188,27 +188,37 @@ function wireButtons(view) {
 	$('.avyButton').button();
 
 	$('#avySearchButton').click(function() {
-	    var bufferPx = 50;
-        var upperLeftCorner = getCoordsAtWindowPos(view, bufferPx, bufferPx);
-        var lowerLeftCorner = getCoordsAtWindowPos(view, bufferPx, view.cesiumViewer.canvas.height - bufferPx);
-        var upperRightCorner = getCoordsAtWindowPos(view, view.cesiumViewer.canvas.width - bufferPx, bufferPx);
-        var lowerRightCorner = getCoordsAtWindowPos(view, view.cesiumViewer.canvas.width - bufferPx,
-            view.cesiumViewer.canvas.height - bufferPx);
-
-        if (!upperLeftCorner || !lowerLeftCorner || !upperRightCorner || !lowerRightCorner) {
-            view.showModalDialog("Error", "Cannot set the geographic search bounds. The entire"
-                + " view window must show the earth (no sky on the horizon).");
-            return;
+	    var getCoordsAtWindowPos = function(x, y) {
+            var ray = view.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
+            var cart3 = view.cesiumViewer.scene.globe.pick(ray, view.cesiumViewer.scene);
+            if (cart3) {
+                return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
+            }
         }
 
-        $("#avySearchLatMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.latitude,
-            lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
-        $("#avySearchLatMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.latitude,
-            lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
-        $("#avySearchLngMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.longitude,
-            lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
-        $("#avySearchLngMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.longitude,
-            lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
+	    var bufferPx = 50;
+        var upperLeftCorner = getCoordsAtWindowPos(bufferPx, bufferPx);
+        var lowerLeftCorner = getCoordsAtWindowPos(bufferPx, view.cesiumViewer.canvas.height - bufferPx);
+        var upperRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.width - bufferPx, bufferPx);
+        var lowerRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.width - bufferPx,
+            view.cesiumViewer.canvas.height - bufferPx);
+
+        if (Cesium.defined(upperLeftCorner) && Cesium.defined(lowerLeftCorner)
+            && Cesium.defined(upperRightCorner) && Cesium.defined(lowerRightCorner)) {
+            $("#avySearchLatMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.latitude,
+                lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
+            $("#avySearchLatMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.latitude,
+                lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
+            $("#avySearchLngMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.longitude,
+                lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
+            $("#avySearchLngMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.longitude,
+                lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
+        } else {
+            $("#avySearchLatMax").val('');
+            $("#avySearchLatMin").val('');
+            $("#avySearchLngMax").val('');
+            $("#avySearchLngMin").val('');
+        }
 
         var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(view.cesiumViewer.camera.position);
 
@@ -231,31 +241,18 @@ function wireButtons(view) {
     });
 }
 
-function getCoordsAtWindowPos(view, x, y) {
-    var ray = view.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
-    var cart3 = view.cesiumViewer.scene.globe.pick(ray, view.cesiumViewer.scene);
-
-    if (cart3) {
-//        view.cesiumViewer.entities.add({
-//            position: cart3,
-//            billboard: {image: '/images/flyto-pin.png'}
-//        });
-        return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
-    }
-}
-
 function wireLocationInputs(view) {
 	$('.avyLocation').geocomplete({types: ['geocode']});
 
 	$('#avySearchLocation').blur(function(event) {
-        view.geocodeAndFlyTo($('#avySearchLocation').val(), 6000.0, -70.0);
+        view.geocodeAndFlyTo($('#avySearchLocation').val(), -70.0, 5500.0);
 	});
 
     $('#avyReportInitLocation').keydown(function (event) {
         if (event.keyCode == 13) {
             $('#avyReportLocationDialog').dialog('close');
             if ($('#avyReportInitLocation').val()) {
-                view.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
+                view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
             }
             event.preventDefault();
         }
@@ -336,7 +333,7 @@ function wireDialogs(view) {
             click: function(event, ui) {
                 $(this).dialog('close');
                 if ($('#avyReportInitLocation').val()) {
-                    view.geocodeAndFlyTo($('#avyReportInitLocation').val(), 8000.0, -65.0);
+                    view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
                 }
             }
         },{

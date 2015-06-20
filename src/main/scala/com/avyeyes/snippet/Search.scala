@@ -47,9 +47,12 @@ class Search extends Loggable {
 	}
 
   def doSearch(): JsCmd = {
-    if (strToDblOrZero(camAlt) > CamRelAltLimitMeters)
-        JsDialog.error("eyeTooHigh")
-    else {
+    val camAltitude = strToDblOrZero(camAlt).toInt
+    if (camAltitude > CamAltitudeLimit) {
+      JsDialog.error("eyeTooHigh", CamAltitudeLimit, camAltitude)
+    } else if (Seq(latMax, latMin, lngMax, lngMin).exists(_.isEmpty)) {
+      JsDialog.error("horizonInView")
+    } else {
       val avyList = matchingAvalanchesInRange
       
       logger.debug(s"Found ${avyList.size} avalanches matching criteria "

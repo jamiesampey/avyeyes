@@ -129,7 +129,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
     }
 }
 
-AvyEyesView.prototype.geocodeAndFlyTo = function(address, range, pitch) {
+AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
   if (!address) return;
 
   this.geocoder.geocode( {'address': address}, function(results, status) {
