@@ -33,6 +33,7 @@ AvyReport.prototype.startDrawing = function() {
     var isDrawing = false;
     var lastRecordTime = 0;
     var cartesian3Array = [];
+    var totalLineDistance = 0;
     var drawingPolyline;
     var drawingPolylineColor = Cesium.Color.RED;
     var drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
@@ -42,6 +43,13 @@ AvyReport.prototype.startDrawing = function() {
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
             this.view.setAvySelectEventHandler();
+
+            // max coord density of 5 meters per coord
+            while (Math.round(totalLineDistance) / cartesian3Array.length < 5) {
+                for (var i = 1; i < cartesian3Array.length; i += 2) {
+                    cartesian3Array.splice(i, 1);
+                }
+            }
 
             this.drawingPolygon = this.view.cesiumViewer.entities.add({
                 polygon: {
@@ -78,7 +86,12 @@ AvyReport.prototype.startDrawing = function() {
 
         var ray = this.view.cesiumViewer.camera.getPickRay(movement.endPosition);
         var cartesianPos = this.view.cesiumViewer.scene.globe.pick(ray, this.view.cesiumViewer.scene);
+        var lastCoordIdx = -1;
         if (Cesium.defined(cartesianPos)) {
+            lastCoordIdx = cartesian3Array.length - 1;
+            if (lastCoordIdx >= 0) {
+                totalLineDistance += Cesium.Cartesian3.distance(cartesian3Array[lastCoordIdx], cartesianPos);
+            }
             cartesian3Array.push(cartesianPos);
             lastRecordTime = Cesium.getTimestamp();
         }
