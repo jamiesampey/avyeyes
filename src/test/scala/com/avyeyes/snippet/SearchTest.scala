@@ -50,7 +50,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanc
     
     "Display 'eye too high' message if camera altitude is too high" withSFor("/") in {
       val search = new Search 
-      search.camAlt = (CamRelAltLimitMeters + 1).toString
+      search.camAlt = (CamAltitudeLimit + 1).toString
       val jsCmd = search.doSearch()
       
       jsCmd.toJsCmd must startWith("avyeyes.showModalDialog")

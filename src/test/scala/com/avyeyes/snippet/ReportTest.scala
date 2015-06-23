@@ -56,7 +56,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       assertInputValue(renderedPage, TextareaInputType, "avyReportComments", report.comments)
       assertInputValue(renderedPage, TextInputType, "avyReportSubmitterEmail", report.submitterEmail)
       assertInputValue(renderedPage, HiddenInputType, "avyReportSubmitterExp", report.submitterExp)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportKml", report.kmlStr)
+      assertInputValue(renderedPage, HiddenInputType, "avyReportKml", report.coordStr)
     }
   }
 
@@ -269,7 +269,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.comments = "some test comments here"
       report.submitterEmail = "sledhead@company.com"
       report.submitterExp = ExperienceLevel.A0.toString
-      report.kmlStr = s"<kml><LinearRing><coordinates>$testCoords</coordinates></LinearRing></kml>"
+      report.coordStr = s"<kml><LinearRing><coordinates>$testCoords</coordinates></LinearRing></kml>"
       
       report
   }

@@ -38,6 +38,7 @@ create table "avalanche_image" (
     "createTime" timestamp not null,
     "avyExtId" varchar(8) not null,
     "filename" varchar(128) not null,
+    "origFilename" varchar(128) not null,
     "mimeType" varchar(20) not null,
     "size" integer not null
 );

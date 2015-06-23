@@ -26,14 +26,14 @@ class Images extends RestHelper with Loggable {
             MaxImagesPerAvalanche).toString)
         } else {
           val fph = req.uploadedFiles(0)
-          val filename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
+          val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
 
-          s3.uploadImage(avyExtId, filename, fph.mimeType, fph.file)
+          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-          dao insertAvalancheImage AvalancheImage(avyExtId, filename, fph.mimeType,
+          dao insertAvalancheImage AvalancheImage(avyExtId, newFilename, fph.fileName, fph.mimeType,
             fph.length.toInt)
 
-          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> filename) ~ ("size" -> fph.length))
+          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("size" -> fph.length))
         }
       }
       response

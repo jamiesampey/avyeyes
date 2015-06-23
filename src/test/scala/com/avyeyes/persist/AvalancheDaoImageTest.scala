@@ -15,9 +15,9 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
     val nonExistentAvalancheExtId = "594jk3i3"
     
     val img1Bytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
-    val img1 = AvalancheImage(testAvalanche.extId, "imgInDb", "image/jpeg", img1Bytes.length, img1Bytes)
+    val img1 = AvalancheImage(testAvalanche.extId, "imgInDb", "crazyOrigName", "image/jpeg", img1Bytes.length)
     val img2Bytes = Array[Byte](90, 80, 70)
-    val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "image/gif", img2Bytes.length, img2Bytes)
+    val img2 = AvalancheImage(nonExistentAvalancheExtId, "differentImg", "crazyOrigName", "image/gif", img2Bytes.length)
   
     "Image insert and select works" >> {
       val dao = new SquerylAvalancheDao(Authorized)
@@ -29,7 +29,6 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
       returnedImage.avyExtId must_== testAvalanche.extId
       returnedImage.filename must_== img1.filename
       returnedImage.mimeType must_== img1.mimeType
-      returnedImage.bytes must_== img1.bytes
     }
     
     "Image without corresponding avalanche is not selected" >> {
@@ -73,7 +72,7 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
 
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2
-      dao insertAvalancheImage(AvalancheImage(img1.avyExtId, "anotherImg", "image/jpeg", img1Bytes.length, img1Bytes))
+      dao insertAvalancheImage(AvalancheImage(img1.avyExtId, "anotherImg", "crazyOrigName", "image/jpeg", img1Bytes.length))
       dao.countAvalancheImages(img1.avyExtId) must_== 2
       dao.countAvalancheImages(img2.avyExtId) must_== 1
     }
@@ -85,7 +84,7 @@ class AvalancheDaoImageTest extends Specification with InMemoryDB with Avalanche
       dao insertAvalancheImage img1
       dao insertAvalancheImage img2 // orphan image
 
-      dao.performMaintenance()
+//      dao.performMaintenance()
 
       dao.countAvalancheImages(img1.avyExtId) must_== 1
       dao.countAvalancheImages(img2.avyExtId) must_== 0
