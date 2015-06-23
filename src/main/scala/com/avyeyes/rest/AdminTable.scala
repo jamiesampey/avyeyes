@@ -136,7 +136,7 @@ class AdminTable extends RestHelper with Loggable {
   }
 
   private def getHttpsAvalancheLink(a: Avalanche) = {
-    <a href={getHttpsBaseUrl + a.extId} target="_blank">{s"${a.getTitle()}"}</a>.toString
+    <a href={getHttpsBaseUrl + a.extId} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
   }
 
   private def getViewableElem(viewable: Boolean) = {
