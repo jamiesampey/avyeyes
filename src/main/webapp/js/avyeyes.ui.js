@@ -244,19 +244,22 @@ function wireButtons(view) {
 function wireLocationInputs(view) {
 	$('.avyLocation').geocomplete({types: ['geocode']});
 
-	$('#avySearchLocation').blur(function(event) {
-        view.geocodeAndFlyTo($('#avySearchLocation').val(), -70.0, 5500.0);
-	});
-
-    $('#avyReportInitLocation').keydown(function (event) {
+    $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {
-            $('#avyReportLocationDialog').dialog('close');
-            if ($('#avyReportInitLocation').val()) {
-                view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
+            var dialogParent = $(this).parents('.ui-dialog-content');
+            if (dialogParent) {
+                dialogParent.dialog('close');
+            }
+            if ($(this).val()) {
+                view.geocodeAndFlyTo($(this).val(), -70.0, 5500.0);
             }
             event.preventDefault();
         }
     });
+
+	$('#avySearchLocation').blur(function(event) {
+        view.geocodeAndFlyTo($(this).val(), -70.0, 5500.0);
+	});
 }
 
 function wireDialogs(view) {

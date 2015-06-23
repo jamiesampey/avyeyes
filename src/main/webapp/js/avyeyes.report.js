@@ -45,7 +45,7 @@ AvyReport.prototype.startDrawing = function() {
             this.view.setAvySelectEventHandler();
 
             // max coord density of 5 meters per coord
-            while (Math.round(totalLineDistance) / cartesian3Array.length < 5) {
+            while (totalLineDistance / cartesian3Array.length < 5) {
                 for (var i = 1; i < cartesian3Array.length; i += 2) {
                     cartesian3Array.splice(i, 1);
                 }
