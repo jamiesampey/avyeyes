@@ -4,9 +4,8 @@ define(['avyeyes.ui',
         'lib/Cesium/Cesium'
         ], function(AvyEyesUI, AvyForm, AvyReport, Cesium) {
 
-function AvyEyesView(gmapsInst) {
-    this.gmaps = gmapsInst;
-    this.geocoder = new this.gmaps.Geocoder();
+function AvyEyesView() {
+    this.bingKey = 'AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr';
 
     this.cesiumViewer = new Cesium.Viewer('cesiumContainer', {
         sceneMode: Cesium.SceneMode.SCENE3D,
@@ -15,7 +14,7 @@ function AvyEyesView(gmapsInst) {
         }),
         imageryProvider: new Cesium.BingMapsImageryProvider({
             url: '//dev.virtualearth.net',
-            key: 'AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr',
+            key: this.bingKey,
             mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
         }),
         animation: false,
@@ -130,16 +129,50 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
 }
 
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
-  if (!address) return;
+    if (!address) return;
 
-  this.geocoder.geocode( {'address': address}, function(results, status) {
-    if (status == this.gmaps.GeocoderStatus.OK && results.length) {
-		var latLng = results[0].geometry.location;
-    	this.flyTo(this.targetEntityFromCoords(latLng.lng(), latLng.lat(), true),	0.0, pitch, range, true);
-    } else {
-      this.showModalDialog('Error', 'Failed to geocode "' + address + '"');
-    }
-  }.bind(this));
+    var geocodeFailure = function() {
+        this.showModalDialog("Error", "Failed to geocode '" + address + "'");
+    }.bind(this);
+
+    this.geocode(address, function(data) {
+       if (data.resourceSets.length === 0
+           || data.resourceSets[0].resources.length === 0
+           || data.resourceSets[0].resources[0].geocodePoints.length === 0) {
+           geocodeFailure(address);
+           return;
+       }
+
+       var geocodePoints = data.resourceSets[0].resources[0].geocodePoints[0];
+       var geocodedTarget = this.targetEntityFromCoords(geocodePoints.coordinates[1],
+           geocodePoints.coordinates[0], true);
+       this.flyTo(geocodedTarget, 0.0, pitch, range, true);
+    }.bind(this),
+    geocodeFailure);
+}
+
+AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
+    if (!address) return;
+    var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.cesiumViewer.camera.position);
+
+    $.ajax({
+        url: "//dev.virtualearth.net/REST/v1/Locations",
+        dataType: "jsonp",
+        data: {
+            key: this.bingKey,
+            query: address,
+            spatialFilter: "nearby(" + Cesium.Math.toDegrees(camPos.latitude) + ","
+                + Cesium.Math.toDegrees(camPos.longitude) + ",2000)"
+        },
+        jsonp: "jsonp",
+        success: function(data) {
+            onSuccess(data);
+        },
+        error: function(e) {
+            console.log("Error from geocode ajax call: " + e.textStatus);
+            onFailure();
+        }
+    });
 }
 
 AvyEyesView.prototype.geolocateAndFlyTo = function() {

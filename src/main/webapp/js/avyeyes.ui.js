@@ -1,7 +1,6 @@
 define(['avyeyes.form',
         'lib/Cesium/Cesium',
-        'lib/jquery-ui',
-        'lib/jquery.geocomplete'
+        'lib/jquery-ui'
         ], function(AvyForm, Cesium) {
 
 var AvyEyesUI = {};
@@ -224,8 +223,8 @@ function wireButtons(view) {
 
         $("#avySearchCameraAlt").val(camPos.height);
         $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch));
-        $("#avySearchCameraLat").val(Cesium.Math.toDegrees(camPos.latitude));
         $("#avySearchCameraLng").val(Cesium.Math.toDegrees(camPos.longitude));
+        $("#avySearchCameraLat").val(Cesium.Math.toDegrees(camPos.latitude));
 
 	    $(this).submit();
 	});
@@ -242,7 +241,25 @@ function wireButtons(view) {
 }
 
 function wireLocationInputs(view) {
-	$('.avyLocation').geocomplete({types: ['geocode']});
+    $('.avyLocation').autocomplete({
+        source: function (request, response) {
+            view.geocode(request.term, function(data) {
+                var resourceSet = data.resourceSets[0];
+                if (resourceSet && resourceSet.estimatedTotal > 0) {
+                    response($.map(resourceSet.resources, function(resource) {
+                        return {
+                            label: resource.name,
+                            value: resource.name
+                        };
+                    }));
+                }
+            });
+        },
+        minLength: 6
+    });
+
+    var geocodeFlyToPitch = -70.0;
+    var geocodeFlyToRange = 5500.0;
 
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {
@@ -251,14 +268,14 @@ function wireLocationInputs(view) {
                 dialogParent.dialog('close');
             }
             if ($(this).val()) {
-                view.geocodeAndFlyTo($(this).val(), -70.0, 5500.0);
+                view.geocodeAndFlyTo($(this).val(), geocodeFlyToPitch, geocodeFlyToRange);
             }
             event.preventDefault();
         }
     });
 
 	$('#avySearchLocation').blur(function(event) {
-        view.geocodeAndFlyTo($(this).val(), -70.0, 5500.0);
+        view.geocodeAndFlyTo($(this).val(), geocodeFlyToPitch, geocodeFlyToRange);
 	});
 }
 
