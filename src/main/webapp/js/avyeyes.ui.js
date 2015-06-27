@@ -241,6 +241,10 @@ function wireButtons(view) {
 }
 
 function wireLocationInputs(view) {
+	$('.avyLocation').click(function(){
+		$(this).select();
+    });
+
     $('.avyLocation').autocomplete({
         source: function (request, response) {
             view.geocode(request.term, function(data) {
