@@ -255,7 +255,7 @@ function wireLocationInputs(view) {
                 }
             });
         },
-        minLength: 6
+        minLength: 5
     });
 
     var geocodeFlyToPitch = -70.0;
