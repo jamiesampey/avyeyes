@@ -271,12 +271,12 @@ AvyForm.highlightReportErrorFields = function(errorFields) {
 }
 
 function resetReportErrorFields() {
-    $('#rwAvyFormSubmitterEmail').css('border', '1px solid #555555');
-    $('#rwAvyFormSubmitterExpAC').css('border', '1px solid #555555');
-    $('#rwAvyFormAspectAC').css('border', '1px solid #555555');
-    $('#rwAvyFormAreaName').css('border', '1px solid #555555');
-    $('#rwAvyFormDate').css('border', '1px solid #555555');
-    $('#rwAvyFormAngle').parent().css('border', '1px solid #555555');
+    $('#rwAvyFormSubmitterEmail').css('border', '1px solid #7D7D7D');
+    $('#rwAvyFormSubmitterExpAC').css('border', '1px solid #7D7D7D');
+    $('#rwAvyFormAspectAC').css('border', '1px solid #7D7D7D');
+    $('#rwAvyFormAreaName').css('border', '1px solid #7D7D7D');
+    $('#rwAvyFormDate').css('border', '1px solid #7D7D7D');
+    $('#rwAvyFormAngle').parent().css('border', '1px solid #7D7D7D');
 }
 
 AvyForm.clearReportFields = function() {

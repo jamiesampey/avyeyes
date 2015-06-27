@@ -67,7 +67,7 @@
 .roAvyFormFieldsSubTable {
 	padding: 5px;
     margin: 0px;
-    border: 1px solid #555555;
+    border: 1px solid #7D7D7D;
     border-radius: 10px;
     text-align: left;
 }
@@ -149,7 +149,7 @@
 	margin: 0 auto;
 	padding: 0px;
 	background-color: transparent;
-	border: 3px solid #555555;
+	border: 3px solid #7D7D7D;
 	color: white;
 	width: 650px;
 	height: 500px;
@@ -242,7 +242,7 @@ img.rwAvyFormImageDeleteIcon {
 .rwAvyFormInputsSubTable {
     padding: 5px;
     margin: 0px;
-	border: 1px solid #555555;
+	border: 1px solid #7D7D7D;
 	border-radius: 10px;
 }
 

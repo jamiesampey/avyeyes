@@ -79,7 +79,7 @@ textarea:focus, input:focus {
 .hasDatepicker {
     background: transparent;
     color: white;
-    border: 1px solid #555555;
+    border: 1px solid #7D7D7D;
     width: 80px;
     height: 20px;
 }
@@ -94,7 +94,7 @@ textarea:focus, input:focus {
 
 .ui-autocomplete-input {
     color: white;
-    border: 1px solid #555555;
+    border: 1px solid #7D7D7D;
     width: 200px;
     height: 20px;
     background: transparent;
@@ -107,6 +107,7 @@ textarea:focus, input:focus {
 
 .ui-spinner {
     background: transparent;
+    border: 1px solid #7D7D7D
 }
 
 .ui-spinner-input {
@@ -136,7 +137,7 @@ textarea:focus, input:focus {
     height: 20px;
     background: transparent;
     color: white;
-    border: 1px solid #555555;
+    border: 1px solid #7D7D7D;
 }
 
 .avyRDSliderContainer {
@@ -159,6 +160,7 @@ textarea:focus, input:focus {
     float: right;
     width: 170px;
     margin-top: 5px;
+    border: 1px solid #7D7D7D
 }
 
 .avyMsg p, li {
