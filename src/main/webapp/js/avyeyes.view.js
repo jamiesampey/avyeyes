@@ -128,27 +128,36 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
     }
 }
 
+var geocodeAttempts = 0;
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
     if (!address) return;
 
+    geocodeAttempts++;
+
     var geocodeFailure = function() {
+        geocodeAttempts = 0
         this.showModalDialog("Error", "Failed to geocode '" + address + "'");
     }.bind(this);
 
     this.geocode(address, function(data) {
-       if (data.resourceSets.length === 0
+        if (data.resourceSets.length === 0
            || data.resourceSets[0].resources.length === 0
            || data.resourceSets[0].resources[0].geocodePoints.length === 0) {
-           geocodeFailure(address);
-           return;
-       }
+            if (geocodeAttempts < 3) {
+                this.geocodeAndFlyTo(address, pitch, range);
+            } else {
+                geocodeFailure(address);
+            }
+            return;
+        }
 
        var geocodePoints = data.resourceSets[0].resources[0].geocodePoints[0];
        var geocodedTarget = this.targetEntityFromCoords(geocodePoints.coordinates[1],
            geocodePoints.coordinates[0], true);
        this.flyTo(geocodedTarget, 0.0, pitch, range, true);
-    }.bind(this),
-    geocodeFailure);
+
+       geocodeAttempts = 0;
+    }.bind(this), geocodeFailure);
 }
 
 AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
