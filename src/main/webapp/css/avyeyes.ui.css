@@ -226,7 +226,7 @@ textarea:focus, input:focus {
     background: transparent;
 }
 
-#reportHelpDiv {
+#searchHelpDiv, #reportHelpDiv {
     max-height: 610px;
 	overflow-y: auto;
 }

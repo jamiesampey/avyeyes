@@ -30,6 +30,8 @@ AvyReport.prototype.startDrawing = function() {
     $('#avyReportDrawButtonContainer').css('visibility', 'hidden');
     this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
+    $('#cesiumContainer').css('cursor','crosshair');
+
     var isDrawing = false;
     var lastRecordTime = 0;
     var cartesian3Array = [];
@@ -43,6 +45,8 @@ AvyReport.prototype.startDrawing = function() {
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
             this.view.setAvySelectEventHandler();
+
+            $('#cesiumContainer').css('cursor','default');
 
             // max coord density of 5 meters per coord
             while (totalLineDistance / cartesian3Array.length < 5) {
