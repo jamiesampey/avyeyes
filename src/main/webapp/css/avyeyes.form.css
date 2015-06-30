@@ -183,6 +183,7 @@
 .rwAvyFormImageCell {
     display: inline-block;
     width: 154px;
+    height: 100px;
     text-align: center;
     vertical-align: middle;
     margin: 3px;

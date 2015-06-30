@@ -140,10 +140,9 @@ function resetReadWriteImageUpload(extId) {
         return extId + "-" + getFileBaseName(filename);
     }
 
-    var imgUploadUrl = '/rest/images/' + extId;
     $("#rwAvyFormImageUploadForm").fileupload({
         dataType:'json',
-        url:imgUploadUrl,
+        url: "/rest/images/" + extId,
         dropZone:$('#rwAvyFormImageDropZone'),
         add: function (e, data) {
             appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
@@ -168,7 +167,8 @@ function appendImageCellToReadWriteForm(imageCellId) {
 
     $('#rwAvyFormImageGrid .rwAvyFormImageRow:last')
         .append("<div id='" + imageCellId + "' class='rwAvyFormImageCell'>"
-            + "<img src='/images/spinner-white.gif'/></div>");
+            + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
+            + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
 }
 
 function setImageCellContent(imageCellId, extId, filename) {
