@@ -33,7 +33,12 @@ class Images extends RestHelper with Loggable {
           dao insertAvalancheImage AvalancheImage(avyExtId, newFilename, fph.fileName, fph.mimeType,
             fph.length.toInt)
 
-          JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("size" -> fph.length))
+          JsonResponse(
+            ("extId" -> avyExtId) ~
+            ("filename" -> newFilename) ~
+            ("origFilename" -> fph.fileName) ~
+            ("size" -> fph.length)
+          )
         }
       }
       response
