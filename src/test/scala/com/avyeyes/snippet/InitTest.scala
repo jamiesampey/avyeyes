@@ -1,46 +1,40 @@
 package com.avyeyes.snippet
 
+import bootstrap.liftweb.Boot
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
-import net.liftweb.http.S
-import bootstrap.liftweb.Boot
 
 class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with AvalancheHelpers {
+
   "Initial JsCmd" should {
     isolated 
     
     val validExtId = "4jhu2ie9"
-    
+
     "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
       val initAvalancheLat = 35.59939321
       val initAvalancheLng = -104.323455342
       val initAvalanche = avalancheWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
-      
       mockAvalancheDao.selectAvalanche(any[String]) returns Some(initAvalanche)
-      
+
       val init = new Init
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
-      
+
       there was one(mockAvalancheDao).selectAvalanche(validExtId)
-      initJsCalls must contain("avyeyes.overlaySearchResultKml")
-      initJsCalls must contain(s"avyeyes.flyTo($initAvalancheLat,$initAvalancheLng,"
-        + s"${init.InitAvyAltMeters},${init.InitAvyCamTilt},270)")
-      initJsCalls must contain(s"""avyeyes.showModalDialog(\"${S.?("title.infoDialog")}\",""")
-      initJsCalls must not contain("avyeyes.showSearchDiv")
-      autocompleteInitCallCount(initJsCalls) must_== 8
+      initJsCalls must contain("avyEyesView.addAvalancheAndFlyTo")
+      initJsCalls must contain("avyEyesView.showModalDialog")
+      autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
     
     "Ignore an invalid external ID on the URL" withSFor("http://avyeyes.com/j4ek-d3s") in {
       val init = new Init
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
-      
+
       there was no(mockAvalancheDao).selectAvalanche(any[String])
-      initJsCalls must not contain("avyeyes.overlaySearchResultKml")
-      initJsCalls must contain(s"avyeyes.geolocateAndFlyTo(${init.InitViewAltMeters},${init.InitViewCamTilt})")
-      initJsCalls must contain(s"avyeyes.showSearchDiv(${init.InitViewSearchFormDelayMillis})")
-      autocompleteInitCallCount(initJsCalls) must_== 8
+      initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
+      autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
 
     "Initialize the view without an initial avalanche" withSFor("http://avyeyes.com") in {
@@ -49,10 +43,8 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanche
       val initJsCalls = init.initJsCalls().toJsCmd
 
       there was no(mockAvalancheDao).selectAvalanche(any[String])
-      initJsCalls must not contain("avyeyes.overlaySearchResultKml")
-      initJsCalls must contain(s"avyeyes.geolocateAndFlyTo(${init.InitViewAltMeters},${init.InitViewCamTilt})")
-      initJsCalls must contain(s"avyeyes.showSearchDiv(${init.InitViewSearchFormDelayMillis})")
-      autocompleteInitCallCount(initJsCalls) must_== 8
+      initJsCalls must contain("avyeyes.geolocateAndFlyTo")
+      autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
   }
   

@@ -39,7 +39,7 @@ jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "j
 
 parallelExecution in Test := false
 
-test in Test <<= (test in Test) dependsOn (jasmine)
+//test in Test <<= (test in Test) dependsOn (jasmine)
 
 // xsbt-web-plugin config
 lazy val debugForkOptions = new ForkOptions(runJVMOptions =

@@ -35,14 +35,19 @@ class Init extends KmlCreator with Loggable {
       case false => None
     }
     
-    if (initAvalanche.isDefined) {
-      logger.debug("Initial page view with init avy " + extId)
-      Call("avyEyesView.addAvalancheAndFlyTo", initAvalanche.get.toSearchResultJsonObj).cmd &
-      JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(initAvalanche.get.avyDate), initAvalanche.get.areaName,
-        ExperienceLevel.getLabel(initAvalanche.get.submitterExp))
-    } else {
+    initAvalanche match {
+      case Some(avalanche) => {
+        logger.debug("Initial page view with init avy " + extId)
+
+        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchResultJsonObj).cmd &
+          JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(avalanche.avyDate),
+            avalanche.areaName, ExperienceLevel.getLabel(avalanche.submitterExp))
+      }
+      case None => {
         logger.debug("Initial page view without an init avy")
+
         Call("avyEyesView.geolocateAndFlyTo").cmd
+      }
     }
   }
   
