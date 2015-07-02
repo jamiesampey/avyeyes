@@ -53,7 +53,7 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
 	if (a.images.length > 0) {
 		$('#roAvyFormImageRow').show();
         $.each(a.images, function(i, image) {
-            var imgUrl = "http://avyeyes-images.s3.amazonaws.com/" + a.extId + "/" + image.filename;
+            var imgUrl = "//avyeyes-images.s3.amazonaws.com/" + a.extId + "/" + image.filename;
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
                 + imgUrl + "' data-lightbox='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
 		});
