@@ -310,7 +310,7 @@ function wireDialogs(view) {
         modal: false,
         resizable: false,
         draggable: false,
-        closeOnEscape: false,
+        closeOnEscape: true,
         dialogClass: "roAvyFormDialog"
 	});
 
