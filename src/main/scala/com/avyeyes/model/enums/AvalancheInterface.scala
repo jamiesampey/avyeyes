@@ -5,9 +5,9 @@ object AvalancheInterface extends Enumeration with UISelectableEnum {
   
   override def isCompositeLabel = true
   
-  val U = Value(0)
-  val S = Value(1) 
-  val I = Value(2)
-  val O = Value(3)
-  val G = Value(4)
+  val U = Value(0, "U")
+  val S = Value(1, "S")
+  val I = Value(2, "I")
+  val O = Value(3, "O")
+  val G = Value(4, "G")
 }

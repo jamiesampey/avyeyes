@@ -5,14 +5,14 @@ object AvalancheType extends Enumeration with UISelectableEnum {
   
   override def isCompositeLabel = true
   
-  val U = Value(0)
-  val L = Value(1)
-  val WL = Value(2)
-  val SS = Value(3)
-  val HS = Value(4)
-  val WS = Value(5)
-  val I = Value(6)
-  val SF = Value(7)
-  val C = Value(8)
-  val R = Value(9)
+  val U = Value(0, "U")
+  val L = Value(1, "L")
+  val WL = Value(2, "WL")
+  val SS = Value(3, "SS")
+  val HS = Value(4, "HS")
+  val WS = Value(5, "WS")
+  val I = Value(6, "I")
+  val SF = Value(7, "SF")
+  val C = Value(8, "C")
+  val R = Value(9, "R")
 }
