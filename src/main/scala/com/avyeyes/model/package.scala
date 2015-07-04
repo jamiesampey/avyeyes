@@ -1,3 +1,5 @@
+package com.avyeyes
+
 import java.sql.Timestamp
 
 import com.avyeyes.model.enums.Aspect.Aspect
@@ -12,7 +14,7 @@ import com.avyeyes.model.enums._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-package object persist {
+package object model {
 
   object SlickColumnMappers {
     implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](
