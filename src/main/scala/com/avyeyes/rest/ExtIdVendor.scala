@@ -1,6 +1,5 @@
 package com.avyeyes.rest
 
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Helpers.getRemoteIP
@@ -15,9 +14,7 @@ class ExtIdVendor extends RestHelper with ExternalIdService {
   serve {
     case "rest" :: "reserveExtId" :: Nil JsonGet req => {
       try {
-        val newExtId = transaction {
-          reserveNewExtId
-        }
+        val newExtId = reserveNewExtId
         logger.info(s"Served extId request from ${getRemoteIP(S.containerRequest)} with new extId $newExtId")
         JObject(List(JField("extId", JString(newExtId))))
       } catch {

@@ -1,7 +1,6 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam
@@ -31,7 +30,7 @@ class Init extends KmlCreator with Loggable {
   
   private def initialFlyToCmd: JsCmd = {
     val initAvalanche = isValidExtId(extId) match {
-      case true => transaction {dao.selectAvalanche(extId.get)}
+      case true => dao.selectAvalanche(extId.get)
       case false => None
     }
     
@@ -39,8 +38,8 @@ class Init extends KmlCreator with Loggable {
       case Some(avalanche) => {
         logger.debug("Initial page view with init avy " + extId)
 
-        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchResultJsonObj).cmd &
-          JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(avalanche.avyDate),
+        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchResultJson).cmd &
+          JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(avalanche.date),
             avalanche.areaName, ExperienceLevel.getLabel(avalanche.submitterExp))
       }
       case None => {
@@ -54,8 +53,8 @@ class Init extends KmlCreator with Loggable {
   private def autoCompleteSourcesCmd: JsCmd = {
     JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${AvalancheType.toAutoCompleteSourceJson});"
       + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${AvalancheTrigger.toAutoCompleteSourceJson});"
-      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${Sky.toAutoCompleteSourceJson});"
-      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${Precip.toAutoCompleteSourceJson});"
+      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${SkyCoverage.toAutoCompleteSourceJson});"
+      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${Precipitation.toAutoCompleteSourceJson});"
       + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${AvalancheInterface.toAutoCompleteSourceJson});"
       + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${Aspect.toAutoCompleteSourceJson});"
       + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${ModeOfTravel.toAutoCompleteSourceJson});"

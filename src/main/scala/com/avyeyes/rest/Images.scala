@@ -20,36 +20,32 @@ class Images extends RestHelper with Loggable {
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
-      val response = transaction {
-        if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
-          ResponseWithReason(BadResponse(), getMessage("rwAvyFormMaxImagesExceeded",
-            MaxImagesPerAvalanche).toString)
-        } else {
-          val fph = req.uploadedFiles(0)
-          val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
+      if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
+        ResponseWithReason(BadResponse(), getMessage("rwAvyFormMaxImagesExceeded",
+          MaxImagesPerAvalanche).toString)
+      } else {
+        val fph = req.uploadedFiles(0)
+        val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
 
-          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
+        s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-          dao insertAvalancheImage AvalancheImage(avyExtId, newFilename, fph.fileName, fph.mimeType,
-            fph.length.toInt)
+        dao.insertAvalancheImage(
+          AvalancheImage(avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
+        )
 
-          JsonResponse(
-            ("extId" -> avyExtId) ~
-            ("filename" -> newFilename) ~
-            ("origFilename" -> fph.fileName) ~
-            ("size" -> fph.length)
-          )
-        }
+        JsonResponse(
+          ("extId" -> avyExtId) ~
+          ("filename" -> newFilename) ~
+          ("origFilename" -> fph.fileName) ~
+          ("size" -> fph.length)
+        )
       }
-      response
     }
     
     case "rest" :: "images" :: avyExtId :: fileBaseName :: Nil Delete req => {
       try {
         s3.deleteImage(avyExtId, fileBaseName)
-        transaction {
-          dao.deleteAvalancheImage(avyExtId, fileBaseName)
-        }
+        dao.deleteAvalancheImage(avyExtId, fileBaseName)
         OkResponse()
       } catch {
         case ue: UnauthorizedException => UnauthorizedResponse("Avy Eyes auth required")

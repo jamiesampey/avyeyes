@@ -2,7 +2,6 @@ package com.avyeyes.snippet
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
@@ -60,7 +59,7 @@ class Search extends Loggable {
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
       if (avyList.size > 0) {
-        Call("avyEyesView.addAvalanches", JArray(avyList.map(_.toSearchResultJsonObj))).cmd &
+        Call("avyEyesView.addAvalanches", JArray(avyList.map(_.toSearchResultJson))).cmd &
         JsDialog.info("avySearchSuccess", avyList.size)
       } else {
         JsDialog.info("avySearchZeroMatches")
@@ -69,24 +68,22 @@ class Search extends Loggable {
   }
     
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val matchingAvalanches: List[Avalanche] = transaction {
-      dao.selectAvalanches(
-        AvalancheQuery(
-          viewable = Some(true),
-          geo = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
-            strToDblOrZero(lngMax), strToDblOrZero(lngMin))),
-          fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None,
-          toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None,
-          avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None,
-          avyTrigger = if (isNotBlank(avyTrigger)) Some(AvalancheTrigger.withName(avyTrigger)) else None,
-          rSize = getAvySizeQueryVal(rSize),
-          dSize = getAvySizeQueryVal(dSize),
-          numCaught = getHumanNumberQueryVal(numCaught),
-          numKilled = getHumanNumberQueryVal(numKilled),
-          orderBy =  List((OrderField.avyDate, OrderDirection.desc))
-      ))
-    }
-    
+    val matchingAvalanches = dao.selectAvalanches(
+      AvalancheQuery(
+        viewable = Some(true),
+        geo = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
+          strToDblOrZero(lngMax), strToDblOrZero(lngMin))),
+        fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None,
+        toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None,
+        avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None,
+        avyTrigger = if (isNotBlank(avyTrigger)) Some(AvalancheTrigger.withName(avyTrigger)) else None,
+        rSize = getAvySizeQueryVal(rSize),
+        dSize = getAvySizeQueryVal(dSize),
+        numCaught = getHumanNumberQueryVal(numCaught),
+        numKilled = getHumanNumberQueryVal(numKilled),
+        orderBy =  List((OrderField.avyDate, OrderDirection.desc))
+    ))
+
     if (strToDblOrZero(camPitch) > CamPitchCutoff)  {
       matchingAvalanches
     } else { 
@@ -103,10 +100,11 @@ class Search extends Loggable {
   }
   
 	private def haversineDist(a: Avalanche) = {
-    val dLat = (a.lat - strToDblOrZero(camLat)).toRadians
-    val dLon = (a.lng - strToDblOrZero(camLng)).toRadians
+    val dLat = (a.location.latitude - strToDblOrZero(camLat)).toRadians
+    val dLon = (a.location.longitude - strToDblOrZero(camLng)).toRadians
 
-    val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDblOrZero(camLat).toRadians) * cos(a.lat.toRadians)
+    val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDblOrZero(camLat).toRadians) *
+      cos(a.location.latitude.toRadians)
     val c = 2 * asin(sqrt(ax))
     EarthRadiusMiles * c
 	}

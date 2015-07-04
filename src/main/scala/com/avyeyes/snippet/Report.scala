@@ -5,7 +5,6 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.AvyEyesSqueryl.transaction
 import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._
@@ -89,32 +88,30 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
-      transaction {
-        dao.selectAvalanche(extId) match {
-          case Some(existingAvalanche) => {
-            dao.updateAvalanche(avalancheFromValues)
-            logger.info(s"Avalanche $extId successfully updated")
+      dao.selectAvalanche(extId) match {
+        case Some(existingAvalanche) => {
+          dao.updateAvalanche(avalancheFromValues)
+          logger.info(s"Avalanche $extId successfully updated")
 
-            if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
-              sendApprovalNotification(avalancheFromValues, submitterEmail)
-            }
-
-            if (avalancheFromValues.viewable) {
-              s3.allowPublicImageAccess(avalancheFromValues.extId)
-            } else {
-              s3.denyPublicImageAccess(avalancheFromValues.extId)
-            }
-
-            JsDialog.info("avyReportUpdateSuccess")
+          if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
+            sendApprovalNotification(avalancheFromValues, submitterEmail)
           }
-          case None => {
-            dao.insertAvalanche(avalancheFromValues, submitterEmail)
-            logger.info(s"Avalanche $extId successfully inserted")
 
-            sendSubmissionNotifications(avalancheFromValues, submitterEmail)
-
-            JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtHttpUrl)
+          if (avalancheFromValues.viewable) {
+            s3.allowPublicImageAccess(avalancheFromValues.extId)
+          } else {
+            s3.denyPublicImageAccess(avalancheFromValues.extId)
           }
+
+          JsDialog.info("avyReportUpdateSuccess")
+        }
+        case None => {
+          dao.insertAvalanche(avalancheFromValues, submitterEmail)
+          logger.info(s"Avalanche $extId successfully inserted")
+
+          sendSubmissionNotifications(avalancheFromValues, submitterEmail)
+
+          JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtHttpUrl)
         }
       }
     } catch {
@@ -131,9 +128,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   
   def deleteReport(extIdToDelete: String) = {
     try {
-      transaction {
-        dao.deleteAvalanche(extIdToDelete)
-      }
+      dao.deleteAvalanche(extIdToDelete)
 
       s3.deleteAllImages(extIdToDelete)
 
@@ -148,19 +143,32 @@ class Report extends ExternalIdService with Mailer with Loggable {
   }
   
   private def createAvalancheFromValues() = {
-    Avalanche(extId, viewable, ExperienceLevel.withName(submitterExp),
-      strToDblOrZero(lat), strToDblOrZero(lng), areaName, strToDate(dateStr),
-      enumWithNameOr(Sky, sky, Sky.U),
-      enumWithNameOr(Precip, precip, Precip.U),
-      strToIntOrNegOne(elevation), Aspect.withName(aspect), strToIntOrNegOne(angle),
-      enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
-      enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
-      enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
-      strToDblOrZero(rSize), strToDblOrZero(dSize),
-      strToIntOrNegOne(caught), strToIntOrNegOne(partiallyBuried), strToIntOrNegOne(fullyBuried), 
-      strToIntOrNegOne(injured), strToIntOrNegOne(killed), 
-      enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
-      comments, coordStr)
+    Avalanche(
+      extId = extId,
+      viewable = viewable,
+      submitterExp = ExperienceLevel.withName(submitterExp),
+      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToDblOrZero(elevation)),
+      areaName = areaName,
+      date = strToDate(dateStr),
+      scene = Scene(enumWithNameOr(SkyCoverage, sky, SkyCoverage.U), enumWithNameOr(Precipitation, precip, Precipitation.U)),
+      slope = Slope(Aspect.withName(aspect), strToIntOrNegOne(angle)),
+      classification = Classification(
+        enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
+        enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
+        enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
+        strToDblOrZero(rSize), strToDblOrZero(dSize)
+      ),
+      humanNumbers = HumanNumbers(
+        strToIntOrNegOne(caught),
+        strToIntOrNegOne(partiallyBuried),
+        strToIntOrNegOne(fullyBuried),
+        strToIntOrNegOne(injured),
+        strToIntOrNegOne(killed),
+        enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U)
+      ),
+      comments = comments,
+      perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
+    )
   }
 
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {

@@ -1,6 +1,5 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.Helpers._
@@ -61,6 +60,6 @@ class Admin extends Loggable {
   def loggedOutContent(html: NodeSeq) = if (!userSession.isAuthorizedSession) html else NodeSeq.Empty
   def loggedInContent(html: NodeSeq) = if (userSession.isAuthorizedSession) html else NodeSeq.Empty
   
-  def unviewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(Some(false))} }</span>
-  def viewableAvalancheCount() = <span>{transaction {avyDao.countAvalanches(Some(true))} }</span>
+  def unviewableAvalancheCount() = <span>{avyDao.countAvalanches(Some(false)) }</span>
+  def viewableAvalancheCount() = <span>{avyDao.countAvalanches(Some(true)) }</span>
 }

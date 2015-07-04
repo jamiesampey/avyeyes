@@ -31,10 +31,8 @@ class AdminTable extends RestHelper with Loggable {
 
   private def buildResponse(req: Req) = {
     try {
-      transaction {
-        val queryResult = avyDao.selectAvalanchesForAdminTable(buildQuery(req))
-        JsonResponse(toDataTablesJson(queryResult, req))
-      }
+      val queryResult = avyDao.selectAvalanchesForAdminTable(buildQuery(req))
+      JsonResponse(toDataTablesJson(queryResult, req))
     } catch {
       case e: Exception => InternalServerErrorResponse()
     }
