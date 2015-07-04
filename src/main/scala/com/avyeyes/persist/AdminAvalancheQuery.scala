@@ -5,4 +5,6 @@ case class AdminAvalancheQuery(
   areaName: Option[String] = None,
   submitterEmail: Option[String] = None,
   orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.id, OrderDirection.asc)),
-  offset: Int = 0, limit: Int = Int.MaxValue) extends BaseAvalancheQuery(orderBy, offset, limit)
+  offset: Int = 0,
+  limit: Int = Int.MaxValue)
+  extends BaseAvalancheQuery(orderBy, offset, limit)
