@@ -62,7 +62,7 @@ class AvalancheDaoWriteTest extends Specification with InMemoryDB with Avalanche
       dao insertAvalanche(avalancheWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
       
       val updatedAvalanche = Avalanche(extId, true, ExperienceLevel.P1,
-        commonLat, commonLng, "A totally new name!", DateTime.now, Sky.Few, Precip.SN, 2354, Aspect.SW, 45,
+        commonLat, commonLng, "A totally new name!", DateTime.now, SkyCoverage.Few, Precipitation.SN, 2354, Aspect.SW, 45,
         AvalancheType.SF, AvalancheTrigger.AS, AvalancheInterface.O, 1.5, 3, 
         5, 3, 2, 3, 2, ModeOfTravel.Snowshoer, "some totally different comments", 
         "-105.875489242241,39.66464854369643,3709.514235071098")

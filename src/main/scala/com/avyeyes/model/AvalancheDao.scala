@@ -1,6 +1,4 @@
-package com.avyeyes.persist
-
-import com.avyeyes.model._
+package com.avyeyes.model
 
 trait AvalancheDao {
   def isAuthorizedSession(): Boolean

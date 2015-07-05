@@ -1,6 +1,4 @@
-package com.avyeyes.persist
-
-import com.avyeyes.model.User
+package com.avyeyes.model
 
 trait UserDao {
   def selectUser(email: String): Option[User]

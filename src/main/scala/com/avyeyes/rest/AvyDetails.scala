@@ -1,7 +1,6 @@
 package com.avyeyes.rest
 
 import com.avyeyes.model._
-import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.UserInjector
 import net.liftweb.common.Loggable
 import net.liftweb.http.{JsonResponse, NotFoundResponse}

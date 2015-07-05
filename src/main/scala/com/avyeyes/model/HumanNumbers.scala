@@ -12,8 +12,8 @@ case class HumanNumbers(caught: Int = -1,
                         modeOfTravel: ModeOfTravel = ModeOfTravel.U)
 
 case class LiftedHumanNumbers(caught: Rep[Int],
-                               partiallyBuried: Rep[Int],
-                               fullyBuried: Rep[Int],
-                               injured: Rep[Int],
-                               killed: Rep[Int],
-                               modeOfTravel: Rep[ModeOfTravel])
+                              partiallyBuried: Rep[Int],
+                              fullyBuried: Rep[Int],
+                              injured: Rep[Int],
+                              killed: Rep[Int],
+                              modeOfTravel: Rep[ModeOfTravel])

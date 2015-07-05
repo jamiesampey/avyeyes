@@ -1,4 +1,4 @@
-package com.avyeyes.persist
+package com.avyeyes.model
 
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime

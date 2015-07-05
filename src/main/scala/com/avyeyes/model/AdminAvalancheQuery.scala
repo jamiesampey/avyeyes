@@ -1,4 +1,4 @@
-package com.avyeyes.persist
+package com.avyeyes.model
 
 case class AdminAvalancheQuery(
   extId: Option[String] = None,

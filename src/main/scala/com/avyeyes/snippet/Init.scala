@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.model.DaoInjector
 import com.avyeyes.model.enums._
-import com.avyeyes.persist.DaoInjector
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._

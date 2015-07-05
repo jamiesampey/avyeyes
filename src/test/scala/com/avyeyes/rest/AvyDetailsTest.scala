@@ -28,8 +28,8 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
       val resp = openLiftRespBox(avyDetails(req)())
       
       extractJsonField(resp, "submitterExp") must_== ExperienceLevel.toJObject(a1.submitterExp)
-      extractJsonField(resp, "sky") must_== Sky.toJObject(a1.sky)
-      extractJsonField(resp, "precip") must_== Precip.toJObject(a1.precip)
+      extractJsonField(resp, "sky") must_== SkyCoverage.toJObject(a1.sky)
+      extractJsonField(resp, "precip") must_== Precipitation.toJObject(a1.precip)
       extractJsonField(resp, "aspect") must_== Aspect.toJObject(a1.aspect)
       extractJsonField(resp, "avyType") must_== AvalancheType.toJObject(a1.avyType)
       extractJsonField(resp, "avyTrigger") must_== AvalancheTrigger.toJObject(a1.avyTrigger)

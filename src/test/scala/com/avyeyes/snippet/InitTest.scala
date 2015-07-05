@@ -1,7 +1,6 @@
 package com.avyeyes.snippet
 
 import bootstrap.liftweb.Boot
-import com.avyeyes.model.enums._
 import com.avyeyes.test._
 
 class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with AvalancheHelpers {
@@ -14,7 +13,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanche
     "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
       val initAvalancheLat = 35.59939321
       val initAvalancheLng = -104.323455342
-      val initAvalanche = avalancheWithAspect(validExtId, true, initAvalancheLat, initAvalancheLng, Aspect.E)
+      val initAvalanche = avalancheWithCoords(validExtId, true, initAvalancheLat, initAvalancheLng, "")
       mockAvalancheDao.selectAvalanche(any[String]) returns Some(initAvalanche)
 
       val init = new Init
@@ -43,7 +42,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Avalanche
       val initJsCalls = init.initJsCalls().toJsCmd
 
       there was no(mockAvalancheDao).selectAvalanche(any[String])
-      initJsCalls must contain("avyeyes.geolocateAndFlyTo")
+      initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
   }

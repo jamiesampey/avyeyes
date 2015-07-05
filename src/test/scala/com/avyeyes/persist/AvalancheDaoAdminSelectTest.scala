@@ -1,5 +1,6 @@
 package com.avyeyes.persist
 
+import com.avyeyes.model.{AdminAvalancheQuery, GeoBounds}
 import com.avyeyes.test.AvalancheHelpers
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification

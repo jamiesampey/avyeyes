@@ -1,8 +1,7 @@
 package com.avyeyes.service
 
 import akka.actor._
-import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.persist.DaoInjector
+import com.avyeyes.model.DaoInjector
 import net.liftweb.common.Loggable
 
 object ImagePruneService {

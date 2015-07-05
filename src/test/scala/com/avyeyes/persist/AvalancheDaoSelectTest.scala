@@ -1,5 +1,6 @@
 package com.avyeyes.persist
 
+import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist
 import com.avyeyes.test.AvalancheHelpers
@@ -215,7 +216,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, earliest)
       insertTestAvalanche(dao, middle)
 
-      val dateDescOrderQuery = AvalancheQuery(orderBy = List((persist.OrderField.avyDate, persist.OrderDirection.desc)))
+      val dateDescOrderQuery = AvalancheQuery(orderBy = List((OrderField.avyDate, OrderDirection.desc)))
       val avyDateDescArray = dao.selectAvalanches(dateDescOrderQuery).toArray
       
       avyDateDescArray(0).extId must_== latest.extId

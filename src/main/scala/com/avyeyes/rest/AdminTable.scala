@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 import scala.collection.mutable.ListBuffer
 
-import com.avyeyes.model.Avalanche
+import com.avyeyes.model._
 import com.avyeyes.persist._
 import com.avyeyes.persist.AvyEyesSqueryl._
 import com.avyeyes.service.UserInjector

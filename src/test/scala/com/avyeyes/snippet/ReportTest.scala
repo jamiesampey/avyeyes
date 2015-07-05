@@ -131,8 +131,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture(), anyString)
       val passedAvalanche = avalancheArg.getValue
       
-      passedAvalanche.sky must_== Sky.U
-      passedAvalanche.precip must_== Precip.U
+      passedAvalanche.sky must_== SkyCoverage.U
+      passedAvalanche.precip must_== Precipitation.U
       passedAvalanche.avyType must_== AvalancheType.U
       passedAvalanche.avyTrigger must_== AvalancheTrigger.U
       passedAvalanche.avyInterface must_== AvalancheInterface.U
@@ -158,8 +158,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       passedAvalanche.lng must_== strToDblOrZero(report.lng)
       passedAvalanche.areaName must_== report.areaName
       passedAvalanche.avyDate must_== strToDate(report.dateStr)
-      passedAvalanche.sky must_== Sky.withName(report.sky)
-      passedAvalanche.precip must_== Precip.withName(report.precip)
+      passedAvalanche.sky must_== SkyCoverage.withName(report.sky)
+      passedAvalanche.precip must_== Precipitation.withName(report.precip)
       passedAvalanche.avyType must_== AvalancheType.withName(report.avyType)
       passedAvalanche.avyTrigger must_== AvalancheTrigger.withName(report.avyTrigger)
       passedAvalanche.avyInterface must_== AvalancheInterface.withName(report.avyInterface)
@@ -170,7 +170,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       passedAvalanche.killed must_== strToIntOrNegOne(report.killed)
       passedAvalanche.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
       passedAvalanche.comments must_== report.comments
-      passedAvalanche.coords must_== testCoords
+      passedAvalanche.perimeter must_== testCoords
       emailArg.getValue must_== report.submitterEmail
     }
     
@@ -247,8 +247,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.areaName = "east side of LP"
       report.dateStr = "01-27-2014"
       
-      report.sky = Sky.Broken.toString
-      report.precip = Precip.SN.toString
+      report.sky = SkyCoverage.Broken.toString
+      report.precip = Precipitation.SN.toString
       report.elevation = "3500"
       report.aspect = Aspect.E.toString
       report.angle = "39"

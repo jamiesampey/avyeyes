@@ -10,8 +10,7 @@ import net.liftweb.http._
 import net.liftweb.sitemap._
 import net.liftweb.util.Vendor.valToVendor
 import omniauth.Omniauth
-import org.squeryl.adapters.PostgreSqlAdapter
-import org.squeryl.{Session, SessionFactory}
+
 
 /**
  * Companion object for unit testing
@@ -73,9 +72,8 @@ class Boot extends Loggable {
     Omniauth.init // grabs omniauth.* settings from props file
     
     if (!test) {
-      initPostgresqlSession
-
       import actorSystem.dispatcher
+
       import scala.concurrent.duration._
       actorSystem.scheduler.schedule(
         initialDelay = getProp("db.maintenanceDelayMinutes").toInt minutes,
@@ -90,21 +88,6 @@ class Boot extends Loggable {
   	case "css" :: _ => true
   }
   
-  lazy val jdbcConnectionString = new StringBuilder("jdbc:postgresql://")
-    .append(getProp("db.host")).append(":")
-    .append(getProp("db.port")).append("/")
-    .append(getProp("db.name")).toString
- 
-  def initPostgresqlSession() = {
-    if (SessionFactory.concreteFactory.isEmpty) {
-      logger.info("Initializing Postgresql database session")
-      Class.forName("org.postgresql.Driver")
-      SessionFactory.concreteFactory = Some(()=>
-        Session.create(java.sql.DriverManager.getConnection(jdbcConnectionString), new PostgreSqlAdapter))
-    }
-    //org.squeryl.PrimitiveTypeMode.transaction { com.avyeyes.persist.AvyEyesSchema.printDdl }
-  }
-    
   private def browserSupported(req: Req): Boolean = (
       unboxedBrowserVersion(req.chromeVersion) >= ChromeMinVersion
       || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxMinVersion

@@ -2,9 +2,7 @@ package com.avyeyes.rest
 
 import java.util.UUID
 
-import com.avyeyes.model.AvalancheImage
-import com.avyeyes.persist.AvyEyesSqueryl._
-import com.avyeyes.persist.DaoInjector
+import com.avyeyes.model.{AvalancheImage, DaoInjector}
 import com.avyeyes.service.AmazonS3ImageService
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._

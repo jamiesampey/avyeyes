@@ -1,8 +1,7 @@
 package com.avyeyes.service
 
 import java.util.concurrent.TimeUnit
-
-import com.avyeyes.persist.AvalancheDao
+import com.avyeyes.model.AvalancheDao
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.google.common.cache._

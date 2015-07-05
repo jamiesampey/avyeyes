@@ -25,7 +25,7 @@ trait KmlCreator {
 	    <Polygon>
     	  <outerBoundaryIs>
     	    <LinearRing>
-    	      <coordinates>{avalanche.coords}</coordinates>
+    	      <coordinates>{avalanche.perimeter}</coordinates>
     	    </LinearRing>
     	  </outerBoundaryIs>
     	</Polygon>

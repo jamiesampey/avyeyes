@@ -3,13 +3,12 @@ package com.avyeyes.model
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-case class AvalancheImage(id: Long,
-                          createTime: DateTime,
-                          avyExtId: String,
+case class AvalancheImage(avyExtId: String,
                           filename: String,
                           origFilename: String,
                           mimeType: String,
-                          size: Int)
+                          size: Int
+                          ) extends BaseDbObject
 
 class AvalancheImages(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -20,5 +19,5 @@ class AvalancheImages(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_im
   def mimeType = column[String]("mime_type")
   def size = column[Int]("size")
 
-  def * = ???
+  def * = (id, createTime, avyExtId, filename, origFilename, mimeType, size).<> (AvalancheImage.tupled, AvalancheImage.unapply _)
 }

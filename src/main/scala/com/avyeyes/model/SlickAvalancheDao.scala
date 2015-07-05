@@ -1,21 +1,21 @@
-package com.avyeyes.persist
+package com.avyeyes.model
 
-import java.sql.Timestamp
-
-import com.avyeyes.model._
-import com.avyeyes.model.enums._
-import com.avyeyes.persist.AvyEyesSchema._
+import com.avyeyes.model.Queries._
+import com.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+import com.avyeyes.model.PostgresSession._
 
-class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with ExternalIdService with Loggable {
+class SlickAvalancheDao(userSession: UserSession) extends AvalancheDao with ExternalIdService with Loggable {
+
   def isAuthorizedSession(): Boolean = userSession.isAuthorizedSession()
 
+
   def selectAvalanche(extId: String): Option[Avalanche] = {
-    avalanches.where(a => a.extId === extId
-      and (a.viewable === true).inhibitWhen(isAuthorizedSession)).headOption
+    avalanches.filter(_.extId === extId).result.headOption
   }
 
   def selectAvalanches(query: AvalancheQuery) = {
@@ -23,26 +23,14 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Ex
     val latMin = if (query.geo.isDefined) query.geo.get.latMin else 0
     val lngMax = if (query.geo.isDefined) query.geo.get.lngMax else 0
     val lngMin = if (query.geo.isDefined) query.geo.get.lngMin else 0
-    
+
     val fromDate = query.fromDate match {case Some(dt) => dt; case None => new DateTime(0)}
     val toDate = query.toDate match {case Some(dt) => dt; case None => DateTime.now}
 
     val avyTypeQueryVal = query.avyType match {case Some(avyType) => avyType; case None => AvalancheType.U}
     val avyTriggerQueryVal = query.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
-    
-    from(avalanches)(a => where(
-        (a.viewable === getAvyViewableQueryVal(query.viewable).?)
-        and (a.location.latitude.between(latMin, latMax)).inhibitWhen(query.geo.isEmpty)
-        and (a.location.longitude.between(lngMin, lngMax)).inhibitWhen(query.geo.isEmpty)
-        and a.date.between(fromDate, toDate)
-        and (a.classification.avyType === avyTypeQueryVal).inhibitWhen(query.avyType.isEmpty)
-        and (a.classification.trigger === avyTriggerQueryVal).inhibitWhen(query.avyTrigger.isEmpty)
-        and (a.classification.rSize gte (query.rSize).?)
-        and (a.classification.dSize gte (query.dSize).?)
-        and (a.humanNumbers.caught gte (query.numCaught).?)
-        and (a.humanNumbers.killed gte (query.numKilled).?)
-    ) select(a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a))))
-    .page(query.offset, query.limit).toList
+
+    // TODO: select matching avalanches
   }
 
   def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
@@ -50,33 +38,19 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Ex
       throw new UnauthorizedException("Not authorized for admin select")
     }
 
-    val queryResult = from(avalanches, users)((a,u) => where(
-      (a.submitterId === u.id)
-        and ((lower(a.extId) like lower(query.extId)).inhibitWhen(query.extId.isEmpty)
-          or (lower(a.areaName) like lower(query.areaName)).inhibitWhen(query.areaName.isEmpty)
-          or (lower(u.email) like lower(query.submitterEmail)).inhibitWhen(query.submitterEmail.isEmpty))
-    ) select(a) orderBy(query.orderBy map(orderTuple => buildOrderByArg(orderTuple, a, Some(u)))))
-
-    (queryResult.page(query.offset, query.limit).toList, queryResult.size, countAvalanches(None))
+    // TODO: select matching avalanches
   }
 
-  def countAvalanches(viewable: Option[Boolean]) = from(avalanches)(a =>
-    where(a.viewable === viewable.?) compute (count)).toInt
+  def countAvalanches(viewable: Option[Boolean]) = {}
 
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String) = {
     if (avalanche.viewable && !isAuthorizedSession) {
       throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
 
-    users.where(u => u.email === submitterEmail).headOption match {
-      case Some(existingUser) => avalanche.submitterId = existingUser.id
-      case None => {
-        val newUser = users insert User(submitterEmail)
-        avalanche.submitterId = newUser.id
-      }
-    }
+    // TODO: insert submitting user
 
-    avalanches insert avalanche
+    // TODO: insert avalanche
   }
 
   def updateAvalanche(updated: Avalanche) = {
@@ -84,29 +58,22 @@ class SquerylAvalancheDao(userSession: UserSession) extends AvalancheDao with Ex
       throw new UnauthorizedException("Not authorized to update avalanche")
     }
 
-    update(avalanches)(a => where(a.extId === updated.extId)
-      set (a.updateTime := new Timestamp(System.currentTimeMillis),
-        a.viewable := updated.viewable, a.submitterExp := updated.submitterExp,
-        a.areaName := updated.areaName, a.date := updated.date,
-        a.scene := updated.scene, a.slope := updated.slope,
-        a.classification := updated.classification,
-        a.humanNumbers := updated.humanNumbers,
-        a.comments := updated.comments))
+    // TODO: update existing avalanche
   }
 
   def deleteAvalanche(extId: String) = {
     isAuthorizedSession match {
       case false => throw new UnauthorizedException("Not authorized to delete avalanches")
       case true => {
-        avalancheImages deleteWhere (img => img.avyExtId === extId)
-        avalanches deleteWhere (a => a.extId === extId)
+        // TODO delete avalanche
       }
     }
   }
 
   def insertAvalancheImage(img: AvalancheImage) = {
-    avalancheImages insert img
-    setAvalancheUpdateTime(img.avyExtId)
+    //TODO: insert image
+
+    //TODO: set avlanche update time
   }
 
   def selectAvalancheImage(avyExtId: String, filename: String) = {

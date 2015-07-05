@@ -1,4 +1,4 @@
-package com.avyeyes.persist
+package com.avyeyes.model
 
 abstract class BaseAvalancheQuery(
   orderBy: List[(OrderField.Value, OrderDirection.Value)],

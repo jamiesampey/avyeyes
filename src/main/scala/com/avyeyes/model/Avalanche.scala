@@ -1,32 +1,22 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.enums.Aspect
-import com.avyeyes.model.enums.Aspect._
-import com.avyeyes.model.enums.AvalancheInterface
-import com.avyeyes.model.enums.AvalancheInterface._
-import com.avyeyes.model.enums.AvalancheTrigger
-import com.avyeyes.model.enums.AvalancheTrigger._
-import com.avyeyes.model.enums.AvalancheType
-import com.avyeyes.model.enums.AvalancheType._
-import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.avyeyes.model.enums.ModeOfTravel
-import com.avyeyes.model.enums.ModeOfTravel._
-import com.avyeyes.model.enums.Precipitation
-import com.avyeyes.model.enums.Precipitation._
-import com.avyeyes.model.enums.SkyCoverage
-import com.avyeyes.model.enums.SkyCoverage._
 import com.avyeyes.model.enums._
+import com.avyeyes.model.enums.Aspect.Aspect
+import com.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
+import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
+import com.avyeyes.model.enums.AvalancheType.AvalancheType
+import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
+import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
+import com.avyeyes.model.enums.Precipitation.Precipitation
+import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
+import com.avyeyes.model.Queries._
 
-
-case class Avalanche(id: Long,
-                     createTime: DateTime,
-                     updateTime: DateTime,
-                     extId: String,
+case class Avalanche(extId: String,
                      viewable: Boolean,
                      submitter: User,
                      submitterExp: ExperienceLevel,
@@ -38,7 +28,8 @@ case class Avalanche(id: Long,
                      classification: Classification,
                      humanNumbers: HumanNumbers,
                      comments: String,
-                     perimeter: List[Coordinate]) {
+                     perimeter: List[Coordinate]
+                    ) extends UpdatableDbObject {
   
   def getSubmitter(): User = ???
 
@@ -72,10 +63,7 @@ case class Avalanche(id: Long,
 
 }
 
-case class LiftedAvalanche(id: Rep[Long],
-                           createTime: Rep[DateTime],
-                           updateTime: Rep[DateTime],
-                           extId: Rep[String],
+case class LiftedAvalanche(extId: Rep[String],
                            viewable: Rep[Boolean],
                            submitter: LiftedUser,
                            submitterExp: Rep[ExperienceLevel],
@@ -95,7 +83,7 @@ class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
   def updateTime = column[DateTime]("update_time")
   def extId = column[String]("external_id")
   def viewable = column[Boolean]("viewable")
-  def submitter = column[Long]("submitter")
+  def submitter = foreignKey("submitter", submitter, users)(_.id)
   def submitterExp = column[ExperienceLevel]("submitter_experience")
   def longitude = column[Double]("longitude")
   def latitude = column[Double]("latitude")
@@ -114,13 +102,22 @@ class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
   def caught = column[Int]("caught")
   def partiallyBuried = column[Int]("partially_buried")
   def fullyBuried = column[Int]("fully_buried")
-  def injuried = column[Int]("injured")
+  def injured = column[Int]("injured")
   def killed = column[Int]("killed")
   def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
   def comments = column[String]("comments")
   def perimeter = column[Seq[Coordinate]]("perimeter")
 
-  def projection = ???
+  implicit object AvalancheShape extends CaseClassShape(LiftedAvalanche.tupled, Avalanche.tupled)
+
+  def projection = LiftedAvalanche(id, createTime, updateTime,
+    extId, viewable, LiftedUser("blah"), submitterExp, LiftedCoordinate(longitude, latitude, elevation),
+    areaName, date, LiftedScene(sky, precip), LiftedSlope(aspect, angle, elevation),
+    LiftedClassification(avyType, trigger, interface, rSize, dSize),
+    LiftedHumanNumbers(caught, partiallyBuried, fullyBuried, injured, killed, modeOfTravel),
+    comments, perimeter.toList.map(LiftedCoordinate(_.longitude, _.latitude, _.altitude))
+  )
+
   def * = projection
 
 }
