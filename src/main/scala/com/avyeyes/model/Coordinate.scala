@@ -10,7 +10,7 @@ case class LiftedCoordinate(longitude: Rep[Double],
                             latitude: Rep[Double],
                             altitude: Rep[Double])
 
-object Coordinate {
+object LiftedCoordinate {
 
   implicit def toString(c: Coordinate) = s"${c.longitude},${c.latitude},${c.altitude}"
 

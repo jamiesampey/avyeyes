@@ -6,31 +6,38 @@ import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
+
 import slick.driver.PostgresDriver.api._
-import com.avyeyes.model.PostgresSession._
+import slick.lifted.CanBeQueryCondition
 
 class SlickAvalancheDao(userSession: UserSession) extends AvalancheDao with ExternalIdService with Loggable {
-
   def isAuthorizedSession(): Boolean = userSession.isAuthorizedSession()
 
+  implicit class QueryHelper[T, E](query: Query[T, E, Seq]) {
+    def optionFilter[X, R: CanBeQueryCondition](name: Option[X])(f: (T, X) => R) =
+      name.map(v => query.withFilter(f(_, v))).getOrElse(query)
+  }
 
   def selectAvalanche(extId: String): Option[Avalanche] = {
     avalanches.filter(_.extId === extId).result.headOption
   }
 
-  def selectAvalanches(query: AvalancheQuery) = {
-    val latMax = if (query.geo.isDefined) query.geo.get.latMax else 0
-    val latMin = if (query.geo.isDefined) query.geo.get.latMin else 0
-    val lngMax = if (query.geo.isDefined) query.geo.get.lngMax else 0
-    val lngMin = if (query.geo.isDefined) query.geo.get.lngMin else 0
+  def selectAvalanches(q: AvalancheQuery) = {
 
-    val fromDate = query.fromDate match {case Some(dt) => dt; case None => new DateTime(0)}
-    val toDate = query.toDate match {case Some(dt) => dt; case None => DateTime.now}
+    val latMax = if (q.geo.isDefined) q.geo.get.latMax else 0
+    val latMin = if (q.geo.isDefined) q.geo.get.latMin else 0
+    val lngMax = if (q.geo.isDefined) q.geo.get.lngMax else 0
+    val lngMin = if (q.geo.isDefined) q.geo.get.lngMin else 0
 
-    val avyTypeQueryVal = query.avyType match {case Some(avyType) => avyType; case None => AvalancheType.U}
-    val avyTriggerQueryVal = query.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
+    val fromDate = q.fromDate match {case Some(dt) => dt; case None => new DateTime(0)}
+    val toDate = q.toDate match {case Some(dt) => dt; case None => DateTime.now}
 
-    // TODO: select matching avalanches
+    val avyTypeQueryVal = q.avyType match {case Some(avyType) => avyType; case None => AvalancheType.U}
+    val avyTriggerQueryVal = q.avyTrigger match {case Some(avyTrigger) => avyTrigger; case None => AvalancheTrigger.U}
+
+    avalanches.filter(_.longitude >= 5)
+      .optionFilter(q.geo)(_.longitude >= lngMin && _.longitude <= lngMax && _.latitude >= latMin && _.latitude <= latMax)
+      .optionFilter(q.fromDate)(_.date >= q.fromDate).list
   }
 
   def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {

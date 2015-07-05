@@ -106,16 +106,16 @@ class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
   def killed = column[Int]("killed")
   def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
   def comments = column[String]("comments")
-  def perimeter = column[Seq[Coordinate]]("perimeter")
+  def perimeter = column[String]("perimeter")
 
   implicit object AvalancheShape extends CaseClassShape(LiftedAvalanche.tupled, Avalanche.tupled)
 
-  def projection = LiftedAvalanche(id, createTime, updateTime,
-    extId, viewable, LiftedUser("blah"), submitterExp, LiftedCoordinate(longitude, latitude, elevation),
+  def projection = LiftedAvalanche(extId, viewable, LiftedUser("blah"), submitterExp,
+    LiftedCoordinate(longitude, latitude, elevation),
     areaName, date, LiftedScene(sky, precip), LiftedSlope(aspect, angle, elevation),
     LiftedClassification(avyType, trigger, interface, rSize, dSize),
     LiftedHumanNumbers(caught, partiallyBuried, fullyBuried, injured, killed, modeOfTravel),
-    comments, perimeter.toList.map(LiftedCoordinate(_.longitude, _.latitude, _.altitude))
+    comments, perimeter.split(" ").map(LiftedCoordinate(_))
   )
 
   def * = projection
