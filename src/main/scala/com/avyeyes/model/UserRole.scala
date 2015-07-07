@@ -1,19 +1,9 @@
 package com.avyeyes.model
 
-import slick.driver.PostgresDriver.api._
-import org.joda.time.DateTime
-
-object UserRole {
+trait UserRole {
   val SiteOwner = "site_owner"
   val Admin = "admin"
+
+  def name: String
 }
 
-case class UserRole(name: String) extends BaseDbObject
-
-class UserRoles(tag: Tag) extends Table[UserRole](tag, "app_role") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def createTime = column[DateTime]("create_time")
-  def name = column[String]("name")
-
-  def * = (id, createTime, name).<> (UserRole.apply _, UserRole.unapply _)
-}

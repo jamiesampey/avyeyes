@@ -1,6 +1,6 @@
 package com.avyeyes.test
 
-import com.avyeyes.model.{AvalancheDao, DaoInjector}
+import com.avyeyes.database.{DaoInjector, AvalancheDao}
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.UserSession
 import org.specs2.execute._

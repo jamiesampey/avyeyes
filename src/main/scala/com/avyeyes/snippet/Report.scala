@@ -3,6 +3,7 @@ package com.avyeyes.snippet
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
+import com.avyeyes.database.DaoInjector
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}

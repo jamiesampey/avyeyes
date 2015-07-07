@@ -1,4 +1,4 @@
-package com.avyeyes.model
+package com.avyeyes.database
 
 import com.avyeyes.util.Helpers._
 import org.postgresql.ds.PGSimpleDataSource

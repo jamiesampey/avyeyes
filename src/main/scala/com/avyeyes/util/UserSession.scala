@@ -1,6 +1,6 @@
 package com.avyeyes.util
 
-import com.avyeyes.model.DaoInjector
+import com.avyeyes.database.DaoInjector
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth

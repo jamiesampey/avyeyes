@@ -1,4 +1,6 @@
-package com.avyeyes.model
+package com.avyeyes.database
+
+import com.avyeyes.model.User
 
 trait UserDao {
   def selectUser(email: String): Option[User]

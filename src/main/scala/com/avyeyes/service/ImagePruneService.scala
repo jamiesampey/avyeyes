@@ -1,7 +1,7 @@
 package com.avyeyes.service
 
 import akka.actor._
-import com.avyeyes.model.DaoInjector
+import com.avyeyes.database.DaoInjector
 import net.liftweb.common.Loggable
 
 object ImagePruneService {

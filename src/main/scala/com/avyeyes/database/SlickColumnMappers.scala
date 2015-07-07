@@ -1,4 +1,4 @@
-package com.avyeyes
+package com.avyeyes.database
 
 import java.sql.Timestamp
 
@@ -14,9 +14,7 @@ import com.avyeyes.model.enums._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-package object model {
-
-  object SlickColumnMappers {
+object SlickColumnMappers {
     implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](
       dt => new java.sql.Timestamp(dt.getMillis),
       ts => new DateTime(ts)
@@ -61,6 +59,4 @@ package object model {
       enum => enum.toString,
       str => SkyCoverage.withName(str)
     )
-  }
-
 }

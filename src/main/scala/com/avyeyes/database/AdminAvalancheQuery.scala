@@ -1,4 +1,6 @@
-package com.avyeyes.model
+package com.avyeyes.database
+
+import com.avyeyes.model.OrderDirection
 
 case class AdminAvalancheQuery(
   extId: Option[String] = None,

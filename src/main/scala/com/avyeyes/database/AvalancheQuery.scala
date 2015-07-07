@@ -1,4 +1,4 @@
-package com.avyeyes.model
+package com.avyeyes.database
 
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime

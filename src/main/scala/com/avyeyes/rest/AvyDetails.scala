@@ -1,5 +1,6 @@
 package com.avyeyes.rest
 
+import com.avyeyes.database.DaoInjector
 import com.avyeyes.model._
 import com.avyeyes.service.UserInjector
 import net.liftweb.common.Loggable

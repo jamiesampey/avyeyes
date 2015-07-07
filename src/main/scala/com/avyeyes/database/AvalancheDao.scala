@@ -1,4 +1,6 @@
-package com.avyeyes.model
+package com.avyeyes.database
+
+import com.avyeyes.model.{Avalanche, AvalancheImage}
 
 trait AvalancheDao {
   def isAuthorizedSession(): Boolean

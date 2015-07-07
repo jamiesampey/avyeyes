@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.model.AvalancheQuery
+import com.avyeyes.database.AvalancheQuery
 
 import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor

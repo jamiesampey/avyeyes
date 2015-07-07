@@ -1,10 +1,9 @@
 create table "avalanche" (
-    "id" bigint primary key,
     "create_time" timestamp not null,
     "update_time" timestamp not null,
-    "external_id" varchar(8) not null,
+    "external_id" varchar(8) primary key,
     "viewable" boolean not null,
-    "submitter" bigint not null,
+    "submitter_email" varchar(128) not null,
     "submitter_experience" integer not null,
     "longitude" double precision not null,
     "latitude" double precision not null,
@@ -29,59 +28,43 @@ create table "avalanche" (
     "comments" text not null,
     "perimeter" text not null
   );
-create sequence "s_avalanche_id";
--- indexes on avalanche
-create unique index "idx2f5d05cf" on "avalanche" ("external_id");
-  
+
 create table "avalanche_image" (
-    "id" bigint primary key,
     "create_time" timestamp not null,
     "avalanche_external_id" varchar(8) not null,
     "filename" varchar(128) not null,
     "original_filename" varchar(128) not null,
     "mime_type" varchar(20) not null,
-    "size" integer not null
+    "size" integer not null,
+    primary key(avalanche_external_id, filename)
 );
-create sequence "s_avalanche_image_id";
 -- indexes on avalanche_image
 create index "idx76e30961" on "avalanche_image" ("avalanche_external_id");
 
 create table "app_user" (
-    "id" bigint primary key not null,
     "create_time" timestamp not null,
-    "email" varchar(128) not null
+    "email" varchar(128) primary key
 );
-create sequence "s_app_user_id";
--- indexes on app_user
-create unique index "idx2a600595" on "app_user" ("email");
 
 create table "app_role" (
-    "id" bigint primary key not null,
-    "create_time" timestamp not null,
-    "name" varchar(128) not null
+    "name" varchar(128) primary key
 );
-create sequence "s_app_user_role_id";
 
 create table "app_user_role_assignment" (
-    "app_user" bigint not null,
-    "app_role" bigint not null
+    "app_user" varchar(128) not null,
+    "app_role" varchar(128) not null,
+    primary key(app_user, app_role)
 );
 
 -- foreign key constraints :
-alter table "avalanche" add constraint "avalancheFK1" foreign key ("submitter") references "app_user"("id");
-alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK2" foreign key ("app_user") references "app_user"("id");
-alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK3" foreign key ("app_role") references "app_role"("id");
-
--- composite key indexes :
-alter table "app_user_role_assignment" add primary key ("app_user","app_role");
-
--- column group indexes :
-create unique index "idxdb8b0ccf" on "avalanche_image" ("avalanche_external_id","filename");
+alter table "avalanche" add constraint "avalancheFK1" foreign key ("submitter_email") references "app_user"("email");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK2" foreign key ("app_user") references "app_user"("email");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK3" foreign key ("app_role") references "app_role"("name");
 
 -- initial inserts :
-insert into app_user (id, "create_time", email) values (nextval('s_app_user_id'), now(), 'jamie.sampey@gmail.com');
-insert into app_user (id, "create_time", email) values (nextval('s_app_user_id'), now(), 'avyeyes@gmail.com');
-insert into app_role (id, "create_time", name) values (nextval('s_app_user_role_id'), now(), 'site_owner');
-insert into app_role (id, "create_time", name) values (nextval('s_app_user_role_id'), now(), 'admin');
-insert into app_user_role_assignment("app_user", "app_role") values ((select id from app_user where email='jamie.sampey@gmail.com'), (select id from app_role where name='site_owner'));
-insert into app_user_role_assignment("app_user", "app_role") values ((select id from app_user where email='avyeyes@gmail.com'), (select id from app_role where name='admin'));
+insert into app_user (create_time, email) values (now(), 'jamie.sampey@gmail.com');
+insert into app_user (create_time, email) values (now(), 'avyeyes@gmail.com');
+insert into app_role (name) values ('site_owner');
+insert into app_role (name) values ('admin');
+insert into app_user_role_assignment(app_user, app_role) values ('jamie.sampey@gmail.com', 'site_owner');
+insert into app_user_role_assignment(app_user, app_role) values ('avyeyes@gmail.com', 'admin');

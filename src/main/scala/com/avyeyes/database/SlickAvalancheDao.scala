@@ -1,12 +1,11 @@
-package com.avyeyes.model
+package com.avyeyes.database
 
-import com.avyeyes.model.Queries._
+import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
-
 import slick.driver.PostgresDriver.api._
 import slick.lifted.CanBeQueryCondition
 

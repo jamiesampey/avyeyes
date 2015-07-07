@@ -1,5 +1,6 @@
 package com.avyeyes.test
 
+import com.avyeyes.database.AvalancheDao
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime

@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.model.DaoInjector
+import com.avyeyes.database.DaoInjector
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.Helpers._
 import net.liftweb.common._
