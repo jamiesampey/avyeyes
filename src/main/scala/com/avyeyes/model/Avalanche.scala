@@ -1,6 +1,7 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
+import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
@@ -21,6 +22,7 @@ trait Avalanche {
   def slope: Slope
   def classification: Classification
   def humanNumbers: HumanNumbers
+  def modeOfTravel: ModeOfTravel
   def comments: String
   def perimeter: List[Coordinate]
 

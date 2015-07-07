@@ -2,6 +2,7 @@ package com.avyeyes.database
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums.ExperienceLevel._
+import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import org.joda.time.DateTime
 
 object DbObjects {
@@ -19,6 +20,7 @@ object DbObjects {
     slope: Slope,
     classification: Classification,
     humanNumbers: HumanNumbers,
+    modeOfTravel: ModeOfTravel,
     comments: String,
     perimeter: List[Coordinate]
   ) extends Avalanche

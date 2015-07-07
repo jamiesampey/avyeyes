@@ -19,11 +19,7 @@ create table "avalanche" (
     "avalanche_interface" integer not null,
     "r_size" double precision not null,
     "d_size" double precision not null,
-    "caught" integer not null,
-    "partially_buried" integer not null,
-    "fully_buried" integer not null,
-    "injured" integer not null,
-    "killed" integer not null,
+    "human_numbers" varchar(50) not null,
     "mode_of_travel" integer not null,
     "comments" text not null,
     "perimeter" text not null
