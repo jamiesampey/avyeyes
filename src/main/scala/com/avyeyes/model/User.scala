@@ -2,7 +2,12 @@ package com.avyeyes.model
 
 import org.joda.time.DateTime
 
-trait User {
-  def createTime: DateTime
-  def email: String
+case class User(
+  createTime: DateTime,
+  email: String
+)
+
+case class UserRole(name: String) {
+  val SiteOwner = "site_owner"
+  val Admin = "admin"
 }

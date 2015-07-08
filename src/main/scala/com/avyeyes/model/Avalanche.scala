@@ -14,23 +14,23 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
-trait Avalanche {
-  def createTime: DateTime
-  def updateTime: DateTime
-  def extId: String
-  def viewable: Boolean
-  def submitterEmail: String
-  def submitterExp: ExperienceLevel
-  def location: Coordinate
-  def areaName: String
-  def date: DateTime
-  def scene: Scene
-  def slope: Slope
-  def classification: Classification
-  def humanNumbers: HumanNumbers
-  def modeOfTravel: ModeOfTravel
-  def comments: String
-  def perimeter: List[Coordinate]
+case class Avalanche(
+  createTime: DateTime,
+  updateTime: DateTime,
+  extId: String,
+  viewable: Boolean,
+  submitterEmail: String,
+  submitterExp: ExperienceLevel,
+  location: Coordinate,
+  areaName: String,
+  date: DateTime,
+  scene: Scene,
+  slope: Slope,
+  classification: Classification,
+  humanNumbers: HumanNumbers,
+  modeOfTravel: ModeOfTravel,
+  comments: String,
+  perimeter: List[Coordinate]) {
 
   def getSubmitter(): User = ???
 
@@ -52,7 +52,7 @@ trait Avalanche {
       ("rSize" -> classification.rSize) ~ ("dSize" -> classification.dSize) ~
       ("caught" -> humanNumbers.caught) ~ ("partiallyBuried" -> humanNumbers.partiallyBuried) ~
       ("fullyBuried" -> humanNumbers.fullyBuried) ~ ("injured" -> humanNumbers.injured) ~
-      ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(humanNumbers.modeOfTravel)) ~
+      ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(modeOfTravel)) ~
       ("comments" -> comments)
   }
   

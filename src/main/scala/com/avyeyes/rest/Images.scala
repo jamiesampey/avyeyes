@@ -12,9 +12,10 @@ import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonDSL._
+import org.joda.time.DateTime
 
 class Images extends RestHelper with Loggable {
-  lazy val dao = DaoInjector.avalancheDao.vend
+  lazy val dao = DaoInjector.diskDao.vend
   val s3 = new AmazonS3ImageService
 
   serve {
@@ -29,7 +30,7 @@ class Images extends RestHelper with Loggable {
         s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
         dao.insertAvalancheImage(
-          AvalancheImage(avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
+          AvalancheImage(DateTime.now, avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
         )
 
         JsonResponse(

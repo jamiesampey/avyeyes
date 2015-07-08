@@ -5,7 +5,7 @@ import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 
-class SlickRelationalDao(userSession: UserSession) extends DiskDao with ExternalIdService with Loggable {
+class SlickRelationalDao(implicit userSession: UserSession) extends DiskDao with ExternalIdService with Loggable {
 
   def selectUser(email: String): Option[User] = ???
 

@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 
 trait ExternalIdService extends Loggable {
   
-  def reserveNewExtId(implicit dao: DiskDao): String = {
+  def reserveNewExtId(implicit diskDao: DiskDao): String = {
     var extIdAttempt = ""
     var attemptCount = 0
     
@@ -23,7 +23,7 @@ trait ExternalIdService extends Loggable {
         throw new RuntimeException("Could not find an available ID")
       }
     } while (ExtIdReservationCache.reservationExists(extIdAttempt)
-        || dao.selectAvalanche(extIdAttempt).isDefined
+        || diskDao.selectAvalanche(extIdAttempt).isDefined
         || containsBadWord(extIdAttempt))
       
     ExtIdReservationCache.reserve(extIdAttempt, new DateTime)

@@ -9,7 +9,7 @@ import net.liftweb.json.JsonAST._
 
 
 class ExtIdVendor extends RestHelper with ExternalIdService {
-  implicit lazy val dao = DaoInjector.avalancheDao.vend
+  implicit lazy val diskDao = DaoInjector.diskDao.vend
   
   serve {
     case "rest" :: "reserveExtId" :: Nil JsonGet req => {

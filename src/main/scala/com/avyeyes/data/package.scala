@@ -1,6 +1,5 @@
 package com.avyeyes
 
-import com.avyeyes.data.DbObjects._
 import com.avyeyes.model._
 import com.avyeyes.model.enums.Aspect.Aspect
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
@@ -17,7 +16,7 @@ package object data {
   val users = TableQuery[Users]
   val userRoles = TableQuery[UserRoles]
 
-  class Avalanches(tag: Tag) extends Table[DbAvalanche](tag, "avalanche") {
+  class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
     def extId = column[String]("external_id", O.PrimaryKey)
@@ -47,7 +46,7 @@ package object data {
                               sky: SkyCoverage, precip: Precipitation, aspect: Aspect, angle: Int,
                               classification: Classification, humanNumbers: HumanNumbers,
                               modeOfTravel: ModeOfTravel, comments: String, perimeter: String) =>
-      DbAvalanche(
+      Avalanche(
         createTime = createTime,
         updateTime = updateTime,
         extId = extId,
@@ -66,7 +65,7 @@ package object data {
         perimeter.split(" ").toList.map(Coordinate.fromString)
       )
 
-    private val modelUnapply = (a: DbAvalanche) => Some(
+    private val modelUnapply = (a: Avalanche) => Some(
       (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
         a.areaName, a.date, a.scene.skyCoverage, a.scene.precipitation, a.slope.aspect, a.slope.angle,
         a.classification, a.humanNumbers, a.modeOfTravel, a.comments,
@@ -74,7 +73,7 @@ package object data {
       ))
   }
 
-  class AvalancheImages(tag: Tag) extends Table[DbAvalancheImage](tag, "avalanche_image") {
+  class AvalancheImages(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
     def createTime = column[DateTime]("create_time")
     def avyExtId = column[String]("avalanche_external_id")
     def filename = column[String]("filename")
@@ -83,19 +82,19 @@ package object data {
     def size = column[Int]("size")
     def pk = primaryKey("pk", (avyExtId, filename))
 
-    def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (DbAvalancheImage.tupled, DbAvalancheImage.unapply)
+    def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
   }
 
-  class Users(tag: Tag) extends Table[DbAppUser](tag, "app_user") {
+  class Users(tag: Tag) extends Table[User](tag, "app_user") {
     def createTime = column[DateTime]("create_time")
     def email = column[String]("email", O.PrimaryKey)
 
-    def * = (createTime, email) <> (DbAppUser.tupled, DbAppUser.unapply)
+    def * = (createTime, email) <> (User.tupled, User.unapply)
   }
 
-  class UserRoles(tag: Tag) extends Table[DbAppUserRole](tag, "app_role") {
+  class UserRoles(tag: Tag) extends Table[UserRole](tag, "app_role") {
     def name = column[String]("name", O.PrimaryKey)
 
-    def * = (name) <> (DbAppUserRole.apply, DbAppUserRole.unapply)
+    def * = (name) <> (UserRole.apply, UserRole.unapply)
   }
 }
