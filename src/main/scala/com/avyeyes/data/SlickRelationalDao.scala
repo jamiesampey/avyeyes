@@ -8,11 +8,13 @@ import net.liftweb.common.Loggable
 class SlickRelationalDao(user: UserSession) extends DiskDao with ExternalIdService with Loggable {
   implicit val userSession: UserSession = user
 
-  def selectUser(email: String): Option[User] = ???
+  def getUser(email: String): Option[User] = ???
 
   def isUserAuthorized(email: String): Boolean = ???
 
-  def selectAvalanche(extId: String): Option[Avalanche] = {
+  def getAllAvalanches(): List[Avalanche] = ???
+
+  def getAvalanche(extId: String): Option[Avalanche] = {
     //avalanches.filter(_.extId === extId).headOption
     ???
   }
@@ -48,7 +50,7 @@ class SlickRelationalDao(user: UserSession) extends DiskDao with ExternalIdServi
     //TODO: set avlanche update time
   }
 
-  def selectAvalancheImage(avyExtId: String, filename: String) = {
+  def getAvalancheImage(avyExtId: String, filename: String) = {
     if (reservationExists(avyExtId)) {
 //      from(avalancheImages)(img => where(
 //        img.avyExtId === avyExtId and img.filename === filename)
@@ -67,7 +69,7 @@ class SlickRelationalDao(user: UserSession) extends DiskDao with ExternalIdServi
 
   def countAvalancheImages(extId: String) = ???
 
-  def selectAvalancheImagesMetadata(avyExtId: String) = {
+  def getAvalancheImagesMetadata(avyExtId: String) = {
 //    from(avalancheImages, avalanches)((img, a) => where(
 //      a.extId === avyExtId
 //        and (a.viewable === true).inhibitWhen(isAuthorizedSession)

@@ -23,7 +23,7 @@ trait ExternalIdService extends Loggable {
         throw new RuntimeException("Could not find an available ID")
       }
     } while (ExtIdReservationCache.reservationExists(extIdAttempt)
-        || diskDao.selectAvalanche(extIdAttempt).isDefined
+        || diskDao.getAvalanche(extIdAttempt).isDefined
         || containsBadWord(extIdAttempt))
       
     ExtIdReservationCache.reserve(extIdAttempt, new DateTime)

@@ -90,7 +90,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, hsAsAvalanche)
       insertTestAvalanche(dao, wsNeAvalanche)
       
-      val asTriggerQuery = AvalancheQuery(avyTrigger = Some(AvalancheTrigger.AS))
+      val asTriggerQuery = AvalancheQuery(trigger = Some(AvalancheTrigger.AS))
       
       verifySingleResult(dao, asTriggerQuery, hsAsAvalanche.extId)
     }
@@ -99,7 +99,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
       insertTestAvalanche(dao, hsAsAvalanche)
       insertTestAvalanche(dao, wsNeAvalanche)
       
-      val hsAsQuery = AvalancheQuery(avyType = Some(AvalancheType.HS), avyTrigger = Some(AvalancheTrigger.AS))
+      val hsAsQuery = AvalancheQuery(avyType = Some(AvalancheType.HS), trigger = Some(AvalancheTrigger.AS))
       
       verifySingleResult(dao, hsAsQuery, hsAsAvalanche.extId)
     }

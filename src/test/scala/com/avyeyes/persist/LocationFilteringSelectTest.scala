@@ -19,7 +19,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
     "NE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val neLatLngInBoundsCriteria = AvalancheQuery(geo = Some(createGeoBoundsToInclude(neHemisphereAvalanche)))
+      val neLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(neHemisphereAvalanche)))
       
       val resultList = dao.selectAvalanches(neLatLngInBoundsCriteria)
       
@@ -30,7 +30,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
     "SE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val seLatLngInBoundsCriteria = AvalancheQuery(geo = Some(createGeoBoundsToInclude(seHemisphereAvalanche)))
+      val seLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(seHemisphereAvalanche)))
       
       val resultList = dao.selectAvalanches(seLatLngInBoundsCriteria)
       
@@ -41,7 +41,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
     "SW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val swLatLngInBoundsCriteria = AvalancheQuery(geo = Some(createGeoBoundsToInclude(swHemisphereAvalanche)))
+      val swLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(swHemisphereAvalanche)))
       
       val resultList = dao.selectAvalanches(swLatLngInBoundsCriteria)
       
@@ -52,7 +52,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Ava
     "NW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val nwLatLngInBoundsCriteria = AvalancheQuery(geo = Some(createGeoBoundsToInclude(nwHemisphereAvalanche)))
+      val nwLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(nwHemisphereAvalanche)))
       
       val resultList = dao.selectAvalanches(nwLatLngInBoundsCriteria)
       

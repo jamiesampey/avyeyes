@@ -124,7 +124,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.avyInterface = ""
       report.modeOfTravel = ""
 
-      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      mockAvalancheDao.getAvalanche(report.extId) returns None
       
       report.saveReport()
       
@@ -144,7 +144,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val emailArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
 
       val report = newReportWithTestData
-      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      mockAvalancheDao.getAvalanche(report.extId) returns None
       
       report.saveReport()
       
@@ -178,7 +178,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
-      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      mockAvalancheDao.getAvalanche(report.extId) returns None
       
       val jsCmd = report.saveReport()
 
@@ -193,7 +193,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
-      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      mockAvalancheDao.getAvalanche(report.extId) returns None
       
       val jsCmd = report.saveReport()
       
@@ -208,7 +208,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
       val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
       val report = spy(newReportWithTestData)
-      mockAvalancheDao.selectAvalanche(report.extId) returns None
+      mockAvalancheDao.getAvalanche(report.extId) returns None
 
       report.saveReport()
       there was two(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
@@ -227,7 +227,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
       val report = spy(newReportWithTestData)
       report.viewable = true
-      mockAvalancheDao.selectAvalanche(report.extId) returns Some(new Avalanche)
+      mockAvalancheDao.getAvalanche(report.extId) returns Some(new Avalanche)
 
       report.saveReport()
       there was one(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])

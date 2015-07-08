@@ -13,7 +13,7 @@ class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
   
   "Valid external ID request" should {
     "Return a new external ID" withSFor("http://avyeyes.com/rest/reserveExtId") in {
-      mockAvalancheDao.selectAvalanche(any[String]) returns(noAvalanche)
+      mockAvalancheDao.getAvalanche(any[String]) returns(noAvalanche)
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(extIdVendor(req)())
       val returnedExtId = extractJsonStringField(resp, "extId")
@@ -23,7 +23,7 @@ class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
     }
     
     "Return InternalServerErrorResponse (500) if an extId could not be reserved" withSFor("http://avyeyes.com/rest/reserveExtId") in {
-      mockAvalancheDao.selectAvalanche(any[String]) throws new RuntimeException("test RTE")
+      mockAvalancheDao.getAvalanche(any[String]) throws new RuntimeException("test RTE")
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(extIdVendor(req)())
 

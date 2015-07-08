@@ -12,7 +12,7 @@ class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
   
   "External ID reservation" should {
     "Reserve an external ID if one is available" withSFor("/") in {
-      mockAvalancheDao.selectAvalanche(any[String]) returns None
+      mockAvalancheDao.getAvalanche(any[String]) returns None
       val newExtId = extIdTester.reserveNewExtId(mockAvalancheDao)
       
       isValidExtId(Some(newExtId)) must beTrue
@@ -20,7 +20,7 @@ class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
     }
     
    "Give up (and throw a RuntimeException) after a specified number of tries" withSFor("/") in {
-     mockAvalancheDao.selectAvalanche(any[String]) returns Some(new Avalanche)
+     mockAvalancheDao.getAvalanche(any[String]) returns Some(new Avalanche)
      try {
        extIdTester.reserveNewExtId(mockAvalancheDao)
        failure
@@ -32,7 +32,7 @@ class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
     
   "External ID unreservation" should {  
     "Unreserve an external ID if it exists in the reservation cache" withSFor("/") in {
-      mockAvalancheDao.selectAvalanche(any[String]) returns None
+      mockAvalancheDao.getAvalanche(any[String]) returns None
       val newExtId = extIdTester.reserveNewExtId(mockAvalancheDao)
       extIdTester.unreserveExtId(newExtId)      
       

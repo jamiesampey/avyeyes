@@ -11,8 +11,8 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
   "Valid avalanche details REST request" should {
     val extId1 = "4jf93dkj"
     val a1 = avalancheAtLocation(extId1, true, 41.6634870900582, -103.875046142935)
-    mockAvalancheDao.selectAvalanche(extId1) returns Some(a1)
-    mockAvalancheDao.selectAvalancheImagesMetadata(extId1) returns Nil
+    mockAvalancheDao.getAvalanche(extId1) returns Some(a1)
+    mockAvalancheDao.getAvalancheImagesMetadata(extId1) returns Nil
 
     "Return avalanche details" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)
@@ -41,7 +41,7 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
   "Invalid avalanche details REST request" should {
     val badExtId = "59fke4k0"
     val noAvalanche: Option[Avalanche] = None
-    mockAvalancheDao.selectAvalanche(badExtId) returns noAvalanche
+    mockAvalancheDao.getAvalanche(badExtId) returns noAvalanche
 
     "Return NotFoundResponse (404)" withSFor(s"http://avyeyes.com/rest/avydetails/$badExtId") in {
       val req = openLiftReqBox(S.request)

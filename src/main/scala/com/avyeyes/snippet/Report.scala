@@ -89,7 +89,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
-      diskDao.selectAvalanche(extId) match {
+      diskDao.getAvalanche(extId) match {
         case Some(existingAvalanche) => {
           diskDao.updateAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully updated")

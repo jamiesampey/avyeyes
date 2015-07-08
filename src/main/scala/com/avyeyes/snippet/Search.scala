@@ -71,12 +71,12 @@ class Search extends Loggable {
     val matchingAvalanches = inMemoryDao.getAvalanches(
       AvalancheQuery(
         viewable = Some(true),
-        geo = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
+        geoBounds = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
           strToDblOrZero(lngMax), strToDblOrZero(lngMin))),
         fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None,
         toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None,
         avyType = if (isNotBlank(avyType)) Some(AvalancheType.withName(avyType)) else None,
-        avyTrigger = if (isNotBlank(avyTrigger)) Some(AvalancheTrigger.withName(avyTrigger)) else None,
+        trigger = if (isNotBlank(avyTrigger)) Some(AvalancheTrigger.withName(avyTrigger)) else None,
         rSize = getAvySizeQueryVal(rSize),
         dSize = getAvySizeQueryVal(dSize),
         numCaught = getHumanNumberQueryVal(numCaught),

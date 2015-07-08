@@ -22,8 +22,8 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None
   
-  mockAvalancheDao.selectAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)  
-  mockAvalancheDao.selectAvalancheImage(extId, badImgFileName) returns noImage
+  mockAvalancheDao.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
+  mockAvalancheDao.getAvalancheImage(extId, badImgFileName) returns noImage
 
   "Image Get request" should {
     "Return an image if it exists" withSFor(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName") in {

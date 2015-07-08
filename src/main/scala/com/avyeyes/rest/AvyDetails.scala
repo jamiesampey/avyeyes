@@ -16,7 +16,7 @@ class AvyDetails extends RestHelper with Loggable {
 
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
-      val avyJsonOption = diskDao.selectAvalanche(extId) match {
+      val avyJsonOption = diskDao.getAvalanche(extId) match {
         case Some(avalanche) => {
           userSession.isAuthorizedSession match {
             case true => Some(getJson(avalanche) ~ getJsonAdminFields(avalanche))
@@ -40,7 +40,7 @@ class AvyDetails extends RestHelper with Loggable {
   }
 
   private def getJson(a: Avalanche) = {
-    val imagesMetadata = diskDao.selectAvalancheImagesMetadata(a.extId)
+    val imagesMetadata = diskDao.getAvalancheImagesMetadata(a.extId)
     a.toJson ~ ("images" -> JArray(
       imagesMetadata map Function.tupled ((f,m,s) => imageMetadataToJObject(f,m,s))))
   }
