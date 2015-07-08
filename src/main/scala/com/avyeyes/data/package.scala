@@ -1,6 +1,6 @@
 package com.avyeyes
 
-import com.avyeyes.database.DbObjects._
+import com.avyeyes.data.DbObjects._
 import com.avyeyes.model._
 import com.avyeyes.model.enums.Aspect.Aspect
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
@@ -10,7 +10,7 @@ import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-package object database {
+package object data {
 
   val avalanches = TableQuery[Avalanches]
   val avalancheImages = TableQuery[AvalancheImages]

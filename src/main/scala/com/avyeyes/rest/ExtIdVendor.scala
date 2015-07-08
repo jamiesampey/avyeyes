@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import com.avyeyes.database.DaoInjector
+import com.avyeyes.data.DaoInjector
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Helpers.getRemoteIP
 import net.liftweb.http._

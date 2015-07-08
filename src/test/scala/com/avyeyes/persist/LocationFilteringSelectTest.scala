@@ -1,6 +1,6 @@
 package com.avyeyes.persist
 
-import com.avyeyes.database.{GeoBounds, AvalancheQuery}
+import com.avyeyes.data.{GeoBounds, AvalancheQuery}
 import com.avyeyes.model.Avalanche
 import com.avyeyes.test._
 import org.specs2.mutable.Specification

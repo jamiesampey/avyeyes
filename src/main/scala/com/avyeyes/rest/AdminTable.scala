@@ -2,7 +2,7 @@ package com.avyeyes.rest
 
 import java.text.SimpleDateFormat
 
-import com.avyeyes.database.{DaoInjector, OrderDirection, OrderField, AdminAvalancheQuery}
+import com.avyeyes.data.{DaoInjector, OrderDirection, OrderField, AdminAvalancheQuery}
 
 import scala.collection.mutable.ListBuffer
 

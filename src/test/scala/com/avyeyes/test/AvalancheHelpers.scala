@@ -1,14 +1,14 @@
 package com.avyeyes.test
 
-import com.avyeyes.database.AvalancheDao
+import com.avyeyes.data.DiskDao
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
 
 trait AvalancheHelpers {
 
-  def insertTestAvalanche(dao: AvalancheDao, a: Avalanche) = dao.insertAvalanche(a, "thomas.jefferson@gmail.com")
-  def insertTestAvalanche(dao: AvalancheDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
+  def insertTestAvalanche(dao: DiskDao, a: Avalanche) = dao.insertAvalanche(a, "thomas.jefferson@gmail.com")
+  def insertTestAvalanche(dao: DiskDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
 
   class TestAvalanche extends Avalanche(
     extId = "4fj945fs",

@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.database.DaoInjector
+import com.avyeyes.data.DaoInjector
 import com.avyeyes.model.enums._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam

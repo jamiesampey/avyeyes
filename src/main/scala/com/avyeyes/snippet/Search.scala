@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.database._
+import com.avyeyes.data._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.persist._

@@ -1,4 +1,4 @@
-package com.avyeyes.database
+package com.avyeyes.data
 
 abstract class BaseAvalancheQuery(
   orderBy: List[(OrderField.Value, OrderDirection.Value)],
@@ -7,7 +7,7 @@ abstract class BaseAvalancheQuery(
 
 object OrderField extends Enumeration {
   type OrderField = Value
-  val id, createTime, updateTime, extId, viewable, lat, lng, areaName, avyDate, avyType,
+  val createTime, updateTime, extId, viewable, lat, lng, areaName, avyDate, avyType,
     avyTrigger, avyInterface, rSize, dSize, caught, killed, submitterEmail = Value
 }
 

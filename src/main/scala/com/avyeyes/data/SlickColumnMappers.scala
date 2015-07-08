@@ -1,4 +1,4 @@
-package com.avyeyes.database
+package com.avyeyes.data
 
 import java.sql.Timestamp
 

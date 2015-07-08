@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import com.avyeyes.database.{OrderDirection, OrderField, AdminAvalancheQuery}
+import com.avyeyes.data.{OrderDirection, OrderField, AdminAvalancheQuery}
 import com.avyeyes.model.OrderDirection
 import com.avyeyes.test._
 import net.liftweb.http._

@@ -1,17 +1,13 @@
-package com.avyeyes.database
+package com.avyeyes.data
 
-import com.avyeyes.model.{Avalanche, AvalancheImage}
+import com.avyeyes.model.{User, Avalanche, AvalancheImage}
 
-trait AvalancheDao {
-  def isAuthorizedSession(): Boolean
+trait DiskDao extends AuthorizableDao {
+  def selectUser(email: String): Option[User]
+
+  def isUserAuthorized(email: String): Boolean
 
   def selectAvalanche(extId: String): Option[Avalanche]
-  
-  def selectAvalanches(query: AvalancheQuery): List[Avalanche]
-
-  def selectAvalanchesForAdminTable(query: AdminAvalancheQuery): (List[Avalanche], Int, Int)
-
-  def countAvalanches(viewable: Option[Boolean]): Int
   
   def insertAvalanche(avalanche: Avalanche, submitterEmail: String): Unit
 
