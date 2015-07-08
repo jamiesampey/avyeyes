@@ -7,6 +7,7 @@ import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums.Precipitation.Precipitation
 import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
 import org.joda.time.DateTime
+import com.avyeyes.data.SlickColumnMappers._
 import slick.driver.PostgresDriver.api._
 
 package object data {

@@ -28,6 +28,11 @@ object SlickColumnMappers {
     str => HumanNumbers.fromString(str)
   )
 
+  private def enumNameMapper(enum: Enumeration) = MappedColumnType.base[enum.Value, String](
+    enum => enum.toString,
+    str => enum.withName(str)
+  )
+
   implicit def aspectMapper = enumNameMapper(Aspect)
   implicit def avalancheInterfaceMapper = enumNameMapper(AvalancheInterface)
   implicit def avalancheTriggerMapper = enumNameMapper(AvalancheTrigger)
@@ -36,10 +41,4 @@ object SlickColumnMappers {
   implicit def modeOfTravelMapper = enumNameMapper(ModeOfTravel)
   implicit def precipitationMapper = enumNameMapper(Precipitation)
   implicit def skyCoverageMapper = enumNameMapper(SkyCoverage)
-
-  private def enumNameMapper(enum: Enumeration) = MappedColumnType.base[enum.Value, String](
-    enum => enum.toString,
-    str => enum.withName(str)
-  )
-
 }

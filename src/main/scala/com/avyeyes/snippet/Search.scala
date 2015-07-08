@@ -3,7 +3,6 @@ package com.avyeyes.snippet
 import com.avyeyes.data._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
@@ -18,7 +17,7 @@ import org.apache.commons.lang3.StringUtils._
 import scala.math._
 
 class Search extends Loggable {
-  lazy val dao = DaoInjector.avalancheDao.vend
+  lazy val inMemoryDao = DaoInjector.inMemoryDao.vend
   
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
@@ -69,7 +68,7 @@ class Search extends Loggable {
   }
     
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val matchingAvalanches = dao.selectAvalanches(
+    val matchingAvalanches = inMemoryDao.getAvalanches(
       AvalancheQuery(
         viewable = Some(true),
         geo = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),

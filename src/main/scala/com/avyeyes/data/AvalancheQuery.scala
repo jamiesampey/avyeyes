@@ -14,7 +14,7 @@ case class AvalancheQuery(
   dSize: Option[Double] = None,
   numCaught: Option[Int] = None,
   numKilled: Option[Int] = None,
-  orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.id, OrderDirection.asc)),
+  orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.createTime, OrderDirection.desc)),
   offset: Int = 0,
   limit: Int = Int.MaxValue)
   extends BaseAvalancheQuery(orderBy, offset, limit)

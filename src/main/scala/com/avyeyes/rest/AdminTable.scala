@@ -99,8 +99,14 @@ class AdminTable extends RestHelper with Loggable {
       case _ => None
     }
 
-    AdminAvalancheQuery(extId = searchTerm, areaName = searchTerm,
-      submitterEmail = searchTerm, orderBy = orderByList, offset = offsetVal, limit = limitVal)
+    AdminAvalancheQuery(
+      extId = searchTerm,
+      areaName = searchTerm,
+      submitterEmail = searchTerm,
+      orderBy = orderByList,
+      offset = offsetVal,
+      limit = limitVal
+    )
   }
 
   private def toDataTablesJson(queryResult: (List[Avalanche], Int, Int), req: Req): JObject = {

@@ -1,6 +1,6 @@
 package com.avyeyes.data
 
-abstract class BaseAvalancheQuery(
+private[data] abstract class BaseAvalancheQuery(
   orderBy: List[(OrderField.Value, OrderDirection.Value)],
   offset: Int,
   limit: Int)

@@ -19,11 +19,12 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util.Mailer._
 import net.liftweb.util.{Mailer, Props}
 import org.apache.commons.lang3.StringUtils
+import org.joda.time.DateTime
 
 import scala.collection.mutable.ListBuffer
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val dao = DaoInjector.avalancheDao.vend
+  lazy val diskDao = DaoInjector.diskDao.vend
   private val s3 = new AmazonS3ImageService
 
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
@@ -88,9 +89,9 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
-      dao.selectAvalanche(extId) match {
+      diskDao.selectAvalanche(extId) match {
         case Some(existingAvalanche) => {
-          dao.updateAvalanche(avalancheFromValues)
+          diskDao.updateAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully updated")
 
           if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
@@ -106,7 +107,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
           JsDialog.info("avyReportUpdateSuccess")
         }
         case None => {
-          dao.insertAvalanche(avalancheFromValues, submitterEmail)
+          diskDao.insertAvalanche(avalancheFromValues, submitterEmail)
           logger.info(s"Avalanche $extId successfully inserted")
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
@@ -128,7 +129,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   
   def deleteReport(extIdToDelete: String) = {
     try {
-      dao.deleteAvalanche(extIdToDelete)
+      diskDao.deleteAvalanche(extIdToDelete)
 
       s3.deleteAllImages(extIdToDelete)
 
@@ -142,30 +143,41 @@ class Report extends ExternalIdService with Mailer with Loggable {
     }
   }
   
-  private def createAvalancheFromValues() = {
+  private def createAvalancheFromValues = {
     Avalanche(
+      createTime = DateTime.now,
+      updateTime = DateTime.now,
       extId = extId,
       viewable = viewable,
+      submitterEmail = submitterEmail,
       submitterExp = ExperienceLevel.withName(submitterExp),
-      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToDblOrZero(elevation)),
+      location = Coordinate(lng.toDouble, lat.toDouble, elevation.toInt),
       areaName = areaName,
       date = strToDate(dateStr),
-      scene = Scene(enumWithNameOr(SkyCoverage, sky, SkyCoverage.U), enumWithNameOr(Precipitation, precip, Precipitation.U)),
-      slope = Slope(Aspect.withName(aspect), strToIntOrNegOne(angle)),
+      scene = Scene(
+        enumWithNameOr(SkyCoverage, sky, SkyCoverage.U),
+        enumWithNameOr(Precipitation, precip, Precipitation.U)
+      ),
+      slope = Slope(
+        Aspect.withName(aspect),
+        strToIntOrNegOne(angle),
+        elevation.toInt
+      ),
       classification = Classification(
-        enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
-        enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
-        enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
-        strToDblOrZero(rSize), strToDblOrZero(dSize)
+        avyType = enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
+        trigger = enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
+        interface = enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
+        rSize = rSize.toDouble,
+        dSize = dSize.toDouble
       ),
       humanNumbers = HumanNumbers(
-        strToIntOrNegOne(caught),
-        strToIntOrNegOne(partiallyBuried),
-        strToIntOrNegOne(fullyBuried),
-        strToIntOrNegOne(injured),
-        strToIntOrNegOne(killed),
-        enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U)
+        caught = strToIntOrNegOne(caught),
+        partiallyBuried = strToIntOrNegOne(partiallyBuried),
+        fullyBuried = strToIntOrNegOne(fullyBuried),
+        injured = strToIntOrNegOne(injured),
+        killed = strToIntOrNegOne(killed)
       ),
+      modeOfTravel = enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
       comments = comments,
       perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     )
