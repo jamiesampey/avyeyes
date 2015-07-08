@@ -1,7 +1,13 @@
 package com.avyeyes.model
 
+import com.avyeyes.model.enums.Aspect
+import com.avyeyes.model.enums.Aspect._
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
+import com.avyeyes.model.enums.Precipitation
+import com.avyeyes.model.enums.Precipitation._
+import com.avyeyes.model.enums.SkyCoverage
+import com.avyeyes.model.enums.SkyCoverage._
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
@@ -57,3 +63,10 @@ trait Avalanche {
   ))
 
 }
+
+case class Scene(skyCoverage: SkyCoverage = SkyCoverage.U,
+                 precipitation: Precipitation = Precipitation.U)
+
+case class Slope(aspect: Aspect = Aspect.N,
+                 angle: Int = 0,
+                 elevation: Int = 0)
