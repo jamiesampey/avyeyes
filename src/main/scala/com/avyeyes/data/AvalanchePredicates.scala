@@ -60,4 +60,19 @@ object AvalanchePredicates {
     case Some(killed) => a.humanNumbers.killed >= killed
     case None => true
   }
+
+  def extIdPredicate(valueOption: Option[String])(a: Avalanche) = valueOption match {
+    case Some(extId) => a.extId.toLowerCase contains extId.toLowerCase
+    case None => true
+  }
+
+  def areaNamePredicate(valueOption: Option[String])(a: Avalanche) = valueOption match {
+    case Some(areaName) => a.areaName.toLowerCase contains areaName.toLowerCase
+    case None => true
+  }
+
+  def emailPredicate(valueOption: Option[String])(a: Avalanche) = valueOption match {
+    case Some(email) => a.submitterEmail.toLowerCase contains email.toLowerCase
+    case None => true
+  }
 }

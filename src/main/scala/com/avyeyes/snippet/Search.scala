@@ -81,7 +81,7 @@ class Search extends Loggable {
         dSize = getAvySizeQueryVal(dSize),
         numCaught = getHumanNumberQueryVal(numCaught),
         numKilled = getHumanNumberQueryVal(numKilled),
-        orderBy =  List((OrderField.avyDate, OrderDirection.desc))
+        orderBy =  List((OrderField.date, OrderDirection.desc))
     ))
 
     if (strToDblOrZero(camPitch) > CamPitchCutoff)  {

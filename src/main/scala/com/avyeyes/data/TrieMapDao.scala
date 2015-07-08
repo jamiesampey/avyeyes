@@ -27,6 +27,13 @@ class TrieMapDao(diskDao: DiskDao, user: UserSession) extends InMemoryDao {
     matches
   }
 
-  def getAvalanches(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = ???
+  def getAvalanches(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
+    val matches = avalancheMap.values.filter(query.toPredicate).toList
+
+    //TODO: handle order and pagination
+
+    matches
+    ???
+  }
 
 }

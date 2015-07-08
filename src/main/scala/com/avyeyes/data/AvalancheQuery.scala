@@ -22,22 +22,18 @@ case class AvalancheQuery(
   limit: Int = Int.MaxValue)
   extends BaseAvalancheQuery(orderBy, offset, limit) {
 
-  def toPredicate: Avalanche => Boolean = {
-    and(
-      viewablePredicate(viewable),
-      geoBoundsPredicate(geoBounds),
-      fromDatePredicate(fromDate),
-      toDatePredicate(toDate),
-      avyTypePredicate(avyType),
-      triggerPredicate(trigger),
-      rSizePredicate(rSize),
-      dSizePredicate(dSize),
-      caughtPredicate(numCaught),
-      killedPredicate(numKilled)
-    )
-  }
-
-  private def and(predicates: (Avalanche => Boolean)*)(a: Avalanche) = predicates.forall(predicate => predicate(a))
+  def toPredicate = and(
+    viewablePredicate(viewable),
+    geoBoundsPredicate(geoBounds),
+    fromDatePredicate(fromDate),
+    toDatePredicate(toDate),
+    avyTypePredicate(avyType),
+    triggerPredicate(trigger),
+    rSizePredicate(rSize),
+    dSizePredicate(dSize),
+    caughtPredicate(numCaught),
+    killedPredicate(numKilled)
+  )
 }
 
 case class GeoBounds(latMax: Double, latMin: Double, lngMax: Double, lngMin: Double)
