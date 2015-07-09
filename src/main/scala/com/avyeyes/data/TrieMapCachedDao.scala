@@ -1,8 +1,7 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.{AvalancheImage, User, Avalanche}
+import com.avyeyes.model.{Avalanche, AvalancheImage, User}
 import com.avyeyes.service.ExternalIdService
-import com.avyeyes.data.Database
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 

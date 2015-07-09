@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 import com.avyeyes.data.SlickColumnMappers._
 import slick.driver.PostgresDriver.api._
 
-private[data] object Database {
+private[data] object DatabaseSchema {
   val Avalanches = TableQuery[Avalanches]
   val AvalancheImages = TableQuery[AvalancheImages]
   val Users = TableQuery[Users]

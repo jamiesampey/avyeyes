@@ -4,5 +4,5 @@ import com.avyeyes.service.UserInjector
 import net.liftweb.http.Factory
 
 object DaoInjector extends Factory {
-  val dao = new FactoryMaker[CachedDao](new TrieMapCachedDao(UserInjector.userSession.vend)) {}
+  val dao = new FactoryMaker[CachedDao](new TrieMapCachedDao(dbSession, UserInjector.userSession.vend)) {}
 }
