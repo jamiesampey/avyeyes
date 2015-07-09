@@ -1,6 +1,6 @@
 package com.avyeyes.test
 
-import com.avyeyes.data.{DaoInjector, DiskDao}
+import com.avyeyes.data.{DaoInjector, CachedDao}
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.UserSession
 import org.specs2.execute._
@@ -10,7 +10,7 @@ import org.specs2.specification._
 
 trait MockInjectors extends AroundExample with Mockito {
   val mockUserSession = mock[UserSession]
-  val mockAvalancheDao = mock[DiskDao]
+  val mockAvalancheDao = mock[CachedDao]
 
   SessionFactory.concreteFactory = Some(() => Session.create(mock[java.sql.Connection], mock[PostgreSqlAdapter]))
   

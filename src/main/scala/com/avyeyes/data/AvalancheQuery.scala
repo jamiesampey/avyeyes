@@ -20,7 +20,7 @@ case class AvalancheQuery(
   orderBy: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.createTime, OrderDirection.desc)),
   offset: Int = 0,
   limit: Int = Int.MaxValue)
-  extends BaseAvalancheQuery(orderBy, offset, limit) {
+  extends OrderedAvalancheQuery {
 
   def toPredicate = and(
     viewablePredicate(viewable),

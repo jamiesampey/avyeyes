@@ -11,12 +11,12 @@ import net.liftweb.json.JsonDSL._
 
 
 class AvyDetails extends RestHelper with Loggable {
-  lazy val diskDao = DaoInjector.diskDao.vend
+  lazy val dao = DaoInjector.dao.vend
   lazy val userSession = UserInjector.userSession.vend
 
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
-      val avyJsonOption = diskDao.getAvalanche(extId) match {
+      val avyJsonOption = dao.getAvalancheFromDisk(extId) match {
         case Some(avalanche) => {
           userSession.isAuthorizedSession match {
             case true => Some(getJson(avalanche) ~ getJsonAdminFields(avalanche))
@@ -40,7 +40,7 @@ class AvyDetails extends RestHelper with Loggable {
   }
 
   private def getJson(a: Avalanche) = {
-    val imagesMetadata = diskDao.getAvalancheImagesMetadata(a.extId)
+    val imagesMetadata = dao.getAvalancheImagesMetadata(a.extId)
     a.toJson ~ ("images" -> JArray(
       imagesMetadata map Function.tupled ((f,m,s) => imageMetadataToJObject(f,m,s))))
   }

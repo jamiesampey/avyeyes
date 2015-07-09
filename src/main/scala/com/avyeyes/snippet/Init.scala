@@ -15,7 +15,7 @@ import net.liftweb.util.Helpers._
 
 
 class Init extends KmlCreator with Loggable {
-  lazy val inMemoryDao = DaoInjector.inMemoryDao.vend
+  lazy val dao = DaoInjector.dao.vend
     
   val InitAvyMsgDelayMillis = 5000
 
@@ -30,7 +30,7 @@ class Init extends KmlCreator with Loggable {
   
   private def initialFlyToCmd: JsCmd = {
     val initAvalanche = isValidExtId(extId) match {
-      case true => inMemoryDao.getAvalanche(extId.get)
+      case true => dao.getAvalanche(extId.get)
       case false => None
     }
     

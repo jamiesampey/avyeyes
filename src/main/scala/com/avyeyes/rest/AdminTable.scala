@@ -14,7 +14,7 @@ import net.liftweb.json.JsonAST._
 import scala.collection.mutable.ListBuffer
 
 class AdminTable extends RestHelper with Loggable {
-  lazy val inMemoryDao = DaoInjector.inMemoryDao.vend
+  lazy val dao = DaoInjector.dao.vend
   lazy val userSession = UserInjector.userSession.vend
 
   private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -30,7 +30,7 @@ class AdminTable extends RestHelper with Loggable {
 
   private def buildResponse(req: Req) = {
     try {
-      val queryResult = inMemoryDao.getAvalanches(buildQuery(req))
+      val queryResult = dao.getAvalanchesAdmin(buildQuery(req))
       JsonResponse(toDataTablesJson(queryResult, req))
     } catch {
       case e: Exception => InternalServerErrorResponse()

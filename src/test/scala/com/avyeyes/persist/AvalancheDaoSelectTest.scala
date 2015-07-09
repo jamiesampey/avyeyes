@@ -246,7 +246,7 @@ class AvalancheDaoSelectTest extends Specification with InMemoryDB with Avalanch
     }
   }
   
-  private def verifySingleResult(dao: DiskDao, query: AvalancheQuery, extId: String): Result = {
+  private def verifySingleResult(dao: CachedDao, query: AvalancheQuery, extId: String): Result = {
     val resultList = dao.selectAvalanches(query)
     resultList must have length(1)
     resultList.head.extId must_== extId    

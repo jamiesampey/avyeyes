@@ -24,7 +24,7 @@ import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val diskDao = DaoInjector.diskDao.vend
+  lazy val dao = DaoInjector.dao.vend
   private val s3 = new AmazonS3ImageService
 
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
@@ -89,9 +89,9 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
-      diskDao.getAvalanche(extId) match {
+      dao.getAvalanche(extId) match {
         case Some(existingAvalanche) => {
-          diskDao.updateAvalanche(avalancheFromValues)
+          dao.updateAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully updated")
 
           if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
@@ -107,7 +107,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
           JsDialog.info("avyReportUpdateSuccess")
         }
         case None => {
-          diskDao.insertAvalanche(avalancheFromValues, submitterEmail)
+          dao.insertAvalanche(avalancheFromValues, submitterEmail)
           logger.info(s"Avalanche $extId successfully inserted")
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
@@ -129,7 +129,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   
   def deleteReport(extIdToDelete: String) = {
     try {
-      diskDao.deleteAvalanche(extIdToDelete)
+      dao.deleteAvalanche(extIdToDelete)
 
       s3.deleteAllImages(extIdToDelete)
 
@@ -178,7 +178,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
         killed = strToIntOrNegOne(killed)
       ),
       modeOfTravel = enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
-      comments = comments,
+      comments = if (!comments.isEmpty) Some(comments) else None,
       perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     )
   }

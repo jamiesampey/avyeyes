@@ -15,7 +15,7 @@ import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
 class Images extends RestHelper with Loggable {
-  lazy val dao = DaoInjector.diskDao.vend
+  lazy val dao = DaoInjector.dao.vend
   val s3 = new AmazonS3ImageService
 
   serve {

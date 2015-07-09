@@ -9,13 +9,13 @@ object ImagePruneService {
 }
 
 class ImagePruneService extends Actor with Loggable {
-  lazy val diskDao = DaoInjector.diskDao.vend
+  lazy val dao = DaoInjector.dao.vend
   val s3 = new AmazonS3ImageService
 
   def receive = {
     case ImagePruneService.prune => {
       logger.info("Pruning orphan images")
-      val deletedImageExtIds = diskDao.pruneImages()
+      val deletedImageExtIds = dao.pruneImages()
 
       deletedImageExtIds.foreach(s3.deleteAllImages)
     }

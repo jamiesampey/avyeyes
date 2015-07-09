@@ -1,7 +1,7 @@
 package com.avyeyes.service
 
 import java.util.concurrent.TimeUnit
-import com.avyeyes.data.DiskDao
+import com.avyeyes.data.CachedDao
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.google.common.cache._
@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 
 trait ExternalIdService extends Loggable {
   
-  def reserveNewExtId(implicit diskDao: DiskDao): String = {
+  def reserveNewExtId(implicit dao: CachedDao): String = {
     var extIdAttempt = ""
     var attemptCount = 0
     
@@ -23,7 +23,7 @@ trait ExternalIdService extends Loggable {
         throw new RuntimeException("Could not find an available ID")
       }
     } while (ExtIdReservationCache.reservationExists(extIdAttempt)
-        || diskDao.getAvalanche(extIdAttempt).isDefined
+        || dao.getAvalanche(extIdAttempt).isDefined
         || containsBadWord(extIdAttempt))
       
     ExtIdReservationCache.reserve(extIdAttempt, new DateTime)

@@ -1,21 +1,20 @@
-package com.avyeyes
+package com.avyeyes.data
 
+import com.avyeyes.model.enums.Aspect._
+import com.avyeyes.model.enums.ModeOfTravel._
+import com.avyeyes.model.enums.Precipitation._
+import com.avyeyes.model.enums.SkyCoverage._
 import com.avyeyes.model._
-import com.avyeyes.model.enums.Aspect.Aspect
-import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
-import com.avyeyes.model.enums.Precipitation.Precipitation
-import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
+import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
 import com.avyeyes.data.SlickColumnMappers._
 import slick.driver.PostgresDriver.api._
 
-package object data {
-
-  val avalanches = TableQuery[Avalanches]
-  val avalancheImages = TableQuery[AvalancheImages]
-  val users = TableQuery[Users]
-  val userRoles = TableQuery[UserRoles]
+private[data] object Database {
+  val Avalanches = TableQuery[Avalanches]
+  val AvalancheImages = TableQuery[AvalancheImages]
+  val Users = TableQuery[Users]
+  val UserRoles = TableQuery[UserRoles]
 
   class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
@@ -34,7 +33,7 @@ package object data {
     def classification = column[Classification]("classification")
     def humanNumbers = column[HumanNumbers]("human_numbers")
     def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
-    def comments = column[String]("comments")
+    def comments = column[Option[String]]("comments")
     def perimeter = column[String]("perimeter")
 
     def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, location,
@@ -46,7 +45,7 @@ package object data {
                               location: Coordinate, areaName: String, date: DateTime,
                               sky: SkyCoverage, precip: Precipitation, aspect: Aspect, angle: Int,
                               classification: Classification, humanNumbers: HumanNumbers,
-                              modeOfTravel: ModeOfTravel, comments: String, perimeter: String) =>
+                              modeOfTravel: ModeOfTravel, comments: Option[String], perimeter: String) =>
       Avalanche(
         createTime = createTime,
         updateTime = updateTime,
@@ -71,7 +70,7 @@ package object data {
         a.areaName, a.date, a.scene.skyCoverage, a.scene.precipitation, a.slope.aspect, a.slope.angle,
         a.classification, a.humanNumbers, a.modeOfTravel, a.comments,
         a.perimeter.map(Coordinate.toString).mkString(" ").trim
-      ))
+        ))
   }
 
   class AvalancheImages(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {

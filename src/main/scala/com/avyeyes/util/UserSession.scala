@@ -8,7 +8,7 @@ import omniauth.Omniauth
 private object authorizedEmail extends SessionVar[Box[String]](Empty)
 
 class UserSession extends Loggable {
-  lazy val diskDao = DaoInjector.diskDao.vend
+  lazy val dao = DaoInjector.dao.vend
 
   def isAuthorizedSession() = authorizedEmail.get.isDefined
 
@@ -20,7 +20,7 @@ class UserSession extends Loggable {
   }
 
   def attemptLogin(email: String) = {
-    diskDao.isUserAuthorized(email) match {
+    dao.isUserAuthorized(email) match {
       case true => {
         logger.info (s"Authorization success for $email. Logging user in.")
         authorizedEmail.set(Full(email))

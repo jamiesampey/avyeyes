@@ -21,7 +21,7 @@ create table "avalanche" (
     "d_size" double precision not null,
     "human_numbers" varchar(50) not null,
     "mode_of_travel" integer not null,
-    "comments" text not null,
+    "comments" text,
     "perimeter" text not null
   );
 
