@@ -5,7 +5,7 @@ import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.avyeyes.model.enums.AvalancheType.AvalancheType
 import org.joda.time.DateTime
 
-object AvalanchePredicates {
+private[data] object AvalanchePredicates {
 
   def viewablePredicate(valueOption: Option[Boolean])(a: Avalanche) = valueOption match {
     case Some(viewable) => a.viewable == viewable
