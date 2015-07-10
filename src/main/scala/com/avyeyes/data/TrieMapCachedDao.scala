@@ -4,15 +4,24 @@ import com.avyeyes.model.{Avalanche, AvalancheImage, User}
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
+import com.avyeyes.data.DatabaseSchema._
+import javax.sql.DataSource
+import slick.driver.PostgresDriver.api._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.collection.concurrent.TrieMap
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
-class TrieMapCachedDao(db: Database, user: UserSession) extends CachedDao with ExternalIdService with Loggable {
+class TrieMapCachedDao(ds: DataSource, user: UserSession) extends CachedDao with ExternalIdService with Loggable {
   implicit val userSession: UserSession = user
 
-  val avalancheMap: TrieMap[String, Avalanche] = new TrieMap
-  avalancheMap ++= diskDao.getAllAvalanches.map(a => (a.extId, a.copy(comments = None)))
+  private val db = Database.forDataSource(ds)
+  private val avalancheMap: TrieMap[String, Avalanche] = new TrieMap
 
+  // populate the map
+  avalancheMap ++= Await.result(
+    db.run(Avalanches.result).map { _.map(a => (a.extId, a.copy(comments = None))) }, Duration.Inf)
 
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {
     case Some(viewable) => avalancheMap.filter(_._2.viewable == viewable).size
@@ -21,12 +30,12 @@ class TrieMapCachedDao(db: Database, user: UserSession) extends CachedDao with E
 
   def getAvalanche(extId: String) = avalancheMap.get(extId)
 
-  def getAvalanches(query: OrderedAvalancheQuery) = {
+  def getAvalanches(query: AvalancheQuery) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit)
   }
 
-  def getAvalanchesAdmin(query: OrderedAvalancheQuery) = {
+  def getAvalanchesAdmin(query: AdminAvalancheQuery) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     (matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit), matches.size, avalancheMap.size)
   }

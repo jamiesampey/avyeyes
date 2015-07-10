@@ -11,12 +11,12 @@ import com.avyeyes.data.SlickColumnMappers._
 import slick.driver.PostgresDriver.api._
 
 private[data] object DatabaseSchema {
-  val Avalanches = TableQuery[Avalanches]
-  val AvalancheImages = TableQuery[AvalancheImages]
-  val Users = TableQuery[Users]
-  val UserRoles = TableQuery[UserRoles]
+  val Avalanches = TableQuery[AvalanchesTable]
+  val AvalancheImages = TableQuery[AvalancheImagesTable]
+  val Users = TableQuery[UsersTable]
+  val UserRoles = TableQuery[UserRolesTable]
 
-  class Avalanches(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
+  class AvalanchesTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
     def extId = column[String]("external_id", O.PrimaryKey)
@@ -73,7 +73,7 @@ private[data] object DatabaseSchema {
         ))
   }
 
-  class AvalancheImages(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
+  class AvalancheImagesTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
     def createTime = column[DateTime]("create_time")
     def avyExtId = column[String]("avalanche_external_id")
     def filename = column[String]("filename")
@@ -85,14 +85,14 @@ private[data] object DatabaseSchema {
     def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
   }
 
-  class Users(tag: Tag) extends Table[User](tag, "app_user") {
+  class UsersTable(tag: Tag) extends Table[User](tag, "app_user") {
     def createTime = column[DateTime]("create_time")
     def email = column[String]("email", O.PrimaryKey)
 
     def * = (createTime, email) <> (User.tupled, User.unapply)
   }
 
-  class UserRoles(tag: Tag) extends Table[UserRole](tag, "app_role") {
+  class UserRolesTable(tag: Tag) extends Table[UserRole](tag, "app_role") {
     def name = column[String]("name", O.PrimaryKey)
 
     def * = (name) <> (UserRole.apply, UserRole.unapply)
