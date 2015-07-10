@@ -5,7 +5,7 @@ import com.avyeyes.data.OrderField.OrderField
 import com.avyeyes.model.Avalanche
 
 private[data] trait OrderedAvalancheQuery {
-  def orderBy: List[(OrderField, OrderDirection)]
+  def order: List[(OrderField, OrderDirection)]
   def offset: Int
   def limit: Int
 
@@ -14,45 +14,39 @@ private[data] trait OrderedAvalancheQuery {
   def and(predicates: (Avalanche => Boolean)*)(a: Avalanche) = predicates.forall(predicate => predicate(a))
   def or(predicates: (Avalanche => Boolean)*)(a: Avalanche) = predicates.exists(predicate => predicate(a))
 
-  def sortAndPaginate(list: List[Avalanche]): List[Avalanche] = {
-    val sortedList = orderBy.size match {
-      case 1 => list.sortBy(a => getOrdering(a, orderBy(0)))
-      case 2 => list.sortBy(a => (getOrdering(a, orderBy(0)), getOrdering(a, orderBy(1))) )
-      case 3 => list.sortBy(a => (getOrdering(a, orderBy(0)), getOrdering(a, orderBy(1)), getOrdering(a, orderBy(2))) )
-      case _ => list
+  def sortFunction(x: Avalanche, y: Avalanche): Boolean = {
+    var compareVal = 0
+    for (orderTuple <- order if compareVal == 0) {
+      compareVal = compareField(x, y)(orderTuple)
     }
 
-    sortedList.drop(offset).take(limit)
+    compareVal > 0
   }
 
-  implicit def ReverseOrdering[T: Ordering]: Ordering[Reverse[T]] = Ordering[T].reverse.on(_.t)
+  import com.avyeyes.data.OrderField._
+  import com.avyeyes.data.OrderDirection._
 
-  private def getOrdering(a: Avalanche, orderTuple: (OrderField, OrderDirection)) = {
-    val orderField = orderTuple._1 match {
-      case OrderField.createTime => a.createTime
-      case OrderField.updateTime => a.updateTime
-      case OrderField.extId => a.extId
-      case OrderField.viewable => a.viewable
-      case OrderField.areaName => a.areaName
-      case OrderField.date => a.date
-      case OrderField.submitterEmail => a.submitterEmail
+  private def compareField(x: Avalanche, y: Avalanche)(orderTuple: (OrderField, OrderDirection)) = {
+    val compareValue = orderTuple._1 match {
+      case CreateTime => y.createTime compareTo x.createTime
+      case UpdateTime => y.updateTime compareTo x.updateTime
+      case ExtId => y.extId compareTo x.extId
+      case Viewable => y.viewable compareTo x.viewable
+      case AreaName => y.areaName compareTo x.areaName
+      case Date => y.date compareTo x.date
+      case SubmitterEmail => x.submitterEmail compareTo x.submitterEmail
     }
 
-    orderTuple._2 match {
-      case OrderDirection.asc => orderField
-      case OrderDirection.desc => Reverse(orderField)
-    }
+    if (orderTuple._2 == Asc) compareValue else compareValue * -1
   }
 }
 
 object OrderField extends Enumeration {
   type OrderField = Value
-  val createTime, updateTime, extId, viewable, areaName, date, submitterEmail = Value
+  val CreateTime, UpdateTime, ExtId, Viewable, AreaName, Date, SubmitterEmail = Value
 }
 
 object OrderDirection extends Enumeration {
   type OrderDirection = Value
-  val asc, desc = Value
+  val Asc, Desc = Value
 }
-
-case class Reverse[T](t: T)

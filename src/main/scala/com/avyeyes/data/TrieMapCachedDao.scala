@@ -23,12 +23,12 @@ class TrieMapCachedDao(db: Database, user: UserSession) extends CachedDao with E
 
   def getAvalanches(query: OrderedAvalancheQuery) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
-    query.sortAndPaginate(matches)
+    matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit)
   }
 
   def getAvalanchesAdmin(query: OrderedAvalancheQuery) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
-    (query.sortAndPaginate(matches), matches.size, avalancheMap.size)
+    (matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit), matches.size, avalancheMap.size)
   }
 
   def getUser(email: String): Option[User] = ???

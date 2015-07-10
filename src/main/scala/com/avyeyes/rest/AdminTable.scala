@@ -103,7 +103,7 @@ class AdminTable extends RestHelper with Loggable {
       extId = searchTerm,
       areaName = searchTerm,
       submitterEmail = searchTerm,
-      orderBy = orderByList,
+      order = orderByList,
       offset = offsetVal,
       limit = limitVal
     )
