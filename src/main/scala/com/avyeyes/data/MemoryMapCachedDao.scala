@@ -1,27 +1,20 @@
 package com.avyeyes.data
 
+import javax.sql.DataSource
+
 import com.avyeyes.model.{Avalanche, AvalancheImage, User}
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
-import com.avyeyes.data.DatabaseSchema._
-import javax.sql.DataSource
 import slick.driver.PostgresDriver.api._
-import scala.concurrent.ExecutionContext.Implicits.global
 
-import scala.collection.concurrent.TrieMap
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import scala.collection.concurrent.{Map => CMap}
 
-class TrieMapCachedDao(ds: DataSource, user: UserSession) extends CachedDao with ExternalIdService with Loggable {
+class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], user: UserSession)
+  extends CachedDao with ExternalIdService with Loggable {
+
   implicit val userSession: UserSession = user
-
   private val db = Database.forDataSource(ds)
-  private val avalancheMap: TrieMap[String, Avalanche] = new TrieMap
-
-  // populate the map
-  avalancheMap ++= Await.result(
-    db.run(Avalanches.result).map { _.map(a => (a.extId, a.copy(comments = None))) }, Duration.Inf)
 
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {
     case Some(viewable) => avalancheMap.filter(_._2.viewable == viewable).size

@@ -5,5 +5,5 @@ import net.liftweb.http.Factory
 
 object DaoInjector extends Factory {
   val dao = new FactoryMaker[CachedDao](
-    new TrieMapCachedDao(postgresDataSource, UserInjector.userSession.vend)) {}
+    new MemoryMapCachedDao(postgresDataSource, AllAvalanchesMap, UserInjector.userSession.vend)) {}
 }
