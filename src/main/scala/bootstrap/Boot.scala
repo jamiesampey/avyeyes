@@ -1,8 +1,8 @@
 package bootstrap.liftweb
 
 import akka.actor.{ActorSystem, Props}
+import com.avyeyes.data.DatabaseMaintenance
 import com.avyeyes.rest._
-import com.avyeyes.service.ImagePruneService
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import net.liftweb.common._
@@ -76,10 +76,10 @@ class Boot extends Loggable {
 
       import scala.concurrent.duration._
       actorSystem.scheduler.schedule(
-        initialDelay = getProp("db.maintenanceDelayMinutes").toInt minutes,
+        initialDelay = getProp("db.maintenanceDelaySeconds").toInt seconds,
         interval = getProp("db.maintenanceIntervalHours").toInt hours,
-        receiver = actorSystem.actorOf(Props(new ImagePruneService)),
-        message = ImagePruneService.prune)
+        receiver = actorSystem.actorOf(Props(new DatabaseMaintenance)),
+        message = DatabaseMaintenance.run)
     }
   }
   

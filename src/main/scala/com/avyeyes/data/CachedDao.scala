@@ -32,6 +32,4 @@ trait CachedDao extends AuthorizableDao {
   def getAvalancheImagesMetadata(avyExtId: String): List[(String, String, Int)]
   
   def deleteAvalancheImage(avyExtId: String, fileBaseName: String): Unit
-
-  def pruneImages(): Set[String]
 }

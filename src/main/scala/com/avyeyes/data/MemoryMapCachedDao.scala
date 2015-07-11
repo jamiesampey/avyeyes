@@ -116,28 +116,6 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     }
   }
 
-  def pruneImages(): Set[String] = {
-    //    val orphanImageExtIds = from(avalancheImages)(img => where(
-    //      img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toSet
-    //
-    //    val imageExtIdsForDelete = orphanImageExtIds filter(!reservationExists(_))
-    //
-    //    if (imageExtIdsForDelete.size > 0) {
-    //      val orphanImageCount = from(avalancheImages)(img => where(
-    //        img.avyExtId in imageExtIdsForDelete) compute count).toInt
-    //
-    //      logger.info(s"Pruning $orphanImageCount orphan images for ${imageExtIdsForDelete.size}"
-    //        + " unfinished avalanche report(s)")
-    //      avalancheImages.deleteWhere(img => img.avyExtId in imageExtIdsForDelete)
-    //    } else {
-    //      logger.info("No orphan images found for pruning")
-    //    }
-    //
-    //    imageExtIdsForDelete
-
-    ???
-  }
-
   //  private def setAvalancheUpdateTime(extId: String) = {
   //    update(avalanches)(a => where(a.extId === extId)
   //      set (a.updateTime := new Timestamp(System.currentTimeMillis)))
