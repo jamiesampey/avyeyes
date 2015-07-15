@@ -29,7 +29,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     case None => avalancheMap.size
   }
 
-  def getAvalanche(extId: String) = avalancheMap.get(extId)
+  def getAvalanche(extId: String): Option[Avalanche] = avalancheIfAllowed(avalancheMap.get(extId))
 
   def getAvalanches(query: AvalancheQuery) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
@@ -42,7 +42,13 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
   }
 
   def getAvalancheFromDisk(extId: String): Option[Avalanche] = {
-    Await.result(db.run(Avalanches.filter(_.extId === extId).result.headOption), Duration.Inf)
+    val avalancheOpt = Await.result(db.run(Avalanches.filter(_.extId === extId).result.headOption), Duration.Inf)
+    avalancheIfAllowed(avalancheOpt)
+  }
+
+  private def avalancheIfAllowed(opt: Option[Avalanche]) = opt match {
+    case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
+    case None => None
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
@@ -50,9 +56,9 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
       throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
 
-    val userInsert = Users insertOrUpdate User(DateTime.now, avalanche.submitterEmail)
+    val userInsertOrUpdate = Users insertOrUpdate User(DateTime.now, avalanche.submitterEmail)
     val avalancheInsert = Avalanches += avalanche
-    Await.result(db.run(userInsert >> avalancheInsert), Duration.Inf)
+    Await.result(db.run(userInsertOrUpdate >> avalancheInsert), Duration.Inf)
 
     avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
@@ -97,7 +103,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
       case true => AvalancheImages.filter(_.avyExtId === avyExtId)
       case false => for {
         img <- AvalancheImages if img.avyExtId === avyExtId
-        a <- Avalanches if a.extId === avyExtId && a.viewable === true
+        a <- Avalanches if a.extId === img.avyExtId && a.viewable === true
       } yield img
     }
 
@@ -121,10 +127,4 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     val query = for { a <- Avalanches if a.extId === extId } yield a.updateTime
     query.update(DateTime.now)
   }
-
-  //  private def getAvyViewableQueryVal(viewable: Option[Boolean]): Option[Boolean] = viewable match {
-  //    case None if isAuthorizedSession => None // viewable criteria will NOT apply (ADMIN ONLY)
-  //    case Some(bool) if (!bool && isAuthorizedSession) => Some(false) // criteria: viewable == false (ADMIN ONLY)
-  //    case _ => Some(true) // criteria: viewable == true
-  //  }
 }
