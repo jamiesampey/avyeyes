@@ -12,14 +12,10 @@ create table "avalanche" (
     "date" date not null,
     "sky" integer not null,
     "precip" integer not null,
-    "elevation" double not null,
+    "elevation" double precision not null,
     "aspect" integer not null,
     "angle" integer not null,    
-    "avalanche_type" integer not null,
-    "avalanche_trigger" integer not null,
-    "avalanche_interface" integer not null,
-    "r_size" double precision not null,
-    "d_size" double precision not null,
+    "classification" varchar(50) not null,
     "human_numbers" varchar(50) not null,
     "mode_of_travel" integer not null,
     "comments" text,
@@ -56,6 +52,8 @@ create table "app_role" (
     "name" varchar(128) not null
 );
 create sequence "s_app_user_role_id";
+-- indexes on app_user
+create unique index "idx2a600596" on "app_role" ("name");
 
 create table "app_user_role_assignment" (
     "app_user" varchar(128) not null,
@@ -69,9 +67,9 @@ alter table "app_user_role_assignment" add constraint "app_user_role_assignmentF
 alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK3" foreign key ("app_role") references "app_role"("name");
 
 -- initial inserts :
-insert into app_user (create_time, email) values (now(), 'jamie.sampey@gmail.com');
-insert into app_user (create_time, email) values (now(), 'avyeyes@gmail.com');
-insert into app_role (name) values ('site_owner');
-insert into app_role (name) values ('admin');
+insert into app_user (id, create_time, email) values (nextval('s_app_user_id'), now(), 'jamie.sampey@gmail.com');
+insert into app_user (id, create_time, email) values (nextval('s_app_user_id'), now(), 'avyeyes@gmail.com');
+insert into app_role (id, name) values (nextval('s_app_user_role_id'), 'site_owner');
+insert into app_role (id, name) values (nextval('s_app_user_role_id'), 'admin');
 insert into app_user_role_assignment(app_user, app_role) values ('jamie.sampey@gmail.com', 'site_owner');
 insert into app_user_role_assignment(app_user, app_role) values ('avyeyes@gmail.com', 'admin');
