@@ -17,9 +17,10 @@ private[data] object DatabaseSchema {
   val UserRoles = TableQuery[UserRolesTable]
 
   class AvalanchesTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
-    def extId = column[String]("external_id", O.PrimaryKey)
+    def extId = column[String]("external_id")
     def viewable = column[Boolean]("viewable")
     def submitterEmail = column[String]("submitter_email")
     def submitterExp = column[ExperienceLevel]("submitter_experience")
@@ -74,26 +75,28 @@ private[data] object DatabaseSchema {
   }
 
   class AvalancheImagesTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
     def avyExtId = column[String]("avalanche_external_id")
     def filename = column[String]("filename")
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
-    def pk = primaryKey("pk", (avyExtId, filename))
 
     def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
   }
 
   class UsersTable(tag: Tag) extends Table[User](tag, "app_user") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
-    def email = column[String]("email", O.PrimaryKey)
+    def email = column[String]("email")
 
     def * = (createTime, email) <> (User.tupled, User.unapply)
   }
 
   class UserRolesTable(tag: Tag) extends Table[UserRole](tag, "app_role") {
-    def name = column[String]("name", O.PrimaryKey)
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def name = column[String]("name")
 
     def * = (name) <> (UserRole.apply, UserRole.unapply)
   }

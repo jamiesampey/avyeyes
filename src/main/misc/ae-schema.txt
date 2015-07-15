@@ -1,7 +1,8 @@
 create table "avalanche" (
+    "id" bigint primary key,
     "create_time" timestamp not null,
     "update_time" timestamp not null,
-    "external_id" varchar(8) primary key,
+    "external_id" varchar(8) not null,
     "viewable" boolean not null,
     "submitter_email" varchar(128) not null,
     "submitter_experience" integer not null,
@@ -24,27 +25,37 @@ create table "avalanche" (
     "comments" text,
     "perimeter" text not null
   );
+create sequence "s_avalanche_id";
+-- indexes on avalanche
+create unique index "idx2f5d05cf" on "avalanche" ("external_id");
 
 create table "avalanche_image" (
+    "id" bigint primary key,
     "create_time" timestamp not null,
     "avalanche_external_id" varchar(8) not null,
     "filename" varchar(128) not null,
     "original_filename" varchar(128) not null,
     "mime_type" varchar(20) not null,
-    "size" integer not null,
-    primary key(avalanche_external_id, filename)
+    "size" integer not null
 );
+create sequence "s_avalanche_image_id";
 -- indexes on avalanche_image
 create index "idx76e30961" on "avalanche_image" ("avalanche_external_id");
 
 create table "app_user" (
+    "id" bigint primary key,
     "create_time" timestamp not null,
-    "email" varchar(128) primary key
+    "email" varchar(128) not null
 );
+create sequence "s_app_user_id";
+-- indexes on app_user
+create unique index "idx2a600595" on "app_user" ("email");
 
 create table "app_role" (
-    "name" varchar(128) primary key
+    "id" bigint primary key,
+    "name" varchar(128) not null
 );
+create sequence "s_app_user_role_id";
 
 create table "app_user_role_assignment" (
     "app_user" varchar(128) not null,
