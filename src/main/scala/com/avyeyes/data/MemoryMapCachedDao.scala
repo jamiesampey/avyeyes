@@ -54,7 +54,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     val avalancheInsert = Avalanches += avalanche
     Await.result(db.run(userInsert >> avalancheInsert), Duration.Inf)
 
-    //TODO: update the cache
+    avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
 
   def updateAvalanche(avalanche: Avalanche) = {
@@ -64,7 +64,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
 
     Await.result(db.run(Avalanches.filter(_.extId === avalanche.extId).update(avalanche)), Duration.Inf)
 
-    //TODO: update the cache
+    avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
 
   def deleteAvalanche(extId: String) = {
@@ -74,7 +74,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
 
     Await.result(db.run(Avalanches.filter(_.extId === extId).delete), Duration.Inf)
 
-    //TODO: update the cache
+    avalancheMap -= extId
   }
 
   def insertAvalancheImage(img: AvalancheImage) = {
