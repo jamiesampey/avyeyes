@@ -7,8 +7,8 @@ import org.joda.time.DateTime
 
 trait AvalancheHelpers {
 
-  def insertTestAvalanche(dao: CachedDao, a: Avalanche) = dao.insertAvalanche(a, "thomas.jefferson@gmail.com")
-  def insertTestAvalanche(dao: CachedDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a, submitterEmail)
+  def insertTestAvalanche(dao: CachedDao, a: Avalanche) = dao.insertAvalanche(a)
+  def insertTestAvalanche(dao: CachedDao, a: Avalanche, submitterEmail: String) = dao.insertAvalanche(a)
 
   class TestAvalanche extends Avalanche(
     extId = "4fj945fs",

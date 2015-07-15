@@ -107,7 +107,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
           JsDialog.info("avyReportUpdateSuccess")
         }
         case None => {
-          dao.insertAvalanche(avalancheFromValues, submitterEmail)
+          dao.insertAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully inserted")
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)

@@ -1,5 +1,6 @@
 package com.avyeyes.model
 
+import net.liftweb.json.JsonAST.{JInt, JString, JField, JObject}
 import org.joda.time.DateTime
 
 case class AvalancheImage(
@@ -8,4 +9,11 @@ case class AvalancheImage(
   filename: String,
   origFilename: String,
   mimeType: String,
-  size: Int)
+  size: Int) {
+
+  def toJson = JObject(List(
+    JField("filename", JString(filename)),
+    JField("mimeType", JString(mimeType)),
+    JField("size", JInt(size))
+  ))
+}

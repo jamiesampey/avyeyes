@@ -22,7 +22,7 @@ class DatabaseMaintenance extends Actor with Loggable {
     case DatabaseMaintenance.run => {
       logger.info("Refreshing in-memory avalanche cache")
       AllAvalanchesMap.clear
-      AllAvalanchesMap ++= Await.result(getAllAvalanches, Duration.Inf).map(a =>
+      AllAvalanchesMap ++= Await.result(db.run(Avalanches.result), Duration.Inf).map(a =>
         (a.extId, a.copy(comments = None)))
       logger.info(s"Refreshed avalanche cache with ${AllAvalanchesMap.size} avalanches")
 
@@ -34,9 +34,12 @@ class DatabaseMaintenance extends Actor with Loggable {
     case _ => logger.error("Received unknown message")
   }
 
-  private def getAllAvalanches(): Future[Seq[Avalanche]] = db.run(Avalanches.result)
-
   private def pruneImages: Future[Set[String]] = db.run {
+//    val extIdAction = Avalanches.map(_.extId).result
+//    val orphanImagesAction = for {
+//      img <- AvalancheImages
+//      if img !inSetBind extIdAction
+//    } yield image
 
     //    val orphanImageExtIds = from(avalancheImages)(img => where(
     //      img.avyExtId notIn(from(avalanches)(a => select(a.extId)))) select(img.avyExtId)).distinct.toSet

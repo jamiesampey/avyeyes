@@ -5,8 +5,6 @@ import com.avyeyes.model.{User, Avalanche, AvalancheImage}
 trait CachedDao extends AuthorizableDao {
   def getUser(email: String): Option[User]
 
-  def isUserAuthorized(email: String): Boolean
-
   def countAvalanches(viewable: Option[Boolean]): Int
 
   def getAvalanche(extId: String): Option[Avalanche]
@@ -17,7 +15,7 @@ trait CachedDao extends AuthorizableDao {
 
   def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int)
 
-  def insertAvalanche(avalanche: Avalanche, submitterEmail: String): Unit
+  def insertAvalanche(avalanche: Avalanche): Unit
 
   def updateAvalanche(avalanche: Avalanche): Unit
   
@@ -29,7 +27,7 @@ trait CachedDao extends AuthorizableDao {
 
   def countAvalancheImages(extId: String): Int
 
-  def getAvalancheImagesMetadata(avyExtId: String): List[(String, String, Int)]
+  def getAvalancheImages(avyExtId: String): List[AvalancheImage]
   
   def deleteAvalancheImage(avyExtId: String, fileBaseName: String): Unit
 }

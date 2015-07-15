@@ -20,7 +20,7 @@ class UserSession extends Loggable {
   }
 
   def attemptLogin(email: String) = {
-    dao.isUserAuthorized(email) match {
+    isAuthorizedSession match {
       case true => {
         logger.info (s"Authorization success for $email. Logging user in.")
         authorizedEmail.set(Full(email))

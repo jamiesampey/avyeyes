@@ -39,17 +39,8 @@ class AvyDetails extends RestHelper with Loggable {
     }
   }
 
-  private def getJson(a: Avalanche) = {
-    val imagesMetadata = dao.getAvalancheImagesMetadata(a.extId)
-    a.toJson ~ ("images" -> JArray(
-      imagesMetadata map Function.tupled ((f,m,s) => imageMetadataToJObject(f,m,s))))
-  }
-  
-  private def imageMetadataToJObject(filename: String, mimeType: String, size: Int): JObject = JObject(List(
-    JField("filename", JString(filename)),
-    JField("mimeType", JString(mimeType)),
-    JField("size", JInt(size)) 
-  ))
+  private def getJson(a: Avalanche) = a.toJson ~
+    ("images" -> JArray(dao.getAvalancheImages(a.extId).map(_.toJson)))
   
   private def getJsonAdminFields(a: Avalanche) = {
     ("viewable", a.viewable) ~ ("submitterEmail", a.getSubmitter.email)

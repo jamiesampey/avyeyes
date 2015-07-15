@@ -12,7 +12,7 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
     val extId1 = "4jf93dkj"
     val a1 = avalancheAtLocation(extId1, true, 41.6634870900582, -103.875046142935)
     mockAvalancheDao.getAvalanche(extId1) returns Some(a1)
-    mockAvalancheDao.getAvalancheImagesMetadata(extId1) returns Nil
+    mockAvalancheDao.getAvalancheImages(extId1) returns Nil
 
     "Return avalanche details" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)

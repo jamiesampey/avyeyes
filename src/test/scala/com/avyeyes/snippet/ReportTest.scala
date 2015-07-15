@@ -128,7 +128,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture(), anyString)
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.sky must_== SkyCoverage.U
@@ -148,7 +148,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture(), emailArg.capture())
+      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.extId must_== report.extId
@@ -188,7 +188,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
     
     "Handles an insertion failure correctly" withSFor("/") in {
       val exceptionMsg = "gotcha!"
-      mockAvalancheDao.insertAvalanche(any[Avalanche], anyString) throws new RuntimeException(exceptionMsg)
+      mockAvalancheDao.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
       
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
