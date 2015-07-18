@@ -5,6 +5,9 @@ import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 private object authorizedEmail extends SessionVar[Box[String]](Empty)
 
 class UserSession extends Loggable {
@@ -20,7 +23,7 @@ class UserSession extends Loggable {
   }
 
   def attemptLogin(email: String) = {
-    isAuthorizedSession match {
+    Await.result(dao.isUserAuthorized(email), 30 seconds) match {
       case true => {
         logger.info (s"Authorization success for $email. Logging user in.")
         authorizedEmail.set(Full(email))

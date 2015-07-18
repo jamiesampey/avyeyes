@@ -14,7 +14,7 @@ private[data] object DatabaseSchema {
   val Avalanches = TableQuery[AvalanchesTable]
   val AvalancheImages = TableQuery[AvalancheImagesTable]
   val Users = TableQuery[UsersTable]
-  val UserRoles = TableQuery[UserRolesTable]
+  val UserRoles = TableQuery[UserRoleAssignmentTable]
 
   class AvalanchesTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
@@ -91,9 +91,11 @@ private[data] object DatabaseSchema {
     def * = (createTime, email) <> (User.tupled, User.unapply)
   }
 
-  class UserRolesTable(tag: Tag) extends Table[UserRole](tag, "app_role") {
-    def name = column[String]("name", O.PrimaryKey)
+  class UserRoleAssignmentTable(tag: Tag) extends Table[UserRole](tag, "app_user_role_assignment") {
+    def email = column[String]("app_user")
+    def role = column[String]("app_role")
+    def pk = primaryKey("pk_a", (email, role))
 
-    def * = (name) <> ((name: String) => UserRole(name = name), UserRole.unapply)
+    def * = (email, role) <> (UserRole.tupled, UserRole.unapply)
   }
 }

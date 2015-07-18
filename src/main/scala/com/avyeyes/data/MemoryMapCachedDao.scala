@@ -6,23 +6,27 @@ import com.avyeyes.data.DatabaseSchema._
 import com.avyeyes.data.SlickColumnMappers._
 import com.avyeyes.model.{Avalanche, AvalancheImage, User}
 import com.avyeyes.service.ExternalIdService
+import com.avyeyes.util.Constants._
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.collection.concurrent.{Map => CMap}
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], user: UserSession)
   extends CachedDao with ExternalIdService with Loggable {
 
   private val db = Database.forDataSource(ds)
 
-  def getUser(email: String): Option[User] = {
-    Await.result(db.run(Users.filter(_.email === email).result.headOption), Duration.Inf)
+  def isUserAuthorized(email: String): Future[Boolean] = db.run {
+    UserRoles.filter(_.email === email).result
+  }.flatMap { userRolesResult =>
+    val roles = userRolesResult.map(_.role)
+    Future { roles.contains(SiteOwnerRole) || roles.contains(AdminRole) }
   }
 
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {

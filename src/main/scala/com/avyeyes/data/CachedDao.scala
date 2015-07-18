@@ -3,8 +3,6 @@ package com.avyeyes.data
 import com.avyeyes.model.{User, Avalanche, AvalancheImage}
 
 trait CachedDao extends AuthorizableDao {
-  def getUser(email: String): Option[User]
-
   def countAvalanches(viewable: Option[Boolean]): Int
 
   def getAvalanche(extId: String): Option[Avalanche]

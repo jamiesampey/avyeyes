@@ -7,7 +7,4 @@ case class User(
   email: String
 )
 
-case class UserRole(name: String) {
-  val SiteOwner = "site_owner"
-  val Admin = "admin"
-}
+case class UserRole(email: String, role: String)

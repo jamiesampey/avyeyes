@@ -23,4 +23,7 @@ object Constants {
 	val ExtIdUrlParam = "extId"
 	val ExtIdLength = 8
 	val ExtIdChars = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+  val SiteOwnerRole = "site_owner"
+  val AdminRole = "admin"
 }
