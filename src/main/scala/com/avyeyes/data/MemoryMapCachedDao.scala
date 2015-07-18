@@ -13,6 +13,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
 class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], user: UserSession)
@@ -31,12 +32,12 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
 
   def getAvalanche(extId: String): Option[Avalanche] = avalancheIfAllowed(avalancheMap.get(extId))
 
-  def getAvalanches(query: AvalancheQuery) = {
+  def getAvalanches(query: AvalancheQuery): List[Avalanche] = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit)
   }
 
-  def getAvalanchesAdmin(query: AdminAvalancheQuery) = {
+  def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     (matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit), matches.size, avalancheMap.size)
   }
@@ -46,7 +47,7 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     avalancheIfAllowed(avalancheOpt)
   }
 
-  private def avalancheIfAllowed(opt: Option[Avalanche]) = opt match {
+  private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {
     case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
     case None => None
   }
@@ -56,10 +57,17 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
       throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
     }
 
-    val userInsertOrUpdate = Users insertOrUpdate User(DateTime.now, avalanche.submitterEmail)
-    val avalancheInsert = Avalanches += avalanche
-    Await.result(db.run(userInsertOrUpdate >> avalancheInsert), Duration.Inf)
+    val insertAction = db.run {
+      Users.filter(_.email === avalanche.submitterEmail).exists.result
+    }.flatMap { userExists =>
+      db.run(if (!userExists) {
+        (Users += User(DateTime.now, avalanche.submitterEmail)) >> (Avalanches += avalanche)
+      } else {
+        Avalanches += avalanche
+      })
+    }
 
+    Await.result(insertAction, Duration.Inf)
     avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
 
@@ -69,7 +77,6 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     }
 
     Await.result(db.run(Avalanches.filter(_.extId === avalanche.extId).update(avalanche)), Duration.Inf)
-
     avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
 
@@ -79,7 +86,6 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
     }
 
     Await.result(db.run(Avalanches.filter(_.extId === extId).delete), Duration.Inf)
-
     avalancheMap -= extId
   }
 
@@ -124,7 +130,6 @@ class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], 
   }
 
   private def setAvalancheUpdateTimeAction(extId: String) = {
-    val query = for { a <- Avalanches if a.extId === extId } yield a.updateTime
-    query.update(DateTime.now)
+    Avalanches.filter(_.extId === extId).map(_.updateTime).update(DateTime.now)
   }
 }
