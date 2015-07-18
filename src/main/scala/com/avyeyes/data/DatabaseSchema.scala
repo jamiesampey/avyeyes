@@ -17,10 +17,9 @@ private[data] object DatabaseSchema {
   val UserRoles = TableQuery[UserRolesTable]
 
   class AvalanchesTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
-    def extId = column[String]("external_id")
+    def extId = column[String]("external_id", O.PrimaryKey)
     def viewable = column[Boolean]("viewable")
     def submitterEmail = column[String]("submitter_email")
     def submitterExp = column[ExperienceLevel]("submitter_experience")
@@ -34,19 +33,19 @@ private[data] object DatabaseSchema {
     def classification = column[Classification]("classification")
     def humanNumbers = column[HumanNumbers]("human_numbers")
     def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
-    def comments = column[Option[String]]("comments")
     def perimeter = column[String]("perimeter")
+    def comments = column[Option[String]]("comments")
 
     def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, location,
       areaName, date, sky, precip, aspect, angle, classification, humanNumbers, modeOfTravel,
-      comments, perimeter) <> (modelApply.tupled, modelUnapply)
+      perimeter, comments) <> (modelApply.tupled, modelUnapply)
 
     private val modelApply = (createTime: DateTime, updateTime: DateTime, extId: String,
                               viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel,
                               location: Coordinate, areaName: String, date: DateTime,
                               sky: SkyCoverage, precip: Precipitation, aspect: Aspect, angle: Int,
                               classification: Classification, humanNumbers: HumanNumbers,
-                              modeOfTravel: ModeOfTravel, comments: Option[String], perimeter: String) =>
+                              modeOfTravel: ModeOfTravel, perimeter: String, comments: Option[String]) =>
       Avalanche(
         createTime = createTime,
         updateTime = updateTime,
@@ -62,42 +61,39 @@ private[data] object DatabaseSchema {
         classification = classification,
         humanNumbers = humanNumbers,
         modeOfTravel = modeOfTravel,
-        comments,
-        perimeter.split(" ").toList.map(Coordinate.fromString)
+        perimeter.split(" ").toList.map(Coordinate.fromString),
+        comments
       )
 
     private val modelUnapply = (a: Avalanche) => Some(
       (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
         a.areaName, a.date, a.scene.skyCoverage, a.scene.precipitation, a.slope.aspect, a.slope.angle,
-        a.classification, a.humanNumbers, a.modeOfTravel, a.comments,
-        a.perimeter.map(Coordinate.toString).mkString(" ").trim
-        ))
+        a.classification, a.humanNumbers, a.modeOfTravel,
+        a.perimeter.map(Coordinate.toString).mkString(" ").trim, a.comments))
   }
 
   class AvalancheImagesTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
     def avyExtId = column[String]("avalanche_external_id")
     def filename = column[String]("filename")
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
+    def pk = primaryKey("pk_a", (avyExtId, filename))
 
     def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
   }
 
   class UsersTable(tag: Tag) extends Table[User](tag, "app_user") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def createTime = column[DateTime]("create_time")
-    def email = column[String]("email")
+    def email = column[String]("email", O.PrimaryKey)
 
     def * = (createTime, email) <> (User.tupled, User.unapply)
   }
 
   class UserRolesTable(tag: Tag) extends Table[UserRole](tag, "app_role") {
-    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("name")
+    def name = column[String]("name", O.PrimaryKey)
 
-    def * = (name) <> (UserRole.apply, UserRole.unapply)
+    def * = (name) <> ((name: String) => UserRole(name = name), UserRole.unapply)
   }
 }

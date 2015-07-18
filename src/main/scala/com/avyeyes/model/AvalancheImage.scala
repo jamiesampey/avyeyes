@@ -1,6 +1,6 @@
 package com.avyeyes.model
 
-import net.liftweb.json.JsonAST.{JInt, JString, JField, JObject}
+import net.liftweb.json.JsonAST.{JField, JInt, JObject, JString}
 import org.joda.time.DateTime
 
 case class AvalancheImage(

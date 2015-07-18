@@ -10,6 +10,6 @@ object Coordinate {
 
   implicit def fromString(str: String) = {
     val arr = str.split(',')
-    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toInt)
+    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble.toInt)
   }
 }

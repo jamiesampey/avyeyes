@@ -29,8 +29,8 @@ case class Avalanche(
   classification: Classification,
   humanNumbers: HumanNumbers,
   modeOfTravel: ModeOfTravel,
-  comments: Option[String],
-  perimeter: List[Coordinate]) {
+  perimeter: List[Coordinate],
+  comments: Option[String]) {
 
   def getSubmitter(): User = ???
 
