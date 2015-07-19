@@ -1,14 +1,11 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.enums.Aspect
 import com.avyeyes.model.enums.Aspect._
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
-import com.avyeyes.model.enums.Precipitation
 import com.avyeyes.model.enums.Precipitation._
-import com.avyeyes.model.enums.SkyCoverage
 import com.avyeyes.model.enums.SkyCoverage._
-import com.avyeyes.model.enums._
+import com.avyeyes.model.enums.{Aspect, Precipitation, SkyCoverage, _}
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
@@ -54,11 +51,14 @@ case class Avalanche(
       ("comments" -> comments)
   }
   
-  def toSearchResultJson = JObject(List(
-    JField("extId", JString(extId)),
-    JField("aspect", JString(slope.aspect.toString)),
-    JField("coords", JArray(perimeter.map(coord => JString(coord.toString))))
-  ))
+  def toSearchResultJson = {
+    JObject(List(
+      JField("extId", JString(extId)),
+      JField("aspect", JString(slope.aspect.toString)),
+      JField("coords", JArray(perimeter.flatMap(coord =>
+        Array(JDouble(coord.longitude), JDouble(coord.latitude), JDouble(coord.altitude)))))
+    ))
+  }
 
 }
 

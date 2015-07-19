@@ -7,7 +7,7 @@ import com.avyeyes.model.enums._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-object SlickColumnMappers {
+private[data] object SlickColumnMappers {
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](
     dt => new java.sql.Timestamp(dt.getMillis),
     ts => new DateTime(ts)

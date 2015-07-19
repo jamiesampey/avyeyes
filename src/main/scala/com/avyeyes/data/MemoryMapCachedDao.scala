@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], user: UserSession)
+private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String, Avalanche], user: UserSession)
   extends CachedDao with ExternalIdService with Loggable {
 
   private val db = Database.forDataSource(ds)

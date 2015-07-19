@@ -115,17 +115,8 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
-    var avalancheEntity = this.addAvalanche(avalanche);
-
-    if (adminLogin()) {
-        this.cesiumViewer.zoomTo(avalancheEntity,
-            toHeadingPitchRange(flyToHeadingFromAspect(avalanche.aspect), -25, 700)).then(function() {
-                AvyEyesUI.raiseTheCurtain();
-            });
-    } else {
-        AvyEyesUI.raiseTheCurtain();
-        this.flyTo(avalancheEntity, flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
-    }
+    AvyEyesUI.raiseTheCurtain();
+    this.flyTo(this.addAvalanche(avalanche), flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
 }
 
 var geocodeAttempts = 0;
