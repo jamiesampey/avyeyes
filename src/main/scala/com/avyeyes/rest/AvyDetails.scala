@@ -43,6 +43,6 @@ class AvyDetails extends RestHelper with Loggable {
     ("images" -> JArray(dao.getAvalancheImages(a.extId).map(_.toJson)))
   
   private def getJsonAdminFields(a: Avalanche) = {
-    ("viewable", a.viewable) ~ ("submitterEmail", a.getSubmitter.email)
+    ("viewable", a.viewable) ~ ("submitterEmail", a.submitterEmail)
   }
 }

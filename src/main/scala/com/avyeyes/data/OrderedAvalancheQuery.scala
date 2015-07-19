@@ -37,7 +37,7 @@ private[data] trait OrderedAvalancheQuery {
       case SubmitterEmail => x.submitterEmail compareTo x.submitterEmail
     }
 
-    if (orderTuple._2 == Asc) compareValue else compareValue * -1
+    if (orderTuple._2 == asc) compareValue else compareValue * -1
   }
 }
 
@@ -48,5 +48,5 @@ object OrderField extends Enumeration {
 
 object OrderDirection extends Enumeration {
   type OrderDirection = Value
-  val Asc, Desc = Value
+  val asc, desc = Value
 }

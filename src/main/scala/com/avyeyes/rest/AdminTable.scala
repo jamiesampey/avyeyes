@@ -1,7 +1,5 @@
 package com.avyeyes.rest
 
-import java.text.SimpleDateFormat
-
 import com.avyeyes.data.{AdminAvalancheQuery, DaoInjector, OrderDirection, OrderField}
 import com.avyeyes.model._
 import com.avyeyes.service.UserInjector
@@ -10,6 +8,7 @@ import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
 import net.liftweb.json.JsonAST._
+import org.joda.time.format.DateTimeFormat
 
 import scala.collection.mutable.ListBuffer
 
@@ -17,7 +16,7 @@ class AdminTable extends RestHelper with Loggable {
   lazy val dao = DaoInjector.dao.vend
   lazy val userSession = UserInjector.userSession.vend
 
-  private val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+  private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
   serve {
     case "rest" :: "admintable" :: Nil JsonGet req => {
@@ -128,13 +127,13 @@ class AdminTable extends RestHelper with Loggable {
       JField("recordsFiltered", JInt(filteredRecordCount)),
       JField("data", JArray(
         matchingAvalanches map (a => JArray(List(
-          JString(sdf.format(a.createTime)),
-          JString(sdf.format(a.updateTime)),
-          JString(a.extId),
-          JString(getViewableElem(a.viewable)),
-          JString(getHttpsAvalancheLink(a)),
-          JString(a.getSubmitter.email)))
-      )))
+            JString(a.createTime.toString(dtf)),
+            JString(a.updateTime.toString(dtf)),
+            JString(a.extId),
+            JString(getViewableElem(a.viewable)),
+            JString(getHttpsAvalancheLink(a)),
+            JString(a.submitterEmail))))
+      ))
     ))
   }
 
@@ -142,11 +141,8 @@ class AdminTable extends RestHelper with Loggable {
     <a href={getHttpsBaseUrl + a.extId} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
   }
 
-  private def getViewableElem(viewable: Boolean) = {
-    (if (viewable)
-      <span style="color: green;">Yes</span>
-    else
-      <span style="color: red;">No</span>
-    ).toString
+  private def getViewableElem(viewable: Boolean) = viewable match {
+    case true => <span style="color: green;">Yes</span>.toString
+    case false => <span style="color: red;">No</span>.toString
   }
 }

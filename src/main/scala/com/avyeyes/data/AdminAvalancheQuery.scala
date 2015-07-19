@@ -6,7 +6,7 @@ case class AdminAvalancheQuery(
   extId: Option[String] = None,
   areaName: Option[String] = None,
   submitterEmail: Option[String] = None,
-  order: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.CreateTime, OrderDirection.Desc)),
+  order: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.CreateTime, OrderDirection.desc)),
   offset: Int = 0,
   limit: Int = Int.MaxValue)
   extends OrderedAvalancheQuery {

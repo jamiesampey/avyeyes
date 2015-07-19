@@ -32,8 +32,6 @@ case class Avalanche(
   perimeter: List[Coordinate],
   comments: Option[String]) {
 
-  def getSubmitter(): User = ???
-
   def getTitle() = s"${dateToStr(date)}: ${areaName}"
 
   def getExtHttpUrl() = s"${getHttpBaseUrl}${extId}"

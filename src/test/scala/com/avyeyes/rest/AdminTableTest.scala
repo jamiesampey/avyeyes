@@ -59,7 +59,7 @@ class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers w
       adminQuery.offset must_== 10
       adminQuery.limit must_== 20
       adminQuery.order(0) must_==(OrderField.Viewable, OrderDirection.Desc)
-      adminQuery.order(1) must_==(OrderField.CreateTime, OrderDirection.Asc)
+      adminQuery.order(1) must_==(OrderField.createTime, OrderDirection.Asc)
       adminQuery.extId must_== Some(s"%$searchParam%")
       adminQuery.areaName must_== Some(s"%$searchParam%")
       adminQuery.submitterEmail must_== Some(s"%$searchParam%")

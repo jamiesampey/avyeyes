@@ -25,12 +25,12 @@ function wireDataTable() {
 
   var dataTableApi = dataTableObj.DataTable({
     "columnDefs": [
-       { "name": "createTime", "targets": 0 },
-       { "name": "updateTime", "targets": 1 },
-       { "name": "extId", "targets": 2 },
-       { "name": "viewable", "targets": 3 },
-       { "name": "areaName", "targets": 4 },
-       { "name": "submitterEmail", "targets": 5 }
+       { "name": "CreateTime", "targets": 0 },
+       { "name": "UpdateTime", "targets": 1 },
+       { "name": "ExtId", "targets": 2 },
+       { "name": "Viewable", "targets": 3 },
+       { "name": "AreaName", "targets": 4 },
+       { "name": "SubmitterEmail", "targets": 5 }
      ],
      "pageLength": 25,
      "scrollY": calcDataTableHeight(),
