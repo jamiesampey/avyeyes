@@ -2,8 +2,6 @@ package com.avyeyes.test
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums.{ExperienceLevel, _}
-import com.avyeyes.util.Constants._
-import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import org.scalacheck.Gen
 
