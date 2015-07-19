@@ -65,7 +65,8 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
       Users.filter(_.email === avalanche.submitterEmail).exists.result
     }.flatMap { userExists =>
       db.run(if (!userExists) {
-        (Users += User(DateTime.now, avalanche.submitterEmail)) >> (Avalanches += avalanche)
+        (Users += User(DateTime.now, avalanche.submitterEmail)) >>
+        (Avalanches += avalanche)
       } else {
         Avalanches += avalanche
       })
@@ -102,13 +103,18 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
       throw new UnauthorizedException("Not authorized to delete avalanches")
     }
 
-    Await.result(db.run(Avalanches.filter(_.extId === extId).delete), Duration.Inf)
+    Await.result(db.run(
+      AvalancheImages.filter(_.avyExtId === extId).delete >>
+      Avalanches.filter(_.extId === extId).delete
+    ), Duration.Inf)
     avalancheMap -= extId
   }
 
   def insertAvalancheImage(img: AvalancheImage) = {
-    val insertAction = AvalancheImages += img
-    Await.result(db.run(insertAction >> setAvalancheUpdateTimeAction(img.avyExtId)), Duration.Inf)
+    Await.result(db.run(
+      (AvalancheImages += img) >>
+      setAvalancheUpdateTimeAction(img.avyExtId)
+    ), Duration.Inf)
   }
 
   def countAvalancheImages(extId: String): Int = Await.result(db.run(
@@ -131,7 +137,7 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
     }
 
     filename match {
-      case Some(fname) => queryByExtId.filter(_.filename === filename)
+      case Some(fn) => queryByExtId.filter(_.filename === fn)
       case None => queryByExtId
     }
   }
@@ -141,12 +147,13 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
       throw new UnauthorizedException("Not authorized to delete image")
     }
       
-    val deleteImageAction = AvalancheImages.filter(
-      img => img.avyExtId === avyExtId && img.filename.startsWith(baseFilename)).delete
-    Await.result(db.run(deleteImageAction >> setAvalancheUpdateTimeAction(avyExtId)), Duration.Inf)
+    Await.result(db.run(
+      AvalancheImages.filter(img =>
+        img.avyExtId === avyExtId && img.filename.startsWith(baseFilename)).delete >>
+      setAvalancheUpdateTimeAction(avyExtId)
+    ), Duration.Inf)
   }
 
-  private def setAvalancheUpdateTimeAction(extId: String) = {
-    Avalanches.filter(_.extId === extId).map(_.updateTime).update(DateTime.now)
-  }
+  private def setAvalancheUpdateTimeAction(extId: String) = Avalanches.filter(
+    _.extId === extId).map(_.updateTime).update(DateTime.now)
 }

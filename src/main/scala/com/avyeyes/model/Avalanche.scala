@@ -5,7 +5,6 @@ import com.avyeyes.model.enums.{Aspect, Precipitation, SkyCoverage, _}
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
-import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
 

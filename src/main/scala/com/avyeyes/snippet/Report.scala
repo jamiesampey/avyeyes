@@ -19,7 +19,7 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util.Mailer._
 import net.liftweb.util.{Mailer, Props}
 import org.apache.commons.lang3.StringEscapeUtils._
-import org.apache.commons.lang3.{StringEscapeUtils, StringUtils}
+import org.apache.commons.lang3.StringUtils._
 import org.joda.time.DateTime
 
 import scala.collection.mutable.ListBuffer
@@ -72,7 +72,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
     val problemFields = new ListBuffer[String]
     if (!isValidEmail(submitterEmail)) problemFields.append("rwAvyFormSubmitterEmail")
     if (!isValidEnumValue(ExperienceLevel, submitterExp)) problemFields.append("rwAvyFormSubmitterExpAC")
-    if (StringUtils.isBlank(areaName)) problemFields.append("rwAvyFormAreaName")
+    if (isBlank(areaName)) problemFields.append("rwAvyFormAreaName")
     if (!isValidDate(dateStr)) problemFields.append("rwAvyFormDate")
     if (!isValidEnumValue(Aspect, aspect)) problemFields.append("rwAvyFormAspectAC")
     if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
