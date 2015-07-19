@@ -5,6 +5,8 @@ import com.avyeyes.model.enums.{Aspect, Precipitation, SkyCoverage, _}
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
+import org.apache.commons.lang3.StringEscapeUtils
+import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
 
 case class Avalanche(
@@ -43,7 +45,7 @@ case class Avalanche(
       ("caught" -> humanNumbers.caught) ~ ("partiallyBuried" -> humanNumbers.partiallyBuried) ~
       ("fullyBuried" -> humanNumbers.fullyBuried) ~ ("injured" -> humanNumbers.injured) ~
       ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(humanNumbers.modeOfTravel)) ~
-      ("comments" -> comments)
+      ("comments" -> getComments)
   }
   
   def toSearchResultJson = {
@@ -55,6 +57,10 @@ case class Avalanche(
     ))
   }
 
+  private def getComments = comments match {
+    case Some(str) => unescapeJava(str)
+    case None => ""
+  }
 }
 
 

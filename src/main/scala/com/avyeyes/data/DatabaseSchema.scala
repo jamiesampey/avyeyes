@@ -7,12 +7,12 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 private[data] object DatabaseSchema {
-  val Avalanches = TableQuery[AvalanchesTable]
-  val AvalancheImages = TableQuery[AvalancheImagesTable]
+  val Avalanches = TableQuery[AvalancheTable]
+  val AvalancheImages = TableQuery[AvalancheImageTable]
   val Users = TableQuery[UsersTable]
   val UserRoles = TableQuery[UserRoleAssignmentTable]
 
-  class AvalanchesTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
+  class AvalancheTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
     def extId = column[String]("external_id", O.PrimaryKey)
@@ -61,7 +61,7 @@ private[data] object DatabaseSchema {
         a.perimeter.map(Coordinate.toString).mkString(" ").trim, a.comments))
   }
 
-  class AvalancheImagesTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
+  class AvalancheImageTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
     def createTime = column[DateTime]("create_time")
     def avyExtId = column[String]("avalanche_external_id")
     def filename = column[String]("filename")

@@ -18,7 +18,8 @@ import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
 import net.liftweb.util.Mailer._
 import net.liftweb.util.{Mailer, Props}
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringEscapeUtils._
+import org.apache.commons.lang3.{StringEscapeUtils, StringUtils}
 import org.joda.time.DateTime
 
 import scala.collection.mutable.ListBuffer
@@ -178,7 +179,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
         injured = strToIntOrNegOne(injured),
         killed = strToIntOrNegOne(killed)
       ),
-      comments = if (!comments.isEmpty) Some(comments) else None,
+      comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
       perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     )
   }

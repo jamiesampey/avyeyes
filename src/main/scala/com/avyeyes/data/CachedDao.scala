@@ -1,6 +1,6 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.{User, Avalanche, AvalancheImage}
+import com.avyeyes.model.{Avalanche, AvalancheImage}
 
 trait CachedDao extends AuthorizableDao {
   def countAvalanches(viewable: Option[Boolean]): Int
