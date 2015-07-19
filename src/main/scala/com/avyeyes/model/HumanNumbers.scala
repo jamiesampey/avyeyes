@@ -12,10 +12,10 @@ case class HumanNumbers(modeOfTravel: ModeOfTravel,
 
 object HumanNumbers {
   implicit def toString(hn: HumanNumbers) =
-    s"${hn.modeOfTravel.toString}-${hn.caught}-${hn.partiallyBuried}-${hn.fullyBuried}-${hn.injured}-${hn.killed}"
+    s"${hn.modeOfTravel.toString},${hn.caught},${hn.partiallyBuried},${hn.fullyBuried},${hn.injured},${hn.killed}"
 
   implicit def fromString(str: String) = {
-    val arr = str.split('-')
+    val arr = str.split(',')
     HumanNumbers(
       ModeOfTravel.withName(arr(0)),
       arr(1).toInt,

@@ -27,5 +27,5 @@ trait CachedDao extends AuthorizableDao {
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage]
   
-  def deleteAvalancheImage(avyExtId: String, fileBaseName: String): Unit
+  def deleteAvalancheImage(avyExtId: String, baseFilename: String): Unit
 }

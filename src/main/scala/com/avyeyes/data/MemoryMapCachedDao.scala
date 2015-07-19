@@ -136,13 +136,13 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
     }
   }
 
-  def deleteAvalancheImage(avyExtId: String, filename: String) = {
+  def deleteAvalancheImage(avyExtId: String, baseFilename: String) = {
     if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
       throw new UnauthorizedException("Not authorized to delete image")
     }
       
     val deleteImageAction = AvalancheImages.filter(
-      img => img.avyExtId === avyExtId && img.filename === filename).delete
+      img => img.avyExtId === avyExtId && img.filename.startsWith(baseFilename)).delete
     Await.result(db.run(deleteImageAction >> setAvalancheUpdateTimeAction(avyExtId)), Duration.Inf)
   }
 
