@@ -1,16 +1,16 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import com.avyeyes.data._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.persist
-import com.avyeyes.test.AvalancheHelpers
+import com.avyeyes.data
+import com.avyeyes.test.Generators
 import com.avyeyes.util.Helpers._
 import org.joda.time.DateTime
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification
 
-class AvalancheDaoSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
+class CachedDaoSelectTest extends Specification with InMemoryDB with Generators {
   sequential
 
   val commonLat = 38.5763463456

@@ -1,11 +1,11 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import com.avyeyes.data.{GeoBounds, AdminAvalancheQuery}
-import com.avyeyes.test.AvalancheHelpers
+import com.avyeyes.test.Generators
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
-class AvalancheDaoAdminSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
+class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Generators {
   sequential
 
   val commonLat = 38.5763463456

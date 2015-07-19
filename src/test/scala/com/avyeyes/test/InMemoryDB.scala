@@ -1,8 +1,8 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import java.sql.DriverManager
 
-import com.avyeyes.persist.AvyEyesSqueryl._
+import com.avyeyes.data.AvyEyesSqueryl._
 import com.avyeyes.util.UserSession
 import org.specs2.execute._
 import org.specs2.mock.Mockito

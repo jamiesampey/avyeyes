@@ -1,11 +1,11 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import com.avyeyes.data.{GeoBounds, AvalancheQuery}
 import com.avyeyes.model.Avalanche
 import com.avyeyes.test._
 import org.specs2.mutable.Specification
 
-class LocationFilteringSelectTest extends Specification with InMemoryDB with AvalancheHelpers {
+class LocationFilteringSelectTest extends Specification with InMemoryDB with Generators {
   sequential
 
   val dao = new SquerylAvalancheDao(Authorized)

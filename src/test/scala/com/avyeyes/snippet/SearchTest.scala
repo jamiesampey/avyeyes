@@ -10,7 +10,7 @@ import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.enums._
 
-class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with AvalancheHelpers with TemplateReader {
+class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators with TemplateReader {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 

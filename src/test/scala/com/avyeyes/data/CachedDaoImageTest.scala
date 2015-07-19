@@ -1,4 +1,4 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import com.avyeyes.model._
 import com.avyeyes.test._
@@ -6,7 +6,7 @@ import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
 
-class AvalancheDaoImageTest extends Specification with InMemoryDB with AvalancheHelpers {
+class CachedDaoImageTest extends Specification with InMemoryDB with Generators {
   sequential
 
   val testAvalanche = avalancheAtLocation("5j3fyjd9", false, 43.57636345634, -100.5345550)

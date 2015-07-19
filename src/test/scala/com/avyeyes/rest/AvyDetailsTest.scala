@@ -5,7 +5,7 @@ import com.avyeyes.model.enums._
 import com.avyeyes.test._
 import net.liftweb.http._
 
-class AvyDetailsTest extends WebSpec2 with MockInjectors with AvalancheHelpers with LiftHelpers {
+class AvyDetailsTest extends WebSpec2 with MockInjectors with Generators with LiftHelpers {
   val avyDetails = new AvyDetails
 
   "Valid avalanche details REST request" should {

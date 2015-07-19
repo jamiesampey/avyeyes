@@ -1,13 +1,13 @@
-package com.avyeyes.persist
+package com.avyeyes.data
 
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
-import com.avyeyes.test.AvalancheHelpers
+import com.avyeyes.test.Generators
 import com.avyeyes.util.UnauthorizedException
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 
-class AvalancheDaoWriteTest extends Specification with InMemoryDB with AvalancheHelpers {
+class CachedDaoWriteTest extends Specification with InMemoryDB with Generators {
   sequential
 
   val submitterEmail = "thomas.jefferson@me.com"

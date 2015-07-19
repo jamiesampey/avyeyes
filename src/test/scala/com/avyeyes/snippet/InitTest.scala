@@ -3,7 +3,7 @@ package com.avyeyes.snippet
 import bootstrap.liftweb.Boot
 import com.avyeyes.test._
 
-class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with AvalancheHelpers {
+class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators {
 
   "Initial JsCmd" should {
     isolated 

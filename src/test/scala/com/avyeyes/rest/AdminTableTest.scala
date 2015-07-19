@@ -5,7 +5,7 @@ import com.avyeyes.model.OrderDirection
 import com.avyeyes.test._
 import net.liftweb.http._
 
-class AdminTableTest extends WebSpec2 with MockInjectors with AvalancheHelpers with LiftHelpers {
+class AdminTableTest extends WebSpec2 with MockInjectors with Generators with LiftHelpers {
   sequential
 
   val adminTable = new AdminTable
