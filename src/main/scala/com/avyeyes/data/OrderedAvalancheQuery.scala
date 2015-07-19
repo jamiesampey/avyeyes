@@ -34,7 +34,7 @@ private[data] trait OrderedAvalancheQuery {
       case Viewable => y.viewable compareTo x.viewable
       case AreaName => y.areaName compareTo x.areaName
       case Date => y.date compareTo x.date
-      case SubmitterEmail => x.submitterEmail compareTo x.submitterEmail
+      case SubmitterEmail => y.submitterEmail compareTo x.submitterEmail
     }
 
     if (orderTuple._2 == asc) compareValue else compareValue * -1
