@@ -151,7 +151,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       viewable = viewable,
       submitterEmail = submitterEmail,
       submitterExp = ExperienceLevel.withName(submitterExp),
-      location = Coordinate(lng.toDouble, lat.toDouble, elevation.toInt),
+      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
       scene = Scene(
@@ -161,14 +161,14 @@ class Report extends ExternalIdService with Mailer with Loggable {
       slope = Slope(
         Aspect.withName(aspect),
         strToIntOrNegOne(angle),
-        elevation.toInt
+        strToIntOrNegOne(elevation)
       ),
       classification = Classification(
         avyType = enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
         trigger = enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
         interface = enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
-        rSize = rSize.toDouble,
-        dSize = dSize.toDouble
+        rSize = strToDblOrZero(rSize),
+        dSize = strToDblOrZero(dSize)
       ),
       humanNumbers = HumanNumbers(
         caught = strToIntOrNegOne(caught),

@@ -26,10 +26,8 @@ private[data] object DatabaseSchema {
     def location = column[Coordinate]("location")
     def areaName = column[String]("area_name")
     def date = column[DateTime]("date")
-    def sky = column[SkyCoverage]("sky")
-    def precip = column[Precipitation]("precip")
-    def aspect = column[Aspect]("aspect")
-    def angle = column[Int]("angle")
+    def scene = column[Scene]("scene")
+    def slope = column[Slope]("slope")
     def classification = column[Classification]("classification")
     def humanNumbers = column[HumanNumbers]("human_numbers")
     def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
@@ -37,14 +35,13 @@ private[data] object DatabaseSchema {
     def comments = column[Option[String]]("comments")
 
     def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, location,
-      areaName, date, sky, precip, aspect, angle, classification, humanNumbers, modeOfTravel,
+      areaName, date, scene, slope, classification, humanNumbers, modeOfTravel,
       perimeter, comments) <> (modelApply.tupled, modelUnapply)
 
     private val modelApply = (createTime: DateTime, updateTime: DateTime, extId: String,
                               viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel,
                               location: Coordinate, areaName: String, date: DateTime,
-                              sky: SkyCoverage, precip: Precipitation, aspect: Aspect, angle: Int,
-                              classification: Classification, humanNumbers: HumanNumbers,
+                              scene: Scene, slope: Slope, classification: Classification, humanNumbers: HumanNumbers,
                               modeOfTravel: ModeOfTravel, perimeter: String, comments: Option[String]) =>
       Avalanche(
         createTime = createTime,
@@ -56,8 +53,8 @@ private[data] object DatabaseSchema {
         location = location,
         areaName = areaName,
         date = date,
-        scene = Scene(sky, precip),
-        slope = Slope(aspect, angle, location.altitude),
+        scene = scene,
+        slope = slope,
         classification = classification,
         humanNumbers = humanNumbers,
         modeOfTravel = modeOfTravel,
@@ -67,8 +64,7 @@ private[data] object DatabaseSchema {
 
     private val modelUnapply = (a: Avalanche) => Some(
       (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
-        a.areaName, a.date, a.scene.skyCoverage, a.scene.precipitation, a.slope.aspect, a.slope.angle,
-        a.classification, a.humanNumbers, a.modeOfTravel,
+        a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers, a.modeOfTravel,
         a.perimeter.map(Coordinate.toString).mkString(" ").trim, a.comments))
   }
 

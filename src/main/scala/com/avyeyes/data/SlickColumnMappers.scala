@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import java.sql.Timestamp
 
-import com.avyeyes.model.{Coordinate, Classification, HumanNumbers}
+import com.avyeyes.model.{Scene, Slope, Coordinate, Classification, HumanNumbers}
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -14,17 +14,27 @@ private[data] object SlickColumnMappers {
   )
 
   implicit def coordinateMapper = MappedColumnType.base[Coordinate, String](
-    c => Coordinate.toString(c),
+    coord => Coordinate.toString(coord),
     str => Coordinate.fromString(str)
   )
 
+  implicit def sceneMapper = MappedColumnType.base[Scene, String](
+    scene => Scene.toString(scene),
+    str => Scene.fromString(str)
+  )
+
+  implicit def slopeMapper = MappedColumnType.base[Slope, String](
+    slope => Slope.toString(slope),
+    str => Slope.fromString(str)
+  )
+
   implicit def classificationMapper = MappedColumnType.base[Classification, String](
-    c => Classification.toString(c),
+    classification => Classification.toString(classification),
     str => Classification.fromString(str)
   )
 
   implicit def humanNumbersMapper = MappedColumnType.base[HumanNumbers, String](
-    hn => HumanNumbers.toString(hn),
+    humanNumbers => HumanNumbers.toString(humanNumbers),
     str => HumanNumbers.fromString(str)
   )
 

@@ -75,13 +75,26 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
     avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
   }
 
-  def updateAvalanche(avalanche: Avalanche) = {
+  def updateAvalanche(update: Avalanche) = {
     if (!user.isAuthorizedSession) {
       throw new UnauthorizedException("Not authorized to update avalanche")
     }
 
-    Await.result(db.run(Avalanches.filter(_.extId === avalanche.extId).update(avalanche)), Duration.Inf)
-    avalancheMap += (avalanche.extId -> avalanche.copy(comments = None))
+    Await.result(db.run {
+      val updateQuery = Avalanches.filter(_.extId === update.extId).map(a =>
+        (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp,
+          a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers,
+          a.modeOfTravel, a.comments))
+      updateQuery.update(
+        (DateTime.now, update.viewable, update.submitterEmail, update.submitterExp,
+          update.areaName, update.date, update.scene, update.slope, update.classification, update.humanNumbers,
+          update.modeOfTravel, update.comments))
+    }, Duration.Inf)
+
+    getAvalancheFromDisk(update.extId) match {
+      case Some(a) => avalancheMap += (a.extId -> a.copy(comments = None))
+      case None => logger.error("Unable to pull updated avalanche back out of database")
+    }
   }
 
   def deleteAvalanche(extId: String) = {
