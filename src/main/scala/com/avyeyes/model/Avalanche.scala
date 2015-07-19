@@ -1,7 +1,6 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums.{Aspect, Precipitation, SkyCoverage, _}
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.JsonAST._
@@ -22,7 +21,6 @@ case class Avalanche(
   slope: Slope,
   classification: Classification,
   humanNumbers: HumanNumbers,
-  modeOfTravel: ModeOfTravel,
   perimeter: List[Coordinate],
   comments: Option[String]) {
 
@@ -44,7 +42,7 @@ case class Avalanche(
       ("rSize" -> classification.rSize) ~ ("dSize" -> classification.dSize) ~
       ("caught" -> humanNumbers.caught) ~ ("partiallyBuried" -> humanNumbers.partiallyBuried) ~
       ("fullyBuried" -> humanNumbers.fullyBuried) ~ ("injured" -> humanNumbers.injured) ~
-      ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(modeOfTravel)) ~
+      ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(humanNumbers.modeOfTravel)) ~
       ("comments" -> comments)
   }
   

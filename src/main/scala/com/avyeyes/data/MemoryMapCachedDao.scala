@@ -83,12 +83,12 @@ private[data] class MemoryMapCachedDao(ds: DataSource, avalancheMap: CMap[String
     Await.result(db.run {
       val updateQuery = Avalanches.filter(_.extId === update.extId).map(a =>
         (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp,
-          a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers,
-          a.modeOfTravel, a.comments))
+          a.areaName, a.date, a.scene, a.slope, a.classification,
+          a.humanNumbers, a.comments))
       updateQuery.update(
         (DateTime.now, update.viewable, update.submitterEmail, update.submitterExp,
-          update.areaName, update.date, update.scene, update.slope, update.classification, update.humanNumbers,
-          update.modeOfTravel, update.comments))
+          update.areaName, update.date, update.scene, update.slope, update.classification,
+          update.humanNumbers, update.comments))
     }, Duration.Inf)
 
     getAvalancheFromDisk(update.extId) match {

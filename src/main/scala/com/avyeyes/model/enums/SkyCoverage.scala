@@ -6,10 +6,10 @@ object SkyCoverage extends Enumeration with UISelectableEnum {
   override def isCompositeLabel = true
   
   val U = Value(0, "U")
-  val Clear = Value(1, "clear")
-  val Few = Value(2, "few")
-  val Scattered = Value(3, "scattered")
-  val Broken = Value(4, "broken")
-  val Overcast = Value(5, "overcast")
-  val Obscured = Value(6, "obscured")
+  val CLR = Value(1, "CLR")
+  val FEW = Value(2, "FEW")
+  val SCT = Value(3, "SCT")
+  val BKN = Value(4, "BKN")
+  val OVC = Value(5, "OVC")
+  val OBSCD = Value(6, "OBSCD")
 }

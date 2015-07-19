@@ -1,13 +1,9 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.enums.Aspect._
-import com.avyeyes.model.enums.ModeOfTravel._
-import com.avyeyes.model.enums.Precipitation._
-import com.avyeyes.model.enums.SkyCoverage._
+import com.avyeyes.data.SlickColumnMappers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
-import com.avyeyes.data.SlickColumnMappers._
 import slick.driver.PostgresDriver.api._
 
 private[data] object DatabaseSchema {
@@ -30,19 +26,17 @@ private[data] object DatabaseSchema {
     def slope = column[Slope]("slope")
     def classification = column[Classification]("classification")
     def humanNumbers = column[HumanNumbers]("human_numbers")
-    def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
     def perimeter = column[String]("perimeter")
     def comments = column[Option[String]]("comments")
 
     def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, location,
-      areaName, date, scene, slope, classification, humanNumbers, modeOfTravel,
-      perimeter, comments) <> (modelApply.tupled, modelUnapply)
+      areaName, date, scene, slope, classification, humanNumbers, perimeter, comments) <> (modelApply.tupled, modelUnapply)
 
     private val modelApply = (createTime: DateTime, updateTime: DateTime, extId: String,
                               viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel,
                               location: Coordinate, areaName: String, date: DateTime,
-                              scene: Scene, slope: Slope, classification: Classification, humanNumbers: HumanNumbers,
-                              modeOfTravel: ModeOfTravel, perimeter: String, comments: Option[String]) =>
+                              scene: Scene, slope: Slope, classification: Classification,
+                              humanNumbers: HumanNumbers, perimeter: String, comments: Option[String]) =>
       Avalanche(
         createTime = createTime,
         updateTime = updateTime,
@@ -57,14 +51,13 @@ private[data] object DatabaseSchema {
         slope = slope,
         classification = classification,
         humanNumbers = humanNumbers,
-        modeOfTravel = modeOfTravel,
         perimeter.split(" ").toList.map(Coordinate.fromString),
         comments
       )
 
     private val modelUnapply = (a: Avalanche) => Some(
       (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
-        a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers, a.modeOfTravel,
+        a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers,
         a.perimeter.map(Coordinate.toString).mkString(" ").trim, a.comments))
   }
 

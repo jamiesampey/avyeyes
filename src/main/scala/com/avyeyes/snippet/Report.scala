@@ -171,13 +171,13 @@ class Report extends ExternalIdService with Mailer with Loggable {
         dSize = strToDblOrZero(dSize)
       ),
       humanNumbers = HumanNumbers(
+        modeOfTravel = enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
         caught = strToIntOrNegOne(caught),
         partiallyBuried = strToIntOrNegOne(partiallyBuried),
         fullyBuried = strToIntOrNegOne(fullyBuried),
         injured = strToIntOrNegOne(injured),
         killed = strToIntOrNegOne(killed)
       ),
-      modeOfTravel = enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
       comments = if (!comments.isEmpty) Some(comments) else None,
       perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     )
