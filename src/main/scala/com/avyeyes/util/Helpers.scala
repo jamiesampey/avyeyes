@@ -16,15 +16,15 @@ import scala.xml.{NodeSeq, Unparsed}
 
 
 object Helpers {
-  val dtFormat = DateTimeFormat.forPattern("MM-dd-yyyy")
+  val dtf = DateTimeFormat.forPattern("MM-dd-yyyy")
   
   val UnknownEnumCode = "enum.U"
   
   def getProp(prop: String) = Props.get(prop) openOr(prop)
     
-  def strToDate(str: String): DateTime = dtFormat.parseDateTime(str)
+  def strToDate(str: String): DateTime = dtf.parseDateTime(str)
 	
-  def dateToStr(dt: DateTime): String = dtFormat.print(dt)
+  def dateToStr(dt: DateTime): String = dt.toString(dtf)
   
   def getMessage(id: String, params: Any*) = Unparsed(S.?(s"msg.$id", params:_*))
     
