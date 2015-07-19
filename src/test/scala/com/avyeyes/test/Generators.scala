@@ -48,7 +48,7 @@ trait Generators {
   def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
-      extId <- RandomStringUtils.random(ExtIdLength, ExtIdChars)
+      extId <- Gen.alphaStr.suchThat(_.length == 8)
       viewable <- Gen.oneOf(true, false)
       submitterEmail <- Gen.alphaStr
       submitterExp <- Gen.oneOf(ExperienceLevel.values.toSeq)
