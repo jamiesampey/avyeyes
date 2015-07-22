@@ -2,8 +2,11 @@ package com.avyeyes.test
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums.{ExperienceLevel, _}
+import com.avyeyes.util.Constants._
+import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import org.scalacheck.Gen
+import org.scalacheck.Gen._
 
 trait Generators {
 
@@ -32,7 +35,7 @@ trait Generators {
     interface <- Gen.oneOf(AvalancheInterface.values.toSeq)
     rSize <- Gen.choose(0.0, 5.0)
     dSize <- Gen.choose(0.0, 5.0)
-  } yield Classification(avyType, trigger, interface, rSize, dSize)
+  } yield ClassificationSerializer(avyType, trigger, interface, rSize, dSize)
 
   def genHumanNumbers = for {
     modeOfTravel <- Gen.oneOf(ModeOfTravel.values.toSeq)
@@ -46,7 +49,7 @@ trait Generators {
   def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
-      extId <- Gen.alphaStr.suchThat(_.length == 8)
+      extId <- Gen.resultOf((i: Int) => RandomStringUtils.random(ExtIdLength, ExtIdChars))
       viewable <- Gen.oneOf(true, false)
       submitterEmail <- Gen.alphaStr
       submitterExp <- Gen.oneOf(ExperienceLevel.values.toSeq)

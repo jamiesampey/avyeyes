@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object ExperienceLevel extends Enumeration with UISelectableEnum {
+object ExperienceLevel extends UISelectableEnum {
   type ExperienceLevel = Value
   
   val A0 = Value(0, "A0")

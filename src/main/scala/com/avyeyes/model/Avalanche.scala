@@ -1,12 +1,13 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.avyeyes.model.enums.{Aspect, Precipitation, SkyCoverage, _}
 import com.avyeyes.util.Helpers._
+import net.liftweb.json.Extraction
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
+import com.avyeyes.model.json.JsonFormats.formats
 
 case class Avalanche(
   createTime: DateTime,
@@ -32,19 +33,16 @@ case class Avalanche(
   def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
 
   def toJson = {
-    ("extId" -> extId) ~ ("extUrl" -> getExtHttpUrl) ~
-      ("areaName" -> areaName) ~ ("avyDate" -> dateToStr(date)) ~
-      ("submitterExp" -> ExperienceLevel.toJObject(submitterExp)) ~
-      ("sky" -> SkyCoverage.toJObject(scene.skyCoverage)) ~ ("precip" -> Precipitation.toJObject(scene.precipitation)) ~
-      ("elevation" -> location.altitude) ~ ("aspect" -> Aspect.toJObject(slope.aspect)) ~ 
-      ("angle" -> slope.angle) ~ ("avyType" -> AvalancheType.toJObject(classification.avyType)) ~
-      ("avyTrigger" -> AvalancheTrigger.toJObject(classification.trigger)) ~
-      ("avyInterface" -> AvalancheInterface.toJObject(classification.interface)) ~
-      ("rSize" -> classification.rSize) ~ ("dSize" -> classification.dSize) ~
-      ("caught" -> humanNumbers.caught) ~ ("partiallyBuried" -> humanNumbers.partiallyBuried) ~
-      ("fullyBuried" -> humanNumbers.fullyBuried) ~ ("injured" -> humanNumbers.injured) ~
-      ("killed" -> humanNumbers.killed) ~ ("modeOfTravel" -> ModeOfTravel.toJObject(humanNumbers.modeOfTravel)) ~
-      ("comments" -> getComments)
+    ("extId" -> extId) ~
+    ("extUrl" -> getExtHttpUrl) ~
+    ("areaName" -> areaName) ~
+    ("avyDate" -> dateToStr(date)) ~
+    ("submitterExp" -> Extraction.decompose(submitterExp)) ~
+    ("scene" -> Extraction.decompose(scene)) ~
+    ("slope" -> Extraction.decompose(slope)) ~
+    ("classification" -> Extraction.decompose(classification)) ~
+    ("humanNumbers" -> Extraction.decompose(humanNumbers)) ~
+    ("comments" -> getComments)
   }
   
   def toSearchResultJson = {

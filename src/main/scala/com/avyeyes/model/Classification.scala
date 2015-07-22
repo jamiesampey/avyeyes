@@ -9,12 +9,12 @@ case class Classification(avyType: AvalancheType = AvalancheType.U,
                           trigger: AvalancheTrigger = AvalancheTrigger.U,
                           interface: AvalancheInterface = AvalancheInterface.U,
                           rSize: Double = 0.0,
-                          dSize: Double = 0.0)
+                          dSize: Double = 0.0) {
+  override def toString = s"$avyType-$trigger-$rSize-$dSize-$interface"
+}
 
 object Classification {
-  implicit def toString(c: Classification) = s"${c.avyType}-${c.trigger}-${c.rSize}-${c.dSize}-${c.interface}"
-
-  implicit def fromString(str: String) = {
+  def fromString(str: String) = {
     val arr = str.split("-")
     Classification(
       avyType = AvalancheType.withName(arr(0)),

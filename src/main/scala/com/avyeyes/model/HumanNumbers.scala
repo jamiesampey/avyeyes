@@ -8,13 +8,12 @@ case class HumanNumbers(modeOfTravel: ModeOfTravel,
                         partiallyBuried: Int = -1,
                         fullyBuried: Int = -1,
                         injured: Int = -1,
-                        killed: Int = -1)
+                        killed: Int = -1) {
+  override def toString = s"${modeOfTravel.toString},$caught,$partiallyBuried,$fullyBuried,$injured,$killed"
+}
 
 object HumanNumbers {
-  implicit def toString(hn: HumanNumbers) =
-    s"${hn.modeOfTravel.toString},${hn.caught},${hn.partiallyBuried},${hn.fullyBuried},${hn.injured},${hn.killed}"
-
-  implicit def fromString(str: String) = {
+  def fromString(str: String) = {
     val arr = str.split(',')
     HumanNumbers(
       ModeOfTravel.withName(arr(0)),

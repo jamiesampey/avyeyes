@@ -58,7 +58,7 @@ private[data] object DatabaseSchema {
     private val modelUnapply = (a: Avalanche) => Some(
       (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
         a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers,
-        a.perimeter.map(Coordinate.toString).mkString(" ").trim, a.comments))
+        a.perimeter.map(_.toString).mkString(" ").trim, a.comments))
   }
 
   class AvalancheImageTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {

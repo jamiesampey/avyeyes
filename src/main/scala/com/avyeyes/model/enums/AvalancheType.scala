@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object AvalancheType extends Enumeration with UISelectableEnum {
+object AvalancheType extends UISelectableEnum {
   type AvalancheType = Value
   
   override def isCompositeLabel = true

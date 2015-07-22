@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object SkyCoverage extends Enumeration with UISelectableEnum {
+object SkyCoverage extends UISelectableEnum {
   type SkyCoverage = Value
   
   override def isCompositeLabel = true

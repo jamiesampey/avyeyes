@@ -1,7 +1,7 @@
 package com.avyeyes.model.enums
 
-object Aspect extends Enumeration with UISelectableEnum {
-    type Aspect = Value
+object Aspect extends UISelectableEnum {
+  type Aspect = Value
     
 	val N = Value(0, "N")
 	val NE = Value(1, "NE")

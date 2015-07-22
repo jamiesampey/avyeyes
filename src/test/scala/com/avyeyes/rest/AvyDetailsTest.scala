@@ -27,14 +27,14 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with Generators with Li
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(avyDetails(req)())
       
-      extractJsonField(resp, "submitterExp") must_== ExperienceLevel.toJObject(a1.submitterExp)
-      extractJsonField(resp, "sky") must_== SkyCoverage.toJObject(a1.sky)
-      extractJsonField(resp, "precip") must_== Precipitation.toJObject(a1.precip)
-      extractJsonField(resp, "aspect") must_== Aspect.toJObject(a1.aspect)
-      extractJsonField(resp, "avyType") must_== AvalancheType.toJObject(a1.avyType)
-      extractJsonField(resp, "avyTrigger") must_== AvalancheTrigger.toJObject(a1.avyTrigger)
-      extractJsonField(resp, "avyInterface") must_== AvalancheInterface.toJObject(a1.avyInterface)      
-      extractJsonField(resp, "modeOfTravel") must_== ModeOfTravel.toJObject(a1.modeOfTravel)
+      extractJsonField(resp, "submitterExp") must_== ExperienceLevel.enumToJson(a1.submitterExp)
+      extractJsonField(resp, "sky") must_== SkyCoverage.enumToJson(a1.sky)
+      extractJsonField(resp, "precip") must_== Precipitation.enumToJson(a1.precip)
+      extractJsonField(resp, "aspect") must_== Aspect.enumToJson(a1.aspect)
+      extractJsonField(resp, "avyType") must_== AvalancheType.enumToJson(a1.avyType)
+      extractJsonField(resp, "avyTrigger") must_== AvalancheTrigger.enumToJson(a1.avyTrigger)
+      extractJsonField(resp, "avyInterface") must_== AvalancheInterface.enumToJson(a1.avyInterface)
+      extractJsonField(resp, "modeOfTravel") must_== ModeOfTravel.enumToJson(a1.modeOfTravel)
     }
   }
   
