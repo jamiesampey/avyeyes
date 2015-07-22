@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object ExperienceLevel extends UISelectableEnum {
+object ExperienceLevel extends AutocompleteEnum {
   type ExperienceLevel = Value
   
   val A0 = Value(0, "A0")

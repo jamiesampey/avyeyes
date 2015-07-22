@@ -1,13 +1,16 @@
-package com.avyeyes.model.json
+package com.avyeyes.model.enums
 
-import com.avyeyes.model.enums.UISelectableEnum
 import net.liftweb.http.S
-import net.liftweb.json.JsonAST._
-import net.liftweb.json.{Formats, Serializer, TypeInfo}
+import net.liftweb.json.JsonAST.{JString, JField, JObject, JValue}
+import net.liftweb.json.{TypeInfo, Formats, Serializer}
 
 import scala.reflect.ClassTag
 
-class EnumAutocompleteSerializer[E <: UISelectableEnum: ClassTag](enum: E) extends Serializer[E#Value] {
+abstract class AutocompleteEnum extends Enumeration {
+  def isCompositeLabel = false
+}
+
+class AutocompleteEnumSerializer[E <: AutocompleteEnum: ClassTag](enum: E) extends Serializer[E#Value] {
   private val JQAC_LABEL = "label"
   private val JQAC_VALUE = "value"
   private val UNKNOWN_CODE = "U"

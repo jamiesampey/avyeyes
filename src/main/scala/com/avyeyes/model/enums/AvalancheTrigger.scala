@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object AvalancheTrigger extends UISelectableEnum {
+object AvalancheTrigger extends AutocompleteEnum {
   type AvalancheTrigger = Value
   
   override def isCompositeLabel = true

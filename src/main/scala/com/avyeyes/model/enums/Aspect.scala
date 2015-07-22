@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object Aspect extends UISelectableEnum {
+object Aspect extends AutocompleteEnum {
   type Aspect = Value
     
 	val N = Value(0, "N")

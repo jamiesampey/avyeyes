@@ -7,7 +7,7 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
-import com.avyeyes.model.json.JsonFormats.formats
+import JsonFormats.formats
 
 case class Avalanche(
   createTime: DateTime,

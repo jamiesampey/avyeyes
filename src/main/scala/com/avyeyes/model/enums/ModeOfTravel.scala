@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object ModeOfTravel extends UISelectableEnum {
+object ModeOfTravel extends AutocompleteEnum {
   type ModeOfTravel = Value
   
   val U = Value(0, "U")

@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object AvalancheInterface extends UISelectableEnum {
+object AvalancheInterface extends AutocompleteEnum {
   type AvalancheInterface = Value
   
   override def isCompositeLabel = true

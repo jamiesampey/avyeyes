@@ -1,6 +1,6 @@
 package com.avyeyes.model.enums
 
-object Precipitation extends UISelectableEnum {
+object Precipitation extends AutocompleteEnum {
   type Precipitation = Value
   
   override def isCompositeLabel = true
