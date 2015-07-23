@@ -40,7 +40,7 @@ class Init extends KmlCreator with Loggable {
       case Some(avalanche) => {
         logger.debug("Initial page view with init avy " + extId)
 
-        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchResultJson).cmd &
+        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchJson).cmd &
           JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(avalanche.date),
             avalanche.areaName, S.?(s"enum.ExperienceLevel.${avalanche.submitterExp.toString}"))
       }

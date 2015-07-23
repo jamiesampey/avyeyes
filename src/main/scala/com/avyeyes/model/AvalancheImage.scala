@@ -1,19 +1,25 @@
 package com.avyeyes.model
 
-import net.liftweb.json.JsonAST.{JField, JInt, JObject, JString}
+import net.liftweb.json.CustomSerializer
+import net.liftweb.json.JsonAST._
+import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
 case class AvalancheImage(
-  createTime: DateTime,
-  avyExtId: String,
-  filename: String,
-  origFilename: String,
-  mimeType: String,
-  size: Int) {
+  createTime: DateTime = DateTime.now,
+  avyExtId: String = "",
+  filename: String = "",
+  origFilename: String = "",
+  mimeType: String = "",
+  size: Int = -1)
 
-  def toJson = JObject(List(
-    JField("filename", JString(filename)),
-    JField("mimeType", JString(mimeType)),
-    JField("size", JInt(size))
-  ))
-}
+object AvalancheImageJsonSerializer extends CustomSerializer[AvalancheImage](format => (
+  {
+    case json: JValue => AvalancheImage() // images are never deserialized
+  },
+  {
+    case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size) =>
+      ("filename" -> filename) ~
+      ("mimeType" -> mimeType) ~
+      ("size" -> size)
+  }))

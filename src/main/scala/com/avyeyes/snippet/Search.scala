@@ -59,7 +59,7 @@ class Search extends Loggable {
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
       if (avyList.size > 0) {
-        Call("avyEyesView.addAvalanches", JArray(avyList.map(_.toSearchResultJson))).cmd &
+        Call("avyEyesView.addAvalanches", JArray(avyList.map(_.toSearchJson))).cmd &
         JsDialog.info("avySearchSuccess", avyList.size)
       } else {
         JsDialog.info("avySearchZeroMatches")

@@ -1,7 +1,12 @@
 package com.avyeyes.model
 
+import com.avyeyes.model.JsonFormats.formats
 import com.avyeyes.model.enums.Aspect
 import com.avyeyes.model.enums.Aspect.Aspect
+import net.liftweb.json.JsonAST.JValue
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.{CustomSerializer, Extraction}
+
 
 case class Slope(aspect: Aspect = Aspect.N,
                  angle: Int = 0,
@@ -18,4 +23,20 @@ object Slope {
       elevation = arr(2).toInt
     )
   }
+
+  object JsonSerializer extends CustomSerializer[Slope](format => (
+    {
+      case json: JValue =>
+        Slope(
+          aspect = (json \ "aspect").extract[Aspect],
+          angle = (json \ "angle").extract[Int],
+          elevation = (json \ "elevation").extract[Int]
+        )
+    },
+    {
+      case Slope(aspect, angle, elevation) =>
+        ("aspect" -> Extraction.decompose(aspect)) ~
+        ("angle" -> angle) ~
+        ("elevation" -> elevation)
+    }))
 }

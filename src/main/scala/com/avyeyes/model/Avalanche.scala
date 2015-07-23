@@ -1,5 +1,6 @@
 package com.avyeyes.model
 
+import com.avyeyes.model.JsonFormats.formats
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.Extraction
@@ -7,7 +8,6 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
-import JsonFormats.formats
 
 case class Avalanche(
   createTime: DateTime,
@@ -17,8 +17,8 @@ case class Avalanche(
   submitterEmail: String,
   submitterExp: ExperienceLevel,
   location: Coordinate,
-  areaName: String,
   date: DateTime,
+  areaName: String,
   scene: Scene,
   slope: Slope,
   classification: Classification,
@@ -32,34 +32,31 @@ case class Avalanche(
 
   def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
 
-  def toJson = {
+  def toDetailsJson(images: List[AvalancheImage]) = {
     ("extId" -> extId) ~
     ("extUrl" -> getExtHttpUrl) ~
     ("areaName" -> areaName) ~
-    ("avyDate" -> dateToStr(date)) ~
+    ("avyDate" -> Extraction.decompose(date)) ~
     ("submitterExp" -> Extraction.decompose(submitterExp)) ~
     ("scene" -> Extraction.decompose(scene)) ~
     ("slope" -> Extraction.decompose(slope)) ~
     ("classification" -> Extraction.decompose(classification)) ~
     ("humanNumbers" -> Extraction.decompose(humanNumbers)) ~
-    ("comments" -> getComments)
-  }
-  
-  def toSearchResultJson = {
-    JObject(List(
-      JField("extId", JString(extId)),
-      JField("aspect", JString(slope.aspect.toString)),
-      JField("coords", JArray(perimeter.flatMap(coord =>
-        Array(JDouble(coord.longitude), JDouble(coord.latitude), JDouble(coord.altitude)))))
-    ))
+    ("comments" -> (if (comments.isDefined) unescapeJava(comments.get) else "")) ~
+    ("images" -> Extraction.decompose(images))
   }
 
-  private def getComments = comments match {
-    case Some(str) => unescapeJava(str)
-    case None => ""
+  def toAdminDetailsJson(images: List[AvalancheImage]) = {
+    ("viewable" -> viewable) ~
+    ("submitterEmail" -> submitterEmail) ~
+    toDetailsJson(images)
+  }
+
+  def toSearchJson = {
+    ("extId" -> JString(extId)) ~
+    ("aspect" -> JString(slope.aspect.toString)) ~
+    ("coords" -> JArray(perimeter.flatMap(coord =>
+      Array(JDouble(coord.longitude), JDouble(coord.latitude), JDouble(coord.altitude))))
+    )
   }
 }
-
-
-
-

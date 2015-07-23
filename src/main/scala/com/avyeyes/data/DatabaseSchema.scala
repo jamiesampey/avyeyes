@@ -45,14 +45,14 @@ private[data] object DatabaseSchema {
         submitterEmail = submitterEmail,
         submitterExp = submitterExp,
         location = location,
-        areaName = areaName,
         date = date,
+        areaName = areaName,
         scene = scene,
         slope = slope,
         classification = classification,
         humanNumbers = humanNumbers,
-        perimeter.split(" ").toList.map(Coordinate.fromString),
-        comments
+        perimeter = perimeter.split(" ").toList.map(Coordinate.fromString),
+        comments = comments
       )
 
     private val modelUnapply = (a: Avalanche) => Some(
