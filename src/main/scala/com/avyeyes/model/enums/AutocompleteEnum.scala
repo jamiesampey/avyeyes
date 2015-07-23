@@ -40,7 +40,7 @@ class AutocompleteEnumSerializer[E <: AutocompleteEnum: ClassTag](enum: E) exten
     if (name == UNKNOWN_CODE)
       S.?(s"enum.$name")
     else {
-      val enumClass = getClass.getSimpleName filterNot(c => c == '$')
+      val enumClass = enum.getClass.getSimpleName filterNot(c => c == '$')
       S.?(s"enum.$enumClass.$name")
     }
   }
