@@ -29,7 +29,7 @@ object Classification {
     )
   }
 
-  class JsonSerializer extends CustomSerializer[Classification](format => (
+  object JsonSerializer extends CustomSerializer[Classification](format => (
     {
       case json: JValue =>
         Classification(
@@ -42,11 +42,11 @@ object Classification {
     },
     {
       case Classification(avyType, trigger, interface, rSize, dSize) =>
-        (("avyType" -> Extraction.decompose(avyType)) ~
-          ("trigger" -> Extraction.decompose(trigger)) ~
-          ("interface" -> Extraction.decompose(interface)) ~
-          ("rSize" -> rSize) ~
-          ("dSize" -> dSize))
+        ("avyType" -> Extraction.decompose(avyType)) ~
+        ("trigger" -> Extraction.decompose(trigger)) ~
+        ("interface" -> Extraction.decompose(interface)) ~
+        ("rSize" -> rSize) ~
+        ("dSize" -> dSize)
     }))
 }
 

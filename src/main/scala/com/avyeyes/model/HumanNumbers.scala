@@ -1,7 +1,11 @@
 package com.avyeyes.model
 
+import com.avyeyes.model.JsonFormats.formats
 import com.avyeyes.model.enums.ModeOfTravel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
+import net.liftweb.json.JsonAST.JValue
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.{CustomSerializer, Extraction}
 
 case class HumanNumbers(modeOfTravel: ModeOfTravel,
                         caught: Int = -1,
@@ -24,4 +28,26 @@ object HumanNumbers {
       arr(5).toInt
     )
   }
+
+  object JsonSerializer extends CustomSerializer[HumanNumbers](format => (
+    {
+      case json: JValue =>
+        HumanNumbers(
+          modeOfTravel = (json \ "modeOfTravel").extract[ModeOfTravel],
+          caught = (json \ "caught").extract[Int],
+          partiallyBuried = (json \ "partiallyBuried").extract[Int],
+          fullyBuried = (json \ "fullyBuried").extract[Int],
+          injured = (json \ "injured").extract[Int],
+          killed = (json \ "killed").extract[Int]
+        )
+    },
+    {
+      case HumanNumbers(modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed) =>
+        ("modeOfTravel" -> Extraction.decompose(modeOfTravel)) ~
+        ("caught" -> caught) ~
+        ("partiallyBuried" -> partiallyBuried) ~
+        ("fullyBuried" -> fullyBuried) ~
+        ("injured" -> injured) ~
+        ("killed" -> killed)
+    }))
 }

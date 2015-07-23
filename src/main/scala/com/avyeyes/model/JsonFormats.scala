@@ -12,5 +12,8 @@ object JsonFormats {
     new AutocompleteEnumSerializer(ExperienceLevel) +
     new AutocompleteEnumSerializer(ModeOfTravel) +
     new AutocompleteEnumSerializer(SkyCoverage) +
-    new AutocompleteEnumSerializer(Precipitation)
+    new AutocompleteEnumSerializer(Precipitation) +
+    Classification.JsonSerializer +
+    Coordinate.JsonSerializer +
+    HumanNumbers.JsonSerializer
 }
