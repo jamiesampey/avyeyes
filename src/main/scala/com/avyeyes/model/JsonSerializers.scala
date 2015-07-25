@@ -65,21 +65,24 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
   }
 
   private def getLocalizedLabel(tokens: Array[String]): String = {
-    def useCompositLabel(enumClass: String) = enumClass match {
-      case "AvalancheInterface" => true
-      case "AvalancheTrigger" => true
-      case "AvalancheType" => true
-      case "Precipitation" => true
-      case "SkyCoverage" => true
-      case _ => false
-    }
-
     val labelKey = if (tokens(1) == "U") "enum.U" else s"enum.${tokens(0)}.${tokens(1)}"
     val label = S ? labelKey
 
-    useCompositLabel(tokens(0)) match {
+    compositeLabelEnums.contains(tokens(0)) match {
       case true => s"${tokens(1)} - $label"
       case false => label
     }
+  }
+
+  private val compositeLabelEnums = {
+    def getSimpleEnumName(enum: AutocompleteEnum) = enum.getClass.getSimpleName.replace("$", "")
+
+    Seq(
+      getSimpleEnumName(AvalancheInterface),
+      getSimpleEnumName(AvalancheTrigger),
+      getSimpleEnumName(AvalancheType),
+      getSimpleEnumName(Precipitation),
+      getSimpleEnumName(SkyCoverage)
+    )
   }
 }
