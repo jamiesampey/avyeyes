@@ -189,11 +189,11 @@ class Report extends ExternalIdService with Mailer with Loggable {
 
     val adminBody = getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, a.getExtHttpUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
-      (XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil) : _*)
+      XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
     val submitterBody = getMessage("avyReportSubmitEmailSubmitterBody", a.extId, a.getExtHttpUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
-      (XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil) : _*)
+      XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
   private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
@@ -201,7 +201,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
 
     val submitterBody = getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, a.getExtHttpUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
-      (XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil) : _*)
+      XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
   private def configureMailer() = {

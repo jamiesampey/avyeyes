@@ -13,7 +13,6 @@ import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
 import net.liftweb.json.Serialization.write
-import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
 
 class Init extends KmlCreator with Loggable {

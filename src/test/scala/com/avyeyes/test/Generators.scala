@@ -6,7 +6,6 @@ import com.avyeyes.util.Constants._
 import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import org.scalacheck.Gen
-import org.scalacheck.Gen._
 
 trait Generators {
 
@@ -35,7 +34,7 @@ trait Generators {
     interface <- Gen.oneOf(AvalancheInterface.values.toSeq)
     rSize <- Gen.choose(0.0, 5.0)
     dSize <- Gen.choose(0.0, 5.0)
-  } yield ClassificationSerializer(avyType, trigger, interface, rSize, dSize)
+  } yield Classification(avyType, trigger, interface, rSize, dSize)
 
   def genHumanNumbers = for {
     modeOfTravel <- Gen.oneOf(ModeOfTravel.values.toSeq)

@@ -1,13 +1,10 @@
 package com.avyeyes.rest
 
 import com.avyeyes.data.DaoInjector
-import com.avyeyes.model._
 import com.avyeyes.service.UserInjector
 import net.liftweb.common.Loggable
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{JsonResponse, NotFoundResponse}
-import net.liftweb.json.JsonAST._
-import net.liftweb.json.JsonDSL._
 
 
 class AvyDetails extends RestHelper with Loggable {

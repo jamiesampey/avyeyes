@@ -13,7 +13,6 @@ import org.joda.time.DateTime
 object JsonSerializers {
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
-    CoordinateSerializer +
     AvalancheImageSerializer +
     new ChainedEnumSerializer(Aspect, AvalancheInterface, AvalancheTrigger, AvalancheType,
       ExperienceLevel, ModeOfTravel, Precipitation, SkyCoverage)
@@ -26,21 +25,6 @@ object DateTimeSerializer extends CustomSerializer[DateTime](format => (
   },
   {
     case d: DateTime => JString(dateToStr(d))
-  }
-))
-
-object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
-  {
-    case json: JValue =>
-      Coordinate(
-        longitude = (json \ "longitude").extract[Double],
-        latitude = (json \ "latitude").extract[Double],
-        altitude = (json \ "altitude").extract[Int]
-      )
-  },
-  {
-    case Coordinate(lng, lat, alt) =>
-      ("longitude" -> lng) ~ ("latitude" -> lat) ~ ("altitude" -> alt)
   }
 ))
 

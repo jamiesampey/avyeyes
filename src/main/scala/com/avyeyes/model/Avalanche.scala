@@ -4,7 +4,6 @@ import com.avyeyes.model.JsonSerializers.formats
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.Extraction
-import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
