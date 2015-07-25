@@ -1,6 +1,6 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.JsonFormats.formats
+import com.avyeyes.model.JsonConverters.formats
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.Extraction

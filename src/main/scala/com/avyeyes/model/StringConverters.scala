@@ -1,30 +1,12 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.JsonFormats.formats
-
 import com.avyeyes.model.enums._
-import net.liftweb.json.JsonAST.JValue
-import net.liftweb.json.JsonDSL._
 
-import scala.util.{Failure, Success, Try}
-
-object Converters {
-
-  implicit def avalancheImageToJson(img: AvalancheImage): JValue =
-    ("filename" -> img.filename) ~ ("mimeType" -> img.mimeType) ~ ("size" -> img.size)
-
-  implicit def coordinateToJson(c: Coordinate): JValue =
-    ("longitude" -> c.longitude) ~ ("latitude" -> c.latitude) ~ ("altitude" -> c.altitude)
-
-  implicit def enumToJson(enumValue: AutocompleteEnum#Value): JValue =
-    ("value" -> enumValue.toString) ~ ("label" -> enumValue.getEnumLabel)
+object StringConverters {
 
   implicit def stringToCoordinate(str: String): Coordinate = {
     val arr = str.split(',')
-    Try(Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble.toInt)) match {
-      case Success(c) => c
-      case Failure(ex) => Coordinate(0, 0, 0)
-    }
+    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble.toInt)
   }
 
   implicit def stringToClassification(str: String): Classification = {

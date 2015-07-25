@@ -1,12 +1,12 @@
 package com.avyeyes.model.enums
 
-object ExperienceLevel extends AutocompleteEnum {
+object ExperienceLevel extends Enumeration {
   type ExperienceLevel = Value
   
-  val A0 = Value(0, "A0")
-  val A1 = Value(1, "A1")
-  val A2 = Value(2, "A2")
-  val P1 = Value(3, "P1")
-  val P2 = Value(4, "P2")
-  val PE = Value(5, "PE")
+  val A0 = Value("ExperienceLevel.A0")
+  val A1 = Value("ExperienceLevel.A1")
+  val A2 = Value("ExperienceLevel.A2")
+  val P1 = Value("ExperienceLevel.P1")
+  val P2 = Value("ExperienceLevel.P2")
+  val PE = Value("ExperienceLevel.PE")
 }

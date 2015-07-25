@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import java.sql.Timestamp
 
-import com.avyeyes.model.Converters._
+import com.avyeyes.model.StringConverters._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
@@ -40,7 +40,7 @@ private[data] object SlickColumnMappers {
   )
 
   private def enumNameMapper(enum: Enumeration) = MappedColumnType.base[enum.Value, String](
-    enum => enum.toString,
+    enum => enum.toString.split(".")(1),
     str => enum.withName(str)
   )
 

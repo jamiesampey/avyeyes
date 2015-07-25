@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.DaoInjector
-import com.avyeyes.model.Converters._
+import com.avyeyes.model.JsonConverters.formats
 import com.avyeyes.model.enums._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam
@@ -12,7 +12,7 @@ import net.liftweb.http._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
-import net.liftweb.json.JsonAST.JArray
+import net.liftweb.json.Serialization.write
 import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
 
@@ -53,18 +53,14 @@ class Init extends KmlCreator with Loggable {
   }
   
   private def autoCompleteSourcesCmd: JsCmd = {
-    JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(AvalancheType)});"
-      + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(AvalancheTrigger)});"
-      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(SkyCoverage)});"
-      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(Precipitation)});"
-      + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(AvalancheInterface)});"
-      + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(Aspect)});"
-      + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(ModeOfTravel)});"
-      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${toAutoCompleteJson(ExperienceLevel)});")
+    JsRaw(s"$$('.avyTypeAutoComplete').autocomplete('option', 'source', ${write(AvalancheType.values)});"
+      + s"$$('.avyTriggerAutoComplete').autocomplete('option', 'source', ${write(AvalancheTrigger.values)});"
+      + s"$$('.avySkyAutoComplete').autocomplete('option', 'source', ${write(SkyCoverage.values)});"
+      + s"$$('.avyPrecipAutoComplete').autocomplete('option', 'source', ${write(Precipitation.values)});"
+      + s"$$('.avyInterfaceAutoComplete').autocomplete('option', 'source', ${write(AvalancheInterface.values)});"
+      + s"$$('.avyAspectAutoComplete').autocomplete('option', 'source', ${write(Aspect.values)});"
+      + s"$$('.avyModeOfTravelAutoComplete').autocomplete('option', 'source', ${write(ModeOfTravel.values)});"
+      + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${write(ExperienceLevel.values)});")
       .cmd
-  }
-
-  private def toAutoCompleteJson(enum: AutocompleteEnum): String = {
-    Printer.compact(JsonAST.render(JArray(enum.values.toList.map(enumToJson))))
   }
 }

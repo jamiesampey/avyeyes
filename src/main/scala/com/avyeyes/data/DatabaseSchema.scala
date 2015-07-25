@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.data.SlickColumnMappers._
 import com.avyeyes.model._
-import com.avyeyes.model.Converters._
+import com.avyeyes.model.StringConverters._
 import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._

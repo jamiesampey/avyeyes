@@ -1,15 +1,13 @@
 package com.avyeyes.model.enums
 
-object SkyCoverage extends AutocompleteEnum {
+object SkyCoverage extends Enumeration {
   type SkyCoverage = Value
   
-  override def isCompositeLabel = true
-  
-  val U = Value(0, "U")
-  val CLR = Value(1, "CLR")
-  val FEW = Value(2, "FEW")
-  val SCT = Value(3, "SCT")
-  val BKN = Value(4, "BKN")
-  val OVC = Value(5, "OVC")
-  val OBSCD = Value(6, "OBSCD")
+  val U = Value("SkyCoverage.U")
+  val CLR = Value("SkyCoverage.CLR")
+  val FEW = Value("SkyCoverage.FEW")
+  val SCT = Value("SkyCoverage.SCT")
+  val BKN = Value("SkyCoverage.BKN")
+  val OVC = Value("SkyCoverage.OVC")
+  val OBSCD = Value("SkyCoverage.OBSCD")
 }

@@ -7,7 +7,7 @@ import com.avyeyes.model.enums._
 import net.liftweb.json.{Extraction, CustomSerializer}
 import net.liftweb.json.JsonAST.JValue
 import net.liftweb.json.JsonDSL._
-import com.avyeyes.model.JsonFormats.formats
+import com.avyeyes.model.JsonConverters.formats
 
 case class Classification(avyType: AvalancheType = AvalancheType.U,
                           trigger: AvalancheTrigger = AvalancheTrigger.U,

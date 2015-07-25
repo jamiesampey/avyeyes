@@ -5,7 +5,7 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
 import com.avyeyes.data.DaoInjector
 import com.avyeyes.model._
-import com.avyeyes.model.Converters._
+import com.avyeyes.model.StringConverters._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._

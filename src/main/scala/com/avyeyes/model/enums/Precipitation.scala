@@ -1,15 +1,13 @@
 package com.avyeyes.model.enums
 
-object Precipitation extends AutocompleteEnum {
+object Precipitation extends Enumeration {
   type Precipitation = Value
-  
-  override def isCompositeLabel = true
-  
-  val U = Value(0, "U")
-  val NO = Value(1, "NO")
-  val RA = Value(2, "RA")
-  val SN = Value(3, "SN")
-  val RS = Value(4, "RS")
-  val GR = Value(5, "GR")
-  val ZR = Value(6, "ZR")
+
+  val U = Value("Precipitation.U")
+  val NO = Value("Precipitation.NO")
+  val RA = Value("Precipitation.RA")
+  val SN = Value("Precipitation.SN")
+  val RS = Value("Precipitation.RS")
+  val GR = Value("Precipitation.GR")
+  val ZR = Value("Precipitation.ZR")
 }
