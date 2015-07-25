@@ -2,6 +2,7 @@ package com.avyeyes.data
 
 import java.sql.Timestamp
 
+import com.avyeyes.model.Converters._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
@@ -15,27 +16,27 @@ private[data] object SlickColumnMappers {
 
   implicit def coordinateMapper = MappedColumnType.base[Coordinate, String](
     coord => coord.toString,
-    str => Coordinate.fromString(str)
+    str => stringToCoordinate(str)
   )
 
   implicit def sceneMapper = MappedColumnType.base[Scene, String](
     scene => scene.toString,
-    str => Scene.fromString(str)
+    str => stringToScene(str)
   )
 
   implicit def slopeMapper = MappedColumnType.base[Slope, String](
     slope => slope.toString,
-    str => Slope.fromString(str)
+    str => stringToSlope(str)
   )
 
   implicit def classificationMapper = MappedColumnType.base[Classification, String](
     classification => classification.toString,
-    str => Classification.fromString(str)
+    str => stringToClassification(str)
   )
 
   implicit def humanNumbersMapper = MappedColumnType.base[HumanNumbers, String](
     humanNumbers => humanNumbers.toString,
-    str => HumanNumbers.fromString(str)
+    str => stringToHumanNumbers(str)
   )
 
   private def enumNameMapper(enum: Enumeration) = MappedColumnType.base[enum.Value, String](

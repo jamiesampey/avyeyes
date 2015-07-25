@@ -5,6 +5,7 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
 import com.avyeyes.data.DaoInjector
 import com.avyeyes.model._
+import com.avyeyes.model.Converters._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._
@@ -180,7 +181,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
         killed = strToIntOrNegOne(killed)
       ),
       comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
-      perimeter = coordStr.trim.split(" ").toList.map(Coordinate.fromString)
+      perimeter = coordStr.trim.split(" ").toList.map(stringToCoordinate)
     )
   }
 

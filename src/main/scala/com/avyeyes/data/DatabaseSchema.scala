@@ -2,6 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.data.SlickColumnMappers._
 import com.avyeyes.model._
+import com.avyeyes.model.Converters._
 import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -51,7 +52,7 @@ private[data] object DatabaseSchema {
         slope = slope,
         classification = classification,
         humanNumbers = humanNumbers,
-        perimeter = perimeter.split(" ").toList.map(Coordinate.fromString),
+        perimeter = perimeter.split(" ").toList.map(stringToCoordinate),
         comments = comments
       )
 

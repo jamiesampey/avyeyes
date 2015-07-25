@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.DaoInjector
-import com.avyeyes.model.JsonFormats
+import com.avyeyes.model.Converters._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam
@@ -13,7 +13,7 @@ import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.http.js.JsExp._
 import net.liftweb.json.JsonAST.JArray
-import net.liftweb.json.{Extraction, JsonAST, Printer}
+import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
 
 class Init extends KmlCreator with Loggable {
@@ -64,8 +64,7 @@ class Init extends KmlCreator with Loggable {
       .cmd
   }
 
-  private def toAutoCompleteJson(enum: Enumeration): String = {
-    import JsonFormats.formats
-    Printer.compact(JsonAST.render(JArray(enum.values.toList.map(Extraction.decompose))))
+  private def toAutoCompleteJson(enum: AutocompleteEnum): String = {
+    Printer.compact(JsonAST.render(JArray(enum.values.toList.map(enumToJson))))
   }
 }

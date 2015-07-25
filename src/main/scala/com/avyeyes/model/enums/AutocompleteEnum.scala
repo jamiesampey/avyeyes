@@ -1,47 +1,35 @@
 package com.avyeyes.model.enums
 
 import net.liftweb.http.S
-import net.liftweb.json.JsonAST.{JString, JField, JObject, JValue}
-import net.liftweb.json.{TypeInfo, Formats, Serializer}
 
 import scala.reflect.ClassTag
 
 abstract class AutocompleteEnum extends Enumeration {
   def isCompositeLabel = false
-}
 
-class AutocompleteEnumSerializer[E <: AutocompleteEnum: ClassTag](enum: E) extends Serializer[E#Value] {
-  private val JQAC_LABEL = "label"
-  private val JQAC_VALUE = "value"
-  private val UNKNOWN_CODE = "U"
+  class AutocompleteEnumValue(name: String, val x : String) extends Val(nextId, name)
+  protected final def Value(name: String, x : String): MyVal = new MyVal(name,x)
 
-  val EnumerationClass = classOf[E#Value]
-
-  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
-    case (TypeInfo(EnumerationClass, _), json) => json match {
-      case str: JValue => enum.withName((str \ JQAC_VALUE).extract[String])
+  def getEnumAutoCompleteLabel(value: AutocompleteEnum#Value) = {
+    isCompositeLabel match {
+      case true => s"${value.toString} - ${getEnumLabel(value)}"
+      case false => getEnumLabel(value)
     }
   }
 
-  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case v: E#Value => JObject(List(
-      JField(JQAC_VALUE, JString(v.toString)),
-      JField(JQAC_LABEL, JString(getAutoCompleteLabel(v)))
-    ))
-  }
+  def getEnumLabel[T <: AutocompleteEnum: ClassTag](enumValue: T#Value): String = {
+    import scala.reflect.runtime.universe._
 
-  private def getAutoCompleteLabel(value: Enumeration#Value) = enum.isCompositeLabel match {
-    case true => s"${value.toString} - ${getLabel(value)}"
-    case false => getLabel(value)
-  }
+    val enumName = enumValue.toString
 
-  def getLabel(value: Enumeration#Value): String = {
-    val name = value.toString
-    if (name == UNKNOWN_CODE)
-      S.?(s"enum.$name")
-    else {
-      val enumClass = enum.getClass.getSimpleName filterNot(c => c == '$')
-      S.?(s"enum.$enumClass.$name")
+    enumName match {
+      case "U" => S.?(s"enum.U")
+      case _ => {
+        val EnumerationClass = classOf[T#Value]
+        val cls = enumValue.getClass
+        val enumClassName = enumValue.getClass.getSimpleName.replace("$", "")
+        S.?(s"enum.$enumClassName.$enumName")
+      }
     }
   }
 }
