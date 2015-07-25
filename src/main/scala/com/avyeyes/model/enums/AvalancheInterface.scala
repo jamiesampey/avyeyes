@@ -1,6 +1,8 @@
 package com.avyeyes.model.enums
 
-object AvalancheInterface extends Enumeration {
+object AvalancheInterface extends AutocompleteEnum {
+  override def default = U
+
   type AvalancheInterface = Value
 
   val U = Value("AvalancheInterface.U")

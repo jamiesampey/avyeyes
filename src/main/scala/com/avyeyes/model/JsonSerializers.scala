@@ -1,7 +1,7 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums._
-import com.avyeyes.model.JsonConverters.formats
+import com.avyeyes.model.JsonSerializers.formats
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.ext.DateTimeSerializer
@@ -9,7 +9,7 @@ import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
 
 
-object JsonConverters {
+object JsonSerializers {
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
     CoordinateSerializer +

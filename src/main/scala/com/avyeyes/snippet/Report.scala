@@ -5,7 +5,7 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
 import com.avyeyes.data.DaoInjector
 import com.avyeyes.model._
-import com.avyeyes.model.StringConverters._
+import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._
@@ -152,28 +152,25 @@ class Report extends ExternalIdService with Mailer with Loggable {
       extId = extId,
       viewable = viewable,
       submitterEmail = submitterEmail,
-      submitterExp = ExperienceLevel.withName(submitterExp),
+      submitterExp = ExperienceLevel.withCode(submitterExp),
       location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
-      scene = Scene(
-        enumWithNameOr(SkyCoverage, sky, SkyCoverage.U),
-        enumWithNameOr(Precipitation, precip, Precipitation.U)
-      ),
+      scene = Scene(SkyCoverage.withCode(sky), Precipitation.withCode(precip)),
       slope = Slope(
-        Aspect.withName(aspect),
+        Aspect.withCode(aspect),
         strToIntOrNegOne(angle),
         strToIntOrNegOne(elevation)
       ),
       classification = Classification(
-        avyType = enumWithNameOr(AvalancheType, avyType, AvalancheType.U),
-        trigger = enumWithNameOr(AvalancheTrigger, avyTrigger, AvalancheTrigger.U),
-        interface = enumWithNameOr(AvalancheInterface, avyInterface, AvalancheInterface.U),
+        avyType = AvalancheType.withCode(avyType),
+        trigger = AvalancheTrigger.withCode(avyTrigger),
+        interface = AvalancheInterface.withCode(avyInterface),
         rSize = strToDblOrZero(rSize),
         dSize = strToDblOrZero(dSize)
       ),
       humanNumbers = HumanNumbers(
-        modeOfTravel = enumWithNameOr(ModeOfTravel, modeOfTravel, ModeOfTravel.U),
+        modeOfTravel = ModeOfTravel.withCode(modeOfTravel),
         caught = strToIntOrNegOne(caught),
         partiallyBuried = strToIntOrNegOne(partiallyBuried),
         fullyBuried = strToIntOrNegOne(fullyBuried),

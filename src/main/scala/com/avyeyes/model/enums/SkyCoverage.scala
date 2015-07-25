@@ -1,6 +1,8 @@
 package com.avyeyes.model.enums
 
-object SkyCoverage extends Enumeration {
+object SkyCoverage extends AutocompleteEnum {
+  override def default = U
+
   type SkyCoverage = Value
   
   val U = Value("SkyCoverage.U")

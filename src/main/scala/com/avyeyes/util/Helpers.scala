@@ -41,22 +41,8 @@ object Helpers {
 	  case _ => true
 	}
 
-  def isValidEnumValue(enum: Enumeration, name: String): Boolean = {
-    val enumOpt: Option[Enumeration#Value] = try {
-      Some(enum.withName(name))
-    } catch {
-      case e: NoSuchElementException => None
-    }
-    enumOpt.isDefined
-  }
-
-  def enumWithNameOr[T <: Enumeration](enum: T, name: String, defaultValue: T#Value): T#Value = {
-    val enumOpt: Option[T#Value] = try {
-      Some(enum.withName(name))
-    } catch {
-      case e: NoSuchElementException => None
-    }
-    enumOpt getOrElse defaultValue
+  def isValidEnumValue(enum: Enumeration, code: String): Boolean = {
+    enum.values.exists(_.toString.endsWith(code))
   }
 
   def isValidEmail(email: String): Boolean = {

@@ -2,7 +2,11 @@ package com.avyeyes.model
 
 import com.avyeyes.model.enums._
 
-object StringConverters {
+object StringSerializers {
+
+  implicit def enumValueToCode(enumValue: AutocompleteEnum#Value): String = {
+    enumValue.toString.split('.')(1)
+  }
 
   implicit def stringToCoordinate(str: String): Coordinate = {
     val arr = str.split(',')
@@ -12,18 +16,18 @@ object StringConverters {
   implicit def stringToClassification(str: String): Classification = {
     val arr = str.split("-")
     Classification(
-      avyType = AvalancheType.withName(arr(0)),
-      trigger = AvalancheTrigger.withName(arr(1)),
+      avyType = AvalancheType.withCode(arr(0)),
+      trigger = AvalancheTrigger.withCode(arr(1)),
       rSize = arr(2).toDouble,
       dSize = arr(3).toDouble,
-      interface = AvalancheInterface.withName(arr(4))
+      interface = AvalancheInterface.withCode(arr(4))
     )
   }
 
   implicit def stringToHumanNumbers(str: String): HumanNumbers = {
     val arr = str.split(',')
     HumanNumbers(
-      ModeOfTravel.withName(arr(0)),
+      ModeOfTravel.withCode(arr(0)),
       arr(1).toInt,
       arr(2).toInt,
       arr(3).toInt,
@@ -35,15 +39,15 @@ object StringConverters {
   implicit def stringToScene(str: String): Scene = {
     val arr = str.split("-")
     Scene(
-      skyCoverage = SkyCoverage.withName(arr(0)),
-      precipitation = Precipitation.withName(arr(1))
+      skyCoverage = SkyCoverage.withCode(arr(0)),
+      precipitation = Precipitation.withCode(arr(1))
     )
   }
 
   implicit def stringToSlope(str: String): Slope = {
     val arr = str.split("-")
     Slope(
-      aspect = Aspect.withName(arr(0)),
+      aspect = Aspect.withCode(arr(0)),
       angle = arr(1).toInt,
       elevation = arr(2).toInt
     )

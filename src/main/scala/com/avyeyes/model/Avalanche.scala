@@ -1,6 +1,6 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.JsonConverters.formats
+import com.avyeyes.model.JsonSerializers.formats
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.util.Helpers._
 import net.liftweb.json.Extraction
@@ -53,10 +53,8 @@ case class Avalanche(
   }
 
   def toSearchJson = {
-    ("extId" -> JString(extId)) ~
-    ("aspect" -> JString(slope.aspect.toString)) ~
-    ("coords" -> JArray(perimeter.flatMap(coord =>
-      Array(JDouble(coord.longitude), JDouble(coord.latitude), JDouble(coord.altitude))))
-    )
+    ("extId" -> extId) ~
+    ("aspect" -> slope.aspect.toString) ~
+    ("coords" -> perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 }

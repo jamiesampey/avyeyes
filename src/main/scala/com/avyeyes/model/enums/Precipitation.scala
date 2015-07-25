@@ -1,6 +1,8 @@
 package com.avyeyes.model.enums
 
-object Precipitation extends Enumeration {
+object Precipitation extends AutocompleteEnum {
+  override def default = U
+
   type Precipitation = Value
 
   val U = Value("Precipitation.U")

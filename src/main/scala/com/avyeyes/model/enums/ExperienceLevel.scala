@@ -1,6 +1,8 @@
 package com.avyeyes.model.enums
 
-object ExperienceLevel extends Enumeration {
+object ExperienceLevel extends AutocompleteEnum {
+  override def default = A0
+
   type ExperienceLevel = Value
   
   val A0 = Value("ExperienceLevel.A0")

@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import java.sql.Timestamp
 
-import com.avyeyes.model.StringConverters._
+import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
@@ -39,9 +39,9 @@ private[data] object SlickColumnMappers {
     str => stringToHumanNumbers(str)
   )
 
-  private def enumNameMapper(enum: Enumeration) = MappedColumnType.base[enum.Value, String](
-    enum => enum.toString.split(".")(1),
-    str => enum.withName(str)
+  private def enumNameMapper(enum: AutocompleteEnum) = MappedColumnType.base[enum.Value, String](
+    enumValue => enumValueToCode(enumValue),
+    str => enum.withCode(str)
   )
 
   implicit def aspectMapper = enumNameMapper(Aspect)

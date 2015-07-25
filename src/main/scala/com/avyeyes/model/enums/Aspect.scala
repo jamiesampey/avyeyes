@@ -1,6 +1,8 @@
 package com.avyeyes.model.enums
 
-object Aspect extends Enumeration {
+object Aspect extends AutocompleteEnum {
+  override def default = N
+
   type Aspect = Value
 
 	val N = Value("Aspect.N")
