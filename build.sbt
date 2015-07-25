@@ -53,7 +53,6 @@ libraryDependencies ++= {
   Seq(
     "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
     "net.liftweb" %% "lift-testkit" % liftVersion % "compile",
-    "net.liftweb" %% "lift-json-ext" % liftVersion % "compile",
     "net.liftmodules" %% ("omniauth_2.6") % "0.17" % "compile",
     "com.typesafe.akka" %% "akka-actor" % "2.3.6",
     "com.typesafe.slick" %% "slick" % "3.0.0",

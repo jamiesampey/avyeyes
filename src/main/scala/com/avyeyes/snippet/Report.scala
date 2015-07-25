@@ -156,7 +156,9 @@ class Report extends ExternalIdService with Mailer with Loggable {
       location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
-      scene = Scene(SkyCoverage.withCode(sky), Precipitation.withCode(precip)),
+      scene = Scene(
+        SkyCoverage.withCode(sky),
+        Precipitation.withCode(precip)),
       slope = Slope(
         Aspect.withCode(aspect),
         strToIntOrNegOne(angle),
@@ -178,7 +180,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
         killed = strToIntOrNegOne(killed)
       ),
       comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
-      perimeter = coordStr.trim.split(" ").toList.map(stringToCoordinate)
+      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toList.map(stringToCoordinate) else List.empty
     )
   }
 

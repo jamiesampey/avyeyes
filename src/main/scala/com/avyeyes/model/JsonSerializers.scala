@@ -2,11 +2,12 @@ package com.avyeyes.model
 
 import com.avyeyes.model.enums._
 import com.avyeyes.model.JsonSerializers.formats
+import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST.JString
-import net.liftweb.json.ext.DateTimeSerializer
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
+import org.joda.time.DateTime
 
 
 object JsonSerializers {
@@ -18,6 +19,15 @@ object JsonSerializers {
       ExperienceLevel, ModeOfTravel, Precipitation, SkyCoverage)
 }
 
+object DateTimeSerializer extends CustomSerializer[DateTime](format => (
+  {
+    case JString(s) => strToDate(s)
+    case JNull => null
+  },
+  {
+    case d: DateTime => JString(dateToStr(d))
+  }
+))
 
 object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
   {
@@ -31,8 +41,8 @@ object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
   {
     case Coordinate(lng, lat, alt) =>
       ("longitude" -> lng) ~ ("latitude" -> lat) ~ ("altitude" -> alt)
-  }))
-
+  }
+))
 
 object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format => (
   {
@@ -46,8 +56,8 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
   {
     case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size) =>
       ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size)
-  }))
-
+  }
+))
 
 class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
   private val predicate = classOf[Enumeration#Value]
@@ -80,8 +90,8 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
       case _ => false
     }
 
-    val labelKey = if (tokens(1) == "U") "U" else s"${tokens(0)}.${tokens(1)}"
-    val label = S.?(s"enum.$labelKey")
+    val labelKey = if (tokens(1) == "U") "enum.U" else s"enum.${tokens(0)}.${tokens(1)}"
+    val label = S ? labelKey
 
     useCompositLabel(tokens(0)) match {
       case true => s"${tokens(1)} - $label"
