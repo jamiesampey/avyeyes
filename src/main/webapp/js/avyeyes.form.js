@@ -24,26 +24,26 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
     twttrContainer.append('<a class="twitter-share-button" data-url="' + a.extUrl + '" data-text="' + title
       + '" href="http://twitter.com/share" data-count="horizontal">');
 
-	$('#roAvyFormElevation').text(a.elevation);
-	$('#roAvyFormElevationFt').text(metersToFeet(a.elevation));
-	$('#roAvyFormAspect').text(a.aspect.label);
-	$('#roAvyFormAngle').text(a.angle);
+	$('#roAvyFormElevation').text(a.slope.elevation);
+	$('#roAvyFormElevationFt').text(metersToFeet(a.slope.elevation));
+	$('#roAvyFormAspect').text(a.slope.aspect.label);
+	$('#roAvyFormAngle').text(a.slope.angle);
 	  
-	$('#roAvyFormType').text(a.avyType.label);
-	$('#roAvyFormTrigger').text(a.avyTrigger.label);
-	$('#roAvyFormInterface').text(a.avyInterface.label);
-	$('#roAvyFormRSize').text(a.rSize);
-	$('#roAvyFormDSize').text(a.dSize);
+	$('#roAvyFormType').text(a.classification.avyType.label);
+	$('#roAvyFormTrigger').text(a.classification.trigger.label);
+	$('#roAvyFormInterface').text(a.classification.interface.label);
+	$('#roAvyFormRSize').text(a.classification.rSize);
+	$('#roAvyFormDSize').text(a.classification.dSize);
 
-	$('#roAvyFormSky').text(a.sky.label);
-	$('#roAvyFormPrecip').text(a.precip.label);
+	$('#roAvyFormSky').text(a.scene.skyCoverage.label);
+	$('#roAvyFormPrecip').text(a.scene.precipitation.label);
 	
-	setReadOnlySpinnerVal('#roAvyFormNumCaught', a.caught);
-	setReadOnlySpinnerVal('#roAvyFormNumPartiallyBuried', a.partiallyBuried);
-	setReadOnlySpinnerVal('#roAvyFormNumFullyBuried', a.fullyBuried);
-	setReadOnlySpinnerVal('#roAvyFormNumInjured', a.injured);
-	setReadOnlySpinnerVal('#roAvyFormNumKilled', a.killed);
-	$('#roAvyFormModeOfTravel').text(a.modeOfTravel.label);
+	setReadOnlySpinnerVal('#roAvyFormNumCaught', a.humanNumbers.caught);
+	setReadOnlySpinnerVal('#roAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
+	setReadOnlySpinnerVal('#roAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
+	setReadOnlySpinnerVal('#roAvyFormNumInjured', a.humanNumbers.injured);
+	setReadOnlySpinnerVal('#roAvyFormNumKilled', a.humanNumbers.killed);
+	$('#roAvyFormModeOfTravel').text(a.humanNumbers.modeOfTravel.label);
 	
 	if (a.comments.length > 0) {
 		$('#roAvyFormCommentsRow').show();
@@ -100,26 +100,26 @@ AvyForm.displayReadWriteForm = function(a) {
     
     $('#rwAvyFormAreaName').val(a.areaName);
     $('#rwAvyFormDate').val(a.avyDate);
-    setReadWriteAutocompleteVal('#rwAvyFormSky', a.sky);
-    setReadWriteAutocompleteVal('#rwAvyFormPrecip', a.precip);
+    setReadWriteAutocompleteVal('#rwAvyFormSky', a.scene.skyCoverage);
+    setReadWriteAutocompleteVal('#rwAvyFormPrecip', a.scene.precipitation);
     
-    setReadWriteAutocompleteVal('#rwAvyFormType', a.avyType);
-    setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.avyTrigger);
-    setReadWriteAutocompleteVal('#rwAvyFormInterface', a.avyInterface);
-    setReadWriteSliderVal('#rwAvyFormRsizeValue', a.rSize);
-    setReadWriteSliderVal('#rwAvyFormDsizeValue', a.dSize);
+    setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
+    setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
+    setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
+    setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
+    setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
     
-    $('#rwAvyFormElevation').val(a.elevation);
-    $('#rwAvyFormElevationFt').val(metersToFeet(a.elevation));
-    setReadWriteAutocompleteVal('#rwAvyFormAspect', a.aspect);
-    $('#rwAvyFormAngle').val(a.angle);
+    $('#rwAvyFormElevation').val(a.slope.elevation);
+    $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
+    setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
+    $('#rwAvyFormAngle').val(a.slope.angle);
     
-    setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.caught);
-    setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.partiallyBuried);
-    setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.fullyBuried);
-    setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.injured);
-    setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.killed);
-    setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.modeOfTravel);
+    setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
+    setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
+    setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
+    setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
+    setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
+    setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.humanNumbers.modeOfTravel);
     
     $('#rwAvyFormComments').val(a.comments);
     
