@@ -12,7 +12,7 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Genera
   val commonLng = -102.5359593
   val commonGeoBounds = GeoBounds(commonLat+.01, commonLng+.01, commonLat-.01, commonLng-.01)
   
-  "Admin avalanche select auth check" >> {
+  "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {
       val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
       val dao = new SquerylAvalancheDao(NotAuthorized)
@@ -30,7 +30,7 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Genera
     }
   }
 
-  "Admin avalanche select filtering" >> {
+  "Admin avalanche select filtering" should {
     val dao = new SquerylAvalancheDao(Authorized)
 
     val a1 = avalancheWithNameAndSubmitter("94jfi449", false, commonLat, commonLng, "JoNeS Bowl", "")

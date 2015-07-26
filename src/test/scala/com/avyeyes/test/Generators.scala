@@ -45,10 +45,12 @@ trait Generators {
     killed <- Gen.choose(-1, 50)
   } yield HumanNumbers(modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed)
 
+  def genExtId = Gen.resultOf((i: Int) => RandomStringUtils.random(ExtIdLength, ExtIdChars))
+
   def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
-      extId <- Gen.resultOf((i: Int) => RandomStringUtils.random(ExtIdLength, ExtIdChars))
+      extId <- genExtId
       viewable <- Gen.oneOf(true, false)
       submitterEmail <- Gen.alphaStr
       submitterExp <- Gen.oneOf(ExperienceLevel.values.toSeq)
@@ -79,4 +81,19 @@ trait Generators {
       comments = comments
     )
 
+  def genAvalancheImage = for {
+    createTime <- genDateTime()
+    avyExtId <- genExtId
+    filename <- Gen.alphaStr
+    origFilename <- Gen.alphaStr
+    mimeType <- Gen.alphaStr
+    size <- Gen.choose(1000, MaxImageSize)
+  } yield AvalancheImage(
+    createTime = createTime,
+    avyExtId = avyExtId,
+    filename = filename,
+    origFilename = origFilename,
+    mimeType = mimeType,
+    size = size
+  )
 }

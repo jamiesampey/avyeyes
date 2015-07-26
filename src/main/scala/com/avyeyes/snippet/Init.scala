@@ -3,7 +3,6 @@ package com.avyeyes.snippet
 import com.avyeyes.data.DaoInjector
 import com.avyeyes.model.JsonSerializers.formats
 import com.avyeyes.model.enums._
-import com.avyeyes.service.KmlCreator
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
@@ -15,7 +14,7 @@ import net.liftweb.http.js.JsExp._
 import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
 
-class Init extends KmlCreator with Loggable {
+class Init extends Loggable {
   lazy val dao = DaoInjector.dao.vend
     
   val InitAvyMsgDelayMillis = 5000

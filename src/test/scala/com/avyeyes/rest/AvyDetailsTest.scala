@@ -1,16 +1,16 @@
 package com.avyeyes.rest
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.model.enums._
 import com.avyeyes.test._
 import net.liftweb.http._
+import net.liftweb.json.Extraction
 
 class AvyDetailsTest extends WebSpec2 with MockInjectors with Generators with LiftHelpers {
   val avyDetails = new AvyDetails
 
   "Valid avalanche details REST request" should {
     val extId1 = "4jf93dkj"
-    val a1 = avalancheAtLocation(extId1, true, 41.6634870900582, -103.875046142935)
+    val a1 = genAvalanche.sample.get.copy(extId = extId1, viewable = true)
     mockAvalancheDao.getAvalanche(extId1) returns Some(a1)
     mockAvalancheDao.getAvalancheImages(extId1) returns Nil
 
@@ -26,15 +26,12 @@ class AvyDetailsTest extends WebSpec2 with MockInjectors with Generators with Li
     "Return JSON objects for enum (autocomplete) fields" withSFor(s"http://avyeyes.com/rest/avydetails/$extId1") in {
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(avyDetails(req)())
-      
-      extractJsonField(resp, "submitterExp") must_== ExperienceLevel.enumToJson(a1.submitterExp)
-      extractJsonField(resp, "sky") must_== SkyCoverage.enumToJson(a1.sky)
-      extractJsonField(resp, "precip") must_== Precipitation.enumToJson(a1.precip)
-      extractJsonField(resp, "aspect") must_== Aspect.enumToJson(a1.aspect)
-      extractJsonField(resp, "avyType") must_== AvalancheType.enumToJson(a1.avyType)
-      extractJsonField(resp, "avyTrigger") must_== AvalancheTrigger.enumToJson(a1.avyTrigger)
-      extractJsonField(resp, "avyInterface") must_== AvalancheInterface.enumToJson(a1.avyInterface)
-      extractJsonField(resp, "modeOfTravel") must_== ModeOfTravel.enumToJson(a1.modeOfTravel)
+
+      extractJsonField(resp, "submitterExp") must_== Extraction.decompose(a1.submitterExp)
+      extractJsonField(resp, "scene") must_== Extraction.decompose(a1.scene)
+      extractJsonField(resp, "slope") must_== Extraction.decompose(a1.slope)
+      extractJsonField(resp, "classification") must_== Extraction.decompose(a1.classification)
+      extractJsonField(resp, "humanNumbers") must_== Extraction.decompose(a1.humanNumbers)
     }
   }
   

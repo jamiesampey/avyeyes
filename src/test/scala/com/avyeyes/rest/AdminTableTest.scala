@@ -30,15 +30,13 @@ class AdminTableTest extends WebSpec2 with MockInjectors with Generators with Li
   "Admin table query" should {
     mockUserSession.isAuthorizedSession returns true
 
-    val commonLat = 38.5763463456
-    val commonLng = -102.5359593
-    val a1 = avalancheWithNameAndSubmitter("950503kf", true, commonLat, commonLng, "West side of berthoud", "jeffery.lebowski@yahoo.com")
-    val a2 = avalancheWithNameAndSubmitter("jh984f9d", false, commonLat, commonLng, "New York mtn", "walter_sobchak@gmail.com")
-    val a3 = avalancheWithNameAndSubmitter("g4ifj390", true, commonLat, commonLng, "Vail Pass, black lakes ridge", "donny@hiselement.com")
+    val a1 = genAvalanche.sample.get.copy(extId = "950503kf", areaName = "West side of berthoud", submitterEmail = "jeffery.lebowski@yahoo.com")
+    val a2 = genAvalanche.sample.get.copy(extId = "jh984f9d", areaName = "New York mtn", submitterEmail = "walter_sobchak@gmail.com")
+    val a3 = genAvalanche.sample.get.copy(extId = "g4ifj390", areaName = "Vail Pass, black lakes ridge", submitterEmail = "donny@hiselement.com")
 
     val totalRecordsInDb = 84923
     val filteredRecords = 3
-    mockAvalancheDao.selectAvalanchesForAdminTable(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, filteredRecords, totalRecordsInDb))
+    mockAvalancheDao.getAvalanchesAdmin(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, filteredRecords, totalRecordsInDb))
 
     var drawParam = "43"
     val searchParam = "gmail.com"
@@ -53,13 +51,13 @@ class AdminTableTest extends WebSpec2 with MockInjectors with Generators with Li
       adminTable(req)()
 
       val queryArgCapture = capture[AdminAvalancheQuery]
-      there was one(mockAvalancheDao).selectAvalanchesForAdminTable(queryArgCapture)
+      there was one(mockAvalancheDao).getAvalanchesAdmin(queryArgCapture)
       val adminQuery = queryArgCapture.value
 
       adminQuery.offset must_== 10
       adminQuery.limit must_== 20
-      adminQuery.order(0) must_==(OrderField.Viewable, OrderDirection.Desc)
-      adminQuery.order(1) must_==(OrderField.createTime, OrderDirection.Asc)
+      adminQuery.order(0) must_==(OrderField.Viewable, OrderDirection.desc)
+      adminQuery.order(1) must_==(OrderField.CreateTime, OrderDirection.asc)
       adminQuery.extId must_== Some(s"%$searchParam%")
       adminQuery.areaName must_== Some(s"%$searchParam%")
       adminQuery.submitterEmail must_== Some(s"%$searchParam%")
@@ -80,9 +78,9 @@ class AdminTableTest extends WebSpec2 with MockInjectors with Generators with Li
       generatedJson must contain(a1.areaName)
       generatedJson must contain(a2.areaName)
       generatedJson must contain(a3.areaName)
-      generatedJson must contain(a1.getSubmitter.email)
-      generatedJson must contain(a2.getSubmitter.email)
-      generatedJson must contain(a3.getSubmitter.email)
+      generatedJson must contain(a1.submitterEmail)
+      generatedJson must contain(a2.submitterEmail)
+      generatedJson must contain(a3.submitterEmail)
     }
   }
 }

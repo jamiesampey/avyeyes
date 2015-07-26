@@ -4,7 +4,7 @@ import com.avyeyes.test._
 import com.avyeyes.model._
 import com.avyeyes.util.Helpers._
 
-class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
+class ExternalIdServiceTest extends WebSpec2 with MockInjectors with Generators {
   isolated
   
   class ExtIdTester extends ExternalIdService
@@ -20,7 +20,7 @@ class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
     }
     
    "Give up (and throw a RuntimeException) after a specified number of tries" withSFor("/") in {
-     mockAvalancheDao.getAvalanche(any[String]) returns Some(new Avalanche)
+     mockAvalancheDao.getAvalanche(any[String]) returns Some(genAvalanche.sample.get)
      try {
        extIdTester.reserveNewExtId(mockAvalancheDao)
        failure

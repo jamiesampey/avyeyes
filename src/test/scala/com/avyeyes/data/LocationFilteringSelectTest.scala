@@ -1,19 +1,19 @@
 package com.avyeyes.data
 
 import com.avyeyes.data.{GeoBounds, AvalancheQuery}
-import com.avyeyes.model.Avalanche
+import com.avyeyes.model.{Coordinate, Avalanche}
 import com.avyeyes.test._
 import org.specs2.mutable.Specification
 
 class LocationFilteringSelectTest extends Specification with InMemoryDB with Generators {
   sequential
 
-  val dao = new SquerylAvalancheDao(Authorized)
+  val dao = new MemoryMapCachedDao()
 
-  val neHemisphereAvalanche = avalancheAtLocation("4a3jr23k", true, 47.59349550, 7.59349050)
-  val seHemisphereAvalanche = avalancheAtLocation("83j859j3", true, -44.5943285, 170.2395494)
-  val swHemisphereAvalanche = avalancheAtLocation("2r8f883s", true, -25.5349550, -69.59349050)
-  val nwHemisphereAvalanche = avalancheAtLocation("954fi4rf", true, 39.59349550, -106.59349050)
+  val neHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "4a3jr23k", viewable = true, location = Coordinate(7.59349050, 47.59349550, 2500))
+  val seHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "83j859j3", viewable = true, location = Coordinate(170.2395494, -44.5943285, 2500))
+  val swHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "2r8f883s", viewable = true, location = Coordinate(-69.59349050, -25.5349550, 2500))
+  val nwHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "954fi4rf", viewable = true, location = Coordinate(-106.59349050, 39.59349550, 2500))
 
   "Latitude/Longitude filtering in all four hemispheres" >> {
     "NE hemisphere lat/lng filtering works" >> {

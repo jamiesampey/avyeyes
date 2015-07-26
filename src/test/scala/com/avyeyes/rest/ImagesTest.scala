@@ -8,7 +8,7 @@ import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
 import org.mockito.ArgumentCaptor
 
-class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHelpers {
+class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators with LiftHelpers {
   sequential
 
   val images = new Images
@@ -16,8 +16,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
   val extId = "4jf93dkj"
   val goodImgFileName = "imgInDb"
   val goodImgMimeType = "image/jpeg"
-  val goodImgBytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
-  val avalancheImage = AvalancheImage(extId, goodImgFileName, "origName", goodImgMimeType, goodImgBytes.length)
+  val avalancheImage = genAvalancheImage.sample.get.copy(avyExtId = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
   
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None
@@ -25,25 +24,6 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
   mockAvalancheDao.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
   mockAvalancheDao.getAvalancheImage(extId, badImgFileName) returns noImage
 
-  "Image Get request" should {
-    "Return an image if it exists" withSFor(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName") in {
-      val req = openLiftReqBox(S.request)
-      val resp = openLiftRespBox(images(req)())
-        
-      resp must beAnInstanceOf[StreamingResponse]
-      resp.asInstanceOf[StreamingResponse].size must_== goodImgBytes.length
-      resp.asInstanceOf[StreamingResponse].headers must contain(("Content-Type", goodImgMimeType))
-    }
-    
-    "Return a NotFoundResponse (404) if image does not exist" withSFor(s"http://avyeyes.com/rest/images/$extId/$badImgFileName") in {
-      val req = openLiftReqBox(S.request)
-      val resp = openLiftRespBox(images(req)())
-      
-      resp must beAnInstanceOf[NotFoundResponse]
-      resp.asInstanceOf[NotFoundResponse].message must contain(s"$extId/$badImgFileName")
-    }
-  }
-  
   "Image Post request" should {
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
     mockPostRequest.method = "POST"
