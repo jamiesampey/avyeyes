@@ -12,11 +12,9 @@ trait MockInjectors extends AroundExample with Mockito {
   val mockUserSession = mock[UserSession]
   val mockAvalancheDao = mock[CachedDao]
 
-  SessionFactory.concreteFactory = Some(() => Session.create(mock[java.sql.Connection], mock[PostgreSqlAdapter]))
-  
   def around[T: AsResult](t: => T): Result = {
     UserInjector.userSession.doWith(mockUserSession) {
-      DaoInjector.avalancheDao.doWith(mockAvalancheDao) {
+      DaoInjector.dao.doWith(mockAvalancheDao) {
         AsResult(t)
       }
     }

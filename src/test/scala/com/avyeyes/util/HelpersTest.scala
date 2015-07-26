@@ -122,12 +122,6 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
       Helpers.isValidEnumValue(AvalancheType, "YX") must beFalse
       Helpers.isValidEnumValue(AvalancheType, "HS") must beTrue
     }
-
-    "Return an enum value given the enum name" withSFor("/") in {
-      Helpers.enumWithNameOr(AvalancheTrigger, "", AvalancheTrigger.U) must_== AvalancheTrigger.U
-      Helpers.enumWithNameOr(AvalancheTrigger, "ZZ", AvalancheTrigger.U) must_== AvalancheTrigger.U
-      Helpers.enumWithNameOr(AvalancheTrigger, "AS", AvalancheTrigger.U) must_== AvalancheTrigger.AS
-    }
   }
 
   "Email validation" should {

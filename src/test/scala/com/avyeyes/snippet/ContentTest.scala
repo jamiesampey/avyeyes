@@ -23,7 +23,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
     
     "Wire header fields" withSFor("/") in {
-      val headers = (renderedPage \\ "span" filter (node => (node\"@class").text == "avyHeader"))
+      val headers = renderedPage \\ "span" filter (node => (node\"@class").text == "avyHeader")
       
       for (header <- headers) {
         val id = (header\"@id").text
@@ -35,7 +35,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
     
     "Wire message fields" withSFor("/") in {
-      val messages = (renderedPage \\ "span" filter (node => (node\"@class").text == "avyMsg"))
+      val messages = renderedPage \\ "span" filter (node => (node\"@class").text == "avyMsg")
       
       for (message <- messages) {
         val id = (message\"@id").text
@@ -47,7 +47,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
   
     "Wire link fields" withSFor("/") in {
-      val links = (renderedPage \\ "a" filter (node => (node\"@class").text == "avyLink"))
+      val links = renderedPage \\ "a" filter (node => (node\"@class").text == "avyLink")
       
       for (link <- links) {
         val id = (link\"@id").text
@@ -59,7 +59,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
     
     "Wire button fields" withSFor("/") in {
-      val buttons = (renderedPage \\ "input" filter (node => (node\"@class").text == "avyButton"))
+      val buttons = renderedPage \\ "input" filter (node => (node\"@class").text == "avyButton")
       
       for (button <- buttons) {
         val id = (button\"@id").text

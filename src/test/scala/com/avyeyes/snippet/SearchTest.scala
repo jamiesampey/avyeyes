@@ -1,6 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.AvalancheQuery
+import com.avyeyes.model.Coordinate
 
 import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor
@@ -58,7 +59,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
     }
     
     "Pass search criteria to DAO" withSFor("/") in {
-      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns Nil
+      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns Nil
       
       val queryArg: ArgumentCaptor[AvalancheQuery] = 
         ArgumentCaptor.forClass(classOf[AvalancheQuery]);
@@ -66,7 +67,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
       val search = newSearchWithTestData
       search.doSearch()
 
-      there was one(mockAvalancheDao).selectAvalanches(queryArg.capture())
+      there was one(mockAvalancheDao).getAvalanches(queryArg.capture())
       val passedQuery = queryArg.getValue
       
       passedQuery.geoBounds.get.latMax must_== strToDblOrZero(search.latMax)
@@ -85,12 +86,14 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
     
     "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {
       val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = avalancheAtLocation(inRangeExtId, true, 39.6634870900582, -105.875046142935)
+      val avalancheInRange = genAvalanche.sample.get.copy(extId = inRangeExtId,
+        viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
       
       val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
+      val avalancheOutOfRange = genAvalanche.sample.get.copy(extId = outOfRangeExtId,
+        viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
       
-      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camPitch = "10"
@@ -102,12 +105,14 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
     
     "Uses haversine distance if cam tilt is greater than cutoff" withSFor("/") in {
       val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = avalancheAtLocation(inRangeExtId, true, 39.6634870900582, -105.875046142935)
-      
+      val avalancheInRange = genAvalanche.sample.get.copy(extId = inRangeExtId,
+        viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
+
       val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = avalancheAtLocation(outOfRangeExtId, true, 41.6634870900582, -103.875046142935)
-      
-      mockAvalancheDao.selectAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      val avalancheOutOfRange = genAvalanche.sample.get.copy(extId = outOfRangeExtId,
+        viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
+
+      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camPitch = (CamPitchCutoff + 1).toString

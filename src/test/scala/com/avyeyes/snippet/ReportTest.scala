@@ -131,12 +131,12 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
-      passedAvalanche.sky must_== SkyCoverage.U
-      passedAvalanche.precip must_== Precipitation.U
-      passedAvalanche.avyType must_== AvalancheType.U
-      passedAvalanche.avyTrigger must_== AvalancheTrigger.U
-      passedAvalanche.avyInterface must_== AvalancheInterface.U
-      passedAvalanche.modeOfTravel must_== ModeOfTravel.U
+      passedAvalanche.scene.skyCoverage must_== SkyCoverage.U
+      passedAvalanche.scene.precipitation must_== Precipitation.U
+      passedAvalanche.classification.avyType must_== AvalancheType.U
+      passedAvalanche.classification.trigger must_== AvalancheTrigger.U
+      passedAvalanche.classification.interface must_== AvalancheInterface.U
+      passedAvalanche.humanNumbers.modeOfTravel must_== ModeOfTravel.U
     }
     
     "Insert an avalanche with the correct values" withSFor("/") in {
@@ -154,21 +154,21 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       passedAvalanche.extId must_== report.extId
       passedAvalanche.viewable must beFalse
       passedAvalanche.submitterExp must_== ExperienceLevel.withName(report.submitterExp)
-      passedAvalanche.lat must_== strToDblOrZero(report.lat)
-      passedAvalanche.lng must_== strToDblOrZero(report.lng)
+      passedAvalanche.location.longitude must_== strToDblOrZero(report.lng)
+      passedAvalanche.location.latitude must_== strToDblOrZero(report.lat)
       passedAvalanche.areaName must_== report.areaName
-      passedAvalanche.avyDate must_== strToDate(report.dateStr)
-      passedAvalanche.sky must_== SkyCoverage.withName(report.sky)
-      passedAvalanche.precip must_== Precipitation.withName(report.precip)
-      passedAvalanche.avyType must_== AvalancheType.withName(report.avyType)
-      passedAvalanche.avyTrigger must_== AvalancheTrigger.withName(report.avyTrigger)
-      passedAvalanche.avyInterface must_== AvalancheInterface.withName(report.avyInterface)
-      passedAvalanche.caught must_== strToIntOrNegOne(report.caught)
-      passedAvalanche.partiallyBuried must_== strToIntOrNegOne(report.partiallyBuried)
-      passedAvalanche.fullyBuried must_== strToIntOrNegOne(report.fullyBuried)
-      passedAvalanche.injured must_== strToIntOrNegOne(report.injured)
-      passedAvalanche.killed must_== strToIntOrNegOne(report.killed)
-      passedAvalanche.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
+      passedAvalanche.date must_== strToDate(report.dateStr)
+      passedAvalanche.scene.skyCoverage must_== SkyCoverage.withName(report.sky)
+      passedAvalanche.scene.precipitation must_== Precipitation.withName(report.precip)
+      passedAvalanche.classification.avyType must_== AvalancheType.withName(report.avyType)
+      passedAvalanche.classification.trigger must_== AvalancheTrigger.withName(report.avyTrigger)
+      passedAvalanche.classification.interface must_== AvalancheInterface.withName(report.avyInterface)
+      passedAvalanche.humanNumbers.caught must_== strToIntOrNegOne(report.caught)
+      passedAvalanche.humanNumbers.partiallyBuried must_== strToIntOrNegOne(report.partiallyBuried)
+      passedAvalanche.humanNumbers.fullyBuried must_== strToIntOrNegOne(report.fullyBuried)
+      passedAvalanche.humanNumbers.injured must_== strToIntOrNegOne(report.injured)
+      passedAvalanche.humanNumbers.killed must_== strToIntOrNegOne(report.killed)
+      passedAvalanche.humanNumbers.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
       passedAvalanche.comments must_== report.comments
       passedAvalanche.perimeter must_== testCoords
       emailArg.getValue must_== report.submitterEmail
@@ -247,7 +247,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.areaName = "east side of LP"
       report.dateStr = "01-27-2014"
       
-      report.sky = SkyCoverage.Broken.toString
+      report.sky = SkyCoverage.BKN.toString
       report.precip = Precipitation.SN.toString
       report.elevation = "3500"
       report.aspect = Aspect.E.toString
