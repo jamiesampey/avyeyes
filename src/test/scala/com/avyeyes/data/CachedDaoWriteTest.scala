@@ -1,123 +1,108 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.Avalanche
-import com.avyeyes.model.enums._
-import com.avyeyes.test.Generators
 import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
-import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 
 class CachedDaoWriteTest extends Specification with InMemoryDB {
   sequential
 
-  val extId = "5j3fyjd9"
-
   "Avalanche insert" >> {
     "Inserts an avalanche" >> {
       val dao = new MemoryMapCachedDao(Authorized)
+
+      val al = avalancheForTest.copy(viewable = true)
+      dao.insertAvalanche(a1)
+      val selectResult = dao.getAvalanche(a1.extId).get
       
-      dao.insertAvalanche(avalancheForTest.copy(extId = extId, viewable = true))
-      val selectResult = dao.getAvalanche(extId).get
-      
-      selectResult.extId must_== extId
+      selectResult.extId mustEqual a1.extId
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {
-      val dao = new SquerylAvalancheDao(NotAuthorized)
+      val dao = new MemoryMapCachedDao(NotAuthorized)
 
-      dao.insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail) must throwA[UnauthorizedException]
+      dao.insertAvalanche(avalancheForTest.copy(viewable = true)) must throwA[UnauthorizedException]
     }
   }
     
   "Avalanche update" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new SquerylAvalancheDao(NotAuthorized)
+      val dao = new MemoryMapCachedDao(NotAuthorized)
 
-      dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
-      val updatedAvalanche = avalancheAtLocation(extId, true, commonLat, commonLng)
+      val origAvalanche = avalancheForTest.copy(viewable = false)
+      dao.insertAvalanche(origAvalanche)
+      val updatedAvalanche = origAvalanche.copy(viewable = true)
       
       dao.updateAvalanche(updatedAvalanche) must throwA[UnauthorizedException]
     }
     
     "Allowed with authorized session" >> {
-      val dao = new SquerylAvalancheDao(Authorized)
+      val dao = new MemoryMapCachedDao(Authorized)
 
-      dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
-      val updatedAvalanche = avalancheWithSize(extId, true, commonLat, commonLng, 2.5, 4)
+      val origAvalanche = avalancheForTest.copy(viewable = false)
+      dao.insertAvalanche(origAvalanche)
+      val updatedAvalanche = origAvalanche.copy(viewable = true)
       dao.updateAvalanche(updatedAvalanche)
       
-      val selectResult = dao.selectAvalanche(extId).get
-      selectResult.rSize must_== updatedAvalanche.rSize
-      selectResult.dSize must_== updatedAvalanche.dSize
+      val selectResult = dao.getAvalanche(origAvalanche.extId).get
+      selectResult.viewable mustEqual true
     }
     
     "Modifies all updatable avalanche fields" >> {
-      val dao = new SquerylAvalancheDao(Authorized)
+      val dao = new MemoryMapCachedDao(Authorized)
 
-      dao insertAvalanche(avalancheWithSize(extId, false, commonLat, commonLng, .5, 5), submitterEmail)
-      
-      val updatedAvalanche = Avalanche(extId, true, ExperienceLevel.P1,
-        commonLat, commonLng, "A totally new name!", DateTime.now, SkyCoverage.Few, Precipitation.SN, 2354, Aspect.SW, 45,
-        AvalancheType.SF, AvalancheTrigger.AS, AvalancheInterface.O, 1.5, 3, 
-        5, 3, 2, 3, 2, ModeOfTravel.Snowshoer, "some totally different comments", 
-        "-105.875489242241,39.66464854369643,3709.514235071098")
-      
+      val origAvalanche = avalancheForTest
+      dao.insertAvalanche(origAvalanche)
+
+      val updatedAvalanche = avalancheForTest.copy(extId = origAvalanche.extId)
       dao.updateAvalanche(updatedAvalanche)
       
-      val selectResult = dao.selectAvalanche(extId).get
-      selectResult.viewable must beTrue
-      selectResult.submitterExp must_== updatedAvalanche.submitterExp
-      selectResult.lat must_== updatedAvalanche.lat
-      selectResult.lng must_== updatedAvalanche.lng
-      selectResult.areaName must_== updatedAvalanche.areaName
-      selectResult.avyDate must_== new DateTime(updatedAvalanche.avyDate)
-      selectResult.sky must_== updatedAvalanche.sky
-      selectResult.precip must_== updatedAvalanche.precip
-      selectResult.aspect must_== updatedAvalanche.aspect
-      selectResult.angle must_== updatedAvalanche.angle
-      selectResult.avyType must_== updatedAvalanche.avyType
-      selectResult.avyTrigger must_== updatedAvalanche.avyTrigger
-      selectResult.avyInterface must_== updatedAvalanche.avyInterface
-      selectResult.rSize must_== updatedAvalanche.rSize
-      selectResult.dSize must_== updatedAvalanche.dSize
-      selectResult.caught must_== updatedAvalanche.caught
-      selectResult.partiallyBuried must_== updatedAvalanche.partiallyBuried
-      selectResult.fullyBuried must_== updatedAvalanche.fullyBuried
-      selectResult.injured must_== updatedAvalanche.injured
-      selectResult.killed must_== updatedAvalanche.killed
-      selectResult.modeOfTravel must_== updatedAvalanche.modeOfTravel
-      selectResult.comments must_== updatedAvalanche.comments
-      selectResult.getSubmitter.email must_== submitterEmail
+      val result = dao.getAvalanche(origAvalanche.extId).get
+      result.createTime mustEqual origAvalanche.createTime
+      result.viewable mustEqual updatedAvalanche.viewable
+      result.submitterExp mustEqual updatedAvalanche.submitterExp
+      result.submitterEmail mustEqual updatedAvalanche.submitterEmail
+      result.location mustEqual origAvalanche.location
+      result.areaName mustEqual updatedAvalanche.areaName
+      result.date mustEqual updatedAvalanche.date
+      result.scene mustEqual updatedAvalanche.scene
+      result.slope mustEqual updatedAvalanche.slope
+      result.classification mustEqual updatedAvalanche.classification
+      result.humanNumbers mustEqual updatedAvalanche.humanNumbers
+      result.comments mustEqual updatedAvalanche.comments
+      result.perimeter mustEqual origAvalanche.perimeter
     }
   }
   
   "Avalanche delete" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new SquerylAvalancheDao(NotAuthorized)
+      val dao = new MemoryMapCachedDao(NotAuthorized)
 
-      dao insertAvalanche(avalancheAtLocation(extId, false, commonLat, commonLng), submitterEmail)
+      val a1 = avalancheForTest
+      dao.insertAvalanche(avalancheForTest)
 
-      dao.deleteAvalanche(extId) must throwA[UnauthorizedException]
+      dao.deleteAvalanche(avalancheForTest.extId) must throwA[UnauthorizedException]
     }
     
     "Allowed (and works) with authorized session" >> {
-      val dao = new SquerylAvalancheDao(Authorized)
+      val dao = new MemoryMapCachedDao(Authorized)
 
-      val extId2 = "3a9s59de"
-      dao insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail)
-      dao insertAvalanche(avalancheAtLocation(extId2, true, commonLat, commonLng), submitterEmail)
-      dao.selectAvalanche(extId) must beSome
-      dao.selectAvalanche(extId2) must beSome
+      val a1 = avalancheForTest
+      val a2 = avalancheForTest
+
+      dao.insertAvalanche(a1)
+      dao.insertAvalanche(a2)
+      dao.getAvalanche(a1.extId) must beSome
+      dao.getAvalanche(a2.extId) must beSome
       
-      dao.deleteAvalanche(extId)
+      dao.deleteAvalanche(a1.extId)
       
-      dao.selectAvalanche(extId) must beNone
-      dao.selectAvalanche(extId2) must beSome
+      dao.getAvalanche(a1.extId) must beNone
+      dao.getAvalanche(a2.extId) must beSome
       
-      dao.deleteAvalanche(extId2)
+      dao.deleteAvalanche(a2.extId)
       
-      dao.selectAvalanche(extId2) must beNone
+      dao.getAvalanche(a2.extId) must beNone
     }
   }
 }
