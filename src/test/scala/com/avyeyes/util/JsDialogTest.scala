@@ -18,22 +18,6 @@ class JsDialogTest extends WebSpec2(Boot().boot _) {
     }
   }
 
-  "Delayed info dialog" should {
-    "Use the correct dialog title" withSFor("/") in {
-      val cmd = JsDialog.delayedInfo(5000, "initAvalancheFound", "12-09-2014", "Some mountain", "Avalanche professional").toJsCmd
-      cmd must startWith("avyeyes.showModalDialog")
-      cmd must contain(S.?("title.infoDialog"))
-    }
-
-    "Pass delay and params down to message" withSFor("/") in {
-      val cmd = JsDialog.delayedInfo(5000, "initAvalancheFound", "12-09-2014", "Some mountain", "Avalanche professional").toJsCmd
-      cmd must contain("5000")
-      cmd must contain("12-09-2014")
-      cmd must contain("Some mountain")
-      cmd must contain("Avalanche professional")
-    }
-  }
-
   "Error dialog" should {
     "Use the correct dialog title" withSFor("/") in {
       val cmd = JsDialog.error("eyeTooHigh").toJsCmd

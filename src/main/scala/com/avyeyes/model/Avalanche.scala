@@ -53,6 +53,9 @@ case class Avalanche(
 
   def toSearchJson = {
     ("extId" -> extId) ~
+    ("date" -> Extraction.decompose(date)) ~
+    ("areaName" -> areaName) ~
+    ("submitterExp" -> Extraction.decompose(submitterExp)) ~
     ("aspect" -> slope.aspect.toString) ~
     ("coords" -> perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }

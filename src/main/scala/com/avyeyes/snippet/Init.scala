@@ -5,7 +5,6 @@ import com.avyeyes.model.JsonSerializers.formats
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._
-import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JE._
@@ -37,14 +36,10 @@ class Init extends Loggable {
     initAvalanche match {
       case Some(avalanche) => {
         logger.debug("Initial page view with init avy " + extId)
-
-        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchJson).cmd &
-          JsDialog.delayedInfo(InitAvyMsgDelayMillis, "initAvalancheFound", dateToStr(avalanche.date),
-            avalanche.areaName, S.?(s"enum.ExperienceLevel.${avalanche.submitterExp.toString}"))
+        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchJson).cmd
       }
       case None => {
         logger.debug("Initial page view without an init avy")
-
         Call("avyEyesView.geolocateAndFlyTo").cmd
       }
     }

@@ -114,9 +114,15 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
     });
 }
 
-AvyEyesView.prototype.addAvalancheAndFlyTo = function(avalanche) {
+AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
+    var showTitle = function() {
+        this.showModalDialog("Info", a.date + ": " + a.areaName + "<br/>" +
+            "<span style='font-size: .8em;'>Submitter: </span><span style='font: italic .8em times,serif'>"
+            + a.submitterExp.label + "</span><br/><br/><i>Click on the avalanche for details.</i>");
+    }.bind(this);
+
     AvyEyesUI.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(avalanche), flyToHeadingFromAspect(avalanche.aspect), -25, 700, false);
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.aspect), -25, 700, false).then(showTitle);
 }
 
 var geocodeAttempts = 0;
@@ -219,17 +225,32 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
 }
 
 AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, removeTargetAfterFlight) {
+	var camHeight = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.cesiumViewer.camera.position).height
+
 	var flightDurationSeconds = 3.0;
+
 	if (removeTargetAfterFlight) {
 		setTimeout(function() {
 			this.cesiumViewer.entities.remove(targetEntity)
 		}.bind(this), flightDurationSeconds * 2000);
 	}
 
-	return this.cesiumViewer.flyTo(targetEntity, {
-        duration: flightDurationSeconds,
-        offset: toHeadingPitchRange(heading, pitch, range)
-    });
+    var finalFlight = function() {
+        return this.cesiumViewer.flyTo(targetEntity, {
+            duration: flightDurationSeconds,
+            easingFunction: Cesium.EasingFunction.ELASTIC_IN,
+            offset: toHeadingPitchRange(heading, pitch, range)
+        });
+    }.bind(this);
+
+    if (range < 2000 && camHeight > 50000) {
+        return this.cesiumViewer.flyTo(targetEntity, {
+            duration: flightDurationSeconds,
+            offset: toHeadingPitchRange(heading, -89.9, 5000)
+        }).then(finalFlight);
+    } else {
+        return finalFlight();
+    }
 }
 
 function toHeadingPitchRange(heading, pitch, range) {
