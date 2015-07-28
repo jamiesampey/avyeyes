@@ -3,28 +3,24 @@ package com.avyeyes.data
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test.Generators
+import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
 
-class CachedDaoWriteTest extends Specification with InMemoryDB with Generators {
+class CachedDaoWriteTest extends Specification with InMemoryDB {
   sequential
 
-  val submitterEmail = "thomas.jefferson@me.com"
   val extId = "5j3fyjd9"
-  val commonLat = 38.5763463456
-  val commonLng = -102.5359593
 
   "Avalanche insert" >> {
     "Inserts an avalanche" >> {
-      val dao = new SquerylAvalancheDao(Authorized)
+      val dao = new MemoryMapCachedDao(Authorized)
       
-      dao insertAvalanche(avalancheAtLocation(extId, true, commonLat, commonLng), submitterEmail)
-      val selectResult = dao.selectAvalanche(extId).get
+      dao.insertAvalanche(avalancheForTest.copy(extId = extId, viewable = true))
+      val selectResult = dao.getAvalanche(extId).get
       
       selectResult.extId must_== extId
-      selectResult.lat must_== commonLat
-      selectResult.lng must_== commonLng
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {

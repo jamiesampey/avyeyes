@@ -7,7 +7,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import org.scalacheck.Gen
 
-trait Generators {
+object Generators {
 
   def genDateTime(minMillis: Long = 0): Gen[DateTime] = Gen.choose(minMillis, DateTime.now.getMillis).map(new DateTime(_))
 
@@ -47,7 +47,7 @@ trait Generators {
 
   def genExtId = Gen.resultOf((i: Int) => RandomStringUtils.random(ExtIdLength, ExtIdChars))
 
-  def genAvalanche: Gen[Avalanche] = for {
+  private def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
       extId <- genExtId
@@ -81,6 +81,8 @@ trait Generators {
       comments = comments
     )
 
+  def avalancheForTest = genAvalanche.sample.get
+
   def genAvalancheImage = for {
     createTime <- genDateTime()
     avyExtId <- genExtId
@@ -96,4 +98,6 @@ trait Generators {
     mimeType = mimeType,
     size = size
   )
+
+  def avalancheImageForTest = genAvalancheImage.sample.get
 }

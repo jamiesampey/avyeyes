@@ -1,16 +1,17 @@
 package com.avyeyes.rest
 
 import com.avyeyes.model.Avalanche
+import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import net.liftweb.http._
 import net.liftweb.json.Extraction
 
-class AvyDetailsTest extends WebSpec2 with MockInjectors with Generators with LiftHelpers {
+class AvyDetailsTest extends WebSpec2 with MockInjectors with LiftHelpers {
   val avyDetails = new AvyDetails
 
   "Valid avalanche details REST request" should {
     val extId1 = "4jf93dkj"
-    val a1 = genAvalanche.sample.get.copy(extId = extId1, viewable = true)
+    val a1 = avalancheForTest.copy(extId = extId1, viewable = true)
     mockAvalancheDao.getAvalanche(extId1) returns Some(a1)
     mockAvalancheDao.getAvalancheImages(extId1) returns Nil
 

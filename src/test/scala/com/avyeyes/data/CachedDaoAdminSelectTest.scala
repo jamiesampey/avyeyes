@@ -1,11 +1,10 @@
 package com.avyeyes.data
 
-import com.avyeyes.data.{GeoBounds, AdminAvalancheQuery}
-import com.avyeyes.test.Generators
+import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
-class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Generators {
+class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
   sequential
 
   val commonLat = 38.5763463456
@@ -14,38 +13,38 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Genera
   
   "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {
-      val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(NotAuthorized)
-      insertTestAvalanche(dao, nonviewableAvalanche)
-      dao.selectAvalanchesForAdminTable(AdminAvalancheQuery()) must throwA[UnauthorizedException]
+      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
+      val dao = new MemoryMapCachedDao(NotAuthorized)
+      dao.insertAvalanche(nonviewableAvalanche)
+      dao.getAvalanchesAdmin(AdminAvalancheQuery()) must throwA[UnauthorizedException]
     }
 
     "Admin select allowed with authorized session" >> {
-      val nonviewableAvalanche = avalancheAtLocation("94jfi449", false, commonLat, commonLng)
-      val dao = new SquerylAvalancheDao(Authorized)
-      insertTestAvalanche(dao, nonviewableAvalanche)
-      dao.selectAvalanchesForAdminTable(AdminAvalancheQuery())._1.size must_== 1
-      dao.selectAvalanchesForAdminTable(AdminAvalancheQuery())._2 must_== 1
-      dao.selectAvalanchesForAdminTable(AdminAvalancheQuery())._3 must_== 1
+      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
+      val dao = new MemoryMapCachedDao(Authorized)
+      dao.insertAvalanche(nonviewableAvalanche)
+      dao.getAvalanchesAdmin(AdminAvalancheQuery())._1.size must_== 1
+      dao.getAvalanchesAdmin(AdminAvalancheQuery())._2 must_== 1
+      dao.getAvalanchesAdmin(AdminAvalancheQuery())._3 must_== 1
     }
   }
 
   "Admin avalanche select filtering" should {
-    val dao = new SquerylAvalancheDao(Authorized)
+    val dao = new MemoryMapCachedDao(Authorized)
 
-    val a1 = avalancheWithNameAndSubmitter("94jfi449", false, commonLat, commonLng, "JoNeS Bowl", "")
-    val a2 = avalancheWithNameAndSubmitter("95fsov7p", false, commonLat, commonLng, "Highland Bowl", "")
-    val a3 = avalancheWithNameAndSubmitter("3wksovtq", false, commonLat, commonLng, "jones pass", "")
+    val a1 = avalancheForTest.copy(extId = "94jfi449", viewable = false, areaName = "JoNeS Bowl")
+    val a2 = avalancheForTest.copy(extId = "95fsov7p", viewable = false, areaName = "Highland Bowl")
+    val a3 = avalancheForTest.copy(extId = "3wksovtq", viewable = false, areaName = "jones pass")
 
     "Filters by external ID" >> {
-      insertTestAvalanche(dao, a1)
-      insertTestAvalanche(dao, a2)
-      insertTestAvalanche(dao, a3)
+      dao.insertAvalanche(a1)
+      dao.insertAvalanche(a2)
+      dao.insertAvalanche(a3)
 
       val query1 = AdminAvalancheQuery(extId = Some("%94j%"))
-      val result1 = dao.selectAvalanchesForAdminTable(query1)
+      val result1 = dao.getAvalanchesAdmin(query1)
       val query2 = AdminAvalancheQuery(extId = Some("%sov%"))
-      val result2 = dao.selectAvalanchesForAdminTable(query2)
+      val result2 = dao.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a1.extId
       result1._2 must_== 1
@@ -56,14 +55,14 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Genera
     }
 
     "Filters by area name" >> {
-      insertTestAvalanche(dao, a1)
-      insertTestAvalanche(dao, a2)
-      insertTestAvalanche(dao, a3)
+      dao.insertAvalanche(a1)
+      dao.insertAvalanche(a2)
+      dao.insertAvalanche(a3)
 
       val query1 = AdminAvalancheQuery(areaName = Some("%land%"))
-      val result1 = dao.selectAvalanchesForAdminTable(query1)
+      val result1 = dao.getAvalanchesAdmin(query1)
       val query2 = AdminAvalancheQuery(areaName = Some("%jones%"))
-      val result2 = dao.selectAvalanchesForAdminTable(query2)
+      val result2 = dao.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a2.extId
       result1._2 must_== 1
@@ -74,14 +73,14 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB with Genera
     }
 
     "Filters by submitter email" >> {
-      insertTestAvalanche(dao, a1, "joe.brown@gmail.com")
-      insertTestAvalanche(dao, a2, "neo@yahoo.com")
-      insertTestAvalanche(dao, a3, "charlie_brownja@here.org")
+      dao.insertAvalanche(a1.copy(submitterEmail = "joe.brown@gmail.com"))
+      dao.insertAvalanche(a2.copy(submitterEmail = "neo@yahoo.com"))
+      dao.insertAvalanche(a3.copy(submitterEmail = "charlie_brownja@here.org"))
 
       val query1 = AdminAvalancheQuery(submitterEmail = Some("%org%"))
-      val result1 = dao.selectAvalanchesForAdminTable(query1)
+      val result1 = dao.getAvalanchesAdmin(query1)
       val query2 = AdminAvalancheQuery(submitterEmail = Some("%BROWN%"))
-      val result2 = dao.selectAvalanchesForAdminTable(query2)
+      val result2 = dao.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a3.extId
       result1._2 must_== 1

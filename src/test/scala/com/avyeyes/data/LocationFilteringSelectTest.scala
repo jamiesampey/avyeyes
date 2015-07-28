@@ -1,27 +1,27 @@
 package com.avyeyes.data
 
-import com.avyeyes.data.{GeoBounds, AvalancheQuery}
-import com.avyeyes.model.{Coordinate, Avalanche}
-import com.avyeyes.test._
+import com.avyeyes.model.Coordinate
+import com.avyeyes.test.Generators._
 import org.specs2.mutable.Specification
 
-class LocationFilteringSelectTest extends Specification with InMemoryDB with Generators {
+class LocationFilteringSelectTest extends Specification with InMemoryDB {
   sequential
 
-  val dao = new MemoryMapCachedDao()
+  val dao = new MemoryMapCachedDao(NotAuthorized)
 
-  val neHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "4a3jr23k", viewable = true, location = Coordinate(7.59349050, 47.59349550, 2500))
-  val seHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "83j859j3", viewable = true, location = Coordinate(170.2395494, -44.5943285, 2500))
-  val swHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "2r8f883s", viewable = true, location = Coordinate(-69.59349050, -25.5349550, 2500))
-  val nwHemisphereAvalanche = genAvalanche.sample.get.copy(extId = "954fi4rf", viewable = true, location = Coordinate(-106.59349050, 39.59349550, 2500))
+  val neHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(7.59349050, 47.59349550, 2500))
+  val seHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(170.2395494, -44.5943285, 2500))
+  val swHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(-69.59349050, -25.5349550, 2500))
+  val nwHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(-106.59349050, 39.59349550, 2500))
 
   "Latitude/Longitude filtering in all four hemispheres" >> {
     "NE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val neLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(neHemisphereAvalanche)))
+      val neLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
+        Some(createGeoBoundsToInclude(neHemisphereAvalanche.location)))
       
-      val resultList = dao.selectAvalanches(neLatLngInBoundsCriteria)
+      val resultList = dao.getAvalanches(neLatLngInBoundsCriteria)
       
       resultList must have length(1)
       resultList.head.extId must_== neHemisphereAvalanche.extId
@@ -30,9 +30,10 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Gen
     "SE hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val seLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(seHemisphereAvalanche)))
+      val seLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
+        Some(createGeoBoundsToInclude(seHemisphereAvalanche.location)))
       
-      val resultList = dao.selectAvalanches(seLatLngInBoundsCriteria)
+      val resultList = dao.getAvalanches(seLatLngInBoundsCriteria)
       
       resultList must have length(1)
       resultList.head.extId must_== seHemisphereAvalanche.extId
@@ -41,9 +42,10 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Gen
     "SW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val swLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(swHemisphereAvalanche)))
+      val swLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
+        Some(createGeoBoundsToInclude(swHemisphereAvalanche.location)))
       
-      val resultList = dao.selectAvalanches(swLatLngInBoundsCriteria)
+      val resultList = dao.getAvalanches(swLatLngInBoundsCriteria)
       
       resultList must have length(1)
       resultList.head.extId must_== swHemisphereAvalanche.extId
@@ -52,23 +54,24 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB with Gen
     "NW hemisphere lat/lng filtering works" >> {
       insertAllAvalanches
       
-      val nwLatLngInBoundsCriteria = AvalancheQuery(geoBounds = Some(createGeoBoundsToInclude(nwHemisphereAvalanche)))
+      val nwLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
+        Some(createGeoBoundsToInclude(nwHemisphereAvalanche.location)))
       
-      val resultList = dao.selectAvalanches(nwLatLngInBoundsCriteria)
+      val resultList = dao.getAvalanches(nwLatLngInBoundsCriteria)
       
       resultList must have length(1)
       resultList.head.extId must_== nwHemisphereAvalanche.extId
     }
   }
   
-  private def createGeoBoundsToInclude(a: Avalanche) = {
-    GeoBounds(a.lat+.01, a.lng+.01, a.lat-.01, a.lng-.01)
+  private def createGeoBoundsToInclude(c: Coordinate) = {
+    GeoBounds(c.latitude+.01, c.longitude+.01, c.latitude-.01, c.longitude-.01)
   }
   
   private def insertAllAvalanches() = {
-    insertTestAvalanche(dao, neHemisphereAvalanche)
-    insertTestAvalanche(dao, nwHemisphereAvalanche)
-    insertTestAvalanche(dao, swHemisphereAvalanche)
-    insertTestAvalanche(dao, seHemisphereAvalanche)
+    dao.insertAvalanche(neHemisphereAvalanche)
+    dao.insertAvalanche(nwHemisphereAvalanche)
+    dao.insertAvalanche(swHemisphereAvalanche)
+    dao.insertAvalanche(seHemisphereAvalanche)
   }
 }

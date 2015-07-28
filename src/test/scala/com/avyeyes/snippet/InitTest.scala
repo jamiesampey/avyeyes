@@ -1,9 +1,10 @@
 package com.avyeyes.snippet
 
 import bootstrap.liftweb.Boot
+import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 
-class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators {
+class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
 
   "Initial JsCmd" should {
     isolated 
@@ -11,7 +12,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors with Generator
     val validExtId = "4jhu2ie9"
 
     "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
-      val initAvalanche = genAvalanche.sample.get.copy(extId = validExtId, viewable = true)
+      val initAvalanche = avalancheForTest.copy(extId = validExtId, viewable = true)
       mockAvalancheDao.getAvalanche(any[String]) returns Some(initAvalanche)
 
       val init = new Init

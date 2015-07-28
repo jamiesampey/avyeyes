@@ -2,13 +2,14 @@ package com.avyeyes.rest
 
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.AvalancheImage
+import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
 import org.mockito.ArgumentCaptor
 
-class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators with LiftHelpers {
+class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHelpers {
   sequential
 
   val images = new Images
@@ -16,7 +17,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
   val extId = "4jf93dkj"
   val goodImgFileName = "imgInDb"
   val goodImgMimeType = "image/jpeg"
-  val avalancheImage = genAvalancheImage.sample.get.copy(avyExtId = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
+  val avalancheImage = avalancheImageForTest.copy(avyExtId = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
   
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None

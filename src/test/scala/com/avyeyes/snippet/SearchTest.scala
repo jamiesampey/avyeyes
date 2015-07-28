@@ -2,6 +2,7 @@ package com.avyeyes.snippet
 
 import com.avyeyes.data.AvalancheQuery
 import com.avyeyes.model.Coordinate
+import com.avyeyes.test.Generators._
 
 import scala.xml.NodeSeq
 import org.mockito.ArgumentCaptor
@@ -11,7 +12,7 @@ import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.enums._
 
-class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generators with TemplateReader {
+class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
   "Snippet rendering" should {
     "Wire input fields via CSS selectors" withSFor("/") in {
 
@@ -86,11 +87,11 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
     
     "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {
       val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = genAvalanche.sample.get.copy(extId = inRangeExtId,
+      val avalancheInRange = avalancheForTest.copy(extId = inRangeExtId,
         viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
       
       val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = genAvalanche.sample.get.copy(extId = outOfRangeExtId,
+      val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
         viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
       
       mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
@@ -105,11 +106,11 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Generat
     
     "Uses haversine distance if cam tilt is greater than cutoff" withSFor("/") in {
       val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = genAvalanche.sample.get.copy(extId = inRangeExtId,
+      val avalancheInRange = avalancheForTest.copy(extId = inRangeExtId,
         viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
 
       val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = genAvalanche.sample.get.copy(extId = outOfRangeExtId,
+      val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
         viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
 
       mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil

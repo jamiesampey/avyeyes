@@ -1,11 +1,11 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.{OrderDirection, OrderField, AdminAvalancheQuery}
-import com.avyeyes.model.OrderDirection
+import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
+import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import net.liftweb.http._
 
-class AdminTableTest extends WebSpec2 with MockInjectors with Generators with LiftHelpers {
+class AdminTableTest extends WebSpec2 with MockInjectors with LiftHelpers {
   sequential
 
   val adminTable = new AdminTable
@@ -30,9 +30,9 @@ class AdminTableTest extends WebSpec2 with MockInjectors with Generators with Li
   "Admin table query" should {
     mockUserSession.isAuthorizedSession returns true
 
-    val a1 = genAvalanche.sample.get.copy(extId = "950503kf", areaName = "West side of berthoud", submitterEmail = "jeffery.lebowski@yahoo.com")
-    val a2 = genAvalanche.sample.get.copy(extId = "jh984f9d", areaName = "New York mtn", submitterEmail = "walter_sobchak@gmail.com")
-    val a3 = genAvalanche.sample.get.copy(extId = "g4ifj390", areaName = "Vail Pass, black lakes ridge", submitterEmail = "donny@hiselement.com")
+    val a1 = avalancheForTest.copy(extId = "950503kf", areaName = "West side of berthoud", submitterEmail = "jeffery.lebowski@yahoo.com")
+    val a2 = avalancheForTest.copy(extId = "jh984f9d", areaName = "New York mtn", submitterEmail = "walter_sobchak@gmail.com")
+    val a3 = avalancheForTest.copy(extId = "g4ifj390", areaName = "Vail Pass, black lakes ridge", submitterEmail = "donny@hiselement.com")
 
     val totalRecordsInDb = 84923
     val filteredRecords = 3
