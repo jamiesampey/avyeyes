@@ -9,9 +9,9 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
 
   "Avalanche insert" >> {
     "Inserts an avalanche" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
-      val al = avalancheForTest.copy(viewable = true)
+      val a1 = avalancheForTest.copy(viewable = true)
       dao.insertAvalanche(a1)
       val selectResult = dao.getAvalanche(a1.extId).get
       
@@ -19,7 +19,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
 
       dao.insertAvalanche(avalancheForTest.copy(viewable = true)) must throwA[UnauthorizedException]
     }
@@ -27,7 +27,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     
   "Avalanche update" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
 
       val origAvalanche = avalancheForTest.copy(viewable = false)
       dao.insertAvalanche(origAvalanche)
@@ -37,7 +37,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     }
     
     "Allowed with authorized session" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       val origAvalanche = avalancheForTest.copy(viewable = false)
       dao.insertAvalanche(origAvalanche)
@@ -49,7 +49,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     }
     
     "Modifies all updatable avalanche fields" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       val origAvalanche = avalancheForTest
       dao.insertAvalanche(origAvalanche)
@@ -76,7 +76,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
   
   "Avalanche delete" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
 
       val a1 = avalancheForTest
       dao.insertAvalanche(avalancheForTest)
@@ -85,7 +85,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     }
     
     "Allowed (and works) with authorized session" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       val a1 = avalancheForTest
       val a2 = avalancheForTest

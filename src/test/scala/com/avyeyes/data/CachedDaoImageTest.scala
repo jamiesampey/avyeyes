@@ -20,7 +20,7 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     val img2 = avalancheImageForTest
   
     "Image insert and select works" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       dao.insertAvalanche(testAvalanche)
       dao.insertAvalancheImage(img1)
@@ -32,14 +32,14 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     }
     
     "Image without corresponding avalanche is not selected" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       dao.insertAvalancheImage(img2)
       dao.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
     "Image metadata search works" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       dao.insertAvalanche(testAvalanche)
       dao.insertAvalancheImage(img1)
@@ -51,7 +51,7 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     }
     
     "Image delete works for authorized session" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       dao.insertAvalanche(testAvalanche)
       dao.insertAvalancheImage(img1)
@@ -62,13 +62,13 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     }
     
     "Image delete does not work for unauthorized session" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
 
       dao.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
 
     "Image count works" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
 
       dao.insertAvalancheImage(img1)
       dao.insertAvalancheImage(img2)

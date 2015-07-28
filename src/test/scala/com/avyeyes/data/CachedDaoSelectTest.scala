@@ -14,20 +14,20 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
     val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
 
     "Not allowed with unauthorized session" >> {
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
       dao.insertAvalanche(nonviewableAvalanche)
       dao.getAvalanche(nonviewableAvalanche.extId) must beNone
     }
     
     "Allowed with authorized session" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
       dao.insertAvalanche(nonviewableAvalanche)
       dao.getAvalanche(nonviewableAvalanche.extId) must beSome
     }
   }
     
   "Date filtering" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val jan1Avalanche = avalancheForTest.copy(viewable = true, date = strToDate("01-01-2014"))
     val jan5Avalanche = avalancheForTest.copy(viewable = true, date = strToDate("01-05-2014"))
@@ -55,7 +55,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   }
   
   "Type/Trigger filtering" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val hsAsAvalanche = avalancheForTest.copy(viewable = true, classification =
       genClassification.sample.get.copy(avyType = AvalancheType.HS, trigger = AvalancheTrigger.AS))
@@ -85,7 +85,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   }
   
   "R/D size filtering" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val r4d15Avalanche = avalancheForTest.copy(viewable = true, classification =
       genClassification.sample.get.copy(rSize = 4.0, dSize = 1.5))
@@ -115,7 +115,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   }
   
   "Human numbers filtering" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val c4k0Avalanche = avalancheForTest.copy(viewable = true,
       humanNumbers = genHumanNumbers.sample.get.copy(caught = 4, killed = 0))
@@ -146,15 +146,15 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   
   "Avalanche count" >> {
     "Counts avalanches by viewability" >> {
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
 
       val viewableAvalanche1 = avalancheForTest.copy(viewable = true)
       val viewableAvalanche2 = avalancheForTest.copy(viewable = true)
       val unviewableAvalanche = avalancheForTest.copy(viewable = false)
     
       dao.insertAvalanche(viewableAvalanche1)
-      dao.insertAvalanche(dao, viewableAvalanche2)
-      dao.insertAvalanche(dao, unviewableAvalanche)
+      dao.insertAvalanche(viewableAvalanche2)
+      dao.insertAvalanche(unviewableAvalanche)
       
       dao.countAvalanches(Some(true)) must_== 2
       dao.countAvalanches(Some(false)) must_==1
@@ -163,7 +163,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   }
   
   "Ordering" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val now = DateTime.now
     val latest = avalancheForTest.copy(viewable = false, date = now)
@@ -198,7 +198,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
   }
   
   "Pagination" >> {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     "Selects can be paginated" >> {
       dao.insertAvalanche(avalancheForTest)

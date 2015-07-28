@@ -14,14 +14,14 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
   "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {
       val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
-      val dao = new MemoryMapCachedDao(NotAuthorized)
+      val dao = memoryMapCachedDaoForTest(NotAuthorized)
       dao.insertAvalanche(nonviewableAvalanche)
       dao.getAvalanchesAdmin(AdminAvalancheQuery()) must throwA[UnauthorizedException]
     }
 
     "Admin select allowed with authorized session" >> {
       val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
-      val dao = new MemoryMapCachedDao(Authorized)
+      val dao = memoryMapCachedDaoForTest(Authorized)
       dao.insertAvalanche(nonviewableAvalanche)
       dao.getAvalanchesAdmin(AdminAvalancheQuery())._1.size must_== 1
       dao.getAvalanchesAdmin(AdminAvalancheQuery())._2 must_== 1
@@ -30,7 +30,7 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
   }
 
   "Admin avalanche select filtering" should {
-    val dao = new MemoryMapCachedDao(Authorized)
+    val dao = memoryMapCachedDaoForTest(Authorized)
 
     val a1 = avalancheForTest.copy(extId = "94jfi449", viewable = false, areaName = "JoNeS Bowl")
     val a2 = avalancheForTest.copy(extId = "95fsov7p", viewable = false, areaName = "Highland Bowl")

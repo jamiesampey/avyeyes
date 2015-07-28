@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.enums._
 import com.avyeyes.test._
+import com.avyeyes.test.Generators._
 import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
 import net.liftweb.http.S
@@ -227,7 +228,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
       val report = spy(newReportWithTestData)
       report.viewable = true
-      mockAvalancheDao.getAvalanche(report.extId) returns Some(new Avalanche)
+      mockAvalancheDao.getAvalanche(report.extId) returns Some(avalancheForTest)
 
       report.saveReport()
       there was one(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
