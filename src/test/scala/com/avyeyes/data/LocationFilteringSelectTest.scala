@@ -7,7 +7,7 @@ import org.specs2.mutable.Specification
 class LocationFilteringSelectTest extends Specification with InMemoryDB {
   sequential
 
-  val dao = memoryMapCachedDaoForTest(NotAuthorized)
+  val dao = memoryMapCachedDaoForTest(Authorized)
 
   val neHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(7.59349050, 47.59349550, 2500))
   val seHemisphereAvalanche = avalancheForTest.copy(viewable = true, location = Coordinate(170.2395494, -44.5943285, 2500))

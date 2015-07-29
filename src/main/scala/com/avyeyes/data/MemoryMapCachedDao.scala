@@ -10,7 +10,7 @@ import com.avyeyes.util.Constants._
 import com.avyeyes.util.{UnauthorizedException, UserSession}
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import AgnosticDatabaseDriver.api._
 
 import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global

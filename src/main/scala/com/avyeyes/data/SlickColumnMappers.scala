@@ -6,7 +6,7 @@ import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import AgnosticDatabaseDriver.api._
 
 private[data] object SlickColumnMappers {
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](

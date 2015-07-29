@@ -5,7 +5,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import AgnosticDatabaseDriver.api._
 
 private[data] object DatabaseSchema {
   val Avalanches = TableQuery[AvalancheTable]
@@ -69,7 +69,7 @@ private[data] object DatabaseSchema {
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
-    def pk = primaryKey("pk_a", (avyExtId, filename))
+    def pk = primaryKey("avalanhce_image_pk", (avyExtId, filename))
 
     def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
   }
@@ -84,7 +84,7 @@ private[data] object DatabaseSchema {
   class UserRoleAssignmentTable(tag: Tag) extends Table[UserRole](tag, "app_user_role_assignment") {
     def email = column[String]("app_user")
     def role = column[String]("app_role")
-    def pk = primaryKey("pk_a", (email, role))
+    def pk = primaryKey("app_user_role_assignment_pk", (email, role))
 
     def * = (email, role) <> (UserRole.tupled, UserRole.unapply)
   }
