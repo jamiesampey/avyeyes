@@ -2,6 +2,7 @@ package com.avyeyes.snippet
 
 import com.avyeyes.data._
 import com.avyeyes.model._
+import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
@@ -59,7 +60,7 @@ class Search extends Loggable {
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
       if (avyList.size > 0) {
-        Call("avyEyesView.addAvalanches", JArray(avyList.map(_.toSearchJson))).cmd &
+        Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResult))).cmd &
         JsDialog.info("avySearchSuccess", avyList.size)
       } else {
         JsDialog.info("avySearchZeroMatches")

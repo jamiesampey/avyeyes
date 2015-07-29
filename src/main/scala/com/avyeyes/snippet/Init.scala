@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.DaoInjector
-import com.avyeyes.model.JsonSerializers.formats
+import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._
@@ -9,7 +9,6 @@ import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
-import net.liftweb.http.js.JsExp._
 import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
 
@@ -34,9 +33,9 @@ class Init extends Loggable {
     }
     
     initAvalanche match {
-      case Some(avalanche) => {
+      case Some(a) => {
         logger.debug("Initial page view with init avy " + extId)
-        Call("avyEyesView.addAvalancheAndFlyTo", avalanche.toSearchJson).cmd
+        Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitView(a)).cmd
       }
       case None => {
         logger.debug("Initial page view without an init avy")

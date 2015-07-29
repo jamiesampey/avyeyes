@@ -7,6 +7,7 @@ import net.liftweb.http.S
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
+import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
 
 
@@ -16,6 +17,41 @@ object JsonSerializers {
     AvalancheImageSerializer +
     new ChainedEnumSerializer(Aspect, AvalancheInterface, AvalancheTrigger, AvalancheType,
       ExperienceLevel, ModeOfTravel, Precipitation, SkyCoverage)
+
+
+  def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
+    ("extId" -> a.extId) ~
+      ("extUrl" -> a.getExtHttpUrl) ~
+      ("areaName" -> a.areaName) ~
+      ("avyDate" -> Extraction.decompose(a.date)) ~
+      ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
+      ("scene" -> Extraction.decompose(a.scene)) ~
+      ("slope" -> Extraction.decompose(a.slope)) ~
+      ("classification" -> Extraction.decompose(a.classification)) ~
+      ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
+      ("comments" -> (if (a.comments.isDefined) unescapeJava(a.comments.get) else "")) ~
+      ("images" -> Extraction.decompose(images))
+  }
+
+  def avalancheAdminDetails(a: Avalanche, images: List[AvalancheImage]) = {
+    ("viewable" -> a.viewable) ~
+    ("submitterEmail" -> a.submitterEmail) ~
+    avalancheDetails(a, images)
+  }
+
+  def avalancheSearchResult(a: Avalanche) = {
+    ("extId" -> a.extId) ~
+    ("coords" -> a.perimeter.flatMap(coord =>
+      Array(coord.longitude, coord.latitude, coord.altitude)))
+  }
+
+  def avalancheInitView(a: Avalanche) = {
+    avalancheSearchResult(a) ~
+    ("date" -> Extraction.decompose(a.date)) ~
+    ("areaName" -> a.areaName) ~
+    ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
+    ("slope" -> Extraction.decompose(a.slope))
+  }
 }
 
 object DateTimeSerializer extends CustomSerializer[DateTime](format => (

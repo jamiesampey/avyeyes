@@ -122,7 +122,8 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     }.bind(this);
 
     AvyEyesUI.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.aspect), -25, 700, false).then(showTitle);
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 700, false)
+        .then(showTitle);
 }
 
 var geocodeAttempts = 0;
@@ -238,7 +239,6 @@ AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, rem
     var finalFlight = function() {
         return this.cesiumViewer.flyTo(targetEntity, {
             duration: flightDurationSeconds,
-            easingFunction: Cesium.EasingFunction.ELASTIC_IN,
             offset: toHeadingPitchRange(heading, pitch, range)
         });
     }.bind(this);
@@ -246,7 +246,7 @@ AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, rem
     if (range < 2000 && camHeight > 50000) {
         return this.cesiumViewer.flyTo(targetEntity, {
             duration: flightDurationSeconds,
-            offset: toHeadingPitchRange(heading, -89.9, 5000)
+            offset: toHeadingPitchRange(0, -89.9, 4000)
         }).then(finalFlight);
     } else {
         return finalFlight();

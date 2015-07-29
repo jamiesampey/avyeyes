@@ -1,6 +1,7 @@
 package com.avyeyes.rest
 
 import com.avyeyes.data.DaoInjector
+import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.service.UserInjector
 import net.liftweb.common.Loggable
 import net.liftweb.http.rest.RestHelper
@@ -17,8 +18,8 @@ class AvyDetails extends RestHelper with Loggable {
         case Some(a) => {
           val images = dao.getAvalancheImages(a.extId)
           userSession.isAuthorizedSession match {
-            case true => Some(a.toAdminDetailsJson(images))
-            case false => Some(a.toDetailsJson(images))
+            case true => Some(avalancheAdminDetails(a, images))
+            case false => Some(avalancheDetails(a, images))
           }
         }
         case None => None
