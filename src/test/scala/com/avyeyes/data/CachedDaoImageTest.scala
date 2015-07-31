@@ -1,6 +1,5 @@
 package com.avyeyes.data
 
-import com.avyeyes.model._
 import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
@@ -20,11 +19,11 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     val img2 = avalancheImageForTest
   
     "Image insert and select works" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
-      dao.insertAvalanche(testAvalanche)
-      dao.insertAvalancheImage(img1)
-      val returnedImage = dao.getAvalancheImage(testAvalanche.extId, img1.filename).get
+      dal.insertAvalanche(testAvalanche)
+      dal.insertAvalancheImage(img1)
+      val returnedImage = dal.getAvalancheImage(testAvalanche.extId, img1.filename).get
       
       returnedImage.avyExtId must_== testAvalanche.extId
       returnedImage.filename must_== img1.filename
@@ -32,49 +31,49 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     }
     
     "Image without corresponding avalanche is not selected" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
-      dao.insertAvalancheImage(img2)
-      dao.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
+      dal.insertAvalancheImage(img2)
+      dal.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
     "Image metadata search works" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
-      dao.insertAvalanche(testAvalanche)
-      dao.insertAvalancheImage(img1)
-      dao.insertAvalancheImage(img2)
+      dal.insertAvalanche(testAvalanche)
+      dal.insertAvalancheImage(img1)
+      dal.insertAvalancheImage(img2)
       
-      val returnedImages = dao.getAvalancheImages(testAvalanche.extId)
+      val returnedImages = dal.getAvalancheImages(testAvalanche.extId)
       returnedImages must have length(1)
       returnedImages.head must_== (img1.filename, img1.mimeType, img1.size)
     }
     
     "Image delete works for authorized session" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
-      dao.insertAvalanche(testAvalanche)
-      dao.insertAvalancheImage(img1)
+      dal.insertAvalanche(testAvalanche)
+      dal.insertAvalancheImage(img1)
       
-      dao.getAvalancheImage(testAvalanche.extId, img1.filename) must beSome
-      dao.deleteAvalancheImage(testAvalanche.extId, img1.filename)
-      dao.getAvalancheImage(testAvalanche.extId, img1.filename) must beNone
+      dal.getAvalancheImage(testAvalanche.extId, img1.filename) must beSome
+      dal.deleteAvalancheImage(testAvalanche.extId, img1.filename)
+      dal.getAvalancheImage(testAvalanche.extId, img1.filename) must beNone
     }
     
     "Image delete does not work for unauthorized session" >> {
-      val dao = memoryMapCachedDaoForTest(NotAuthorized)
+      mockUserSession.isAuthorizedSession() returns false
 
-      dao.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
+      dal.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
 
     "Image count works" >> {
-      val dao = memoryMapCachedDaoForTest(NotAuthorized)
+      mockUserSession.isAuthorizedSession() returns false
 
-      dao.insertAvalancheImage(img1)
-      dao.insertAvalancheImage(img2)
-      dao.insertAvalancheImage(avalancheImageForTest.copy(avyExtId = img1.avyExtId))
-      dao.countAvalancheImages(img1.avyExtId) must_== 2
-      dao.countAvalancheImages(img2.avyExtId) must_== 1
+      dal.insertAvalancheImage(img1)
+      dal.insertAvalancheImage(img2)
+      dal.insertAvalancheImage(avalancheImageForTest.copy(avyExtId = img1.avyExtId))
+      dal.countAvalancheImages(img1.avyExtId) must_== 2
+      dal.countAvalancheImages(img2.avyExtId) must_== 1
     }
 
   }

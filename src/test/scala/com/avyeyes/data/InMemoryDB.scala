@@ -25,8 +25,9 @@ trait InMemoryDB extends AroundExample with Mockito {
     dataSource
   }
 
-  private val mockUserSession = mock[UserSession]
-  private lazy val memoryMapCachedDAL =
+  protected lazy val mockUserSession = mock[UserSession]
+
+  protected lazy val dal: MemoryMapCachedDAL =
     Try(new MemoryMapCachedDAL(H2Driver, h2DataSource, new TrieMap)) match {
       case scala.util.Success(instance) =>
         println("Successfully created a DAL")
@@ -35,24 +36,11 @@ trait InMemoryDB extends AroundExample with Mockito {
         println(s"Failed to create a DAL, ${ex.getMessage}"); null
     }
 
-  val Authorized = true
-  val NotAuthorized = false
-  
-  def memoryMapCachedDaoForTest(isAuthorized: Boolean) = {
-    isAuthorized match {
-      case true => mockUserSession.isAuthorizedSession() returns true
-      case false => mockUserSession.isAuthorizedSession() returns false
-    }
-    memoryMapCachedDAL
-  }
-
-  def around[T: AsResult](t: => T): Result = {
-    print(memoryMapCachedDAL)
+  def around[T: AsResult](t: => T): Result = UserInjector.userSession.doWith(mockUserSession) {
     Await.result( Database.forDataSource(h2DataSource).run {
-      sqlu"DROP ALL OBJECTS;" >> memoryMapCachedDAL.createSchema },
-      10 seconds)
+      sqlu"DROP ALL OBJECTS;" >> dal.createSchema }, 10 seconds)
 
-    UserInjector.userSession.doWith(mockUserSession) { AsResult(t) }
+     AsResult(t)
   }
 }
 

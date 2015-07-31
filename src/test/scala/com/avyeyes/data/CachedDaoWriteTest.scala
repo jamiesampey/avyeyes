@@ -9,55 +9,55 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
 
   "Avalanche insert" >> {
     "Inserts an avalanche" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
       val a1 = avalancheForTest.copy(viewable = true)
-      dao.insertAvalanche(a1)
-      val selectResult = dao.getAvalanche(a1.extId).get
+      dal.insertAvalanche(a1)
+      val selectResult = dal.getAvalanche(a1.extId).get
       
       selectResult.extId mustEqual a1.extId
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {
-      val dao = memoryMapCachedDaoForTest(NotAuthorized)
+      mockUserSession.isAuthorizedSession() returns false
 
-      dao.insertAvalanche(avalancheForTest.copy(viewable = true)) must throwA[UnauthorizedException]
+      dal.insertAvalanche(avalancheForTest.copy(viewable = true)) must throwA[UnauthorizedException]
     }
   }
     
   "Avalanche update" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = memoryMapCachedDaoForTest(NotAuthorized)
+      mockUserSession.isAuthorizedSession() returns false
 
       val origAvalanche = avalancheForTest.copy(viewable = false)
-      dao.insertAvalanche(origAvalanche)
+      dal.insertAvalanche(origAvalanche)
       val updatedAvalanche = origAvalanche.copy(viewable = true)
       
-      dao.updateAvalanche(updatedAvalanche) must throwA[UnauthorizedException]
+      dal.updateAvalanche(updatedAvalanche) must throwA[UnauthorizedException]
     }
     
     "Allowed with authorized session" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
       val origAvalanche = avalancheForTest.copy(viewable = false)
-      dao.insertAvalanche(origAvalanche)
+      dal.insertAvalanche(origAvalanche)
       val updatedAvalanche = origAvalanche.copy(viewable = true)
-      dao.updateAvalanche(updatedAvalanche)
+      dal.updateAvalanche(updatedAvalanche)
       
-      val selectResult = dao.getAvalanche(origAvalanche.extId).get
+      val selectResult = dal.getAvalanche(origAvalanche.extId).get
       selectResult.viewable mustEqual true
     }
     
     "Modifies all updatable avalanche fields" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
       val origAvalanche = avalancheForTest
-      dao.insertAvalanche(origAvalanche)
+      dal.insertAvalanche(origAvalanche)
 
       val updatedAvalanche = avalancheForTest.copy(extId = origAvalanche.extId)
-      dao.updateAvalanche(updatedAvalanche)
+      dal.updateAvalanche(updatedAvalanche)
       
-      val result = dao.getAvalanche(origAvalanche.extId).get
+      val result = dal.getAvalanche(origAvalanche.extId).get
       result.createTime mustEqual origAvalanche.createTime
       result.viewable mustEqual updatedAvalanche.viewable
       result.submitterExp mustEqual updatedAvalanche.submitterExp
@@ -76,33 +76,33 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
   
   "Avalanche delete" >> {
     "Not allowed with unauthorized session" >> {
-      val dao = memoryMapCachedDaoForTest(NotAuthorized)
+      mockUserSession.isAuthorizedSession() returns false
 
       val a1 = avalancheForTest
-      dao.insertAvalanche(avalancheForTest)
+      dal.insertAvalanche(avalancheForTest)
 
-      dao.deleteAvalanche(avalancheForTest.extId) must throwA[UnauthorizedException]
+      dal.deleteAvalanche(avalancheForTest.extId) must throwA[UnauthorizedException]
     }
     
     "Allowed (and works) with authorized session" >> {
-      val dao = memoryMapCachedDaoForTest(Authorized)
+      mockUserSession.isAuthorizedSession() returns true
 
       val a1 = avalancheForTest
       val a2 = avalancheForTest
 
-      dao.insertAvalanche(a1)
-      dao.insertAvalanche(a2)
-      dao.getAvalanche(a1.extId) must beSome
-      dao.getAvalanche(a2.extId) must beSome
+      dal.insertAvalanche(a1)
+      dal.insertAvalanche(a2)
+      dal.getAvalanche(a1.extId) must beSome
+      dal.getAvalanche(a2.extId) must beSome
       
-      dao.deleteAvalanche(a1.extId)
+      dal.deleteAvalanche(a1.extId)
       
-      dao.getAvalanche(a1.extId) must beNone
-      dao.getAvalanche(a2.extId) must beSome
+      dal.getAvalanche(a1.extId) must beNone
+      dal.getAvalanche(a2.extId) must beSome
       
-      dao.deleteAvalanche(a2.extId)
+      dal.deleteAvalanche(a2.extId)
       
-      dao.getAvalanche(a2.extId) must beNone
+      dal.getAvalanche(a2.extId) must beNone
     }
   }
 }
