@@ -3,20 +3,14 @@ package com.avyeyes
 import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Helpers._
 import org.postgresql.ds.PGSimpleDataSource
-import slick.driver.{H2Driver, JdbcDriver, PostgresDriver}
+import slick.driver.{JdbcProfile, H2Driver, JdbcDriver, PostgresDriver}
 
 import scala.collection.concurrent.{Map => CMap, TrieMap}
 
 package object data {
 
-  object AgnosticDatabaseDriver {
-    val api = profile.api
-    lazy val profile: JdbcDriver = {
-      sys.env.get("DB_ENVIRONMENT") match {
-        case Some("h2") => H2Driver
-        case _ => PostgresDriver
-      }
-    }
+  trait DriverComponent {
+    val driver: JdbcProfile
   }
 
   val postgresDataSource = {

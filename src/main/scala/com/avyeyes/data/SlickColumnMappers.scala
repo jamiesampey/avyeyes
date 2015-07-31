@@ -6,9 +6,11 @@ import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
-import AgnosticDatabaseDriver.api._
 
-private[data] object SlickColumnMappers {
+private[data] trait SlickColumnMappers { this: DriverComponent =>
+
+  import driver.api._
+
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](
     dt => new java.sql.Timestamp(dt.getMillis),
     ts => new DateTime(ts)

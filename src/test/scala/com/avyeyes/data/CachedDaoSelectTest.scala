@@ -213,7 +213,7 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
     }
   }
   
-  private def verifySingleResult(dao: CachedDao, query: AvalancheQuery, extId: String): Result = {
+  private def verifySingleResult(dao: CachedDAL, query: AvalancheQuery, extId: String): Result = {
     val resultList = dao.getAvalanches(query)
     resultList must have length(1)
     resultList.head.extId must_== extId    

@@ -3,10 +3,9 @@ package com.avyeyes.data
 import javax.sql.DataSource
 
 import akka.actor._
-import com.avyeyes.data.DatabaseSchema._
 import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
 import net.liftweb.common.Loggable
-import AgnosticDatabaseDriver.api._
+import slick.driver.{PostgresDriver, JdbcProfile}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -16,7 +15,12 @@ object DatabaseMaintenance {
   val run = "run"
 }
 
-class DatabaseMaintenance(ds: DataSource = postgresDataSource) extends Actor with ExternalIdService with Loggable {
+class DatabaseMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSource = postgresDataSource)
+  extends DatabaseComponent with SlickColumnMappers with DriverComponent
+  with Actor with ExternalIdService with Loggable {
+
+  import driver.api._
+
   val db = Database.forDataSource(ds)
   val s3 = new AmazonS3ImageService
 

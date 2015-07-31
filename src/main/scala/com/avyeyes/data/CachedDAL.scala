@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.model.{Avalanche, AvalancheImage}
 
-trait CachedDao extends AuthorizableDao {
+trait CachedDAL extends AuthorizableDao {
   def countAvalanches(viewable: Option[Boolean]): Int
 
   def getAvalanche(extId: String): Option[Avalanche]

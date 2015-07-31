@@ -1,13 +1,14 @@
 package com.avyeyes.data
 
-import com.avyeyes.data.SlickColumnMappers._
 import com.avyeyes.model._
 import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums.ExperienceLevel._
 import org.joda.time.DateTime
-import AgnosticDatabaseDriver.api._
 
-private[data] object DatabaseSchema {
+private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverComponent =>
+
+  import driver.api._
+
   val Avalanches = TableQuery[AvalancheTable]
   val AvalancheImages = TableQuery[AvalancheImageTable]
   val Users = TableQuery[UsersTable]

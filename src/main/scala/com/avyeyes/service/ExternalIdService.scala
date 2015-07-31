@@ -1,7 +1,7 @@
 package com.avyeyes.service
 
 import java.util.concurrent.TimeUnit
-import com.avyeyes.data.CachedDao
+import com.avyeyes.data.CachedDAL
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.google.common.cache._
@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 
 trait ExternalIdService extends Loggable {
   
-  def reserveNewExtId(implicit dao: CachedDao): String = {
+  def reserveNewExtId(implicit dao: CachedDAL): String = {
     var extIdAttempt = ""
     var attemptCount = 0
     
