@@ -9,7 +9,12 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
 
   val commonLat = 38.5763463456
   val commonLng = -102.5359593
-  val commonGeoBounds = GeoBounds(commonLat+.01, commonLng+.01, commonLat-.01, commonLng-.01)
+  val commonGeoBounds = GeoBounds(
+    lngMax = commonLng + .01,
+    lngMin = commonLng - .01,
+    latMax = commonLat + .01,
+    latMin = commonLat - .01
+  )
   
   "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {

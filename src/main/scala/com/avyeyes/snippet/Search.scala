@@ -72,8 +72,11 @@ class Search extends Loggable {
     val matchingAvalanches = dao.getAvalanches(
       AvalancheQuery(
         viewable = Some(true),
-        geoBounds = Some(GeoBounds(strToDblOrZero(latMax), strToDblOrZero(latMin),
-          strToDblOrZero(lngMax), strToDblOrZero(lngMin))),
+        geoBounds = Some(GeoBounds(
+          lngMax = strToDblOrZero(lngMax),
+          lngMin = strToDblOrZero(lngMin),
+          latMax = strToDblOrZero(latMax),
+          latMin = strToDblOrZero(latMin))),
         fromDate = if (isNotBlank(fromDate)) Some(strToDate(fromDate)) else None,
         toDate = if (isNotBlank(toDate)) Some(strToDate(toDate)) else None,
         avyType = if (isNotBlank(avyType)) Some(AvalancheType.withCode(avyType)) else None,

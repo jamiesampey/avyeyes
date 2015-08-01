@@ -67,7 +67,11 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
   }
   
   private def createGeoBoundsToInclude(c: Coordinate) = {
-    GeoBounds(c.latitude+.01, c.longitude+.01, c.latitude-.01, c.longitude-.01)
+    GeoBounds(
+      lngMax = c.longitude+.01,
+      lngMin = c.longitude-.01,
+      latMax = c.latitude+.01,
+      latMin = c.latitude-.01)
   }
   
   private def insertAllAvalanches() = {

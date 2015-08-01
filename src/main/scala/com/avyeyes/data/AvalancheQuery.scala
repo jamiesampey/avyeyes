@@ -36,5 +36,5 @@ case class AvalancheQuery(
   )
 }
 
-case class GeoBounds(latMax: Double, latMin: Double, lngMax: Double, lngMin: Double)
+case class GeoBounds(lngMax: Double, lngMin: Double, latMax: Double, latMin: Double)
 
