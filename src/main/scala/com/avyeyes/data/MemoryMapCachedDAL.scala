@@ -45,6 +45,10 @@ private[data] class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
+    if (!user.isAuthorizedSession()) {
+      throw new UnauthorizedException("Not authorized to view avalanches")
+    }
+
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     (matches.sortWith(query.sortFunction).drop(query.offset).take(query.limit), matches.size, avalancheMap.size)
   }

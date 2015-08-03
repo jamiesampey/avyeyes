@@ -1,5 +1,6 @@
 package com.avyeyes.data
 
+import com.avyeyes.model.Avalanche
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.UserSession
 import org.h2.jdbcx.JdbcDataSource
@@ -26,9 +27,9 @@ trait InMemoryDB extends AroundExample with Mockito {
   }
 
   protected lazy val mockUserSession = mock[UserSession]
-
+  protected lazy val cache = new TrieMap[String, Avalanche]()
   protected lazy val dal: MemoryMapCachedDAL =
-    Try(new MemoryMapCachedDAL(H2Driver, h2DataSource, new TrieMap)) match {
+    Try(new MemoryMapCachedDAL(H2Driver, h2DataSource, cache)) match {
       case scala.util.Success(instance) =>
         println("Successfully created a DAL")
         instance
@@ -37,6 +38,7 @@ trait InMemoryDB extends AroundExample with Mockito {
     }
 
   def around[T: AsResult](t: => T): Result = UserInjector.userSession.doWith(mockUserSession) {
+    cache.clear()
     Await.result( Database.forDataSource(h2DataSource).run {
       sqlu"DROP ALL OBJECTS;" >> dal.createSchema }, 10 seconds)
 
