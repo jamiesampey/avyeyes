@@ -13,10 +13,8 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
   "Avalanche Images" >> {
     val nonExistentAvalancheExtId = "594jk3i3"
     
-    val img1Bytes = Array[Byte](10, 20, 30, 40, 50, 60, 70)
     val img1 = avalancheImageForTest.copy(avyExtId = testAvalanche.extId)
-    val img2Bytes = Array[Byte](90, 80, 70)
-    val img2 = avalancheImageForTest
+    val img2 = avalancheImageForTest.copy(avyExtId = nonExistentAvalancheExtId)
   
     "Image insert and select works" >> {
       mockUserSession.isAuthorizedSession() returns true
@@ -31,13 +29,13 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
     }
     
     "Image without corresponding avalanche is not selected" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAuthorizedSession() returns false
 
       dal.insertAvalancheImage(img2)
       dal.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
     }
     
-    "Image metadata search works" >> {
+    "Images select by avy extId only works" >> {
       mockUserSession.isAuthorizedSession() returns true
 
       dal.insertAvalanche(testAvalanche)
@@ -46,7 +44,7 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
       
       val returnedImages = dal.getAvalancheImages(testAvalanche.extId)
       returnedImages must have length(1)
-      returnedImages.head must_== (img1.filename, img1.mimeType, img1.size)
+      returnedImages.head must_== img1
     }
     
     "Image delete works for authorized session" >> {

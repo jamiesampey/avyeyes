@@ -13,14 +13,13 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
 
       val a1 = avalancheForTest.copy(viewable = true)
       dal.insertAvalanche(a1)
-      val selectResult = dal.getAvalanche(a1.extId).get
-      
-      selectResult.extId mustEqual a1.extId
+
+      dal.getAvalanche(a1.extId).get mustEqual a1
+      dal.getAvalancheFromDisk(a1.extId).get mustEqual a1
     }
     
     "Unauthorized session cannot insert a viewable avalanche" >> {
       mockUserSession.isAuthorizedSession() returns false
-
       dal.insertAvalanche(avalancheForTest.copy(viewable = true)) must throwA[UnauthorizedException]
     }
   }
@@ -78,10 +77,10 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
     "Not allowed with unauthorized session" >> {
       mockUserSession.isAuthorizedSession() returns false
 
-      val a1 = avalancheForTest
-      dal.insertAvalanche(avalancheForTest)
+      val a1 = avalancheForTest.copy(viewable = false)
+      dal.insertAvalanche(a1)
 
-      dal.deleteAvalanche(avalancheForTest.extId) must throwA[UnauthorizedException]
+      dal.deleteAvalanche(a1.extId) must throwA[UnauthorizedException]
     }
     
     "Allowed (and works) with authorized session" >> {
