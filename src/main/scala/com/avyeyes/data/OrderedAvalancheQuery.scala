@@ -1,5 +1,6 @@
 package com.avyeyes.data
 
+import com.avyeyes.data.AvalanchePredicates._
 import com.avyeyes.data.OrderDirection.OrderDirection
 import com.avyeyes.data.OrderField.OrderField
 import com.avyeyes.model.Avalanche
@@ -9,10 +10,9 @@ private[data] trait OrderedAvalancheQuery {
   def offset: Int
   def limit: Int
 
-  def toPredicate: Avalanche => Boolean
-
-  def and(predicates: (Avalanche => Boolean)*)(a: Avalanche) = predicates.forall(predicate => predicate(a))
-  def or(predicates: (Avalanche => Boolean)*)(a: Avalanche) = predicates.exists(predicate => predicate(a))
+  def toPredicate: AvalanchePredicate
+  def and(predicates: List[AvalanchePredicate])(a: Avalanche) = predicates.forall(predicate => predicate(a))
+  def or(predicates: List[AvalanchePredicate])(a: Avalanche) = predicates.exists(predicate => predicate(a))
 
   def sortFunction(x: Avalanche, y: Avalanche): Boolean = {
     var compareVal = 0

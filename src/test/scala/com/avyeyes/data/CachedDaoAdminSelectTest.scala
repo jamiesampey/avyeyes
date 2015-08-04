@@ -18,15 +18,15 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
   
   "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {
-      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       mockUserSession.isAuthorizedSession() returns false
+      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       dal.insertAvalanche(nonviewableAvalanche)
       dal.getAvalanchesAdmin(AdminAvalancheQuery()) must throwA[UnauthorizedException]
     }
 
     "Admin select allowed with authorized session" >> {
-      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       mockUserSession.isAuthorizedSession() returns true
+      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       dal.insertAvalanche(nonviewableAvalanche)
       dal.getAvalanchesAdmin(AdminAvalancheQuery())._1.size must_== 1
       dal.getAvalanchesAdmin(AdminAvalancheQuery())._2 must_== 1
@@ -46,9 +46,9 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       dal.insertAvalanche(a2)
       dal.insertAvalanche(a3)
 
-      val query1 = AdminAvalancheQuery(extId = Some("%94j%"))
+      val query1 = AdminAvalancheQuery(extId = Some("94j"))
       val result1 = dal.getAvalanchesAdmin(query1)
-      val query2 = AdminAvalancheQuery(extId = Some("%sov%"))
+      val query2 = AdminAvalancheQuery(extId = Some("sov"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a1.extId
@@ -64,9 +64,9 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       dal.insertAvalanche(a2)
       dal.insertAvalanche(a3)
 
-      val query1 = AdminAvalancheQuery(areaName = Some("%land%"))
+      val query1 = AdminAvalancheQuery(areaName = Some("land"))
       val result1 = dal.getAvalanchesAdmin(query1)
-      val query2 = AdminAvalancheQuery(areaName = Some("%jones%"))
+      val query2 = AdminAvalancheQuery(areaName = Some("jones"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a2.extId
@@ -82,9 +82,9 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       dal.insertAvalanche(a2.copy(submitterEmail = "neo@yahoo.com"))
       dal.insertAvalanche(a3.copy(submitterEmail = "charlie_brownja@here.org"))
 
-      val query1 = AdminAvalancheQuery(submitterEmail = Some("%org%"))
+      val query1 = AdminAvalancheQuery(submitterEmail = Some("org"))
       val result1 = dal.getAvalanchesAdmin(query1)
-      val query2 = AdminAvalancheQuery(submitterEmail = Some("%BROWN%"))
+      val query2 = AdminAvalancheQuery(submitterEmail = Some("BROWN"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
       result1._1(0).extId must_== a3.extId

@@ -11,9 +11,13 @@ case class AdminAvalancheQuery(
   limit: Int = Int.MaxValue)
   extends OrderedAvalancheQuery {
 
-  def toPredicate = or(
-    extIdPredicate(extId),
-    areaNamePredicate(areaName),
-    emailPredicate(submitterEmail)
-  )
+  lazy val predicates =
+    extIdPredicate(extId) ::
+    areaNamePredicate(areaName) ::
+    emailPredicate(submitterEmail) :: Nil
+
+  def toPredicate = predicates.collect({case Some(predicate) => predicate}) match {
+    case definedPredicates if definedPredicates.size > 0 => or(definedPredicates)
+    case _ => _ => true
+  }
 }

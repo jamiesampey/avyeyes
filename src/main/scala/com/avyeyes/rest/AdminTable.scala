@@ -94,7 +94,7 @@ class AdminTable extends RestHelper with Loggable {
 
     val searchTerm = (req.params find(entryTuple =>
       "search\\[value\\]".r.findFirstMatchIn(entryTuple._1) isDefined)) match {
-      case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"%${entryTuple._2(0)}%")
+      case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"${entryTuple._2(0)}")
       case _ => None
     }
 
