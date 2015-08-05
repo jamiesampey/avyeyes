@@ -23,7 +23,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       val resultList = dal.getAvalanches(neLatLngInBoundsCriteria)
       
       resultList must have length(1)
-      resultList.head.extId must_== neHemisphereAvalanche.extId
+      resultList.head.extId mustEqual neHemisphereAvalanche.extId
     }
   
     "SE hemisphere lat/lng filtering works" >> {
@@ -36,7 +36,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       val resultList = dal.getAvalanches(seLatLngInBoundsCriteria)
       
       resultList must have length(1)
-      resultList.head.extId must_== seHemisphereAvalanche.extId
+      resultList.head.extId mustEqual seHemisphereAvalanche.extId
     }
     
     "SW hemisphere lat/lng filtering works" >> {
@@ -49,7 +49,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       val resultList = dal.getAvalanches(swLatLngInBoundsCriteria)
       
       resultList must have length(1)
-      resultList.head.extId must_== swHemisphereAvalanche.extId
+      resultList.head.extId mustEqual swHemisphereAvalanche.extId
     }
     
     "NW hemisphere lat/lng filtering works" >> {
@@ -62,7 +62,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       val resultList = dal.getAvalanches(nwLatLngInBoundsCriteria)
       
       resultList must have length(1)
-      resultList.head.extId must_== nwHemisphereAvalanche.extId
+      resultList.head.extId mustEqual nwHemisphereAvalanche.extId
     }
   }
   

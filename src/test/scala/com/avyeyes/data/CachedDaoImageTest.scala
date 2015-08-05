@@ -23,16 +23,16 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1)
       val returnedImage = dal.getAvalancheImage(testAvalanche.extId, img1.filename).get
       
-      returnedImage.avyExtId must_== testAvalanche.extId
-      returnedImage.filename must_== img1.filename
-      returnedImage.mimeType must_== img1.mimeType
+      returnedImage.avyExtId mustEqual testAvalanche.extId
+      returnedImage.filename mustEqual img1.filename
+      returnedImage.mimeType mustEqual img1.mimeType
     }
     
     "Image without corresponding avalanche is not selected" >> {
       mockUserSession.isAuthorizedSession() returns false
 
       dal.insertAvalancheImage(img2)
-      dal.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) must_== None
+      dal.getAvalancheImage(nonExistentAvalancheExtId, img2.filename) mustEqual None
     }
     
     "Images select by avy extId only works" >> {
@@ -44,7 +44,7 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
       
       val returnedImages = dal.getAvalancheImages(testAvalanche.extId)
       returnedImages must have length(1)
-      returnedImages.head must_== img1
+      returnedImages.head mustEqual img1
     }
     
     "Image delete works for authorized session" >> {
@@ -70,8 +70,8 @@ class CachedDaoImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1)
       dal.insertAvalancheImage(img2)
       dal.insertAvalancheImage(avalancheImageForTest.copy(avyExtId = img1.avyExtId))
-      dal.countAvalancheImages(img1.avyExtId) must_== 2
-      dal.countAvalancheImages(img2.avyExtId) must_== 1
+      dal.countAvalancheImages(img1.avyExtId) mustEqual 2
+      dal.countAvalancheImages(img2.avyExtId) mustEqual 1
     }
 
   }

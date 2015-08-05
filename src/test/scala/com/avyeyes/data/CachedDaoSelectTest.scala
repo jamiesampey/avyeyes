@@ -156,9 +156,9 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
       dal.insertAvalanche(viewableAvalanche2)
       dal.insertAvalanche(unviewableAvalanche)
       
-      dal.countAvalanches(Some(true)) must_== 2
-      dal.countAvalanches(Some(false)) must_==1
-      dal.countAvalanches(None) must_==3
+      dal.countAvalanches(Some(true)) mustEqual 2
+      dal.countAvalanches(Some(false)) mustEqual 1
+      dal.countAvalanches(None) mustEqual 3
     }
   }
   
@@ -178,9 +178,9 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
       val dateAscOrderQuery = AvalancheQuery(order = List((OrderField.Date, OrderDirection.asc)))
       val avyDateAscArray = dal.getAvalanches(dateAscOrderQuery).toArray
       
-      avyDateAscArray(0).extId must_== earliest.extId
-      avyDateAscArray(1).extId must_== middle.extId
-      avyDateAscArray(2).extId must_== latest.extId
+      avyDateAscArray(0).extId mustEqual earliest.extId
+      avyDateAscArray(1).extId mustEqual middle.extId
+      avyDateAscArray(2).extId mustEqual latest.extId
     }
     
     "Selects can be ordered by date descending" >> {
@@ -191,9 +191,9 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
       val dateDescOrderQuery = AvalancheQuery(order = List((OrderField.Date, OrderDirection.desc)))
       val avyDateDescArray = dal.getAvalanches(dateDescOrderQuery).toArray
       
-      avyDateDescArray(0).extId must_== latest.extId
-      avyDateDescArray(1).extId must_== middle.extId
-      avyDateDescArray(2).extId must_== earliest.extId
+      avyDateDescArray(0).extId mustEqual latest.extId
+      avyDateDescArray(1).extId mustEqual middle.extId
+      avyDateDescArray(2).extId mustEqual earliest.extId
     }
   }
   
@@ -208,14 +208,14 @@ class CachedDaoSelectTest extends Specification with InMemoryDB {
       val firstPageQuery = AvalancheQuery(offset = 0, limit = 2)
       val secondPageQuery = AvalancheQuery(offset = 2, limit = 2)
       
-      dal.getAvalanches(firstPageQuery).size must_== 2
-      dal.getAvalanches(secondPageQuery).size must_== 1
+      dal.getAvalanches(firstPageQuery).size mustEqual 2
+      dal.getAvalanches(secondPageQuery).size mustEqual 1
     }
   }
   
   private def verifySingleResult(dao: CachedDAL, query: AvalancheQuery, extId: String): Result = {
     val resultList = dao.getAvalanches(query)
     resultList must have length(1)
-    resultList.head.extId must_== extId    
+    resultList.head.extId mustEqual extId    
   }
 }

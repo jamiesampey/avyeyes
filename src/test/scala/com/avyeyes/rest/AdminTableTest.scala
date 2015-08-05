@@ -55,13 +55,13 @@ class AdminTableTest extends WebSpec2 with MockInjectors {
       there was one(mockAvalancheDal).getAvalanchesAdmin(queryArgCapture)
       val adminQuery = queryArgCapture.value
 
-      adminQuery.offset must_== 10
-      adminQuery.limit must_== 20
-      adminQuery.order(0) must_==(OrderField.Viewable, OrderDirection.desc)
-      adminQuery.order(1) must_==(OrderField.CreateTime, OrderDirection.asc)
-      adminQuery.extId must_== Some(s"$searchParam")
-      adminQuery.areaName must_== Some(s"$searchParam")
-      adminQuery.submitterEmail must_== Some(s"$searchParam")
+      adminQuery.offset mustEqual 10
+      adminQuery.limit mustEqual 20
+      adminQuery.order(0) mustEqual(OrderField.Viewable, OrderDirection.desc)
+      adminQuery.order(1) mustEqual(OrderField.CreateTime, OrderDirection.asc)
+      adminQuery.extId mustEqual Some(s"$searchParam")
+      adminQuery.areaName mustEqual Some(s"$searchParam")
+      adminQuery.submitterEmail mustEqual Some(s"$searchParam")
     }
 
     "Construct a JSON response" withSFor (adminTableUrl) in {
@@ -70,9 +70,9 @@ class AdminTableTest extends WebSpec2 with MockInjectors {
 
       val generatedJson = resp.asInstanceOf[JsonResponse].json.toJsCmd
 
-      extractJsonIntField(resp, "draw") must_== drawParam.toInt
-      extractJsonIntField(resp, "recordsTotal") must_== totalRecordsInDb
-      extractJsonIntField(resp, "recordsFiltered") must_== filteredRecords
+      extractJsonIntField(resp, "draw") mustEqual drawParam.toInt
+      extractJsonIntField(resp, "recordsTotal") mustEqual totalRecordsInDb
+      extractJsonIntField(resp, "recordsFiltered") mustEqual filteredRecords
       generatedJson must contain(a1.extId)
       generatedJson must contain(a2.extId)
       generatedJson must contain(a3.extId)

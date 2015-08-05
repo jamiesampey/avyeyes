@@ -43,9 +43,10 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
         
       there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[JsonResponse]
-      extractJsonStringField(resp, "extId") must_== extId
-      extractJsonStringField(resp, "fileName") must_== fileName
-      extractJsonLongField(resp, "fileSize") must_== fileBytes.length
+      extractJsonStringField(resp, "extId") mustEqual extId
+      extractJsonStringField(resp, "filename") mustEqual fileName
+      extractJsonStringField(resp, "origFilename") must haveLength(36) // UUID length with dashes
+      extractJsonLongField(resp, "size") mustEqual fileBytes.length
     }
 
     "Don't insert an image above the max images count" withSFor(mockPostRequest) in {
@@ -79,8 +80,8 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
 
       there was one(mockAvalancheDal).deleteAvalancheImage(extIdArg.capture(), filenameArg.capture())
       resp must beAnInstanceOf[OkResponse]
-      extIdArg.getValue must_== extId
-      filenameArg.getValue must_== goodImgFileName
+      extIdArg.getValue mustEqual extId
+      filenameArg.getValue mustEqual goodImgFileName
     }
   }
 }

@@ -28,9 +28,9 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       mockUserSession.isAuthorizedSession() returns true
       val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       dal.insertAvalanche(nonviewableAvalanche)
-      dal.getAvalanchesAdmin(AdminAvalancheQuery())._1.size must_== 1
-      dal.getAvalanchesAdmin(AdminAvalancheQuery())._2 must_== 1
-      dal.getAvalanchesAdmin(AdminAvalancheQuery())._3 must_== 1
+      dal.getAvalanchesAdmin(AdminAvalancheQuery())._1.size mustEqual 1
+      dal.getAvalanchesAdmin(AdminAvalancheQuery())._2 mustEqual 1
+      dal.getAvalanchesAdmin(AdminAvalancheQuery())._3 mustEqual 1
     }
   }
 
@@ -51,12 +51,12 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       val query2 = AdminAvalancheQuery(extId = Some("sov"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
-      result1._1(0).extId must_== a1.extId
-      result1._2 must_== 1
-      result1._3 must_== 3
-      result2._1.size must_== 2
-      result2._2 must_== 2
-      result2._3 must_== 3
+      result1._1(0).extId mustEqual a1.extId
+      result1._2 mustEqual 1
+      result1._3 mustEqual 3
+      result2._1.size mustEqual 2
+      result2._2 mustEqual 2
+      result2._3 mustEqual 3
     }
 
     "Filters by area name" >> {
@@ -69,12 +69,12 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       val query2 = AdminAvalancheQuery(areaName = Some("jones"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
-      result1._1(0).extId must_== a2.extId
-      result1._2 must_== 1
-      result1._3 must_== 3
-      result2._1.size must_== 2
-      result2._2 must_== 2
-      result2._3 must_== 3
+      result1._1(0).extId mustEqual a2.extId
+      result1._2 mustEqual 1
+      result1._3 mustEqual 3
+      result2._1.size mustEqual 2
+      result2._2 mustEqual 2
+      result2._3 mustEqual 3
     }
 
     "Filters by submitter email" >> {
@@ -87,12 +87,12 @@ class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
       val query2 = AdminAvalancheQuery(submitterEmail = Some("BROWN"))
       val result2 = dal.getAvalanchesAdmin(query2)
 
-      result1._1(0).extId must_== a3.extId
-      result1._2 must_== 1
-      result1._3 must_== 3
-      result2._1.size must_== 2
-      result2._2 must_== 2
-      result2._3 must_== 3
+      result1._1(0).extId mustEqual a3.extId
+      result1._2 mustEqual 1
+      result1._3 mustEqual 3
+      result2._1.size mustEqual 2
+      result2._2 mustEqual 2
+      result2._3 mustEqual 3
     }
   }
 }
