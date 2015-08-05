@@ -60,7 +60,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
     }
     
     "Pass search criteria to DAO" withSFor("/") in {
-      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns Nil
+      mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns Nil
       
       val queryArg: ArgumentCaptor[AvalancheQuery] = 
         ArgumentCaptor.forClass(classOf[AvalancheQuery]);
@@ -68,7 +68,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val search = newSearchWithTestData
       search.doSearch()
 
-      there was one(mockAvalancheDao).getAvalanches(queryArg.capture())
+      there was one(mockAvalancheDal).getAvalanches(queryArg.capture())
       val passedQuery = queryArg.getValue
       
       passedQuery.geoBounds.get.latMax must_== strToDblOrZero(search.latMax)
@@ -94,7 +94,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
         viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
       
-      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camPitch = "10"
@@ -113,7 +113,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
         viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
 
-      mockAvalancheDao.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
+      mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
       search.camPitch = (CamPitchCutoff + 1).toString

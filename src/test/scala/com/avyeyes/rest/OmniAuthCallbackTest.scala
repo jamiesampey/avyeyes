@@ -1,12 +1,13 @@
 package com.avyeyes.rest
 
 import com.avyeyes.test._
+import com.avyeyes.test.LiftHelpers._
 import net.liftweb.common.Empty
 import net.liftweb.http.{RedirectResponse, S}
 import omniauth._
 import omniauth.lib._
 
-class OmniAuthCallbackTest extends WebSpec2 with MockInjectors with LiftHelpers {
+class OmniAuthCallbackTest extends WebSpec2 with MockInjectors {
   sequential
 
   val omniAuthCallback = new OmniAuthCallback

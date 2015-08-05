@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.service.UserInjector
 import net.liftweb.common.Loggable
@@ -9,14 +9,14 @@ import net.liftweb.http.{JsonResponse, NotFoundResponse}
 
 
 class AvyDetails extends RestHelper with Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
   lazy val userSession = UserInjector.userSession.vend
 
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
-      val avyJsonOption = dao.getAvalancheFromDisk(extId) match {
+      val avyJsonOption = dal.getAvalancheFromDisk(extId) match {
         case Some(a) => {
-          val images = dao.getAvalancheImages(a.extId)
+          val images = dal.getAvalancheImages(a.extId)
           userSession.isAuthorizedSession match {
             case true => Some(avalancheAdminDetails(a, images))
             case false => Some(avalancheDetails(a, images))

@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.util.Constants.ExtIdUrlParam
@@ -13,7 +13,7 @@ import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
 
 class Init extends Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
     
   val InitAvyMsgDelayMillis = 5000
 
@@ -28,7 +28,7 @@ class Init extends Loggable {
   
   private def initialFlyToCmd: JsCmd = {
     val initAvalanche = isValidExtId(extId) match {
-      case true => dao.getAvalanche(extId.get)
+      case true => dal.getAvalanche(extId.get)
       case false => None
     }
     

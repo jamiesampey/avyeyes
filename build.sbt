@@ -61,6 +61,8 @@ libraryDependencies ++= {
     "ch.qos.logback" % "logback-classic" % "1.1.2",
     "org.apache.commons" % "commons-lang3" % "3.3.2",
     "com.google.guava" % "guava" % "17.0",
+
+    // test dependencies
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.3.176" % "test",

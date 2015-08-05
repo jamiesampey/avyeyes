@@ -1,6 +1,6 @@
 package com.avyeyes.util
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 private object authorizedEmail extends SessionVar[Box[String]](Empty)
 
 class UserSession extends Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
 
   def isAuthorizedSession() = authorizedEmail.get.isDefined
 
@@ -23,7 +23,7 @@ class UserSession extends Loggable {
   }
 
   def attemptLogin(email: String) = {
-    Await.result(dao.isUserAuthorized(email), 30 seconds) match {
+    Await.result(dal.isUserAuthorized(email), 30 seconds) match {
       case true => {
         logger.info (s"Authorization success for $email. Logging user in.")
         authorizedEmail.set(Full(email))

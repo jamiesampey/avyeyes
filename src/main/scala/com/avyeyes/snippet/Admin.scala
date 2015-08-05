@@ -1,6 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.service.UserInjector
 import com.avyeyes.util.Helpers._
 import net.liftweb.common._
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils._
 import scala.xml.NodeSeq
 
 class Admin extends Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
   lazy val userSession = UserInjector.userSession.vend
 
   private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
@@ -60,6 +60,6 @@ class Admin extends Loggable {
   def loggedOutContent(html: NodeSeq) = if (!userSession.isAuthorizedSession) html else NodeSeq.Empty
   def loggedInContent(html: NodeSeq) = if (userSession.isAuthorizedSession) html else NodeSeq.Empty
   
-  def unviewableAvalancheCount() = <span>{dao.countAvalanches(Some(false)) }</span>
-  def viewableAvalancheCount() = <span>{dao.countAvalanches(Some(true)) }</span>
+  def unviewableAvalancheCount() = <span>{dal.countAvalanches(Some(false)) }</span>
+  def viewableAvalancheCount() = <span>{dal.countAvalanches(Some(true)) }</span>
 }

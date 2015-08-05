@@ -2,7 +2,7 @@ package com.avyeyes.rest
 
 import java.util.UUID
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.model.AvalancheImage
 import com.avyeyes.service.AmazonS3ImageService
 import com.avyeyes.util.Constants._
@@ -15,12 +15,12 @@ import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
 class Images extends RestHelper with Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
   val s3 = new AmazonS3ImageService
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
-      if (dao.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
+      if (dal.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
         ResponseWithReason(BadResponse(), getMessage("rwAvyFormMaxImagesExceeded",
           MaxImagesPerAvalanche).toString)
       } else {
@@ -29,7 +29,7 @@ class Images extends RestHelper with Loggable {
 
         s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-        dao.insertAvalancheImage(
+        dal.insertAvalancheImage(
           AvalancheImage(DateTime.now, avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
         )
 
@@ -45,7 +45,7 @@ class Images extends RestHelper with Loggable {
     case "rest" :: "images" :: avyExtId :: fileBaseName :: Nil Delete req => {
       try {
         s3.deleteImage(avyExtId, fileBaseName)
-        dao.deleteAvalancheImage(avyExtId, fileBaseName)
+        dal.deleteAvalancheImage(avyExtId, fileBaseName)
         OkResponse()
       } catch {
         case ue: UnauthorizedException => UnauthorizedResponse("Avy Eyes auth required")

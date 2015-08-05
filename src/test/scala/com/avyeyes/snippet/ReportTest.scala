@@ -125,11 +125,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.avyInterface = ""
       report.modeOfTravel = ""
 
-      mockAvalancheDao.getAvalanche(report.extId) returns None
+      mockAvalancheDal.getAvalanche(report.extId) returns None
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      there was one(mockAvalancheDal).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.scene.skyCoverage must_== SkyCoverage.U
@@ -145,11 +145,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val emailArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
 
       val report = newReportWithTestData
-      mockAvalancheDao.getAvalanche(report.extId) returns None
+      mockAvalancheDal.getAvalanche(report.extId) returns None
       
       report.saveReport()
       
-      there was one(mockAvalancheDao).insertAvalanche(avalancheArg.capture())
+      there was one(mockAvalancheDal).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
       passedAvalanche.extId must_== report.extId
@@ -179,7 +179,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
-      mockAvalancheDao.getAvalanche(report.extId) returns None
+      mockAvalancheDal.getAvalanche(report.extId) returns None
       
       val jsCmd = report.saveReport()
 
@@ -189,12 +189,12 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
     
     "Handles an insertion failure correctly" withSFor("/") in {
       val exceptionMsg = "gotcha!"
-      mockAvalancheDao.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
+      mockAvalancheDal.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
       
       val report = spy(newReportWithTestData)
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
-      mockAvalancheDao.getAvalanche(report.extId) returns None
+      mockAvalancheDal.getAvalanche(report.extId) returns None
       
       val jsCmd = report.saveReport()
       
@@ -209,7 +209,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
       val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
       val report = spy(newReportWithTestData)
-      mockAvalancheDao.getAvalanche(report.extId) returns None
+      mockAvalancheDal.getAvalanche(report.extId) returns None
 
       report.saveReport()
       there was two(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
@@ -228,7 +228,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
       val report = spy(newReportWithTestData)
       report.viewable = true
-      mockAvalancheDao.getAvalanche(report.extId) returns Some(avalancheForTest)
+      mockAvalancheDal.getAvalanche(report.extId) returns Some(avalancheForTest)
 
       report.saveReport()
       there was one(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])

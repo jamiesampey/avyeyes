@@ -1,6 +1,6 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Helpers.getRemoteIP
 import net.liftweb.http._
@@ -9,7 +9,7 @@ import net.liftweb.json.JsonAST._
 
 
 class ExtIdVendor extends RestHelper with ExternalIdService {
-  implicit lazy val dao = DaoInjector.dao.vend
+  implicit lazy val dal = DalInjector.dal.vend
   
   serve {
     case "rest" :: "reserveExtId" :: Nil JsonGet req => {

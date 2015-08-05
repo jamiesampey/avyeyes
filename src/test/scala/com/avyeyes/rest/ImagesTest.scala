@@ -4,12 +4,13 @@ import bootstrap.liftweb.Boot
 import com.avyeyes.model.AvalancheImage
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
+import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
 import org.mockito.ArgumentCaptor
 
-class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHelpers {
+class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
   sequential
 
   val images = new Images
@@ -22,15 +23,15 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None
   
-  mockAvalancheDao.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
-  mockAvalancheDao.getAvalancheImage(extId, badImgFileName) returns noImage
+  mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
+  mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns noImage
 
   "Image Post request" should {
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
     mockPostRequest.method = "POST"
   
     "Insert a new image in the DB" withSFor(mockPostRequest) in {
-      mockAvalancheDao.countAvalancheImages(any[String]) returns 0
+      mockAvalancheDal.countAvalancheImages(any[String]) returns 0
 
       val fileName = "testImgABC"
       val fileBytes = Array[Byte](10, 20, 30, 40, 50)
@@ -40,7 +41,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
         
-      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImage])
+      there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") must_== extId
       extractJsonStringField(resp, "fileName") must_== fileName
@@ -48,7 +49,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
     }
 
     "Don't insert an image above the max images count" withSFor(mockPostRequest) in {
-      mockAvalancheDao.countAvalancheImages(any[String]) returns MaxImagesPerAvalanche
+      mockAvalancheDal.countAvalancheImages(any[String]) returns MaxImagesPerAvalanche
 
       val fileName = "testImgABC"
       val fileBytes = Array[Byte](10, 20, 30, 40, 50)
@@ -58,7 +59,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
 
-      there was one(mockAvalancheDao).insertAvalancheImage(any[AvalancheImage]) // one interaction from the prev test
+      there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage]) // one interaction from the prev test
       resp must beAnInstanceOf[ResponseWithReason]
       resp.asInstanceOf[ResponseWithReason].reason must contain(MaxImagesPerAvalanche.toString)
     }
@@ -76,7 +77,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors with LiftHel
 
       val resp = openLiftRespBox(images(req)())
 
-      there was one(mockAvalancheDao).deleteAvalancheImage(extIdArg.capture(), filenameArg.capture())
+      there was one(mockAvalancheDal).deleteAvalancheImage(extIdArg.capture(), filenameArg.capture())
       resp must beAnInstanceOf[OkResponse]
       extIdArg.getValue must_== extId
       filenameArg.getValue must_== goodImgFileName

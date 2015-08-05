@@ -2,10 +2,11 @@ package com.avyeyes.rest
 
 import com.avyeyes.model.Avalanche
 import com.avyeyes.test._
+import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Helpers._
 import net.liftweb.http._
 
-class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
+class ExtIdVendorTest extends WebSpec2 with MockInjectors {
   sequential
 
   val extIdVendor = new ExtIdVendor
@@ -13,7 +14,7 @@ class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
   
   "Valid external ID request" should {
     "Return a new external ID" withSFor("http://avyeyes.com/rest/reserveExtId") in {
-      mockAvalancheDao.getAvalanche(any[String]) returns(noAvalanche)
+      mockAvalancheDal.getAvalanche(any[String]) returns(noAvalanche)
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(extIdVendor(req)())
       val returnedExtId = extractJsonStringField(resp, "extId")
@@ -23,7 +24,7 @@ class ExtIdVendorTest extends WebSpec2 with MockInjectors with LiftHelpers {
     }
     
     "Return InternalServerErrorResponse (500) if an extId could not be reserved" withSFor("http://avyeyes.com/rest/reserveExtId") in {
-      mockAvalancheDao.getAvalanche(any[String]) throws new RuntimeException("test RTE")
+      mockAvalancheDal.getAvalanche(any[String]) throws new RuntimeException("test RTE")
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(extIdVendor(req)())
 

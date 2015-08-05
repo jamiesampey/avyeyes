@@ -13,13 +13,13 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
 
     "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
       val initAvalanche = avalancheForTest.copy(extId = validExtId, viewable = true)
-      mockAvalancheDao.getAvalanche(any[String]) returns Some(initAvalanche)
+      mockAvalancheDal.getAvalanche(any[String]) returns Some(initAvalanche)
 
       val init = new Init
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
 
-      there was one(mockAvalancheDao).getAvalanche(validExtId)
+      there was one(mockAvalancheDal).getAvalanche(validExtId)
       initJsCalls must contain("avyEyesView.addAvalancheAndFlyTo")
       initJsCalls must contain("avyEyesView.showModalDialog")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
@@ -30,7 +30,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
 
-      there was no(mockAvalancheDao).getAvalanche(any[String])
+      there was no(mockAvalancheDal).getAvalanche(any[String])
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
@@ -40,7 +40,7 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
       init.render
       val initJsCalls = init.initJsCalls().toJsCmd
 
-      there was no(mockAvalancheDao).getAvalanche(any[String])
+      there was no(mockAvalancheDal).getAvalanche(any[String])
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }

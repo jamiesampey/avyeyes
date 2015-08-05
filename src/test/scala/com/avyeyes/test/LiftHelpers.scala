@@ -5,7 +5,7 @@ import net.liftweb.http._
 import net.liftweb.json._
 import net.liftweb.json.JsonAST._
 
-trait LiftHelpers {
+object LiftHelpers {
   implicit val formats = DefaultFormats
   
   def openLiftReqBox(box: Box[Req]): Req = box match {

@@ -3,7 +3,7 @@ package com.avyeyes.snippet
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 
-import com.avyeyes.data.DaoInjector
+import com.avyeyes.data.DalInjector
 import com.avyeyes.model._
 import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums._
@@ -26,7 +26,7 @@ import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
   private val s3 = new AmazonS3ImageService
 
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
@@ -91,9 +91,9 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
-      dao.getAvalanche(extId) match {
+      dal.getAvalanche(extId) match {
         case Some(existingAvalanche) => {
-          dao.updateAvalanche(avalancheFromValues)
+          dal.updateAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully updated")
 
           if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
@@ -109,7 +109,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
           JsDialog.info("avyReportUpdateSuccess")
         }
         case None => {
-          dao.insertAvalanche(avalancheFromValues)
+          dal.insertAvalanche(avalancheFromValues)
           logger.info(s"Avalanche $extId successfully inserted")
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
@@ -131,7 +131,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   
   def deleteReport(extIdToDelete: String) = {
     try {
-      dao.deleteAvalanche(extIdToDelete)
+      dal.deleteAvalanche(extIdToDelete)
 
       s3.deleteAllImages(extIdToDelete)
 

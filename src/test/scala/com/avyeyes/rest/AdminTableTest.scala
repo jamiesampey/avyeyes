@@ -3,9 +3,10 @@ package com.avyeyes.rest
 import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
+import com.avyeyes.test.LiftHelpers._
 import net.liftweb.http._
 
-class AdminTableTest extends WebSpec2 with MockInjectors with LiftHelpers {
+class AdminTableTest extends WebSpec2 with MockInjectors {
   sequential
 
   val adminTable = new AdminTable
@@ -36,14 +37,14 @@ class AdminTableTest extends WebSpec2 with MockInjectors with LiftHelpers {
 
     val totalRecordsInDb = 84923
     val filteredRecords = 3
-    mockAvalancheDao.getAvalanchesAdmin(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, filteredRecords, totalRecordsInDb))
+    mockAvalancheDal.getAvalanchesAdmin(any[AdminAvalancheQuery]) returns ((a1::a2::a3::Nil, filteredRecords, totalRecordsInDb))
 
     var drawParam = "43"
     val searchParam = "gmail.com"
     val dataTablesParams = Map("draw" -> drawParam, "start" -> "10", "length" -> "20",
       "order[0][column]" -> "3", "order[1][column]" -> "0",
       "order[0][dir]" -> "desc", "order[1][dir]" -> "asc",
-      "columns[0][name]" -> "createTime", "columns[3][name]" -> "viewable",
+      "columns[0][name]" -> "CreateTime", "columns[3][name]" -> "Viewable",
       "search[value]" -> searchParam)
 
     "Extract offset, limit, orderby, and search params from request" withSFor (adminTableUrl) in {
@@ -51,16 +52,16 @@ class AdminTableTest extends WebSpec2 with MockInjectors with LiftHelpers {
       adminTable(req)()
 
       val queryArgCapture = capture[AdminAvalancheQuery]
-      there was one(mockAvalancheDao).getAvalanchesAdmin(queryArgCapture)
+      there was one(mockAvalancheDal).getAvalanchesAdmin(queryArgCapture)
       val adminQuery = queryArgCapture.value
 
       adminQuery.offset must_== 10
       adminQuery.limit must_== 20
       adminQuery.order(0) must_==(OrderField.Viewable, OrderDirection.desc)
       adminQuery.order(1) must_==(OrderField.CreateTime, OrderDirection.asc)
-      adminQuery.extId must_== Some(s"%$searchParam%")
-      adminQuery.areaName must_== Some(s"%$searchParam%")
-      adminQuery.submitterEmail must_== Some(s"%$searchParam%")
+      adminQuery.extId must_== Some(s"$searchParam")
+      adminQuery.areaName must_== Some(s"$searchParam")
+      adminQuery.submitterEmail must_== Some(s"$searchParam")
     }
 
     "Construct a JSON response" withSFor (adminTableUrl) in {

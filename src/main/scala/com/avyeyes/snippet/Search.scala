@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils._
 import scala.math._
 
 class Search extends Loggable {
-  lazy val dao = DaoInjector.dao.vend
+  lazy val dal = DalInjector.dal.vend
   
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
@@ -69,7 +69,7 @@ class Search extends Loggable {
   }
     
   private def matchingAvalanchesInRange: List[Avalanche] = {
-    val matchingAvalanches = dao.getAvalanches(
+    val matchingAvalanches = dal.getAvalanches(
       AvalancheQuery(
         viewable = Some(true),
         geoBounds = Some(GeoBounds(
