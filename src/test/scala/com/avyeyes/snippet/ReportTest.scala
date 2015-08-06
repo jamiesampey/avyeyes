@@ -1,5 +1,6 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.model.StringSerializers._
 import net.liftweb.util.Mailer._
 
 import scala.xml.NodeSeq
@@ -14,9 +15,9 @@ import net.liftweb.http.S
 
 class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
   "Snippet rendering" should {
-    "Wire input fields via CSS selectors" withSFor("/") in {
+    "Wire input fields via CSS selectors" withSFor "/" in {
 
-      val report = newReportWithTestData 
+      val report = newReportWithTestData()
       val renderedPage = report.render(IndexHtmlElem)
       
       val HiddenInputType = "hidden"
@@ -26,98 +27,98 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       def assertInputValue(ns: NodeSeq, nodeType: String, cssSel: String, value: String) = {
         if (nodeType == TextareaInputType ) {
           val n = (ns \\ nodeType filter (node => (node\"@id").text == cssSel)).head
-          n.text must_== value
+          n.text mustEqual value
         } else {
           val n = (ns \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
-          (n\"@value").text must_== value
+          (n\"@value").text mustEqual value
         }
       }
       
-      assertInputValue(renderedPage, HiddenInputType, "avyReportExtId", report.extId)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportLat", report.lat)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportLng", report.lng)
-      assertInputValue(renderedPage, TextInputType, "avyReportAreaName", report.areaName)
-      assertInputValue(renderedPage, TextInputType, "avyReportDate", report.dateStr)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportSky", report.sky)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportPrecip", report.precip)
-      assertInputValue(renderedPage, TextInputType, "avyReportElevation", report.elevation)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportAspect", report.aspect)
-      assertInputValue(renderedPage, TextInputType, "avyReportAngle", report.angle)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportType", report.avyType)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportTrigger", report.avyTrigger)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportInterface", report.avyInterface)
-      assertInputValue(renderedPage, TextInputType, "avyReportRsizeValue", report.rSize)
-      assertInputValue(renderedPage, TextInputType, "avyReportDsizeValue", report.dSize)
-      assertInputValue(renderedPage, TextInputType, "avyReportNumCaught", report.caught)
-      assertInputValue(renderedPage, TextInputType, "avyReportNumPartiallyBuried", report.partiallyBuried)
-      assertInputValue(renderedPage, TextInputType, "avyReportNumFullyBuried", report.fullyBuried)
-      assertInputValue(renderedPage, TextInputType, "avyReportNumInjured", report.injured)
-      assertInputValue(renderedPage, TextInputType, "avyReportNumKilled", report.killed)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportModeOfTravel", report.modeOfTravel)
-      assertInputValue(renderedPage, TextareaInputType, "avyReportComments", report.comments)
-      assertInputValue(renderedPage, TextInputType, "avyReportSubmitterEmail", report.submitterEmail)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportSubmitterExp", report.submitterExp)
-      assertInputValue(renderedPage, HiddenInputType, "avyReportKml", report.coordStr)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormExtId", report.extId)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormLat", report.lat)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormLng", report.lng)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormAreaName", report.areaName)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormDate", report.dateStr)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormSky", report.sky)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormPrecip", report.precip)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormElevation", report.elevation)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormAspect", report.aspect)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormAngle", report.angle)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormType", report.avyType)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormTrigger", report.avyTrigger)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormInterface", report.avyInterface)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormRsizeValue", report.rSize)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormDsizeValue", report.dSize)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumCaught", report.caught)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumPartiallyBuried", report.partiallyBuried)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumFullyBuried", report.fullyBuried)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumInjured", report.injured)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumKilled", report.killed)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormModeOfTravel", report.modeOfTravel)
+      assertInputValue(renderedPage, TextareaInputType, "rwAvyFormComments", report.comments)
+      assertInputValue(renderedPage, TextInputType, "rwAvyFormSubmitterEmail", report.submitterEmail)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormSubmitterExp", report.submitterExp)
+      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormKml", report.coordStr)
     }
   }
 
   "Avalanche field validation" should {
-    "Validate submitter email" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate submitter email" withSFor "/" in {
+      val report = newReportWithTestData()
       report.submitterEmail = "thedude"
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportSubmitterEmail")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormSubmitterEmail"
     }
 
-    "Validate submitter experience level" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate submitter experience level" withSFor "/" in {
+      val report = newReportWithTestData()
       report.submitterExp = ""
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportSubmitterExpAC")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormSubmitterExpAC"
     }
 
-    "Validate area name" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate area name" withSFor "/" in {
+      val report = newReportWithTestData()
       report.areaName = ""
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportAreaName")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormAreaName"
     }
 
-    "Validate avalanche date" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate avalanche date" withSFor "/" in {
+      val report = newReportWithTestData()
       report.dateStr = "2345"
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportDate")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormDate"
     }
 
-    "Validate avalanche aspect" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate avalanche aspect" withSFor "/" in {
+      val report = newReportWithTestData()
       report.aspect = ""
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportAspectAC")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormAspectAC"
     }
 
-    "Validate avalanche slope angle" withSFor("/") in {
-      val report = newReportWithTestData
+    "Validate avalanche slope angle" withSFor "/" in {
+      val report = newReportWithTestData()
       report.angle = "0"
       val jsCmd = report.validateFields()
-      jsCmd.toJsCmd contains("Error")
-      jsCmd.toJsCmd contains("avyReportAngle")
+      jsCmd.toJsCmd contains "Error"
+      jsCmd.toJsCmd contains "rwAvyFormAngle"
     }
   }
 
   "Avalanche insert" should {
     isolated 
     
-    "Not allow empty strings for enum fields" withSFor("/") in {
+    "Not allow empty strings for enum fields" withSFor "/" in {
       val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
       
-      val report = newReportWithTestData
+      val report = newReportWithTestData()
       report.sky = ""
       report.precip = ""
       report.avyType = ""
@@ -132,51 +133,50 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       there was one(mockAvalancheDal).insertAvalanche(avalancheArg.capture())
       val passedAvalanche = avalancheArg.getValue
       
-      passedAvalanche.scene.skyCoverage must_== SkyCoverage.U
-      passedAvalanche.scene.precipitation must_== Precipitation.U
-      passedAvalanche.classification.avyType must_== AvalancheType.U
-      passedAvalanche.classification.trigger must_== AvalancheTrigger.U
-      passedAvalanche.classification.interface must_== AvalancheInterface.U
-      passedAvalanche.humanNumbers.modeOfTravel must_== ModeOfTravel.U
+      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.U
+      passedAvalanche.scene.precipitation mustEqual Precipitation.U
+      passedAvalanche.classification.avyType mustEqual AvalancheType.U
+      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.U
+      passedAvalanche.classification.interface mustEqual AvalancheInterface.U
+      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.U
     }
     
-    "Insert an avalanche with the correct values" withSFor("/") in {
-      val avalancheArg: ArgumentCaptor[Avalanche] = ArgumentCaptor.forClass(classOf[Avalanche]);
-      val emailArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
+    "Insert an avalanche with the correct values" withSFor "/" in {
+      val avalancheArg = capture[Avalanche]
 
-      val report = newReportWithTestData
+      val report = newReportWithTestData()
       mockAvalancheDal.getAvalanche(report.extId) returns None
       
       report.saveReport()
       
-      there was one(mockAvalancheDal).insertAvalanche(avalancheArg.capture())
-      val passedAvalanche = avalancheArg.getValue
+      there was one(mockAvalancheDal).insertAvalanche(avalancheArg)
+      val passedAvalanche = avalancheArg.value
       
-      passedAvalanche.extId must_== report.extId
+      passedAvalanche.extId mustEqual report.extId
       passedAvalanche.viewable must beFalse
-      passedAvalanche.submitterExp must_== ExperienceLevel.withName(report.submitterExp)
-      passedAvalanche.location.longitude must_== strToDblOrZero(report.lng)
-      passedAvalanche.location.latitude must_== strToDblOrZero(report.lat)
-      passedAvalanche.areaName must_== report.areaName
-      passedAvalanche.date must_== strToDate(report.dateStr)
-      passedAvalanche.scene.skyCoverage must_== SkyCoverage.withName(report.sky)
-      passedAvalanche.scene.precipitation must_== Precipitation.withName(report.precip)
-      passedAvalanche.classification.avyType must_== AvalancheType.withName(report.avyType)
-      passedAvalanche.classification.trigger must_== AvalancheTrigger.withName(report.avyTrigger)
-      passedAvalanche.classification.interface must_== AvalancheInterface.withName(report.avyInterface)
-      passedAvalanche.humanNumbers.caught must_== strToIntOrNegOne(report.caught)
-      passedAvalanche.humanNumbers.partiallyBuried must_== strToIntOrNegOne(report.partiallyBuried)
-      passedAvalanche.humanNumbers.fullyBuried must_== strToIntOrNegOne(report.fullyBuried)
-      passedAvalanche.humanNumbers.injured must_== strToIntOrNegOne(report.injured)
-      passedAvalanche.humanNumbers.killed must_== strToIntOrNegOne(report.killed)
-      passedAvalanche.humanNumbers.modeOfTravel must_== ModeOfTravel.withName(report.modeOfTravel)
-      passedAvalanche.comments must_== report.comments
-      passedAvalanche.perimeter must_== testCoords
-      emailArg.getValue must_== report.submitterEmail
+      passedAvalanche.submitterEmail mustEqual report.submitterEmail
+      passedAvalanche.submitterExp mustEqual ExperienceLevel.withName(report.submitterExp)
+      passedAvalanche.location.longitude mustEqual strToDblOrZero(report.lng)
+      passedAvalanche.location.latitude mustEqual strToDblOrZero(report.lat)
+      passedAvalanche.areaName mustEqual report.areaName
+      passedAvalanche.date mustEqual strToDate(report.dateStr)
+      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.withName(report.sky)
+      passedAvalanche.scene.precipitation mustEqual Precipitation.withName(report.precip)
+      passedAvalanche.classification.avyType mustEqual AvalancheType.withName(report.avyType)
+      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.withName(report.avyTrigger)
+      passedAvalanche.classification.interface mustEqual AvalancheInterface.withName(report.avyInterface)
+      passedAvalanche.humanNumbers.caught mustEqual strToIntOrNegOne(report.caught)
+      passedAvalanche.humanNumbers.partiallyBuried mustEqual strToIntOrNegOne(report.partiallyBuried)
+      passedAvalanche.humanNumbers.fullyBuried mustEqual strToIntOrNegOne(report.fullyBuried)
+      passedAvalanche.humanNumbers.injured mustEqual strToIntOrNegOne(report.injured)
+      passedAvalanche.humanNumbers.killed mustEqual strToIntOrNegOne(report.killed)
+      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.withName(report.modeOfTravel)
+      passedAvalanche.comments.get mustEqual report.comments
+      passedAvalanche.perimeter mustEqual report.coordStr.trim.split(" ").toList.map(stringToCoordinate)
     }
     
-    "Handles an insertion success correctly" withSFor("/") in {
-      val report = spy(newReportWithTestData)
+    "Handles an insertion success correctly" withSFor "/" in {
+      val report = spy(newReportWithTestData())
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
       mockAvalancheDal.getAvalanche(report.extId) returns None
@@ -187,11 +187,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       jsCmd.toJsCmd must contain(report.extId)
     }
     
-    "Handles an insertion failure correctly" withSFor("/") in {
+    "Handles an insertion failure correctly" withSFor "/" in {
       val exceptionMsg = "gotcha!"
       mockAvalancheDal.insertAvalanche(any[Avalanche]) throws new RuntimeException(exceptionMsg)
       
-      val report = spy(newReportWithTestData)
+      val report = spy(newReportWithTestData())
       val unreserveThisExtId = "4iu2kjr2"
       report.extId = unreserveThisExtId
       mockAvalancheDal.getAvalanche(report.extId) returns None
@@ -205,36 +205,36 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
   }
 
   "Report email notifications" should {
-    "Send email to both submitter and admin upon initial report submission" withSFor("/") in {
-      val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
-      val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
-      val report = spy(newReportWithTestData)
+    "Send email to both submitter and admin upon initial report submission" withSFor "/" in {
+      val fromArg = capture[From]
+      val subjectArg = capture[Subject]
+      val report = spy(newReportWithTestData())
       mockAvalancheDal.getAvalanche(report.extId) returns None
 
       report.saveReport()
-      there was two(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
+      there was two(report).sendMail(fromArg, subjectArg, any[MailTypes])
 
-      fromArg.getAllValues.get(0) must_== report.adminEmailFrom
-      subjectArg.getAllValues.get(0).subject must_==
+      fromArg.values.get(0) mustEqual report.adminEmailFrom
+      subjectArg.values.get(0).subject mustEqual
         getMessage("avyReportSubmitEmailAdminSubject", report.submitterEmail).toString
 
-      fromArg.getAllValues.get(1) must_== report.adminEmailFrom
-      subjectArg.getAllValues.get(1).subject must_==
+      fromArg.values.get(1) mustEqual report.adminEmailFrom
+      subjectArg.values.get(1).subject mustEqual
         getMessage("avyReportSubmitEmailSubmitterSubject", report.extId).toString
     }
 
-    "Send email to submitter upon report approval" withSFor("/") in {
-      val fromArg: ArgumentCaptor[From] = ArgumentCaptor.forClass(classOf[From]);
-      val subjectArg: ArgumentCaptor[Subject] = ArgumentCaptor.forClass(classOf[Subject]);
-      val report = spy(newReportWithTestData)
+    "Send email to submitter upon report approval" withSFor "/" in {
+      val fromArg = capture[From]
+      val subjectArg = capture[Subject]
+      val report = spy(newReportWithTestData())
       report.viewable = true
       mockAvalancheDal.getAvalanche(report.extId) returns Some(avalancheForTest)
 
       report.saveReport()
-      there was one(report).sendMail(fromArg.capture, subjectArg.capture, any[MailTypes])
+      there was one(report).sendMail(fromArg, subjectArg, any[MailTypes])
 
-      fromArg.getAllValues.get(0) must_== report.adminEmailFrom
-      subjectArg.getAllValues.get(0).subject must_==
+      fromArg.values.get(0) mustEqual report.adminEmailFrom
+      subjectArg.values.get(0).subject mustEqual
         getMessage("avyReportApproveEmailSubmitterSubject", report.extId).toString
     }
   }
@@ -270,10 +270,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       report.comments = "some test comments here"
       report.submitterEmail = "sledhead@company.com"
       report.submitterExp = ExperienceLevel.A0.toString
-      report.coordStr = s"<kml><LinearRing><coordinates>$testCoords</coordinates></LinearRing></kml>"
+      report.coordStr = "-105.88914805,39.77335322,3783.54 -105.88942005,39.77336331,3781.82 -105.88943103,39.77336874,3781.69 -105.88948532,39.77340643,3781.04 -105.88949634,39.77341066,3780.87 -105.88952966,39.77341889,3780.35 -105.88954088,39.77341939,3780.17 -105.88955206,39.77342540,3780.18 -105.88958633,39.77342587,3780.00 -105.88965445,39.77343242,3779.54 -105.88968828,39.77343595,3779.11 -105.88979032,39.77342467,3777.26 -105.88985828,39.77342085,3776.00 -105.89001621,39.77338961,3771.01 -105.89010675,39.77337986,3768.33 -105.89026555,39.77334168,3762.15 -105.89034527,39.77332355,3758.90 -105.89051734,39.77327746,3751.79 -105.89057495,39.77326588,3749.47 -105.89063291,39.77323630,3746.81 -105.89069096,39.77319829,3743.68 -105.89079568,39.77315551,3738.49 -105.89086579,39.77311874,3734.61"
       
       report
   }
-  
-  val testCoords = "-105.875489242241,39.66464854369643,3709.514235071098 -105.8754892458672,39.66464854070823,3709.514606327546 -105.8755061401399,39.66464732239427,3709.575492384985 -105.8755399183114,39.66464488490382,3709.696893243417 -105.8755736845457,39.66464244825151,3709.818665358297 -105.8756061647792,39.66460598711289,3708.469890683423"
 }

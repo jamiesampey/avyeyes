@@ -27,7 +27,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
 
-  val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
+  val adminEmailFrom = From(getProp("mail.admin.address"), Full("AvyEyes"))
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
