@@ -1,6 +1,7 @@
 package com.avyeyes.data
 
-import com.avyeyes.util.UserSession
+import com.avyeyes.service.UserSession
+
 import scala.concurrent.Future
 
 trait AuthorizableDao {

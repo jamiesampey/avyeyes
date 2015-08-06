@@ -1,16 +1,15 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.DalInjector
 import com.avyeyes.model.JsonSerializers._
-import com.avyeyes.service.UserInjector
+import com.avyeyes.service.Injectors
 import net.liftweb.common.Loggable
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{JsonResponse, NotFoundResponse}
 
 
 class AvyDetails extends RestHelper with Loggable {
-  lazy val dal = DalInjector.dal.vend
-  lazy val userSession = UserInjector.userSession.vend
+  lazy val dal = Injectors.dal.vend
+  lazy val userSession = Injectors.user.vend
 
   serve {
     case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {

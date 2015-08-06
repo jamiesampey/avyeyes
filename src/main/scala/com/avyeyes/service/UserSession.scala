@@ -1,6 +1,5 @@
-package com.avyeyes.util
+package com.avyeyes.service
 
-import com.avyeyes.data.DalInjector
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
@@ -11,7 +10,7 @@ import scala.concurrent.duration._
 private object authorizedEmail extends SessionVar[Box[String]](Empty)
 
 class UserSession extends Loggable {
-  lazy val dal = DalInjector.dal.vend
+  lazy val dal = Injectors.dal.vend
 
   def isAuthorizedSession() = authorizedEmail.get.isDefined
 

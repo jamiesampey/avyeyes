@@ -1,10 +1,8 @@
 package com.avyeyes.rest
 
 import java.util.UUID
-
-import com.avyeyes.data.DalInjector
 import com.avyeyes.model.AvalancheImage
-import com.avyeyes.service.AmazonS3ImageService
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.UnauthorizedException
@@ -15,8 +13,8 @@ import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
 class Images extends RestHelper with Loggable {
-  lazy val dal = DalInjector.dal.vend
-  val s3 = new AmazonS3ImageService
+  val dal = Injectors.dal.vend
+  val s3 = Injectors.s3.vend
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {

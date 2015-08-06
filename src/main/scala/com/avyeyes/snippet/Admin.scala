@@ -1,7 +1,6 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.data.DalInjector
-import com.avyeyes.service.UserInjector
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.http._
@@ -12,8 +11,8 @@ import org.apache.commons.lang3.StringUtils._
 import scala.xml.NodeSeq
 
 class Admin extends Loggable {
-  lazy val dal = DalInjector.dal.vend
-  lazy val userSession = UserInjector.userSession.vend
+  lazy val dal = Injectors.dal.vend
+  lazy val userSession = Injectors.user.vend
 
   private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
   private val LocalAuthEmailHash = Props.get("localauth.email", "")

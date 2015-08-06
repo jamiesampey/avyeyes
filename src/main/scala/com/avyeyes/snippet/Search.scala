@@ -4,6 +4,7 @@ import com.avyeyes.data._
 import com.avyeyes.model._
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
@@ -18,7 +19,7 @@ import org.apache.commons.lang3.StringUtils._
 import scala.math._
 
 class Search extends Loggable {
-  lazy val dal = DalInjector.dal.vend
+  val dal = Injectors.dal.vend
   
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""

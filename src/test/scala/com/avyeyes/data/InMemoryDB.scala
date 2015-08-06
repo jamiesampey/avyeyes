@@ -1,8 +1,7 @@
 package com.avyeyes.data
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.service.UserInjector
-import com.avyeyes.util.UserSession
+import com.avyeyes.service.{UserSession, Injectors}
 import org.h2.jdbcx.JdbcDataSource
 import org.specs2.execute._
 import org.specs2.mock.Mockito
@@ -37,7 +36,7 @@ trait InMemoryDB extends AroundExample with Mockito {
         println(s"Failed to create a DAL, ${ex.getMessage}"); null
     }
 
-  def around[T: AsResult](t: => T): Result = UserInjector.userSession.doWith(mockUserSession) {
+  def around[T: AsResult](t: => T): Result = Injectors.user.doWith(mockUserSession) {
     cache.clear()
     Await.result( Database.forDataSource(h2DataSource).run {
       sqlu"DROP ALL OBJECTS;" >> dal.createSchema }, 10 seconds)

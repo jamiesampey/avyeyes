@@ -3,7 +3,7 @@ package com.avyeyes.data
 import javax.sql.DataSource
 
 import akka.actor._
-import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
+import com.avyeyes.service.{Injectors, ExternalIdService}
 import net.liftweb.common.Loggable
 import slick.driver.{PostgresDriver, JdbcProfile}
 
@@ -22,7 +22,7 @@ class DatabaseMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSour
   import driver.api._
 
   val db = Database.forDataSource(ds)
-  val s3 = new AmazonS3ImageService
+  val s3 = Injectors.s3.vend
 
   def receive = {
     case DatabaseMaintenance.run => {

@@ -3,7 +3,7 @@ package com.avyeyes.data
 import javax.sql.DataSource
 
 import com.avyeyes.model.{Avalanche, AvalancheImage, User}
-import com.avyeyes.service.{UserInjector, ExternalIdService}
+import com.avyeyes.service.{Injectors, ExternalIdService}
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
@@ -15,14 +15,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-private[data] class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
+class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   avalancheMap: CMap[String, Avalanche]) extends CachedDAL
   with DatabaseComponent with SlickColumnMappers with DriverComponent
   with ExternalIdService with Loggable {
 
   import driver.api._
 
-  private val user = UserInjector.userSession.vend
+  private val user = Injectors.user.vend
   private val db = Database.forDataSource(ds)
 
   def isUserAuthorized(email: String): Future[Boolean] = db.run {

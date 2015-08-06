@@ -1,8 +1,8 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.{AdminAvalancheQuery, DalInjector, OrderDirection, OrderField}
+import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
 import com.avyeyes.model._
-import com.avyeyes.service.UserInjector
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Helpers._
 import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.rest.RestHelper
@@ -13,8 +13,8 @@ import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.ListBuffer
 
 class AdminTable extends RestHelper with Loggable {
-  lazy val dal = DalInjector.dal.vend
-  lazy val userSession = UserInjector.userSession.vend
+  lazy val dal = Injectors.dal.vend
+  lazy val userSession = Injectors.user.vend
 
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 

@@ -8,12 +8,9 @@ import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
-import org.mockito.ArgumentCaptor
 
 class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
   sequential
-
-  val images = new Images
 
   val extId = "4jf93dkj"
   val goodImgFileName = "imgInDb"
@@ -31,11 +28,12 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
     mockPostRequest.method = "POST"
   
     "Insert a new image in the DB" withSFor(mockPostRequest) in {
+      val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns 0
 
-      val fileName = "testImgABC"
+      val filename = "testImgABC.jpg"
       val fileBytes = Array[Byte](10, 20, 30, 40, 50)
-      val fph = FileParamHolder("Test Image", "image/jpeg", fileName, fileBytes)
+      val fph = FileParamHolder("Test Image", "image/jpeg", filename, fileBytes)
 
       val req = openLiftReqBox(S.request)
       val reqWithFPH = addFileUploadToReq(req, fph)
@@ -44,12 +42,13 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
       there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") mustEqual extId
-      extractJsonStringField(resp, "filename") mustEqual fileName
-      extractJsonStringField(resp, "origFilename") must haveLength(36) // UUID length with dashes
+      extractJsonStringField(resp, "filename").length must beGreaterThan(0)
+      extractJsonStringField(resp, "origFilename") mustEqual filename
       extractJsonLongField(resp, "size") mustEqual fileBytes.length
     }
 
     "Don't insert an image above the max images count" withSFor(mockPostRequest) in {
+      val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns MaxImagesPerAvalanche
 
       val fileName = "testImgABC"
@@ -69,19 +68,20 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
   "Image Delete request" should {
     val mockDeleteRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
     mockDeleteRequest.method = "DELETE"
-    
+
     "Delete an image from the DB" withSFor(mockDeleteRequest) in {
+      val images = new Images
       val req = openLiftReqBox(S.request)
      
-      val extIdArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
-      val filenameArg: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String]);
+      val extIdArg = capture[String]
+      val filenameArg = capture[String]
 
       val resp = openLiftRespBox(images(req)())
 
-      there was one(mockAvalancheDal).deleteAvalancheImage(extIdArg.capture(), filenameArg.capture())
+      there was one(mockAvalancheDal).deleteAvalancheImage(extIdArg, filenameArg)
       resp must beAnInstanceOf[OkResponse]
-      extIdArg.getValue mustEqual extId
-      filenameArg.getValue mustEqual goodImgFileName
+      extIdArg.value mustEqual extId
+      filenameArg.value mustEqual goodImgFileName
     }
   }
 }

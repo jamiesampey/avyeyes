@@ -2,12 +2,10 @@ package com.avyeyes.snippet
 
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
-
-import com.avyeyes.data.DalInjector
 import com.avyeyes.model._
 import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums._
-import com.avyeyes.service.{AmazonS3ImageService, ExternalIdService}
+import com.avyeyes.service.{Injectors, AmazonS3ImageService, ExternalIdService}
 import com.avyeyes.util.Helpers._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
@@ -26,8 +24,8 @@ import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
 
 class Report extends ExternalIdService with Mailer with Loggable {
-  lazy val dal = DalInjector.dal.vend
-  private val s3 = new AmazonS3ImageService
+  val dal = Injectors.dal.vend
+  val s3 = Injectors.s3.vend
 
   val adminEmailFrom = From(getProp("mail.admin.address"), Full("Avy Eyes"))
 

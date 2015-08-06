@@ -1,8 +1,8 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.data.DalInjector
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants.ExtIdUrlParam
 import com.avyeyes.util.Helpers._
 import net.liftweb.common.Loggable
@@ -13,7 +13,7 @@ import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
 
 class Init extends Loggable {
-  lazy val dal = DalInjector.dal.vend
+  val dal = Injectors.dal.vend
     
   val InitAvyMsgDelayMillis = 5000
 
