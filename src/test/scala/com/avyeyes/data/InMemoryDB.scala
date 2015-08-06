@@ -27,14 +27,7 @@ trait InMemoryDB extends AroundExample with Mockito {
 
   protected lazy val mockUserSession = mock[UserSession]
   protected lazy val cache = new TrieMap[String, Avalanche]()
-  protected lazy val dal: MemoryMapCachedDAL =
-    Try(new MemoryMapCachedDAL(H2Driver, h2DataSource, cache)) match {
-      case scala.util.Success(instance) =>
-        println("Successfully created a DAL")
-        instance
-      case scala.util.Failure(ex) =>
-        println(s"Failed to create a DAL, ${ex.getMessage}"); null
-    }
+  protected lazy val dal = new MemoryMapCachedDAL(H2Driver, h2DataSource, cache)
 
   def around[T: AsResult](t: => T): Result = Injectors.user.doWith(mockUserSession) {
     cache.clear()
