@@ -72,16 +72,21 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
     "Delete an image from the DB" withSFor(mockDeleteRequest) in {
       val images = new Images
       val req = openLiftReqBox(S.request)
-     
-      val extIdArg = capture[String]
-      val filenameArg = capture[String]
+
+      val s3ExtIdArg = capture[String]
+      val s3FilenameArg = capture[String]
+      val dalExtIdArg = capture[String]
+      val dalFilenameArg = capture[String]
 
       val resp = openLiftRespBox(images(req)())
 
-      there was one(mockAvalancheDal).deleteAvalancheImage(extIdArg, filenameArg)
+      there was one(mockS3Service).deleteImage(s3ExtIdArg, s3FilenameArg)
+      there was one(mockAvalancheDal).deleteAvalancheImage(dalExtIdArg, dalFilenameArg)
       resp must beAnInstanceOf[OkResponse]
-      extIdArg.value mustEqual extId
-      filenameArg.value mustEqual goodImgFileName
+      s3ExtIdArg.value mustEqual extId
+      s3FilenameArg.value mustEqual goodImgFileName
+      dalExtIdArg.value mustEqual extId
+      dalFilenameArg.value mustEqual goodImgFileName
     }
   }
 }

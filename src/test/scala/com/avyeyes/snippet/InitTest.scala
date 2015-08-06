@@ -21,7 +21,6 @@ class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
 
       there was one(mockAvalancheDal).getAvalanche(validExtId)
       initJsCalls must contain("avyEyesView.addAvalancheAndFlyTo")
-      initJsCalls must contain("avyEyesView.showModalDialog")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
     
