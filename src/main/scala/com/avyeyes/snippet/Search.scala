@@ -90,9 +90,10 @@ class Search extends Loggable {
     ))
 
     if (strToDblOrZero(camPitch) > CamPitchCutoff)  {
+      val camLocation = Coordinate(strToDblOrZero(camLng), strToDblOrZero(camLat), 0)
+      matchingAvalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
+    } else {
       matchingAvalanches
-    } else { 
-      matchingAvalanches.filter(a => haversineDist(a) < AvyDistRangeMiles)
     }
   }
 
@@ -103,14 +104,4 @@ class Search extends Loggable {
   private def getHumanNumberQueryVal(numStr: String): Option[Int] = {
     if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
   }
-  
-	private def haversineDist(a: Avalanche) = {
-    val dLat = (a.location.latitude - strToDblOrZero(camLat)).toRadians
-    val dLon = (a.location.longitude - strToDblOrZero(camLng)).toRadians
-
-    val ax = pow(sin(dLat/2),2) + pow(sin(dLon/2),2) * cos(strToDblOrZero(camLat).toRadians) *
-      cos(a.location.latitude.toRadians)
-    val c = 2 * asin(sqrt(ax))
-    EarthRadiusMiles * c
-	}
 }

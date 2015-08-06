@@ -55,21 +55,20 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       search.camAlt = (CamAltitudeLimit + 1).toString
       val jsCmd = search.doSearch()
       
-      jsCmd.toJsCmd must startWith("avyeyes.showModalDialog")
+      jsCmd.toJsCmd must startWith("avyEyesView.showModalDialog")
       jsCmd.toJsCmd must contain("Error")
     }
     
     "Pass search criteria to DAO" withSFor("/") in {
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns Nil
       
-      val queryArg: ArgumentCaptor[AvalancheQuery] = 
-        ArgumentCaptor.forClass(classOf[AvalancheQuery]);
+      val queryArg =capture[AvalancheQuery]
 
       val search = newSearchWithTestData
       search.doSearch()
 
-      there was one(mockAvalancheDal).getAvalanches(queryArg.capture())
-      val passedQuery = queryArg.getValue
+      there was one(mockAvalancheDal).getAvalanches(queryArg)
+      val passedQuery = queryArg.value
       
       passedQuery.geoBounds.get.latMax must_== strToDblOrZero(search.latMax)
       passedQuery.geoBounds.get.latMin must_== strToDblOrZero(search.latMin)
@@ -86,32 +85,28 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
     }
     
     "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {
-      val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = avalancheForTest.copy(extId = inRangeExtId,
-        viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
+      val avalancheInRange = avalancheForTest.copy(viewable = true,
+        location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
       
-      val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
-        viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
+      val avalancheOutOfRange = avalancheForTest.copy(viewable = true,
+        location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
       
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
       val search = newSearchWithTestData
-      search.camPitch = "10"
+      search.camPitch = (CamPitchCutoff - 1).toString
       val jsCmd = search.doSearch()
 
-      jsCmd.toJsCmd must contain(inRangeExtId)
-      jsCmd.toJsCmd must contain(outOfRangeExtId)
+      jsCmd.toJsCmd must contain(avalancheInRange.extId)
+      jsCmd.toJsCmd must contain(avalancheOutOfRange.extId)
     }
     
     "Uses haversine distance if cam tilt is greater than cutoff" withSFor("/") in {
-      val inRangeExtId = "jd3ru8vg"
-      val avalancheInRange = avalancheForTest.copy(extId = inRangeExtId,
-        viewable = true, location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
+      val avalancheInRange = avalancheForTest.copy(viewable = true,
+        location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
 
-      val outOfRangeExtId = "rt739fs8"
-      val avalancheOutOfRange = avalancheForTest.copy(extId = outOfRangeExtId,
-        viewable = true, location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
+      val avalancheOutOfRange = avalancheForTest.copy(viewable = true,
+        location = Coordinate(-103.875046142935, 41.6634870900582, 2500))
 
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
@@ -119,8 +114,8 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       search.camPitch = (CamPitchCutoff + 1).toString
       val jsCmd = search.doSearch()
 
-      jsCmd.toJsCmd must contain(inRangeExtId)
-      jsCmd.toJsCmd must not contain(outOfRangeExtId)
+      jsCmd.toJsCmd must contain(avalancheInRange.extId)
+      jsCmd.toJsCmd must not contain(avalancheOutOfRange.extId)
     }
   }
   
@@ -139,8 +134,8 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       
       search.fromDate = "12-01-2013"
       search.toDate = "01-31-2014"
-      search.avyType = "WL"
-      search.avyTrigger = "N"
+      search.avyType = AvalancheType.WL.toString
+      search.avyTrigger = AvalancheTrigger.N.toString
       search.rSize = "2"
       search.dSize = "3.5"
       search.numCaught = "2"
