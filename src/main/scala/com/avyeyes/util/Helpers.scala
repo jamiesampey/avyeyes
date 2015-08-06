@@ -1,6 +1,6 @@
 package com.avyeyes.util
 
-import javax.mail.internet.{AddressException, InternetAddress}
+import javax.mail.internet.InternetAddress
 
 import com.avyeyes.util.Constants._
 import net.liftweb.common.Box
@@ -12,6 +12,7 @@ import org.apache.commons.lang3.Validate
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
+import scala.util.{Failure, Success, Try}
 import scala.xml.{NodeSeq, Unparsed}
 
 
@@ -46,45 +47,36 @@ object Helpers {
   }
 
   def isValidEmail(email: String): Boolean = {
-    val isValid = try {
-      new InternetAddress(email).validate()
-      true
-    } catch {
-      case e: AddressException => false
+    Try(new InternetAddress(email).validate()) match {
+      case Success(addr) => true
+      case Failure(ex) => false
     }
-    isValid
   }
 
   def isValidSlopeAngle(angle: String): Boolean = {
-    val isValid = try {
-      Validate.exclusiveBetween(0, 90, angle.toInt)
-      true
-    } catch {
-      case iae: IllegalArgumentException => false
+    Try(Validate.exclusiveBetween(0, 90, angle.toInt)) match {
+      case Success(unit) => true
+      case Failure(ex) => false
     }
-    isValid
   }
 
   def isValidDate(dateStr: String): Boolean = {
-    val isValid = try {
-      strToDate(dateStr)
-      true
-    } catch {
-      case iae: IllegalArgumentException => false
+    Try(strToDate(dateStr)) match {
+      case Success(dt) => true
+      case Failure(ex) => false
     }
-    isValid
   }
 
   def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(S.?(UnknownEnumCode))
   
   def getHttpBaseUrl = {
     val httpPort = getProp("httpPort")
-    s"http://${getProp("hostname")}${if (httpPort != 80) s":$httpPort" else ""}/"
+    s"http://${getProp("hostname")}${if (httpPort != "80") s":$httpPort" else ""}/"
   }
   
   def getHttpsBaseUrl = {
     val httpsPort = getProp("httpsPort")
-    s"https://${getProp("hostname")}${if (httpsPort != 443) s":$httpsPort" else ""}/"
+    s"https://${getProp("hostname")}${if (httpsPort != "443") s":$httpsPort" else ""}/"
   }
   
   lazy val BadWords = {
