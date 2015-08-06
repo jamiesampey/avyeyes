@@ -10,7 +10,7 @@ import org.joda.time.DateTime
 
 class HelpersTest extends WebSpec2(Boot().boot _) {
   "Date parsing, formatting, and validation" should {
-    "Parse a string to a date" withSFor("/") in {
+    "Parse a string to a date" withSFor "/" in {
       val dt = Helpers.strToDate("08-26-2014")
 
       dt.dayOfMonth.get must_== 26
@@ -18,12 +18,12 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
       dt.year.get must_== 2014
     }
 
-    "Format date to a string" withSFor("/") in {
+    "Format date to a string" withSFor "/" in {
       val dt = new DateTime(2014, 9, 8, 0, 0)
       Helpers.dateToStr(dt) must_== "09-08-2014"
     }
 
-    "Validate date strings" withSFor("/") in {
+    "Validate date strings" withSFor "/"  in {
       Helpers.isValidDate("") must beFalse
       Helpers.isValidDate("asdf") must beFalse
       Helpers.isValidDate("09082014") must beFalse
@@ -32,13 +32,13 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
   }
 
   "Message retrieval" should {
-    "Parse messages as xml" withSFor("/") in {
+    "Parse messages as xml" withSFor "/" in {
       val xml = Helpers.getMessage("loadingText")
       xml must beAnInstanceOf[scala.xml.Unparsed]
       xml.text must contain("<p>")
     }
 
-    "Insert params in messages" withSFor("/") in {
+    "Insert params in messages" withSFor "/" in {
       val xml = Helpers.getMessage("browserNotSupported", FirefoxMinVersion,
         OperaMinVersion, IeMinVersion, ChromeMinVersion)
       xml.text must contain(ChromeMinVersion.toString)
@@ -49,75 +49,75 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
   }
 
   "String to Double conversion" should {
-    "Work on doubles of different precisions" withSFor("/") in {
+    "Work on doubles of different precisions" withSFor "/" in {
       Helpers.strToDblOrZero("23") must_== 23
       Helpers.strToDblOrZero("23.0") must_== 23
     }
 
-    "Return 0 for unparsable strings" withSFor("/") in {
+    "Return 0 for unparsable strings" withSFor "/" in {
       Helpers.strToDblOrZero("blah") must_== 0
     }
   }
 
   "Avalanche size Double to String conversion" should {
-    "Work on sizes of different precesions" withSFor("/") in {
+    "Work on sizes of different precesions" withSFor "/" in {
       Helpers.sizeToStr(3) must_== "3.0"
       Helpers.sizeToStr(3.5) must_== "3.5"
     }
 
-    "Return localized 'Unknown' for size 0" withSFor("/") in {
+    "Return localized 'Unknown' for size 0" withSFor "/" in {
       Helpers.sizeToStr(0) must_== S.?("enum.U")
     }
   }
 
   "Avalanche size Double to String conversion" should {
-    "Work on sizes of different precesions" withSFor("/") in {
+    "Work on sizes of different precesions" withSFor "/" in {
       Helpers.sizeToStr(3) must_== "3.0"
       Helpers.sizeToStr(3.5) must_== "3.5"
     }
 
-    "Return localized 'Unknown' for size 0" withSFor("/") in {
+    "Return localized 'Unknown' for size 0" withSFor "/" in {
       Helpers.sizeToStr(0) must_== S.?("enum.U")
     }
   }
 
   "Valid External ID check" should {
-    "Return false for None" withSFor("/") in {
+    "Return false for None" withSFor "/" in {
       Helpers.isValidExtId(None) must beFalse
     }
 
-    "Return false if ID length is wrong" withSFor("/") in {
+    "Return false if ID length is wrong" withSFor "/" in {
       val shortExtId = RandomStringUtils.random(ExtIdLength-1, ExtIdChars)
       val longExtId = RandomStringUtils.random(ExtIdLength+1, ExtIdChars)
       Helpers.isValidExtId(Some(shortExtId)) must beFalse
       Helpers.isValidExtId(Some(longExtId)) must beFalse
     }
 
-    "Return false if ID contains a bad char" withSFor("/") in {
+    "Return false if ID contains a bad char" withSFor "/" in {
       val goodExtId = RandomStringUtils.random(ExtIdLength, ExtIdChars)
       Helpers.isValidExtId(Some(goodExtId.replace(goodExtId.charAt(4), '~'))) must beFalse
     }
 
-    "Return true if ID is valid" withSFor("/") in {
+    "Return true if ID is valid" withSFor "/" in {
       val goodExtId = RandomStringUtils.random(ExtIdLength, ExtIdChars)
       Helpers.isValidExtId(Some(goodExtId)) must beTrue
     }
   }
 
   "Bad word check" should {
-    "Catch bad words in a string" withSFor("/") in {
+    "Catch bad words in a string" withSFor "/" in {
       Helpers.containsBadWord("what a fucking day!") must beTrue
       Helpers.containsBadWord("what a lovely day!") must beFalse
     }
 
-    "Catch bad words in external IDs" withSFor("/") in {
+    "Catch bad words in external IDs" withSFor "/"  in {
       Helpers.containsBadWord("193tit3k") must beTrue
       Helpers.containsBadWord("49fk9d3k") must beFalse
     }
   }
 
   "Enum utilities" should {
-    "Recognize valid and invalid enum values" withSFor("/") in {
+    "Recognize valid and invalid enum values" withSFor "/" in {
       Helpers.isValidEnumValue(AvalancheType, "") must beFalse
       Helpers.isValidEnumValue(AvalancheType, "YX") must beFalse
       Helpers.isValidEnumValue(AvalancheType, "HS") must beTrue
@@ -125,7 +125,7 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
   }
 
   "Email validation" should {
-    "Recognize valid and invalid email addresses" withSFor("/") in {
+    "Recognize valid and invalid email addresses" withSFor "/" in {
       Helpers.isValidEmail("") must beFalse
       Helpers.isValidEmail("joebob") must beFalse
       Helpers.isValidEmail("joebob@") must beFalse
@@ -134,7 +134,7 @@ class HelpersTest extends WebSpec2(Boot().boot _) {
   }
 
   "Slope angle validation" should {
-    "Recognize valid and invalid slope angles" withSFor("/") in {
+    "Recognize valid and invalid slope angles" withSFor "/" in {
       Helpers.isValidSlopeAngle("") must beFalse
       Helpers.isValidSlopeAngle("0") must beFalse
       Helpers.isValidSlopeAngle("90") must beFalse

@@ -42,7 +42,7 @@ object Helpers {
 	}
 
   def isValidEnumValue(enum: Enumeration, code: String): Boolean = {
-    enum.values.exists(_.toString.endsWith(code))
+    !code.isEmpty && enum.values.exists(_.toString.endsWith(code))
   }
 
   def isValidEmail(email: String): Boolean = {
