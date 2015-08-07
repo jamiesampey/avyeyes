@@ -5,7 +5,6 @@ import com.avyeyes.model.Coordinate
 import com.avyeyes.test.Generators._
 
 import scala.xml.NodeSeq
-import org.mockito.ArgumentCaptor
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
@@ -14,9 +13,9 @@ import com.avyeyes.model.enums._
 
 class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
   "Snippet rendering" should {
-    "Wire input fields via CSS selectors" withSFor("/") in {
+    "Wire input fields via CSS selectors" withSFor "/" in {
 
-      val search = newSearchWithTestData 
+      val search = newSearchWithTestData()
       
       val renderedPage = search.render(IndexHtmlElem)
       
@@ -50,7 +49,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
   "Main search method" should { 
     isolated
     
-    "Display 'eye too high' message if camera altitude is too high" withSFor("/") in {
+    "Display 'eye too high' message if camera altitude is too high" withSFor "/" in {
       val search = new Search 
       search.camAlt = (CamAltitudeLimit + 1).toString
       val jsCmd = search.doSearch()
@@ -59,12 +58,12 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       jsCmd.toJsCmd must contain("Error")
     }
     
-    "Pass search criteria to DAO" withSFor("/") in {
+    "Pass search criteria to DAO" withSFor "/" in {
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns Nil
       
       val queryArg =capture[AvalancheQuery]
 
-      val search = newSearchWithTestData
+      val search = newSearchWithTestData()
       search.doSearch()
 
       there was one(mockAvalancheDal).getAvalanches(queryArg)
@@ -76,15 +75,15 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       passedQuery.geoBounds.get.lngMin must_== strToDblOrZero(search.lngMin)
       passedQuery.fromDate.get must_== strToDate(search.fromDate)
       passedQuery.toDate.get must_== strToDate(search.toDate)
-      passedQuery.avyType.get must_== AvalancheType.withName(search.avyType)
-      passedQuery.trigger.get must_== AvalancheTrigger.withName(search.avyTrigger)
+      passedQuery.avyType.get must_== AvalancheType.withCode(search.avyType)
+      passedQuery.trigger.get must_== AvalancheTrigger.withCode(search.avyTrigger)
       passedQuery.rSize.get must_== strToDblOrZero(search.rSize)
       passedQuery.dSize.get must_== strToDblOrZero(search.dSize)
       passedQuery.numCaught.get must_== strToIntOrNegOne(search.numCaught)
       passedQuery.numKilled.get must_== strToIntOrNegOne(search.numKilled)
     }
     
-    "Does not use haversine distance if cam tilt is less than cutoff" withSFor("/") in {
+    "Does not use haversine distance if cam tilt is less than cutoff" withSFor "/" in {
       val avalancheInRange = avalancheForTest.copy(viewable = true,
         location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
       
@@ -93,7 +92,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
-      val search = newSearchWithTestData
+      val search = newSearchWithTestData()
       search.camPitch = (CamPitchCutoff - 1).toString
       val jsCmd = search.doSearch()
 
@@ -101,7 +100,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       jsCmd.toJsCmd must contain(avalancheOutOfRange.extId)
     }
     
-    "Uses haversine distance if cam tilt is greater than cutoff" withSFor("/") in {
+    "Uses haversine distance if cam tilt is greater than cutoff" withSFor "/" in {
       val avalancheInRange = avalancheForTest.copy(viewable = true,
         location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
 
@@ -110,7 +109,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
 
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns avalancheInRange :: avalancheOutOfRange :: Nil
       
-      val search = newSearchWithTestData
+      val search = newSearchWithTestData()
       search.camPitch = (CamPitchCutoff + 1).toString
       val jsCmd = search.doSearch()
 
