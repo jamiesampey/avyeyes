@@ -1,17 +1,16 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.model.StringSerializers._
-import net.liftweb.util.Mailer._
-
-import scala.xml.NodeSeq
-import org.mockito.ArgumentCaptor
-import com.avyeyes.model.Avalanche
-import com.avyeyes.model.enums._
-import com.avyeyes.test._
-import com.avyeyes.test.Generators._
-import com.avyeyes.util.Helpers._
 import bootstrap.liftweb.Boot
+import com.avyeyes.model.Avalanche
+import com.avyeyes.model.StringSerializers._
+import com.avyeyes.model.enums._
+import com.avyeyes.test.Generators._
+import com.avyeyes.test._
+import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
+import net.liftweb.util.Mailer._
+import org.mockito.ArgumentCaptor
+import org.specs2.execute.Result
 
 class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
   "Snippet rendering" should {
@@ -24,41 +23,41 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val TextInputType = "text"
       val TextareaInputType = "textarea"
       
-      def assertInputValue(ns: NodeSeq, nodeType: String, cssSel: String, value: String) = {
+      def assertInputValue(nodeType: String, cssSel: String, value: String): Result = {
         if (nodeType == TextareaInputType ) {
-          val n = (ns \\ nodeType filter (node => (node\"@id").text == cssSel)).head
+          val n = (renderedPage \\ nodeType filter (node => (node\"@id").text == cssSel)).head
           n.text mustEqual value
         } else {
-          val n = (ns \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
+          val n = (renderedPage \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
           (n\"@value").text mustEqual value
         }
       }
       
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormExtId", report.extId)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormLat", report.lat)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormLng", report.lng)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormAreaName", report.areaName)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormDate", report.dateStr)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormSky", report.sky)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormPrecip", report.precip)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormElevation", report.elevation)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormAspect", report.aspect)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormAngle", report.angle)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormType", report.avyType)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormTrigger", report.avyTrigger)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormInterface", report.avyInterface)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormRsizeValue", report.rSize)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormDsizeValue", report.dSize)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumCaught", report.caught)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumPartiallyBuried", report.partiallyBuried)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumFullyBuried", report.fullyBuried)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumInjured", report.injured)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormNumKilled", report.killed)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormModeOfTravel", report.modeOfTravel)
-      assertInputValue(renderedPage, TextareaInputType, "rwAvyFormComments", report.comments)
-      assertInputValue(renderedPage, TextInputType, "rwAvyFormSubmitterEmail", report.submitterEmail)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormSubmitterExp", report.submitterExp)
-      assertInputValue(renderedPage, HiddenInputType, "rwAvyFormKml", report.coordStr)
+      assertInputValue(HiddenInputType, "rwAvyFormExtId", report.extId)
+      assertInputValue(HiddenInputType, "rwAvyFormLat", report.lat)
+      assertInputValue(HiddenInputType, "rwAvyFormLng", report.lng)
+      assertInputValue(TextInputType, "rwAvyFormAreaName", report.areaName)
+      assertInputValue(TextInputType, "rwAvyFormDate", report.dateStr)
+      assertInputValue(HiddenInputType, "rwAvyFormSky", report.sky)
+      assertInputValue(HiddenInputType, "rwAvyFormPrecip", report.precip)
+      assertInputValue(TextInputType, "rwAvyFormElevation", report.elevation)
+      assertInputValue(HiddenInputType, "rwAvyFormAspect", report.aspect)
+      assertInputValue(TextInputType, "rwAvyFormAngle", report.angle)
+      assertInputValue(HiddenInputType, "rwAvyFormType", report.avyType)
+      assertInputValue(HiddenInputType, "rwAvyFormTrigger", report.avyTrigger)
+      assertInputValue(HiddenInputType, "rwAvyFormInterface", report.avyInterface)
+      assertInputValue(TextInputType, "rwAvyFormRsizeValue", report.rSize)
+      assertInputValue(TextInputType, "rwAvyFormDsizeValue", report.dSize)
+      assertInputValue(TextInputType, "rwAvyFormNumCaught", report.caught)
+      assertInputValue(TextInputType, "rwAvyFormNumPartiallyBuried", report.partiallyBuried)
+      assertInputValue(TextInputType, "rwAvyFormNumFullyBuried", report.fullyBuried)
+      assertInputValue(TextInputType, "rwAvyFormNumInjured", report.injured)
+      assertInputValue(TextInputType, "rwAvyFormNumKilled", report.killed)
+      assertInputValue(HiddenInputType, "rwAvyFormModeOfTravel", report.modeOfTravel)
+      assertInputValue(TextareaInputType, "rwAvyFormComments", report.comments)
+      assertInputValue(TextInputType, "rwAvyFormSubmitterEmail", report.submitterEmail)
+      assertInputValue(HiddenInputType, "rwAvyFormSubmitterExp", report.submitterExp)
+      assertInputValue(HiddenInputType, "rwAvyFormCoords", report.coordStr)
     }
   }
 
@@ -228,7 +227,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       val subjectArg = capture[Subject]
       val report = spy(newReportWithTestData())
       report.viewable = true
-      mockAvalancheDal.getAvalanche(report.extId) returns Some(avalancheForTest)
+      val unapprovedAvalanche = avalancheForTest.copy(extId = report.extId, viewable = false)
+      mockAvalancheDal.getAvalanche(report.extId) returns Some(unapprovedAvalanche)
 
       report.saveReport()
       there was one(report).sendMail(fromArg, subjectArg, any[MailTypes])
