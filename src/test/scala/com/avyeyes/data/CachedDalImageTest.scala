@@ -5,7 +5,7 @@ import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
 
-class CachedDaoImageTest extends Specification with InMemoryDB {
+class CachedDalImageTest extends Specification with InMemoryDB {
   sequential
 
   val testAvalanche = avalancheForTest.copy(extId = "5j3fyjd9", viewable = false)

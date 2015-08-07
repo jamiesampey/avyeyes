@@ -4,7 +4,7 @@ import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
-class CachedDaoAdminSelectTest extends Specification with InMemoryDB {
+class CachedDalAdminSelectTest extends Specification with InMemoryDB {
   sequential
 
   val commonLat = 38.5763463456

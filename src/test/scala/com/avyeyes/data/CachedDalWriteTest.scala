@@ -4,7 +4,7 @@ import com.avyeyes.test.Generators._
 import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
-class CachedDaoWriteTest extends Specification with InMemoryDB {
+class CachedDalWriteTest extends Specification with InMemoryDB {
   sequential
 
   "Avalanche insert" >> {
@@ -14,7 +14,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
       val a1 = avalancheForTest.copy(viewable = true)
       dal.insertAvalanche(a1)
 
-      dal.getAvalanche(a1.extId).get mustEqual a1
+      dal.getAvalanche(a1.extId).get mustEqual a1.copy(comments = None)
       dal.getAvalancheFromDisk(a1.extId).get mustEqual a1
     }
     
@@ -56,7 +56,7 @@ class CachedDaoWriteTest extends Specification with InMemoryDB {
       val updatedAvalanche = avalancheForTest.copy(extId = origAvalanche.extId)
       dal.updateAvalanche(updatedAvalanche)
       
-      val result = dal.getAvalanche(origAvalanche.extId).get
+      val result = dal.getAvalancheFromDisk(origAvalanche.extId).get
       result.createTime mustEqual origAvalanche.createTime
       result.viewable mustEqual updatedAvalanche.viewable
       result.submitterExp mustEqual updatedAvalanche.submitterExp

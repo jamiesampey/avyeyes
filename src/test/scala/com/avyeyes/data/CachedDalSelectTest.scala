@@ -7,7 +7,7 @@ import org.joda.time.DateTime
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification
 
-class CachedDaoSelectTest extends Specification with InMemoryDB {
+class CachedDalSelectTest extends Specification with InMemoryDB {
   sequential
 
   "Unviewable avalanche select" >> {
