@@ -20,7 +20,7 @@ rjs := {
   println("r.js -o build.js".!!)
 }
 
-compile in Compile <<= (compile in Compile) dependsOn(rjs)
+//compile in Compile <<= (compile in Compile) dependsOn(rjs)
 
 // sbt-jasmine config
 seq(jasmineSettings : _*)

@@ -7,7 +7,6 @@
     generateSourceMaps: false,
     optimizeCss: 'standard',
     optimize: 'uglify2',
-    skipDirOptimize: true, // don't uglify the lib dir!
     uglify2: {
         output: {
             beautify: false
@@ -23,20 +22,10 @@
     },
     modules: [
         {
-            name: 'main',
-            exclude: [
-                "lib/Cesium/Cesium",
-                "lib/jquery-ui",
-                "lib/lightbox",
-                "lib/jquery.fileupload",
-                "lib/jquery.iframe-transport"
-            ]
+            name: 'main'
         },
         {
-            name: "main.admin",
-            exclude: [
-                "lib/jquery.dataTables"
-            ]
+            name: "main.admin"
         }
     ]
 })
