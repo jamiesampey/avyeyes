@@ -1,7 +1,7 @@
 package com.avyeyes.data
 
+import com.avyeyes.service.UnauthorizedException
 import com.avyeyes.test.Generators._
-import com.avyeyes.util.UnauthorizedException
 import org.specs2.mutable.Specification
 
 class CachedDalWriteTest extends Specification with InMemoryDB {

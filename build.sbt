@@ -33,7 +33,7 @@ jasmineTestDir <+= sourceDirectory { src => src / "test" / "webapp" / "js" }
 
 jasmineConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "test.dependencies.js" }
 
-jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" / "require" / "require.min.js" }
+jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" / "require.min.js" }
 
 jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
 
@@ -41,11 +41,17 @@ parallelExecution in Test := false
 
 //test in Test <<= (test in Test) dependsOn (jasmine)
 
-// xsbt-web-plugin config
-lazy val debugForkOptions = new ForkOptions(runJVMOptions =
-  Seq("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788"))
 
-jetty(config = "etc/jetty.xml", options = debugForkOptions)
+// xsbt-web-plugin config
+enablePlugins(JettyPlugin)
+
+javaOptions in Jetty ++= Seq(
+  "-Xdebug",
+  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788"
+)
+
+containerConfigFile := Some(file("etc/jetty.xml"))
+
 
 // jar dependencies
 libraryDependencies ++= {

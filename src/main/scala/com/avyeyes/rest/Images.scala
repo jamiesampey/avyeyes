@@ -2,10 +2,9 @@ package com.avyeyes.rest
 
 import java.util.UUID
 import com.avyeyes.model.AvalancheImage
-import com.avyeyes.service.Injectors
+import com.avyeyes.service.{UnauthorizedException, Injectors}
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Helpers._
-import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper

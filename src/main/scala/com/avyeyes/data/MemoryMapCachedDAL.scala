@@ -3,9 +3,8 @@ package com.avyeyes.data
 import javax.sql.DataSource
 
 import com.avyeyes.model.{Avalanche, AvalancheImage, User}
-import com.avyeyes.service.{Injectors, ExternalIdService}
+import com.avyeyes.service.{UnauthorizedException, Injectors, ExternalIdService}
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.UnauthorizedException
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
 import slick.driver.JdbcProfile
