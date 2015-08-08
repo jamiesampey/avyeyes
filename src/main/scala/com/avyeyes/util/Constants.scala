@@ -14,7 +14,7 @@ object Constants {
 
 	val CamPitchCutoff: Double = -45.0
 	val CamAltitudeLimit: Int = 9000
-	val AvyDistRangeMiles = 10.0
+	val AvyDistRangeMiles = 5.0
 
 	val MaxImageSize: Int = 10000000
   val MaxImagesPerAvalanche = 10
