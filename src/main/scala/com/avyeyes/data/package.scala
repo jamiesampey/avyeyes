@@ -1,10 +1,9 @@
 package com.avyeyes
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.util.Helpers._
 import net.liftweb.util.Props
 import org.postgresql.ds.PGSimpleDataSource
-import slick.driver.{JdbcProfile, H2Driver, JdbcDriver, PostgresDriver}
+import slick.driver.JdbcProfile
 
 import scala.collection.concurrent.{Map => CMap, TrieMap}
 

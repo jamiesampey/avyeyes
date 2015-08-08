@@ -3,7 +3,6 @@ require.config({
     paths: {
         'specs': EnvJasmine.specsDir,
         'mocks': EnvJasmine.mocksDir,
-    	'jasmine-jquery': EnvJasmine.libDir + 'jasmine-jquery',
-    	'gmaps': EnvJasmine.mocksDir + 'gmaps',
+    	'jasmine-jquery': EnvJasmine.libDir + 'jasmine-jquery'
     }
 });

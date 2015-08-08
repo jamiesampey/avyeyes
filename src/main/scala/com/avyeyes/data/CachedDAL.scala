@@ -2,7 +2,11 @@ package com.avyeyes.data
 
 import com.avyeyes.model.{Avalanche, AvalancheImage}
 
-trait CachedDAL extends AuthorizableDao {
+import scala.concurrent.Future
+
+trait CachedDAL {
+  def isUserAuthorized(email: String): Future[Boolean]
+
   def countAvalanches(viewable: Option[Boolean]): Int
 
   def getAvalanche(extId: String): Option[Avalanche]
