@@ -85,13 +85,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
   private def throwOn(value: JValue) =
     throw new MappingException("Can't convert %s to any of (%s)".format(value, enums.mkString(", ")))
 
-  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = {
-    case (TypeInfo(`predicate`, _), json) => json match {
-      case wrapped @ JString(value) =>
-        enums.flatMap { _.values.find(_.toString == value)}.headOption getOrElse throwOn(wrapped)
-      case value => throwOn(value)
-    }
-  }
+  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
     case ev: Enumeration#Value => {
