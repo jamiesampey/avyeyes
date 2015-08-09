@@ -37,9 +37,11 @@ jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js"
 
 jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
 
+jasmineEdition := 2
+
 parallelExecution in Test := false
 
-//test in Test <<= (test in Test) dependsOn (jasmine)
+test in Test <<= (test in Test) dependsOn (jasmine)
 
 
 // xsbt-web-plugin config

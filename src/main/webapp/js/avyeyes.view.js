@@ -1,19 +1,19 @@
-define(['avyeyes.ui',
-        'avyeyes.form',
-        'avyeyes.report',
-        'lib/Cesium/Cesium'
+define(["avyeyes.ui",
+        "avyeyes.form",
+        "avyeyes.report",
+        "lib/Cesium/Cesium"
         ], function(AvyEyesUI, AvyForm, AvyReport, Cesium) {
 
 function AvyEyesView() {
-    this.bingKey = 'AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr';
+    this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";
 
-    this.cesiumViewer = new Cesium.Viewer('cesiumContainer', {
+    this.cesiumViewer = new Cesium.Viewer("cesiumContainer", {
         sceneMode: Cesium.SceneMode.SCENE3D,
         terrainProvider: new Cesium.CesiumTerrainProvider({
-            url: '//cesiumjs.org/stk-terrain/tilesets/world/tiles'
+            url: "//cesiumjs.org/stk-terrain/tilesets/world/tiles"
         }),
         imageryProvider: new Cesium.BingMapsImageryProvider({
-            url: '//dev.virtualearth.net',
+            url: "//dev.virtualearth.net",
             key: this.bingKey,
             mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
         }),
@@ -43,7 +43,7 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
         if (Cesium.defined(pick)) {
             var selectedAvalanche = pick.id;
 
-            $.getJSON('/rest/avydetails/' + selectedAvalanche.id, function(data) {
+            $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {
                 if (adminLogin()) {
                     AvyForm.wireReadWriteFormAdminControls(this);
                     AvyForm.displayReadWriteForm(data);
@@ -66,15 +66,15 @@ AvyEyesView.prototype.resetView = function() {
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
-    $('#multiDialog').html(msg);
-    $('#multiDialog').dialog('option', 'title', title);
+    $("#multiDialog").html(msg);
+    $("#multiDialog").dialog("option", "title", title);
 
     if (delay > 0) {
         setTimeout(function() {
-            $('#multiDialog').dialog('open');
+            $("#multiDialog").dialog("open");
         }, delay);
     } else {
-        $('#multiDialog').dialog('open');
+        $("#multiDialog").dialog("open");
     }
 }
 
@@ -91,8 +91,8 @@ AvyEyesView.prototype.cancelReport = function() {
 }
 
 AvyEyesView.prototype.showHelp = function(tab) {
-	$('#helpDialog').tabs("option", "active", tab);
-	$('#helpDialog').dialog('open');
+	$("#helpDialog").tabs("option", "active", tab);
+	$("#helpDialog").dialog("open");
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
@@ -213,9 +213,9 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     var imageUri;
     if (showPin) {
-        imageUri = '/images/flyto-pin.png';
+        imageUri = "/images/flyto-pin.png";
     } else {
-        imageUri = '/images/flyto-1px.png';
+        imageUri = "/images/flyto-1px.png";
     }
 
     var alt = this.cesiumViewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
@@ -269,7 +269,7 @@ function flyToHeadingFromAspect(aspect) {
 }
 
 function adminLogin() {
-  var adminEmailSpan = $('#avyAdminLoggedInEmail');
+  var adminEmailSpan = $("#avyAdminLoggedInEmail");
   return adminEmailSpan.length > 0 && adminEmailSpan.text().length > 0;
 }
 

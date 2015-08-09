@@ -1,8 +1,7 @@
 require.config({
     baseUrl: EnvJasmine.rootDir,
     paths: {
-        'specs': EnvJasmine.specsDir,
-        'mocks': EnvJasmine.mocksDir,
-    	'jasmine-jquery': EnvJasmine.libDir + 'jasmine-jquery'
+        'squire': EnvJasmine.testDir + "squire",
+        'sinon': EnvJasmine.testDir + "sinon"
     }
 });
