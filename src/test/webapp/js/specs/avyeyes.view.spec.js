@@ -63,7 +63,7 @@ define(["squire", "sinon"], function (Squire, sinon) {
         });
     });
 
-    describe("AvyEyesView utility modal dialog", function () {
+    describe("AvyEyesView modal dialogs", function () {
         var avyEyesView;
 
         beforeEach(function (done) {
@@ -75,7 +75,7 @@ define(["squire", "sinon"], function (Squire, sinon) {
             });
         });
 
-        it("opens a jQuery UI dialog with the correct title and message", function() {
+        it("opens the jQuery UI utility dialog with the correct title and message", function() {
             var title = "A Dialog Title"
             var msg = "Some important information"
 
@@ -88,5 +88,15 @@ define(["squire", "sinon"], function (Squire, sinon) {
             jQueryMock.verify();
         });
 
+        it("opens the jQuery UI help dialog to the correct tab", function() {
+            var tab = Math.floor((Math.random() * 5) + 1);
+
+            var jQueryMock = sinon.mock($.fn)
+            jQueryMock.expects("tabs").withArgs("option", "active", tab).once();
+            jQueryMock.expects("dialog").withArgs("open").once();
+
+            avyEyesView.showHelp(tab);
+            jQueryMock.verify();
+        });
     });
 });

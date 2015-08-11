@@ -65,6 +65,11 @@ AvyEyesView.prototype.showModalDialog = function(title, msg) {
     $("#multiDialog").dialog("open");
 }
 
+AvyEyesView.prototype.showHelp = function(tab) {
+	$("#helpDialog").tabs("option", "active", tab);
+	$("#helpDialog").dialog("open");
+}
+
 AvyEyesView.prototype.doReport = function() {
 	this.cancelReport();
 	this.currentReport = new AvyReport(this);
@@ -81,11 +86,6 @@ AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
 	this.cancelReport();
 	AvyEyesUI.showSearchDiv();
-}
-
-AvyEyesView.prototype.showHelp = function(tab) {
-	$("#helpDialog").tabs("option", "active", tab);
-	$("#helpDialog").dialog("open");
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
