@@ -59,23 +59,10 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
-AvyEyesView.prototype.resetView = function() {
-	this.cesiumViewer.entities.removeAll();
-	this.cancelReport();
-	AvyEyesUI.showSearchDiv();
-}
-
-AvyEyesView.prototype.showModalDialog = function(title, msg, delay) {
+AvyEyesView.prototype.showModalDialog = function(title, msg) {
     $("#multiDialog").html(msg);
     $("#multiDialog").dialog("option", "title", title);
-
-    if (delay > 0) {
-        setTimeout(function() {
-            $("#multiDialog").dialog("open");
-        }, delay);
-    } else {
-        $("#multiDialog").dialog("open");
-    }
+    $("#multiDialog").dialog("open");
 }
 
 AvyEyesView.prototype.doReport = function() {
@@ -88,6 +75,12 @@ AvyEyesView.prototype.cancelReport = function() {
     AvyForm.closeReportDialogs();
     AvyForm.clearReportFields();
 	this.currentReport = null;
+}
+
+AvyEyesView.prototype.resetView = function() {
+	this.cesiumViewer.entities.removeAll();
+	this.cancelReport();
+	AvyEyesUI.showSearchDiv();
 }
 
 AvyEyesView.prototype.showHelp = function(tab) {

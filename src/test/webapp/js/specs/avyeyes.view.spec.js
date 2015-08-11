@@ -62,4 +62,31 @@ define(["squire", "sinon"], function (Squire, sinon) {
             expect(cesiumSpy.ScreenSpaceEventHandler.callCount).toBe(1);
         });
     });
+
+    describe("AvyEyesView utility modal dialog", function () {
+        var avyEyesView;
+
+        beforeEach(function (done) {
+            cesiumSpy.reset();
+
+            amdScope.require(["avyeyes.view"], function (AvyEyesView) {
+                avyEyesView = new AvyEyesView();
+                done();
+            });
+        });
+
+        it("opens a jQuery UI dialog with the correct title and message", function() {
+            var title = "A Dialog Title"
+            var msg = "Some important information"
+
+            var jQueryMock = sinon.mock($.fn)
+            jQueryMock.expects("html").withArgs(msg).once();
+            jQueryMock.expects("dialog").withArgs("option", "title", title).once();
+            jQueryMock.expects("dialog").withArgs("open").once();
+
+            avyEyesView.showModalDialog(title, msg);
+            jQueryMock.verify();
+        });
+
+    });
 });
