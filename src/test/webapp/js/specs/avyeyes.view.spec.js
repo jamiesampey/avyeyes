@@ -31,17 +31,16 @@ define(["squire", "sinon"], function (Squire, sinon) {
         }
     };
 
-    var amdScope = new Squire()
-        .mock("avyeyes.form", sinon.spy())
-        .mock("lib/Cesium/Cesium", cesiumSpy);
-
     describe("AvyEyesView constructor", function () {
         var avyEyesView;
 
         beforeEach(function (done) {
             cesiumSpy.reset();
 
-            amdScope.require(["avyeyes.view"], function (AvyEyesView) {
+            new Squire()
+            .mock("avyeyes.form", sinon.spy())
+            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });
@@ -69,7 +68,10 @@ define(["squire", "sinon"], function (Squire, sinon) {
         beforeEach(function (done) {
             cesiumSpy.reset();
 
-            amdScope.require(["avyeyes.view"], function (AvyEyesView) {
+            new Squire()
+            .mock("avyeyes.form", sinon.spy())
+            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });
@@ -97,6 +99,53 @@ define(["squire", "sinon"], function (Squire, sinon) {
 
             avyEyesView.showHelp(tab);
             jQueryMock.verify();
+        });
+    });
+
+    describe("AvyEyesView start/end report", function () {
+        var avyEyesView;
+
+        var reportStub = sinon.stub();
+        var beginReportStub = sinon.stub();
+        reportStub.returns({
+            beginReport: beginReportStub
+        });
+
+        var closeReportDialogsStub = sinon.stub();
+        var clearReportFieldsStub = sinon.stub();
+        var formStub = {
+            closeReportDialogs: closeReportDialogsStub,
+            clearReportFields: clearReportFieldsStub
+        };
+
+        beforeEach(function (done) {
+            cesiumSpy.reset();
+
+            new Squire()
+            .mock("avyeyes.report", reportStub)
+            .mock("avyeyes.form", formStub)
+            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .require(["avyeyes.view"], function (AvyEyesView) {
+                avyEyesView = new AvyEyesView();
+                done();
+            });
+        });
+
+        it("Starts a new report", function() {
+            var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
+            avyEyesView.doReport();
+            expect(cancelReportStub.callCount).toBe(1);
+            expect(reportStub.calledWithNew()).toBe(true);
+            expect(avyEyesView.currentReport).toBeDefined();
+            expect(beginReportStub.callCount).toBe(1);
+        });
+
+        it("Cancels a report", function() {
+            avyEyesView.currentReport = {};
+            avyEyesView.cancelReport();
+            expect(closeReportDialogsStub.callCount).toBe(1);
+            expect(clearReportFieldsStub.callCount).toBe(1);
+            expect(avyEyesView.currentReport).toBeNull();
         });
     });
 });
