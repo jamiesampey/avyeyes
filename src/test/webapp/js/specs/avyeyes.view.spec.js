@@ -1,9 +1,13 @@
 define(["squire", "sinon"], function (Squire, sinon) {
 
     var cesiumViewerStub = sinon.stub();
+    var removeAllStub = sinon.stub();
     cesiumViewerStub.returns({
         scene: {
             canvas: {}
+        },
+        entities: {
+            removeAll: removeAllStub
         }
     });
 
@@ -146,6 +150,36 @@ define(["squire", "sinon"], function (Squire, sinon) {
             expect(closeReportDialogsStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();
+        });
+    });
+
+    describe("AvyEyesView reset view", function () {
+        var avyEyesView;
+
+        var showSearchDivStub = sinon.stub();
+        var avyEyesUiStub = {
+            showSearchDiv: showSearchDivStub
+        };
+
+        beforeEach(function (done) {
+            cesiumSpy.reset();
+
+            new Squire()
+            .mock("avyeyes.form", sinon.spy())
+            .mock("avyeyes.ui", avyEyesUiStub)
+            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .require(["avyeyes.view"], function (AvyEyesView) {
+                avyEyesView = new AvyEyesView();
+                done();
+            });
+        });
+
+        it("works", function() {
+            var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
+            avyEyesView.resetView();
+            expect(removeAllStub.callCount).toBe(1);
+            expect(cancelReportStub.callCount).toBe(1);
+            expect(showSearchDivStub.callCount).toBe(1);
         });
     });
 });
