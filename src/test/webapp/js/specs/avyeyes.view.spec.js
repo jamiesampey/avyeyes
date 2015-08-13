@@ -1,4 +1,4 @@
-define(["squire", "sinon"], function (Squire, sinon) {
+define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
     var cesiumViewerStub = sinon.stub();
     var removeAllStub = sinon.stub();
@@ -83,19 +83,23 @@ define(["squire", "sinon"], function (Squire, sinon) {
 
         it("opens the jQuery UI utility dialog with the correct title and message", function() {
             var title = "A Dialog Title"
-            var msg = "Some important information"
+            var htmlMsg = "<h1>Some important information</h1>"
+
+            setFixtures("<div id='multiDialog'></div>");
 
             var jQueryMock = sinon.mock($.fn)
-            jQueryMock.expects("html").withArgs(msg).once();
             jQueryMock.expects("dialog").withArgs("option", "title", title).once();
             jQueryMock.expects("dialog").withArgs("open").once();
 
-            avyEyesView.showModalDialog(title, msg);
+            avyEyesView.showModalDialog(title, htmlMsg);
+
+            expect($("#multiDialog")).toHaveHtml(htmlMsg);
             jQueryMock.verify();
         });
 
         it("opens the jQuery UI help dialog to the correct tab", function() {
             var tab = Math.floor((Math.random() * 5) + 1);
+
 
             var jQueryMock = sinon.mock($.fn)
             jQueryMock.expects("tabs").withArgs("option", "active", tab).once();
