@@ -35,14 +35,24 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         }
     };
 
+    var avyEyesUiStub = sinon.stub();
+    var uiWireStub = sinon.stub();
+    var showSearchDivStub = sinon.stub();
+    avyEyesUiStub.returns({
+        wire: uiWireStub,
+        showSearchDiv: showSearchDivStub
+    });
+
     describe("AvyEyesView constructor", function () {
         var avyEyesView;
 
         beforeEach(function (done) {
             cesiumSpy.reset();
+            uiWireStub.reset();
 
             new Squire()
-            .mock("avyeyes.form", sinon.spy())
+            .mock("avyeyes.ui", avyEyesUiStub)
+            .mock("avyeyes.form", sinon.stub())
             .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
@@ -64,6 +74,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("sets the Cesium LEFT_CLICK screen space event handler", function() {
             expect(cesiumSpy.ScreenSpaceEventHandler.callCount).toBe(1);
         });
+
+        it("wires the UI", function() {
+            expect(uiWireStub.callCount).toBe(1);
+            expect(uiWireStub.alwaysCalledWith(avyEyesView)).toBe(true);
+        });
     });
 
     describe("AvyEyesView modal dialogs", function () {
@@ -73,6 +88,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             cesiumSpy.reset();
 
             new Squire()
+            .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.form", sinon.spy())
             .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
@@ -121,15 +137,17 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         var closeReportDialogsStub = sinon.stub();
         var clearReportFieldsStub = sinon.stub();
-        var formStub = {
+        var formStub = sinon.stub();
+        formStub.returns({
             closeReportDialogs: closeReportDialogsStub,
             clearReportFields: clearReportFieldsStub
-        };
+        });
 
         beforeEach(function (done) {
             cesiumSpy.reset();
 
             new Squire()
+            .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.report", reportStub)
             .mock("avyeyes.form", formStub)
             .mock("lib/Cesium/Cesium", cesiumSpy)
@@ -160,17 +178,12 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     describe("AvyEyesView reset view", function () {
         var avyEyesView;
 
-        var showSearchDivStub = sinon.stub();
-        var avyEyesUiStub = {
-            showSearchDiv: showSearchDivStub
-        };
-
         beforeEach(function (done) {
             cesiumSpy.reset();
 
             new Squire()
-            .mock("avyeyes.form", sinon.spy())
             .mock("avyeyes.ui", avyEyesUiStub)
+            .mock("avyeyes.form", sinon.stub())
             .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();

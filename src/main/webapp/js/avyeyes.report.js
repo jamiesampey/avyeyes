@@ -1,7 +1,6 @@
-define(['avyeyes.form',
-        'lib/Cesium/Cesium',
+define(['lib/Cesium/Cesium',
         'lib/jquery-ui'],
-        function(AvyForm, Cesium) {
+        function(Cesium) {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
@@ -129,7 +128,7 @@ function digestDrawing(cartesian3Array) {
     var hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
     var opposite = highestCartographic.height - lowestCartographic.height;
 
-    AvyForm.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+    this.view.form.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
         Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
         Math.round(highestCartographic.height),
         getAspect(highestCartographic, lowestCartographic),
@@ -157,7 +156,7 @@ function getAspect(highestCartographic, lowestCartographic) {
 }
 
 AvyReport.prototype.clearDrawing = function() {
-	AvyForm.setReportDrawingInputs('', '', '', '', '', '');
+	this.view.form.setReportDrawingInputs('', '', '', '', '', '');
 	if (this.drawingPolygon) {
     	this.view.cesiumViewer.entities.remove(this.drawingPolygon);
     	this.drawingPolygon = null;
@@ -165,7 +164,7 @@ AvyReport.prototype.clearDrawing = function() {
 }
 
 AvyReport.prototype.highlightErrorFields = function(errorFields) {
-    AvyForm.highlightReportErrorFields(errorFields);
+    this.view.form.highlightReportErrorFields(errorFields);
 }
 
 return AvyReport;

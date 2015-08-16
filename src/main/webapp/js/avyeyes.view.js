@@ -33,11 +33,17 @@ function AvyEyesView() {
 
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvySelectEventHandler();
+
+    this.form = new AvyForm();
+    this.ui = new AvyEyesUI();
+    this.ui.wire(this, function() {
+        $('#avyInitLiftCallback').submit();
+    });
 }
 
 AvyEyesView.prototype.setAvySelectEventHandler = function() {
     this.cesiumEventHandler.setInputAction(function(movement) {
-        AvyForm.hideReadOnlyForm();
+        this.form.hideReadOnlyForm();
 
         var pick = this.cesiumViewer.scene.pick(movement.position);
         if (Cesium.defined(pick)) {
@@ -45,10 +51,10 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
 
             $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {
                 if (adminLogin()) {
-                    AvyForm.wireReadWriteFormAdminControls(this);
-                    AvyForm.displayReadWriteForm(data);
+                    this.form.wireReadWriteFormAdminControls(this);
+                    this.form.displayReadWriteForm(data);
                 } else {
-                    AvyForm.displayReadOnlyForm(movement.position, data);
+                    this.form.displayReadOnlyForm(movement.position, data);
                 }
             }.bind(this))
             .fail(function(jqxhr, textStatus, error) {
@@ -77,15 +83,15 @@ AvyEyesView.prototype.doReport = function() {
 }
 
 AvyEyesView.prototype.cancelReport = function() {
-    AvyForm.closeReportDialogs();
-    AvyForm.clearReportFields();
+    this.form.closeReportDialogs();
+    this.form.clearReportFields();
 	this.currentReport = null;
 }
 
 AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
 	this.cancelReport();
-	AvyEyesUI.showSearchDiv();
+	this.ui.showSearchDiv();
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
@@ -93,7 +99,7 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         this.addAvalanche(avalanche);
     }.bind(this));
 
-    AvyEyesUI.hideSearchDiv();
+    this.ui.hideSearchDiv();
 }
 
 AvyEyesView.prototype.addAvalanche = function(avalanche) {
@@ -114,7 +120,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
             + a.submitterExp.label + "</span><br/><br/><i>Click on the avalanche for details.</i>");
     }.bind(this);
 
-    AvyEyesUI.raiseTheCurtain();
+    this.ui.raiseTheCurtain();
     this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 700, false)
         .then(showTitle);
 }
@@ -183,19 +189,19 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
   var range = 2000000;
 
   var flyToWesternUS = function() {
-    AvyEyesUI.raiseTheCurtain();
+    this.ui.raiseTheCurtain();
     this.flyTo(this.targetEntityFromCoords(-112, 44, false),
         heading, pitch, range, true).then(function() {
-        AvyEyesUI.showSearchDiv();
+        this.ui.showSearchDiv();
     }.bind(this));
   }.bind(this)
 
   if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(pos) {
-        AvyEyesUI.raiseTheCurtain();
+        this.ui.raiseTheCurtain();
 		this.flyTo(this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true),
 		    0.0, pitch, range, true).then(function() {
-		    AvyEyesUI.showSearchDiv();
+		    this.ui.showSearchDiv();
 		}.bind(this));
 	  }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
   } else {

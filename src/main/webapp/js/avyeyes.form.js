@@ -4,9 +4,9 @@ define(['lib/lightbox',
         '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
         ], function() {
 
-var AvyForm = {};
+function AvyForm(){};
 
-AvyForm.displayReadOnlyForm = function(mousePos, a) {
+AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.avyDate + ': ' + a.areaName;
 
 	$('#roAvyFormTitle').text(title);
@@ -72,7 +72,7 @@ AvyForm.displayReadOnlyForm = function(mousePos, a) {
   twttr.widgets.load();
 }
 
-AvyForm.hideReadOnlyForm = function() {
+AvyForm.prototype.hideReadOnlyForm = function() {
     if($('#roAvyFormDialog').is(':visible')) {
         $('#roAvyFormCommentsRow').hide();
         $('#roAvyFormImageList').empty();
@@ -81,7 +81,7 @@ AvyForm.hideReadOnlyForm = function() {
 	}
 }
 
-AvyForm.displayReadWriteForm = function(a) {
+AvyForm.prototype.displayReadWriteForm = function(a) {
     if (!a) { // new report case
         resetReadWriteImageUpload($('#rwAvyFormExtId').val());
         $('#rwAvyFormDialog').dialog('open');
@@ -241,7 +241,7 @@ function getImageDeleteIconUniqueId(imageCellId) {
     return imageCellId + "-delete";
 }
 
-AvyForm.wireReadWriteFormAdminControls = function(view) {
+AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
     $('#rwAvyFormViewableTd').children(':checkbox').change(function(){
         if ($(this).is(':checked')) {
             $('#rwAvyFormViewableTd').css('background', 'rgba(0, 255, 0, 0.3)');
@@ -267,7 +267,7 @@ AvyForm.wireReadWriteFormAdminControls = function(view) {
     $('#rwAvyFormViewableTd').css('display', 'table-cell');
 }
 
-AvyForm.highlightReportErrorFields = function(errorFields) {
+AvyForm.prototype.highlightReportErrorFields = function(errorFields) {
     resetReportErrorFields();
     $.each(errorFields, function(i, fieldId) {
         if (fieldId === 'rwAvyFormAngle') {
@@ -287,7 +287,7 @@ function resetReportErrorFields() {
     $('#rwAvyFormAngle').parent().css('border', '1px solid #7D7D7D');
 }
 
-AvyForm.clearReportFields = function() {
+AvyForm.prototype.clearReportFields = function() {
     resetReportErrorFields();
     setReportDrawingInputs('', '', '', '', '', '');
 	$('#rwAvyFormDialog').find('input:text, input:hidden, textarea').val('');
@@ -297,7 +297,7 @@ AvyForm.clearReportFields = function() {
 	$('#rwAvyFormDrawButtonContainer').css('visibility', 'hidden');
 }
 
-AvyForm.setReportDrawingInputs = setReportDrawingInputs;
+AvyForm.prototype.setReportDrawingInputs = setReportDrawingInputs;
 function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
 	$('#rwAvyFormLng').val(lng);
 	$('#rwAvyFormLat').val(lat);
@@ -309,12 +309,12 @@ function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
 	$('#rwAvyFormCoords').val(coordStr);
 }
 
-AvyForm.closeReportDialogs = function() {
+AvyForm.prototype.closeReportDialogs = function() {
     $('.avyReportDrawDialog, .rwAvyFormDialog')
         .children('.ui-dialog-content').dialog('close');
 }
 
-AvyForm.toggleTechnicalReportFields = function(enabled) {
+AvyForm.prototype.toggleTechnicalReportFields = function(enabled) {
     if (enabled) {
         $('#rwAvyFormClassification .avyHeader').css('color', 'white');
         $('#rwAvyFormClassification label').css('color', 'white');

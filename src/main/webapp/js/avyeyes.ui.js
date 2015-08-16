@@ -1,20 +1,20 @@
-define(['avyeyes.form',
-        'lib/Cesium/Cesium',
+define(['lib/Cesium/Cesium',
         'lib/jquery-ui'
-        ], function(AvyForm, Cesium) {
+        ], function(Cesium) {
 
-var AvyEyesUI = {};
+function AvyEyesUI(){};
 
-AvyEyesUI.wire = function(view) {
+AvyEyesUI.prototype.wire = function(view, callback) {
     wireMainMenu(view);
     wireTooltips();
-    wireAutoCompletes();
+    wireAutoCompletes(view);
     wireDatePickers();
     wireSliders();
     wireSpinners();
     wireButtons(view);
     wireLocationInputs(view);
     wireDialogs(view);
+    callback();
 }
 
 function wireMainMenu(view) {
@@ -86,7 +86,7 @@ function wireTooltips() {
 	});
 }
 
-function wireAutoCompletes() {
+function wireAutoCompletes(view) {
 	$('.avyAutoComplete').autocomplete({
 		minLength: 0,
 		delay: 0,
@@ -114,9 +114,9 @@ function wireAutoCompletes() {
 
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
-		  AvyForm.toggleTechnicalReportFields(true);
+		  view.form.toggleTechnicalReportFields(true);
 		} else {
-		  AvyForm.toggleTechnicalReportFields(false);
+		  view.form.toggleTechnicalReportFields(false);
 		}
 		return false;
 	});
@@ -386,8 +386,8 @@ function wireDialogs(view) {
             click: function(event, ui) {
                 $(this).dialog('close');
                 $.ui.dialog.prototype._focusTabbable = function(){};
-                AvyForm.toggleTechnicalReportFields(false);
-                AvyForm.displayReadWriteForm();
+                view.form.toggleTechnicalReportFields(false);
+                view.form.displayReadWriteForm();
             }
         },{
             text: "Redraw",
@@ -463,13 +463,13 @@ function wireDialogs(view) {
     });
 }
 
-AvyEyesUI.raiseTheCurtain = function() {
+AvyEyesUI.prototype.raiseTheCurtain = function() {
     if ($('#loadingDiv').is(':visible')) {
         $('#loadingDiv').fadeOut(500);
     }
 }
 
-AvyEyesUI.showSearchDiv = function(delay) {
+AvyEyesUI.prototype.showSearchDiv = function(delay) {
     if (delay > 0) {
         setTimeout(function() {
             $('#aeSearchControlContainer').slideDown("slow");
@@ -479,7 +479,7 @@ AvyEyesUI.showSearchDiv = function(delay) {
     }
 }
 
-AvyEyesUI.hideSearchDiv = hideSearchDiv;
+AvyEyesUI.prototype.hideSearchDiv = hideSearchDiv;
 function hideSearchDiv() {
     $('#aeSearchControlContainer').slideUp("slow");
 }
