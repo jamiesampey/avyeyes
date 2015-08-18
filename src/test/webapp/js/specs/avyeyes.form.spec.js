@@ -75,20 +75,23 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         var avyForm;
 
         var mousePos = {x: 523, y: 527};
-
+        var fbParseStub = sinon.stub();
         window.FB = {
             XFBML: {
-                parse: sinon.stub()
+                parse: fbParseStub
             }
         };
-
+        var twttrLoadStub = sinon.stub();
         window.twttr = {
             widgets: {
-                load: sinon.stub()
+                load: twttrLoadStub
             }
         };
 
         beforeEach(function(done) {
+            fbParseStub.reset();
+            twttrLoadStub.reset();
+
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
@@ -172,19 +175,24 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#roAvyFormModeOfTravel")).toHaveText(avalanche.humanNumbers.modeOfTravel.label);
         });
 
-//        it("sets comments and images", function() {
-//            setFixtures("<table><tr id='roAvyFormCommentsRow'><td>"
-//                + "<div id='roAvyFormComments'></div></td></tr></table>"
-//                + "<table><tr id='roAvyFormImageRow'><td>"
-//                + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormCommentsRow").is(":visible")).toBe(true);
-//            expect($("#roAvyFormComments")).toHaveText(avalanche.comments.trim());
-//            expect($("#roAvyFormImageRow")).toBeVisible();
-//            expect($("#roAvyFormImageList li").length).toBe(3);
-//        });
+        it("sets comments and images", function() {
+            setFixtures("<table><tr id='roAvyFormCommentsRow'><td>"
+                + "<div id='roAvyFormComments'></div></td></tr></table>"
+                + "<table><tr id='roAvyFormImageRow'><td>"
+                + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormComments")).toHaveText(avalanche.comments.trim());
+            expect($("#roAvyFormImageList li").length).toBe(3);
+        });
+
+        it("sets up social buttons", function() {
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect(fbParseStub.callCount).toBe(1);
+            expect(twttrLoadStub.callCount).toBe(1);
+        });
     });
 
 });

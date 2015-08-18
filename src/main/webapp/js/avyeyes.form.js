@@ -47,7 +47,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	
 	if (a.comments.length > 0) {
 		$('#roAvyFormCommentsRow').show();
-		$('#roAvyFormComments').html('<pre>' + a.comments.trim() + '</pre>');
+		$('#roAvyFormComments').html(a.comments.replace(/(?:\\r\\n|\\r|\\n)/g, "<br/>"));
 	}
 
 	if (a.images.length > 0) {
@@ -60,16 +60,16 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	}
 	
 	$('#roAvyFormDialog').dialog('option', 'position', {
-    my: 'center bottom-20', 
-    at: 'center top', 
-    of: $.Event('click', {pageX: mousePos.x, pageY: mousePos.y}),
-    collision: 'fit'
-  });
+        my: 'center bottom-20',
+        at: 'center top',
+        of: $.Event('click', {pageX: mousePos.x, pageY: mousePos.y}),
+        collision: 'fit'
+    });
 
-  $('#roAvyFormDialog').dialog('open');
+    $('#roAvyFormDialog').dialog('open');
 
-  FB.XFBML.parse(fbContainer[0]);
-  twttr.widgets.load();
+    FB.XFBML.parse(fbContainer[0]);
+    twttr.widgets.load();
 }
 
 AvyForm.prototype.hideReadOnlyForm = function() {

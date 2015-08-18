@@ -304,8 +304,8 @@ function wireDialogs(view) {
 	});
 
 	$('#roAvyFormDialog').dialog({
-        minWidth: 750,
-        maxWidth: 750,
+        minWidth: 760,
+        maxWidth: 760,
         autoOpen: false,
         modal: false,
         resizable: false,
