@@ -10,7 +10,8 @@
 }
 
 #roAvyFormTable {
-    width: 740px;
+    min-width: 540px;
+    max-width: 740px;
     overflow-x: hidden;
 }
 
@@ -18,18 +19,21 @@
     vertical-align: top;
 }
 
-#roAvyFormTitleTable {
-    width: 100%;
+#roAvyFormTitleContainer {
+    min-width: 540px;
+    max-width: 740px;
+    position: relative;
 }
 
-#roAvyFormTitleTable > tbody > tr > td {
+#roAvyFormTitleContainer > table > tbody > tr > td {
     vertical-align: top;
     padding: 0px;
     margin: 0px;
 }
 
 #roAvyFormTitleAndSubmitterTable {
-    width: 530px;
+    max-width: 530px;
+    float: left;
 }
 
 #roAvyFormTitle {
@@ -38,6 +42,10 @@
 
 #roAvyFormSubmitterExpTd {
 	font: italic .8em times,serif !important;
+}
+
+#roAvyFormShareTable {
+    float: right;
 }
 
 #roAvyFormExtLink {
@@ -77,11 +85,13 @@
 }
 
 #roAvyFormCommentsRow table {
-	width: 100%;
+    width: 100%;
+    max-width: 740px;
 }
 
 #roAvyFormComments {
-	width: 100%;
+    width: 100%;
+    max-width: 740px;
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
@@ -98,6 +108,7 @@
 
 #roAvyFormImageRow table {
     width: 100%;
+    max-width: 740px;
 }
 
 #roAvyFormImageDiv {
@@ -105,7 +116,8 @@
 }
 
 #roAvyFormImageList {
-    max-width: 700px;
+    width: 100%;
+    max-width: 710px;
 	max-height: 90px;
 	margin: 0px;
 	padding: 0px;
