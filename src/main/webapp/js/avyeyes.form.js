@@ -47,7 +47,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	
 	if (a.comments.length > 0) {
 		$('#roAvyFormCommentsRow').show();
-		$('#roAvyFormComments').html(a.comments.replace(/(?:\\r\\n|\\r|\\n)/g, "<br/>"));
+		$('#roAvyFormComments').val(a.comments);
 	}
 
 	if (a.images.length > 0) {

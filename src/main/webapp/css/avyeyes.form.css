@@ -80,28 +80,6 @@
     text-align: left;
 }
 
-#roAvyFormCommentsRow {
-	display: none;
-}
-
-#roAvyFormCommentsRow table {
-    width: 100%;
-    max-width: 740px;
-}
-
-#roAvyFormComments {
-    width: 100%;
-    max-width: 740px;
-	max-height: 200px;
-	overflow-x: hidden;
-	overflow-y: auto;
-    padding: 0px;
-    margin: 0px;
-    font: normal 1em times,serif !important;
-    white-space: pre-wrap;       /* CSS 3 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
-}
-
 #roAvyFormImageRow {
     display: none;
 }
@@ -137,6 +115,27 @@
 .roAvyFormImageListItem img {
     max-width: 100px;
     max-height: 70px;
+}
+
+#roAvyFormCommentsRow {
+	display: none;
+}
+
+#roAvyFormCommentsRow table {
+    width: 100%;
+    max-width: 740px;
+}
+
+#roAvyFormComments {
+    background-color: transparent;
+    color: white;
+    border: 0px;
+    width: 740px;
+	overflow-x: hidden;
+	overflow-y: auto;
+    padding: 0px;
+    margin: 0px;
+    font: normal 1em times,serif !important;
 }
 
 /* -------------------------------------------------------------------------- */

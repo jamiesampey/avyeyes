@@ -183,7 +183,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
-            expect($("#roAvyFormComments")).toHaveText(avalanche.comments.trim());
+            expect($("#roAvyFormComments")).toHaveValue(avalanche.comments);
             expect($("#roAvyFormImageList li").length).toBe(3);
         });
 

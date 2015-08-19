@@ -29,7 +29,7 @@ object JsonSerializers {
       ("slope" -> Extraction.decompose(a.slope)) ~
       ("classification" -> Extraction.decompose(a.classification)) ~
       ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
-      ("comments" -> a.comments.getOrElse("")) ~
+      ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
       ("images" -> Extraction.decompose(images))
   }
 
