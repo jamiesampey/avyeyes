@@ -7,7 +7,7 @@ define(['lib/lightbox',
 function AvyForm(){};
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var title = a.avyDate + ': ' + a.areaName;
+    var title = a.date + ': ' + a.areaName;
 
 	$('#roAvyFormTitle').text(title);
 	$('#roAvyFormSubmitterExp').text(a.submitterExp.label);
@@ -83,11 +83,11 @@ AvyForm.prototype.hideReadOnlyForm = function() {
 
 AvyForm.prototype.displayReadWriteForm = function(a) {
     if (!a) { // new report case
-        resetReadWriteImageUpload($('#rwAvyFormExtId').val());
+        this.resetReadWriteImageUpload($('#rwAvyFormExtId').val());
         $('#rwAvyFormDialog').dialog('open');
         return;
     } else { // admin view case
-        resetReadWriteImageUpload(a.extId);
+        this.resetReadWriteImageUpload(a.extId);
     }
 
     $('#rwAvyFormExtId').val(a.extId);
@@ -96,22 +96,23 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormViewableTd').children(':checkbox').trigger('change');
     
     $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
-    setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', a.submitterExp);
-    
+    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', a.submitterExp);
+
     $('#rwAvyFormAreaName').val(a.areaName);
-    $('#rwAvyFormDate').val(a.avyDate);
-    setReadWriteAutocompleteVal('#rwAvyFormSky', a.scene.skyCoverage);
-    setReadWriteAutocompleteVal('#rwAvyFormPrecip', a.scene.precipitation);
+    $('#rwAvyFormDate').val(a.date);
+
+    this.setReadWriteAutocompleteVal('#rwAvyFormSky', a.scene.skyCoverage);
+    this.setReadWriteAutocompleteVal('#rwAvyFormPrecip', a.scene.precipitation);
     
-    setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
-    setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
-    setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
+    this.setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
+    this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
+    this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
     setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
     setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
     
     $('#rwAvyFormElevation').val(a.slope.elevation);
     $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
-    setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
+    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
     $('#rwAvyFormAngle').val(a.slope.angle);
     
     setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
@@ -119,21 +120,21 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
     setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
     setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
-    setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.humanNumbers.modeOfTravel);
+    this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.humanNumbers.modeOfTravel);
     
     $('#rwAvyFormComments').val(a.comments);
     
     $.each(a.images, function(i, image) {
         var imageCellId = getFileBaseName(image.filename);
         appendImageCellToReadWriteForm(imageCellId);
-        setImageCellContent(imageCellId, a.extId, image.filename);
-    });
+        this.setImageCellContent(imageCellId, a.extId, image.filename);
+    }.bind(this));
     
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
 }
 
-function resetReadWriteImageUpload(extId) {
+AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     $('#rwAvyFormImageGrid').empty();
 
     var tempImageCellId = function(filename) {
@@ -151,8 +152,8 @@ function resetReadWriteImageUpload(extId) {
         done: function(e, data) {
             var newImageCellId = getFileBaseName(data.result.filename);
             $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
-            setImageCellContent(newImageCellId, extId, data.result.filename);
-        },
+            this.setImageCellContent(newImageCellId, extId, data.result.filename);
+        }.bind(this),
         fail: function(e, data) {
             console.log("Error", data.errorThrown);
         }
@@ -171,7 +172,7 @@ function appendImageCellToReadWriteForm(imageCellId) {
             + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
 }
 
-function setImageCellContent(imageCellId, extId, filename) {
+AvyForm.prototype.setImageCellContent = function(imageCellId, extId, filename) {
     var imageUrl = getSignedImageUrl(extId, filename)
     var imageDeleteIconId = getImageDeleteIconUniqueId(imageCellId);
 
@@ -341,7 +342,7 @@ function setReadOnlySpinnerVal(inputElem, value) {
     }
 }
 
-function setReadWriteAutocompleteVal(hiddenSibling, enumObj) {
+AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, enumObj) {
   $(hiddenSibling).val(enumObj.value);
   $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
 }

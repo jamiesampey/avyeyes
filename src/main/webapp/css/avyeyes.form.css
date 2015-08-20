@@ -136,6 +136,7 @@
     padding: 0px;
     margin: 0px;
     font: normal 1em times,serif !important;
+    resize: none;
 }
 
 /* -------------------------------------------------------------------------- */

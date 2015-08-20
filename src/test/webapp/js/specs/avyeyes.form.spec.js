@@ -4,7 +4,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
       "extId":"pzlmnecq",
       "extUrl":"http://dev.avyeyes.com:8080/pzlmnecq",
       "areaName":"north side of jones",
-      "avyDate":"07-04-2015",
+      "date":"07-04-2015",
+      "submitterEmail": "joe.bob@here.com",
       "submitterExp":{
         "value":"PE",
         "label":"Professional avalanche forecaster or technician"
@@ -109,7 +110,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
-            expect($("#roAvyFormTitle")).toHaveText(avalanche.avyDate + ": " + avalanche.areaName);
+            expect($("#roAvyFormTitle")).toHaveText(avalanche.date + ": " + avalanche.areaName);
             expect($("#roAvyFormSubmitterExp")).toHaveText(avalanche.submitterExp.label);
             expect($("#roAvyFormExtLink")).toHaveAttr("href", avalanche.extUrl);
             expect($("#roAvyFormExtLink")).toHaveText(avalanche.extUrl);
@@ -195,4 +196,76 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
     });
 
+    describe("Display read-write form", function() {
+        var avyForm;
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                sinon.stub(avyForm, "setImageCellContent");
+                done();
+            });
+        });
+
+        it("wire image upload", function() {
+            var mock = sinon.mock(avyForm)
+            mock.expects("resetReadWriteImageUpload").once();
+            avyForm.displayReadWriteForm();
+            mock.verify();
+
+            var mock2 = sinon.mock(avyForm)
+            mock2.expects("resetReadWriteImageUpload").withExactArgs(avalanche.extId).once();
+            avyForm.displayReadWriteForm(avalanche);
+            mock2.verify();
+        });
+
+        it("set ext ID fixture", function() {
+            setFixtures("<input id='rwAvyFormExtId'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+            expect($("#rwAvyFormExtId")).toHaveValue(avalanche.extId);
+        });
+
+        it("set submitter info", function() {
+            setFixtures("<input id='rwAvyFormSubmitterEmail'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormSubmitterExp", avalanche.submitterExp);
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormSubmitterEmail")).toHaveValue(avalanche.submitterEmail);
+            expect(spy.callCount).toBe(1);
+        });
+
+        it("set area name and date info", function() {
+            setFixtures("<input id='rwAvyFormAreaName'/><input id='rwAvyFormDate'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormDate")).toHaveValue(avalanche.date);
+            expect($("#rwAvyFormAreaName")).toHaveValue(avalanche.areaName);
+        });
+
+        it("set sky info", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormSky", avalanche.scene.skyCoverage);
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect(spy.callCount).toBe(1);
+        });
+
+        it("set precip info", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormPrecip", avalanche.scene.precipitation);
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect(spy.callCount).toBe(1);
+        });
+    });
 });

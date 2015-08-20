@@ -23,7 +23,7 @@ object JsonSerializers {
     ("extId" -> a.extId) ~
       ("extUrl" -> a.getExtHttpUrl) ~
       ("areaName" -> a.areaName) ~
-      ("avyDate" -> Extraction.decompose(a.date)) ~
+      ("date" -> Extraction.decompose(a.date)) ~
       ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
       ("scene" -> Extraction.decompose(a.scene)) ~
       ("slope" -> Extraction.decompose(a.slope)) ~
