@@ -107,19 +107,19 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     this.setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
     this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
     this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
-    setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
-    setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
-    
+    this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
+    this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
+
     $('#rwAvyFormElevation').val(a.slope.elevation);
     $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
     this.setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
     $('#rwAvyFormAngle').val(a.slope.angle);
-    
-    setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
-    setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
-    setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
-    setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
-    setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
+
+    this.setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
+    this.setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
+    this.setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
+    this.setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
+    this.setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
     this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.humanNumbers.modeOfTravel);
     
     $('#rwAvyFormComments').val(a.comments);
@@ -347,12 +347,12 @@ AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, enumObj)
   $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
 }
 
-function setReadWriteSliderVal(inputElem, value) {
+AvyForm.prototype.setReadWriteSliderVal = function(inputElem, value) {
   $(inputElem).val(value);
   $(inputElem).siblings('.avyRDSlider').slider('value', value);
 }
 
-function setReadWriteSpinnerVal(inputElem, value) {
+AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
   if (value == -1) {
     $(inputElem).val('');
   } else {

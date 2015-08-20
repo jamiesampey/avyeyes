@@ -250,22 +250,67 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#rwAvyFormAreaName")).toHaveValue(avalanche.areaName);
         });
 
-        it("set sky info", function() {
+        it("set auto complete fields", function() {
             sinon.stub(avyForm, "resetReadWriteImageUpload");
-            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormSky", avalanche.scene.skyCoverage);
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSubmitterExp", avalanche.submitterExp).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSky", avalanche.scene.skyCoverage).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormPrecip", avalanche.scene.precipitation).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormType", avalanche.classification.avyType).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTrigger", avalanche.classification.trigger).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormInterface", avalanche.classification.interface).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormAspect", avalanche.slope.aspect).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormModeOfTravel", avalanche.humanNumbers.modeOfTravel).once();
 
             avyForm.displayReadWriteForm(avalanche);
-
-            expect(spy.callCount).toBe(1);
+            mock.verify();
         });
 
-        it("set precip info", function() {
+        it("set slider fields", function() {
             sinon.stub(avyForm, "resetReadWriteImageUpload");
-            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormPrecip", avalanche.scene.precipitation);
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormRsizeValue", avalanche.classification.rSize).once();
+            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormDsizeValue", avalanche.classification.dSize).once();
+
+            avyForm.displayReadWriteForm(avalanche);
+            mock.verify();
+        });
+
+        it("set spinner fields", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumCaught", avalanche.humanNumbers.caught).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumPartiallyBuried", avalanche.humanNumbers.partiallyBuried).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumFullyBuried", avalanche.humanNumbers.fullyBuried).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumInjured", avalanche.humanNumbers.injured).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumKilled", avalanche.humanNumbers.killed).once();
+
+            avyForm.displayReadWriteForm(avalanche);
+            mock.verify();
+        });
+
+        it("set slope info", function() {
+            setFixtures("<input id='rwAvyFormElevation'/>"
+                + "<input id='rwAvyFormElevationFt'/>"
+                + "<input id='rwAvyFormAngle'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
 
             avyForm.displayReadWriteForm(avalanche);
 
-            expect(spy.callCount).toBe(1);
+            expect($("#rwAvyFormElevation")).toHaveValue(avalanche.slope.elevation.toString());
+            expect($("#rwAvyFormElevationFt")).toHaveValue(Math.round(avalanche.slope.elevation * 3.28084).toString());
+            expect($("#rwAvyFormAngle")).toHaveValue(avalanche.slope.angle.toString());
+        });
+
+        it("set comments and images", function() {
+            setFixtures("<textarea id='rwAvyFormComments'></textarea>"
+                + "<div id='rwAvyFormImageGrid'></div>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormComments")).toHaveValue(avalanche.comments);
+            expect($("#rwAvyFormImageGrid .rwAvyFormImageCell").length).toBe(3);
         });
     });
 });
