@@ -302,15 +302,102 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#rwAvyFormAngle")).toHaveValue(avalanche.slope.angle.toString());
         });
 
-        it("set comments and images", function() {
+        it("set comments, images and delete binding", function() {
             setFixtures("<textarea id='rwAvyFormComments'></textarea>"
-                + "<div id='rwAvyFormImageGrid'></div>");
+                + "<div id='rwAvyFormImageGrid'></div>"
+                + "<div id='rwAvyFormDeleteBinding'></div>");
             sinon.stub(avyForm, "resetReadWriteImageUpload");
 
             avyForm.displayReadWriteForm(avalanche);
 
             expect($("#rwAvyFormComments")).toHaveValue(avalanche.comments);
             expect($("#rwAvyFormImageGrid .rwAvyFormImageCell").length).toBe(3);
+            expect($("#rwAvyFormDeleteBinding")).toHaveValue(avalanche.extId);
+        });
+    });
+
+    describe("Field validation", function() {
+        var avyForm;
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                done();
+            });
+        });
+
+        it("highlight erroneous fields", function() {
+            setFixtures("<input id='rwAvyFormSubmitterEmail'/>"
+                        + "<input id='rwAvyFormAreaName'/>"
+                        + "<input id='rwAvyFormDate'/>");
+            var errorFields = ["rwAvyFormSubmitterEmail", "rwAvyFormAreaName"];
+
+            avyForm.highlightReportErrorFields(errorFields);
+
+            expect($("#rwAvyFormSubmitterEmail")).toHaveCss({border: "1px solid red"});
+            expect($("#rwAvyFormAreaName")).toHaveCss({border: "1px solid red"});
+        });
+    });
+
+    describe("Drawing inputs", function() {
+        var avyForm;
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                done();
+            });
+        });
+
+        it("set all drawing inputs correctly", function() {
+            setFixtures("<input id='rwAvyFormLng'/>"
+                        + "<input id='rwAvyFormLat'/>"
+                        + "<input id='rwAvyFormElevation'/>"
+                        + "<input id='rwAvyFormElevationFt'/>"
+                        + "<input id='rwAvyFormAspectAC'/>"
+                        + "<input id='rwAvyFormAspect'/>"
+                        + "<input id='rwAvyFormAngle'/>"
+                        + "<input id='rwAvyFormCoords'/>");
+
+            var lng = "-104.94964"; var lat = "39.940303"; var elevation = 3456.49;
+            var aspect = "NE"; var angle = "35"; var coordStr = "-104.94964,39.940303,3456.49 -104.94964,39.940303,3456.49 -104.94964,39.940303,3456.49";
+            avyForm.setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr)
+
+            expect($("#rwAvyFormLng")).toHaveValue(lng);
+            expect($("#rwAvyFormLat")).toHaveValue(lat);
+            expect($("#rwAvyFormElevation")).toHaveValue(elevation.toString());
+            expect($("#rwAvyFormElevationFt")).toHaveValue(Math.round(elevation * 3.28084).toString());
+            expect($("#rwAvyFormAspectAC")).toHaveValue(aspect);
+            expect($("#rwAvyFormAspect")).toHaveValue(aspect);
+            expect($("#rwAvyFormAngle")).toHaveValue(angle);
+            expect($("#rwAvyFormCoords")).toHaveValue(coordStr);
+        });
+    });
+
+    describe("Technical classification fields", function() {
+        var avyForm;
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                done();
+            });
+        });
+
+        it("Toggled correctly", function() {
+            setFixtures("<div id='rwAvyFormClassification'><input id='techField' disabled='true'/></div");
+
+            avyForm.toggleTechnicalReportFields(true);
+            expect($("#techField")).toHaveProp('disabled', false);
+
+            avyForm.toggleTechnicalReportFields(false);
+            expect($("#techField")).toHaveProp('disabled', true);
         });
     });
 });

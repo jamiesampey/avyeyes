@@ -364,19 +364,5 @@ function metersToFeet(meters) {
     return Math.round(meters * 3.28084);
 }
 
-function bytesToFileSize(numBytes) {
-    var thresh = 1000;
-    if(numBytes < thresh) return numBytes + ' B';
-
-    var units = ['KB','MB','GB'];
-    var u = -1;
-
-    do {
-        numBytes /= thresh;
-        ++u;
-    } while(numBytes >= thresh);
-    return numBytes.toFixed(1) + ' ' + units[u];
-}
-
 return AvyForm;
 });
