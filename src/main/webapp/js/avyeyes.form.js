@@ -269,7 +269,7 @@ AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
 }
 
 AvyForm.prototype.highlightReportErrorFields = function(errorFields) {
-    resetReportErrorFields();
+    this.resetReportErrorFields();
     $.each(errorFields, function(i, fieldId) {
         if (fieldId === 'rwAvyFormAngle') {
             $('#' + fieldId).parent().css('border', '1px solid red');
@@ -279,7 +279,7 @@ AvyForm.prototype.highlightReportErrorFields = function(errorFields) {
     });
 }
 
-function resetReportErrorFields() {
+AvyForm.prototype.resetReportErrorFields = function() {
     $('#rwAvyFormSubmitterEmail').css('border', '1px solid #7D7D7D');
     $('#rwAvyFormSubmitterExpAC').css('border', '1px solid #7D7D7D');
     $('#rwAvyFormAspectAC').css('border', '1px solid #7D7D7D');
@@ -289,8 +289,8 @@ function resetReportErrorFields() {
 }
 
 AvyForm.prototype.clearReportFields = function() {
-    resetReportErrorFields();
-    setReportDrawingInputs('', '', '', '', '', '');
+    this.resetReportErrorFields();
+    this.setReportDrawingInputs('', '', '', '', '', '');
 	$('#rwAvyFormDialog').find('input:text, input:hidden, textarea').val('');
 	$('#rwAvyFormDialog').find('.avyRDSliderValue').val('0');
 	$('#rwAvyFormDialog').find('.avyRDSlider').slider('value', 0);
@@ -298,8 +298,7 @@ AvyForm.prototype.clearReportFields = function() {
 	$('#avyReportDrawButtonContainer').css('visibility', 'hidden');
 }
 
-AvyForm.prototype.setReportDrawingInputs = setReportDrawingInputs;
-function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
+AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
 	$('#rwAvyFormLng').val(lng);
 	$('#rwAvyFormLat').val(lat);
 	$('#rwAvyFormElevation').val(elevation);

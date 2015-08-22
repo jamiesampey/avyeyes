@@ -341,7 +341,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
     });
 
-    describe("Drawing inputs", function() {
+    describe("Field handling", function() {
         var avyForm;
 
         beforeEach(function(done) {
@@ -353,7 +353,19 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             });
         });
 
-        it("set all drawing inputs correctly", function() {
+        it("clear fields", function() {
+            setFixtures("<div id='avyReportDrawButtonContainer'></div");
+            var mock = sinon.mock(avyForm);
+            mock.expects("resetReportErrorFields").once();
+            mock.expects("setReportDrawingInputs").withExactArgs('', '', '', '', '', '').once();
+
+            avyForm.clearReportFields();
+
+            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "hidden"});
+            mock.verify();
+        });
+
+        it("set drawing inputs", function() {
             setFixtures("<input id='rwAvyFormLng'/>"
                         + "<input id='rwAvyFormLat'/>"
                         + "<input id='rwAvyFormElevation'/>"
@@ -376,21 +388,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#rwAvyFormAngle")).toHaveValue(angle);
             expect($("#rwAvyFormCoords")).toHaveValue(coordStr);
         });
-    });
 
-    describe("Technical classification fields", function() {
-        var avyForm;
-
-        beforeEach(function(done) {
-            new Squire()
-            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
-            .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
-                done();
-            });
-        });
-
-        it("Toggled correctly", function() {
+        it("toggle technical classification fields", function() {
             setFixtures("<div id='rwAvyFormClassification'><input id='techField' disabled='true'/></div");
 
             avyForm.toggleTechnicalReportFields(true);
