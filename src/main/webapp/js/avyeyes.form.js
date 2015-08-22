@@ -295,7 +295,7 @@ AvyForm.prototype.clearReportFields = function() {
 	$('#rwAvyFormDialog').find('.avyRDSliderValue').val('0');
 	$('#rwAvyFormDialog').find('.avyRDSlider').slider('value', 0);
 	$('#rwAvyFormImageGrid').empty();
-	$('#rwAvyFormDrawButtonContainer').css('visibility', 'hidden');
+	$('#avyReportDrawButtonContainer').css('visibility', 'hidden');
 }
 
 AvyForm.prototype.setReportDrawingInputs = setReportDrawingInputs;

@@ -1,29 +1,42 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
+    var cesiumEventHandlerStub = {
+        setInputAction: sinon.stub(),
+        removeInputAction: sinon.stub()
+    };
+
     var resetViewStub = sinon.stub();
     var viewStub = {
         resetView: resetViewStub,
+        cesiumEventHandler: cesiumEventHandlerStub,
         reset: function() {
             this.resetView.reset();
         }
     };
 
-    var cesiumViewerStub = sinon.stub();
     var cesiumSpy = {
-        Viewer: cesiumViewerStub,
+        ScreenSpaceEventType: {
+            LEFT_CLICK: sinon.spy(),
+            MOUSE_MOVE: sinon.spy()
+        },
+        Color: {
+            RED: {
+                withAlpha: sinon.spy()
+            }
+        },
         reset: function() {
-            this.Viewer.reset();
+            this.ScreenSpaceEventType.reset();
         }
     };
 
-    describe("Ext ID reservation", function() {
+    describe("Start a new report", function() {
         var avyReport;
 
         beforeEach(function(done) {
             viewStub.reset();
 
             new Squire()
-            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .mock("lib/Cesium/Cesium", sinon.stub())
             .require(["avyeyes.report"], function(AvyReport) {
                 avyReport = new AvyReport(viewStub);
                 done();
@@ -38,5 +51,45 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             avyReport.reserveExtId();
             expect($("#rwAvyFormExtId")).toHaveValue(json.extId);
         });
+
+        it("makes the necessary calls", function() {
+            setFixtures("<input id='avyReportInitLocation' value='blahblah' /><div id='avyReportDrawButtonContainer'></div>");
+            var avyReportMock = sinon.mock(avyReport);
+            var reserveExtIdExpectation = avyReportMock.expects("reserveExtId").once();
+
+            avyReport.beginReport();
+            reserveExtIdExpectation.verify();
+            expect($("#avyReportInitLocation")).toHaveValue("");
+            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "visible"});
+        });
     });
+
+    describe("Drawing", function() {
+        var avyReport;
+
+        beforeEach(function(done) {
+            viewStub.reset();
+
+            new Squire()
+            .mock("lib/Cesium/Cesium", cesiumSpy)
+            .require(["avyeyes.report"], function(AvyReport) {
+                avyReport = new AvyReport(viewStub);
+                done();
+            });
+        });
+
+        it("Starts a new drawing", function() {
+            setFixtures("<div id='cesiumContainer'/><div id='avyReportDrawButtonContainer'></div>");
+
+            avyReport.startDrawing();
+
+            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "hidden"});
+            expect($("#cesiumContainer")).toHaveCss({cursor: "crosshair"});
+            expect(cesiumEventHandlerStub.removeInputAction.calledWith(cesiumSpy.ScreenSpaceEventType.LEFT_CLICK)).toBe(true);
+
+            expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.LEFT_CLICK)).toBe(true);
+            expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.MOUSE_MOVE)).toBe(true);
+        });
+    });
+
 });
