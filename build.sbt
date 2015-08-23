@@ -13,6 +13,10 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 
+import NativePackagerKeys._
+
+enablePlugins(JettyPlugin, JavaAppPackaging)
+
 lazy val rjs = taskKey[Unit]("Runs r.js javascript compilation")
 
 rjs := {
@@ -43,9 +47,6 @@ parallelExecution in Test := false
 
 test in Test <<= (test in Test) dependsOn (jasmine)
 
-
-// xsbt-web-plugin config
-enablePlugins(JettyPlugin)
 
 javaOptions in Jetty ++= Seq(
   "-Xdebug",
