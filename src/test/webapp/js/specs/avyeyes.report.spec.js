@@ -5,12 +5,28 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         removeInputAction: sinon.stub()
     };
 
+    var setReportDrawingInputsStub = sinon.stub();
+    var formStub = {
+        setReportDrawingInputs: setReportDrawingInputsStub
+    };
+
     var resetViewStub = sinon.stub();
+    var removeEntitiesStub = sinon.stub();
     var viewStub = {
         resetView: resetViewStub,
+        cesiumViewer: {
+            entities: {
+                remove: removeEntitiesStub
+            }
+        },
         cesiumEventHandler: cesiumEventHandlerStub,
+        form: formStub,
         reset: function() {
             this.resetView.reset();
+            this.cesiumViewer.entities.remove.reset();
+            this.cesiumEventHandler.setInputAction.reset();
+            this.cesiumEventHandler.removeInputAction.reset();
+            this.form.setReportDrawingInputs.reset();
         }
     };
 
@@ -90,6 +106,16 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.LEFT_CLICK)).toBe(true);
             expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.MOUSE_MOVE)).toBe(true);
         });
-    });
 
+        it("Clears a drawing", function() {
+            var testPolygon = {attr: "someAttribute"}
+            avyReport.drawingPolygon = testPolygon;
+
+            avyReport.clearDrawing();
+
+            expect(removeEntitiesStub.calledWithExactly(testPolygon)).toBe(true);
+            expect(formStub.setReportDrawingInputs.calledWithExactly('', '', '', '', '', '')).toBe(true);
+            expect(avyReport.drawingPolygon).toBeNull();
+        });
+    });
 });
