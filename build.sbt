@@ -75,6 +75,6 @@ libraryDependencies ++= {
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.3.176" % "test",
-    "org.eclipse.jetty" % "jetty-webapp" % "9.2.1.v20140609" % "test"
+    "org.eclipse.jetty" % "jetty-webapp" % "9.3.2.v20150730" % "test"
   )
 }
