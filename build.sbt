@@ -58,7 +58,7 @@ javaOptions in Jetty ++= Seq(
   "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788"
 )
 
-containerConfigFile in Jetty := Some(file("etc/jetty.xml"))
+containerConfigFile in Jetty := Some(file("misc/jetty.xml"))
 
 
 // sbt-jasmine-plugin config
