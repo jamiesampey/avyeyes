@@ -1,8 +1,8 @@
 ({
-    appDir: 'src/main/webapp',
+    appDir: 'target/webapp',
     baseUrl: 'js',
-    dir: 'target/webapp',
-    removeCombined: true, // delete avyeyes.*.js files after combining into main.js
+    dir: 'target/webapp-rjs',
+    removeCombined: true,
     preserveLicenseComments: false,
     generateSourceMaps: false,
     optimizeCss: 'standard',
