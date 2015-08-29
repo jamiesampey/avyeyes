@@ -81,10 +81,10 @@
     </New>
 
     <New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
-        <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="etc/keystore.jks"/></Set>
+        <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="misc/keystore.jks"/></Set>
         <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="49grklgioy9048udfgge034"/></Set>
         <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="49grklgioy9048udfgge034"/></Set>
-        <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="etc/keystore.jks"/></Set>
+        <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="misc/keystore.jks"/></Set>
         <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="49grklgioy9048udfgge034"/></Set>
         <Set name="CertAlias">avyeyes</Set>
         <Set name="EndpointIdentificationAlgorithm"></Set>
