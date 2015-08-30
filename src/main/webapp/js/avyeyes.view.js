@@ -1,8 +1,7 @@
 define(["avyeyes.ui",
         "avyeyes.form",
-        "avyeyes.report",
-        "lib/Cesium/Cesium"
-        ], function(AvyEyesUI, AvyForm, AvyReport, Cesium) {
+        "avyeyes.report"
+        ], function(AvyEyesUI, AvyForm, AvyReport) {
 
 function AvyEyesView() {
     this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";

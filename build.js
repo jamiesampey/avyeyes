@@ -3,10 +3,11 @@
     baseUrl: 'js',
     dir: 'target/webapp-rjs',
     removeCombined: true,
-    preserveLicenseComments: false,
+    preserveLicenseComments: true,
     generateSourceMaps: false,
     optimizeCss: 'standard',
     optimize: 'uglify2',
+    skipDirOptimize: true,
     uglify2: {
         output: {
             beautify: false

@@ -1,6 +1,4 @@
-define(['lib/Cesium/Cesium',
-        'lib/jquery-ui'],
-        function(Cesium) {
+define(['lib/jquery-ui'], function() {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
@@ -66,7 +64,7 @@ AvyReport.prototype.startDrawing = function() {
             });
             this.view.cesiumViewer.entities.remove(drawingPolyline);
 
-            digestDrawing(cartesian3Array);
+            this.digestDrawing(cartesian3Array);
             $.ui.dialog.prototype._focusTabbable = function(){};
            	$('#avyReportDrawingConfirmationDialog').dialog('open');
         } else {
@@ -101,7 +99,7 @@ AvyReport.prototype.startDrawing = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 }
 
-function digestDrawing(cartesian3Array) {
+AvyReport.prototype.digestDrawing = function(cartesian3Array) {
     var coordStr = "";
     var highestCartesian;
     var highestCartographic;

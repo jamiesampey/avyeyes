@@ -1,6 +1,4 @@
-define(['lib/Cesium/Cesium',
-        'lib/jquery-ui'
-        ], function(Cesium) {
+define(['lib/jquery-ui'], function() {
 
 function AvyEyesUI(){};
 
