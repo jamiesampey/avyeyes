@@ -44,6 +44,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             this.ScreenSpaceEventType.reset();
         }
     };
+    window.Cesium = cesiumSpy;
+
 
     describe("Start a new report", function() {
         var avyReport;
@@ -52,7 +54,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             viewStub.reset();
 
             new Squire()
-            .mock("lib/Cesium/Cesium", sinon.stub())
             .require(["avyeyes.report"], function(AvyReport) {
                 avyReport = new AvyReport(viewStub);
                 done();
@@ -87,7 +88,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             viewStub.reset();
 
             new Squire()
-            .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.report"], function(AvyReport) {
                 avyReport = new AvyReport(viewStub);
                 done();

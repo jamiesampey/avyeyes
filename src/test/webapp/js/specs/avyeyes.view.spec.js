@@ -34,6 +34,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             this.ScreenSpaceEventType.reset();
         }
     };
+    window.Cesium = cesiumSpy;
 
     var avyEyesUiStub = sinon.stub();
     var uiWireStub = sinon.stub();
@@ -53,7 +54,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.form", sinon.stub())
-            .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
@@ -90,7 +90,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.form", sinon.spy())
-            .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
@@ -115,7 +114,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         it("opens the jQuery UI help dialog to the correct tab", function() {
             var tab = Math.floor((Math.random() * 5) + 1);
-
 
             var jQueryMock = sinon.mock($.fn)
             jQueryMock.expects("tabs").withArgs("option", "active", tab).once();
@@ -150,7 +148,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.report", reportStub)
             .mock("avyeyes.form", formStub)
-            .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
@@ -184,7 +181,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("avyeyes.ui", avyEyesUiStub)
             .mock("avyeyes.form", sinon.stub())
-            .mock("lib/Cesium/Cesium", cesiumSpy)
             .require(["avyeyes.view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
