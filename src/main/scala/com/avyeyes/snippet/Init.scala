@@ -11,6 +11,7 @@ import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
+import net.liftweb.util.Props
 
 class Init extends Loggable {
   val dal = Injectors.dal.vend
@@ -24,7 +25,7 @@ class Init extends Loggable {
     "#avyInitLiftCallback" #> SHtml.hidden(initJsCalls)
   }
   
-  def initJsCalls(): JsCmd = autoCompleteSourcesCmd & initialFlyToCmd
+  def initJsCalls(): JsCmd = autoCompleteSourcesCmd & s3ImageBucketCmd & initialFlyToCmd
   
   private def initialFlyToCmd: JsCmd = {
     val initAvalanche = isValidExtId(extId) match {
@@ -55,4 +56,6 @@ class Init extends Loggable {
       + s"$$('.avyExperienceLevelAutoComplete').autocomplete('option', 'source', ${write(ExperienceLevel.values)});")
       .cmd
   }
+
+  private def s3ImageBucketCmd: JsCmd = JsRaw(s"$$('#s3ImageBucket').val('${Props.get("s3.imageBucket").openOr("")}');").cmd
 }

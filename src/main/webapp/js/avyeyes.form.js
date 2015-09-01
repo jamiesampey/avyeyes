@@ -51,9 +51,10 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	}
 
 	if (a.images.length > 0) {
+	    var s3Bucket = $("#s3ImageBucket").val();
 		$('#roAvyFormImageRow').show();
         $.each(a.images, function(i, image) {
-            var imgUrl = "//avyeyes-images.s3.amazonaws.com/" + a.extId + "/" + image.filename;
+            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
                 + imgUrl + "' data-lightbox='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
 		});
@@ -226,8 +227,10 @@ function getSignedImageUrl(extId, filename) {
         });
     }
 
+    var s3Bucket = $("#s3ImageBucket").val();
+
     return s3Client.getSignedUrl('getObject', {
-        Bucket: 'avyeyes-images', Key: extId + '/' + filename});
+        Bucket: s3Bucket, Key: extId + '/' + filename});
 }
 
 function getImageRestUrl(extId, filename) {
