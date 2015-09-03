@@ -58,7 +58,7 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
             }.bind(this))
             .fail(function(jqxhr, textStatus, error) {
                 var err = textStatus + ", " + error;
-                console.log("Avy Eyes error: " + err);
+                console.log("AvyEyes error: " + err);
             });
         }
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);

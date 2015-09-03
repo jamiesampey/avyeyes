@@ -11,7 +11,7 @@ AvyReport.prototype.reserveExtId = function() {
 	})
 	.fail(function(jqxhr, textStatus, error) {
 		var err = textStatus + ", " + error;
-	    console.log("Avy Eyes failed to reserve an ExtId for the report:" + err);
+	    console.log("AvyEyes failed to reserve an ExtId for the report:" + err);
 	    this.view.resetView();
 	}.bind(this));
 }

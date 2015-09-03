@@ -45,7 +45,7 @@ class Images extends RestHelper with Loggable {
         dal.deleteAvalancheImage(avyExtId, fileBaseName)
         OkResponse()
       } catch {
-        case ue: UnauthorizedException => UnauthorizedResponse("Avy Eyes auth required")
+        case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
         case e: Exception => InternalServerErrorResponse()
       }
     }
