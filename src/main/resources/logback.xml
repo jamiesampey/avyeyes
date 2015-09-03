@@ -1,12 +1,12 @@
 <configuration>
 	<appender name="LIFT-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	    <file>logs/lift.log</file>
+	    <file>${log.dir:-log}/lift.log</file>
 	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-		    <fileNamePattern>logs/lift.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+		    <fileNamePattern>${log.dir:-log}/lift.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 		    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
     		    <maxFileSize>25MB</maxFileSize>
 		    </timeBasedFileNamingAndTriggeringPolicy>
-		    <maxHistory>30</maxHistory>
+		    <maxHistory>10</maxHistory>
 	    </rollingPolicy>
 	    <encoder>
             <pattern>%date - [%level] - %logger [%thread]: %message%n%xException</pattern>
@@ -14,13 +14,13 @@
 	</appender>
 
     <appender name="AVYEYES-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/avyeyes.log</file>
+        <file>${log.dir:-log}/avyeyes.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/avyeyes.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.dir:-log}/avyeyes.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>25MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>30</maxHistory>
+            <maxHistory>10</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%date - [%level] - %logger: %message%n%xException</pattern>
