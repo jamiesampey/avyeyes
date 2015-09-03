@@ -1,8 +1,8 @@
 <configuration>
 	<appender name="LIFT-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	    <file>${log.dir:-log}/lift.log</file>
+	    <file>${log.dir:-logs}/lift.log</file>
 	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-		    <fileNamePattern>${log.dir:-log}/lift.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+		    <fileNamePattern>${log.dir:-logs}/lift.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 		    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
     		    <maxFileSize>25MB</maxFileSize>
 		    </timeBasedFileNamingAndTriggeringPolicy>
@@ -14,9 +14,9 @@
 	</appender>
 
     <appender name="AVYEYES-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.dir:-log}/avyeyes.log</file>
+        <file>${log.dir:-logs}/avyeyes.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir:-log}/avyeyes.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.dir:-logs}/avyeyes.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>25MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
