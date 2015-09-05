@@ -29,7 +29,7 @@ libraryDependencies ++= {
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.4.188" % "test",
-    "org.eclipse.jetty" % "jetty-webapp" % "9.3.2.v20150730" % "test"
+    "javax.servlet" % "servlet-api" % "2.5" % "test"
   )
 }
 
@@ -51,14 +51,18 @@ webappPostProcess := { origWebapp =>
 }
 
 // xsbt-web-plugin config
-enablePlugins(JettyPlugin)
+enablePlugins(TomcatPlugin)
 
-javaOptions in Jetty ++= Seq(
+containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
+
+containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
+
+javaOptions in Tomcat ++= Seq(
   "-Xdebug",
-  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788"
+  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
+  "-Djavax.net.ssl.keyStore=misc/keystore.jks",
+  "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
 )
-
-containerConfigFile in Jetty := Some(file("misc/jetty.xml"))
 
 
 // sbt-jasmine-plugin config
