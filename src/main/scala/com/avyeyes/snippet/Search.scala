@@ -50,7 +50,7 @@ class Search extends Loggable {
   def doSearch(): JsCmd = {
     val camAltitude = strToDblOrZero(camAlt).toInt
     if (camAltitude > CamAltitudeLimit) {
-      JsDialog.error("eyeTooHigh", CamAltitudeLimit, camAltitude)
+      JsDialog.error("eyeTooHigh", CamAltitudeLimit)
     } else if (Seq(latMax, latMin, lngMax, lngMin).exists(_.isEmpty)) {
       JsDialog.error("horizonInView")
     } else {

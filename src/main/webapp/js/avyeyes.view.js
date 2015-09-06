@@ -30,6 +30,8 @@ function AvyEyesView() {
         scene3DOnly: true
     });
 
+    this.setCameraMoveEventListener();
+
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvySelectEventHandler();
 
@@ -38,6 +40,18 @@ function AvyEyesView() {
     this.ui.wire(this, function() {
         $('#avyInitLiftCallback').submit();
     });
+}
+
+AvyEyesView.prototype.setCameraMoveEventListener = function() {
+    var eyeAltSetter = {};
+    this.cesiumViewer.camera.moveStart.addEventListener(function() {
+        eyeAltSetter = setInterval(function() {
+            $("#eyeAltContainer").html("eye alt: " + this.camDisplayAlt());
+        }.bind(this), 10);
+    }.bind(this));
+    this.cesiumViewer.camera.moveEnd.addEventListener(function() {
+        clearInterval(eyeAltSetter);
+    }.bind(this));
 }
 
 AvyEyesView.prototype.setAvySelectEventHandler = function() {
@@ -248,6 +262,16 @@ AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range, rem
         }).then(finalFlight);
     } else {
         return finalFlight();
+    }
+}
+
+AvyEyesView.prototype.camDisplayAlt = function() {
+    var meters = this.cesiumViewer.camera.positionCartographic.height.toFixed(0);
+
+    if (meters > 10000) {
+        return (meters / 1000).toFixed(2) + " km";
+    } else {
+        return meters + " meters";
     }
 }
 

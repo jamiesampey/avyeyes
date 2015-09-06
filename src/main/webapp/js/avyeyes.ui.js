@@ -217,12 +217,10 @@ function wireButtons(view) {
             $("#avySearchLngMin").val('');
         }
 
-        var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(view.cesiumViewer.camera.position);
-
-        $("#avySearchCameraAlt").val(camPos.height);
+        $("#avySearchCameraAlt").val(view.cesiumViewer.camera.positionCartographic.height);
         $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch));
-        $("#avySearchCameraLng").val(Cesium.Math.toDegrees(camPos.longitude));
-        $("#avySearchCameraLat").val(Cesium.Math.toDegrees(camPos.latitude));
+        $("#avySearchCameraLng").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude));
+        $("#avySearchCameraLat").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude));
 
 	    $(this).submit();
 	});
@@ -261,7 +259,7 @@ function wireLocationInputs(view) {
     });
 
     var geocodeFlyToPitch = -70.0;
-    var geocodeFlyToRange = 4500.0;
+    var geocodeFlyToRange = 6000.0;
 
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {

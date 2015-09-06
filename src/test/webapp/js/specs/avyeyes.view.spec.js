@@ -1,14 +1,26 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
+    var removeAllSpy = sinon.spy();
+    var cesiumCameraMoveStartSpy = sinon.spy();
+    var cesiumCameraMoveEndSpy = sinon.spy();
     var cesiumViewerStub = sinon.stub();
-    var removeAllStub = sinon.stub();
+    cesiumViewerStub.resetAll = function() {
+        this.reset();
+        removeAllSpy.reset();
+        cesiumCameraMoveStartSpy.reset();
+        cesiumCameraMoveEndSpy.reset();
+    };
     cesiumViewerStub.returns({
         scene: {
             canvas: {}
         },
         entities: {
-            removeAll: removeAllStub
-        }
+            removeAll: removeAllSpy
+        },
+        camera: {
+            moveStart: {addEventListener: cesiumCameraMoveStartSpy},
+            moveEnd: {addEventListener: cesiumCameraMoveEndSpy}
+        },
     });
 
     var cesiumEventHandlerStub = sinon.stub();
@@ -25,7 +37,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         ScreenSpaceEventHandler: cesiumEventHandlerStub,
         ScreenSpaceEventType: sinon.spy(),
         reset: function() {
-            this.Viewer.reset();
+            this.Viewer.resetAll();
             this.SceneMode.reset();
             this.CesiumTerrainProvider.reset();
             this.BingMapsImageryProvider.reset();
@@ -69,6 +81,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect(avyEyesView.cesiumViewer).toBeDefined();
             expect(cesiumSpy.CesiumTerrainProvider.callCount).toBe(1);
             expect(cesiumSpy.BingMapsImageryProvider.callCount).toBe(1);
+        });
+
+        it("sets the Cesium camera move event listeners to set eye altitude", function() {
+            expect(cesiumCameraMoveStartSpy.callCount).toBe(1);
+            expect(cesiumCameraMoveEndSpy.callCount).toBe(1);
         });
 
         it("sets the Cesium LEFT_CLICK screen space event handler", function() {
@@ -190,7 +207,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("works", function() {
             var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
             avyEyesView.resetView();
-            expect(removeAllStub.callCount).toBe(1);
+            expect(removeAllSpy.callCount).toBe(1);
             expect(cancelReportStub.callCount).toBe(1);
             expect(showSearchDivStub.callCount).toBe(1);
         });

@@ -204,6 +204,16 @@ textarea:focus, input:focus {
 	z-index: 101;
 }
 
+#eyeAltContainer {
+	position: absolute;
+    top: 8px;
+    right: 50px;
+    z-index: 100;
+    padding: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
 #helpDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
