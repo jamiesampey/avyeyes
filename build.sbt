@@ -2,7 +2,7 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "0.1.7"
+version := "0.1.12"
 
 scalaVersion := "2.11.7"
 
@@ -16,9 +16,9 @@ scalacOptions ++= Seq(
 libraryDependencies ++= {
   val liftVersion = "2.6.2"
   Seq(
-    "net.liftweb" %% "lift-webkit" % liftVersion % "compile",
-    "net.liftweb" %% "lift-testkit" % liftVersion % "compile",
-    "net.liftmodules" %% "omniauth_2.6" % "0.17" % "compile",
+    "net.liftweb" %% "lift-webkit" % liftVersion,
+    "net.liftweb" %% "lift-testkit" % liftVersion,
+    "net.liftmodules" %% "omniauth_2.6" % "0.17",
     "com.typesafe.akka" %% "akka-actor" % "2.3.13",
     "com.typesafe.slick" %% "slick" % "3.0.2",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",

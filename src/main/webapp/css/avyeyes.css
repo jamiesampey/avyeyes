@@ -1,5 +1,5 @@
 @import url("jquery-ui.css");
-@import url("lightbox.css");
+@import url("jquery.fancybox.css");
 
 /* Cesium css imports */
 @import url("../js/lib/Cesium/Widgets/widgets.css");

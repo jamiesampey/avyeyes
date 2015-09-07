@@ -1,4 +1,4 @@
-define(['lib/lightbox',
+define(['lib/jquery.fancybox',
         'lib/jquery.fileupload',
         'lib/jquery.iframe-transport',
         '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
@@ -56,10 +56,12 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
-                + imgUrl + "' data-lightbox='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
+                + imgUrl + "' class='fancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
 		});
+
+        setFancyBox();
 	}
-	
+
 	$('#roAvyFormDialog').dialog('option', 'position', {
         my: 'center bottom-20',
         at: 'center top',
@@ -130,7 +132,9 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
         appendImageCellToReadWriteForm(imageCellId);
         this.setImageCellContent(imageCellId, a.extId, image.filename);
     }.bind(this));
-    
+
+    setFancyBox();
+
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
 }
@@ -179,7 +183,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, filename) {
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'><a href='" + imageUrl
-        + "' data-lightbox='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl
+        + "' class='fancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl
         + "' /></a><img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' "
         + "src='/images/img-delete-icon.png' /></div>");
 
@@ -222,8 +226,7 @@ function getSignedImageUrl(extId, filename) {
     if (!s3Client) {
         s3Client = new AWS.S3({
             accessKeyId: 'AKIAIGF6JECD4PNKHYOQ',
-            secretAccessKey: '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',
-            region: 'us-west-1'
+            secretAccessKey: 'HHcbOjDoRgv4itxbub2mYeb/nEYGIBqfSUFsMRko'
         });
     }
 
@@ -243,6 +246,14 @@ function getFileBaseName(filename) {
 
 function getImageDeleteIconUniqueId(imageCellId) {
     return imageCellId + "-delete";
+}
+
+function setFancyBox() {
+    $(".fancybox").fancybox({
+        padding: 0,
+        openEffect: 'elastic',
+        closeEffect: 'elastic'
+    });
 }
 
 AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
