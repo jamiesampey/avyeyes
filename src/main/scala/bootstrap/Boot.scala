@@ -38,7 +38,7 @@ class Boot extends Loggable {
     val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
     val appMenus: List[Menu] = Menu(Loc("home", IndexPath :: Nil, "Home")) :: 
       Menu(Loc("browserNotSupported", BrowserNotSupportedPath :: Nil, "Browser Not Supported")) :: 
-      Menu(Loc("logIn", LoginPath :: Nil, "Log In")) :: Menu(Loc("sslVerify", "bdsqgn6n" :: Nil, "Log In")) :: Nil
+      Menu(Loc("logIn", LoginPath :: Nil, "Log In")) :: Nil
     val menus = appMenus ::: Omniauth.sitemap
     
     LiftRules.setSiteMap(SiteMap(menus:_*))

@@ -112,7 +112,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
 
-          JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtHttpUrl)
+          JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtUrl)
         }
       }
     } catch {
@@ -185,11 +185,11 @@ class Report extends ExternalIdService with Mailer with Loggable {
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val adminBody = getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, a.getExtHttpUrl)
+    val adminBody = getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, a.getExtUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = getMessage("avyReportSubmitEmailSubmitterBody", a.extId, a.getExtHttpUrl)
+    val submitterBody = getMessage("avyReportSubmitEmailSubmitterBody", a.extId, a.getExtUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
@@ -197,7 +197,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
   private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val submitterBody = getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, a.getExtHttpUrl)
+    val submitterBody = getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, a.getExtUrl)
     sendMail(adminEmailFrom, Subject(getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }

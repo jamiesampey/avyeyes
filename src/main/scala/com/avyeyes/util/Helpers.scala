@@ -69,14 +69,9 @@ object Helpers {
 
   def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr(S.?(UnknownEnumCode))
   
-  def getHttpBaseUrl = {
-    val httpPort = getProp("httpPort")
-    s"http://${getProp("hostname")}${if (httpPort != "80") s":$httpPort" else ""}/"
-  }
-  
   def getHttpsBaseUrl = {
     val httpsPort = getProp("httpsPort")
-    s"https://${getProp("hostname")}${if (httpsPort != "443") s":$httpsPort" else ""}/"
+    s"https://${getProp("hostname")}${if (httpsPort != "443") s":$httpsPort" else ""}"
   }
   
   lazy val BadWords = {

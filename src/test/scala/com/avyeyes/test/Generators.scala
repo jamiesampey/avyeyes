@@ -45,12 +45,10 @@ object Generators {
     killed <- Gen.choose(-1, 50)
   } yield HumanNumbers(modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed)
 
-  def genExtId = Gen.resultOf((i: Int) => RandomStringUtils.random(ExtIdLength, ExtIdChars))
-
   private def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
-      extId <- genExtId
+      extId <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
       viewable <- Gen.oneOf(true, false)
       submitterEmail <- Gen.alphaStr
       submitterExp <- Gen.oneOf(ExperienceLevel.values.toSeq)
@@ -85,7 +83,7 @@ object Generators {
 
   def genAvalancheImage = for {
     createTime <- genDateTime()
-    avyExtId <- genExtId
+    avyExtId <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
     filename <- Gen.alphaStr
     origFilename <- Gen.alphaStr
     mimeType <- Gen.alphaStr

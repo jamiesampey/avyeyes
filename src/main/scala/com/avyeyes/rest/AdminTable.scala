@@ -92,8 +92,8 @@ class AdminTable extends RestHelper with Loggable {
       listBuffer.toList
     }
 
-    val searchTerm = (req.params find(entryTuple =>
-      "search\\[value\\]".r.findFirstMatchIn(entryTuple._1) isDefined)) match {
+    val searchTerm = req.params find(entryTuple =>
+      "search\\[value\\]".r.findFirstMatchIn(entryTuple._1).isDefined) match {
       case Some(entryTuple) if !entryTuple._2(0).isEmpty => Some(s"${entryTuple._2(0)}")
       case _ => None
     }
@@ -138,7 +138,7 @@ class AdminTable extends RestHelper with Loggable {
   }
 
   private def getHttpsAvalancheLink(a: Avalanche) = {
-    <a href={getHttpsBaseUrl + a.extId} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
+    <a href={s"$getHttpsBaseUrl/${a.extId}"} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
   }
 
   private def getViewableElem(viewable: Boolean) = viewable match {

@@ -21,7 +21,7 @@ object JsonSerializers {
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-      ("extUrl" -> a.getExtHttpUrl) ~
+      ("extUrl" -> a.getExtUrl) ~
       ("areaName" -> a.areaName) ~
       ("date" -> Extraction.decompose(a.date)) ~
       ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~

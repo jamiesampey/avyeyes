@@ -23,7 +23,5 @@ case class Avalanche(
 
   def getTitle() = s"${dateToStr(date)}: ${areaName}"
 
-  def getExtHttpUrl() = s"${getHttpBaseUrl}${extId}"
-
-  def getExtHttpsUrl() = s"${getHttpsBaseUrl}${extId}"
+  def getExtUrl() = s"${getHttpsBaseUrl}/${extId}"
 }
