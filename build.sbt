@@ -2,7 +2,7 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "0.1.12"
+version := "0.1.13"
 
 scalaVersion := "2.11.7"
 
@@ -60,7 +60,7 @@ containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
 javaOptions in Tomcat ++= Seq(
   "-Xdebug",
   "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
-  "-Djavax.net.ssl.keyStore=misc/keystore.jks",
+  "-Djavax.net.ssl.keyStore=misc/ssl/localKeystore.jks",
   "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
 )
 

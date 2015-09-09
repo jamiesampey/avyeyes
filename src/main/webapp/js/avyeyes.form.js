@@ -48,18 +48,21 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	if (a.comments.length > 0) {
 		$('#roAvyFormCommentsRow').show();
 		$('#roAvyFormComments').val(a.comments);
+        $('#roAvyFormCommentsLightboxDiv textarea').val(a.comments);
+        $(".commentsFancybox").fancybox({padding: 0, openEffect: 'fade', closeEffect: 'fade'});
 	}
 
 	if (a.images.length > 0) {
 	    var s3Bucket = $("#s3ImageBucket").val();
 		$('#roAvyFormImageRow').show();
+
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
-                + imgUrl + "' class='fancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
+                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
 		});
 
-        setFancyBox();
+        setImgFancyBox();
 	}
 
 	$('#roAvyFormDialog').dialog('option', 'position', {
@@ -133,7 +136,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
         this.setImageCellContent(imageCellId, a.extId, image.filename);
     }.bind(this));
 
-    setFancyBox();
+    setImgFancyBox();
 
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
@@ -183,7 +186,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, filename) {
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'><a href='" + imageUrl
-        + "' class='fancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl
+        + "' class='imgFancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl
         + "' /></a><img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' "
         + "src='/images/img-delete-icon.png' /></div>");
 
@@ -248,12 +251,8 @@ function getImageDeleteIconUniqueId(imageCellId) {
     return imageCellId + "-delete";
 }
 
-function setFancyBox() {
-    $(".fancybox").fancybox({
-        padding: 0,
-        openEffect: 'elastic',
-        closeEffect: 'elastic'
-    });
+function setImgFancyBox() {
+    $(".imgFancybox").fancybox({padding: 0, openEffect: 'elastic', closeEffect: 'elastic'});
 }
 
 AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {

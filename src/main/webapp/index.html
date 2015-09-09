@@ -197,11 +197,15 @@
                <tr id="roAvyFormCommentsRow"><td colspan="2">
                    <table id="roAvyFormCommentsTable" class="roAvyFormSubTable">
                        <tr><td class="roAvyFormSectionHeader">
-                           <span id="roAvyFormCommentsHeader" class="avyHeader"></span>
+                           <div id="roAvyFormCommentsHeaderWrapper"><span id="roAvyFormCommentsHeader" class="avyHeader">
+                           </span><a class="commentsFancybox" href="#roAvyFormCommentsLightboxDiv"><img src="/images/plus-icon.gif"/></a></div>
                        </td></tr>
                        <tr><td>
                            <table class="roAvyFormFieldsSubTable">
-                               <tr><td><textarea id="roAvyFormComments" rows="8" readonly="readonly"></textarea></td></tr>
+                               <tr><td>
+                                   <textarea id="roAvyFormComments" rows="8" readonly="readonly"></textarea>
+                                   <div id="roAvyFormCommentsLightboxDiv"><textarea readonly="readonly"></textarea></div>
+                               </td></tr>
                            </table>
                        </td></tr>
                    </table>

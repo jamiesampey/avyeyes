@@ -115,6 +115,9 @@
 .roAvyFormImageListItem img {
     max-width: 100px;
     max-height: 70px;
+    cursor: -moz-zoom-in;
+    cursor: -webkit-zoom-in;
+    cursor: zoom-in;
 }
 
 #roAvyFormCommentsRow {
@@ -124,6 +127,11 @@
 #roAvyFormCommentsRow table {
     width: 100%;
     max-width: 740px;
+}
+
+#roAvyFormCommentsHeaderWrapper img {
+    padding-left: 5px;
+    vertical-align: middle;
 }
 
 #roAvyFormComments {
@@ -137,6 +145,24 @@
     margin: 0px;
     font: normal 1em times,serif !important;
     resize: none;
+}
+
+#roAvyFormCommentsLightboxDiv {
+    display: none;
+    width: 700px;
+    height: 600px;
+    overflow: hidden;
+}
+
+#roAvyFormCommentsLightboxDiv textarea {
+    width: 690px;
+    height: 590px;
+    resize: none;
+    border: 0px;
+    padding: 5px;
+    margin: 0px;
+    overflow-x: hidden;
+ 	overflow-y: auto;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -211,6 +237,9 @@ img.rwAvyFormImage {
     position: relative;
     top: 0;
     left: 0;
+    cursor: -moz-zoom-in;
+    cursor: -webkit-zoom-in;
+    cursor: zoom-in;
 }
 
 img.rwAvyFormImageDeleteIcon {
