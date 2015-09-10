@@ -193,12 +193,10 @@ function wireButtons(view) {
             }
         }
 
-	    var bufferPx = 50;
-        var upperLeftCorner = getCoordsAtWindowPos(bufferPx, bufferPx);
-        var lowerLeftCorner = getCoordsAtWindowPos(bufferPx, view.cesiumViewer.canvas.height - bufferPx);
-        var upperRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.width - bufferPx, bufferPx);
-        var lowerRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.width - bufferPx,
-            view.cesiumViewer.canvas.height - bufferPx);
+        var upperLeftCorner = getCoordsAtWindowPos(0, 0);
+        var lowerLeftCorner = getCoordsAtWindowPos(0, view.cesiumViewer.canvas.clientHeight);
+        var upperRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.clientWidth, 0);
+        var lowerRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.clientWidth, view.cesiumViewer.canvas.clientHeight);
 
         if (Cesium.defined(upperLeftCorner) && Cesium.defined(lowerLeftCorner)
             && Cesium.defined(upperRightCorner) && Cesium.defined(lowerRightCorner)) {
@@ -259,7 +257,7 @@ function wireLocationInputs(view) {
     });
 
     var geocodeFlyToPitch = -70.0;
-    var geocodeFlyToRange = 6000.0;
+    var geocodeFlyToRange = 6900.0;
 
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {

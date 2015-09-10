@@ -172,7 +172,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
 AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
     if (!address) return;
-    var camPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.cesiumViewer.camera.position);
+    var camPos = this.cesiumViewer.camera.positionCartographic;
 
     $.ajax({
         url: "//dev.virtualearth.net/REST/v1/Locations",

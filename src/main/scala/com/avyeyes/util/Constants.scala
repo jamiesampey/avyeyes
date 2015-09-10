@@ -13,7 +13,7 @@ object Constants {
 	val HumanNumberUnknown: Int = -1
 
 	val CamPitchCutoff: Double = -45.0
-	val CamAltitudeLimit: Int = 9000
+	val CamAltitudeLimit: Int = 10000
 	val AvyDistRangeMiles = 5.0
 
 	val MaxImageSize: Int = 10000000
