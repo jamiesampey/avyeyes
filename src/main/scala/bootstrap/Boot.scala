@@ -50,10 +50,10 @@ class Boot extends Loggable {
     }
     
     // browser not supported redirect
-    LiftRules.statelessDispatch.prepend {
-      case req @ Req(path, _, _) if (path != List(BrowserNotSupportedPath) && !browserSupported(req)) => 
-        () => {Full(RedirectResponse(BrowserNotSupportedPath))}
-    }
+//    LiftRules.statelessDispatch.prepend {
+//      case req @ Req(path, _, _) if (path != List(BrowserNotSupportedPath) && !browserSupported(req)) =>
+//        () => {Full(RedirectResponse(BrowserNotSupportedPath))}
+//    }
     
     // setup REST endpoints
     LiftRules.dispatch.append(new OmniAuthCallback)
@@ -88,13 +88,13 @@ class Boot extends Loggable {
   	case "css" :: _ => true
   }
   
-  private def browserSupported(req: Req): Boolean = (
-      unboxedBrowserVersion(req.chromeVersion) >= ChromeMinVersion
-      || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxMinVersion
-      || unboxedBrowserVersion(req.ieVersion) >= IeMinVersion)
-
-  private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
-  private def unboxedBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
+//  private def browserSupported(req: Req): Boolean = (
+//      unboxedBrowserVersion(req.chromeVersion) >= ChromeMinVersion
+//      || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxMinVersion
+//      || unboxedBrowserVersion(req.ieVersion) >= IeMinVersion)
+//
+//  private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
+//  private def unboxedBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
   
   private var test = false
   private def test_(b: Boolean) = test = b
