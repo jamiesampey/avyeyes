@@ -2,7 +2,7 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "0.1.22"
+version := "0.1.23"
 
 scalaVersion := "2.11.7"
 
@@ -84,4 +84,4 @@ jasmineEdition := 2
 
 parallelExecution in Test := false
 
-test in Test <<= (test in Test) dependsOn (jasmine)
+test in Test <<= (test in Test) dependsOn jasmine

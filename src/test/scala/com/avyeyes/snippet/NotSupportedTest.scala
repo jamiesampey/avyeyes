@@ -18,7 +18,7 @@ class NotSupportedTest extends WebSpec2(Boot().boot _) with TemplateReader {
 
       notSupportedMsg must contain(ChromeMinVersion.toString)
       notSupportedMsg must contain(FirefoxMinVersion.toString)
-      notSupportedMsg must contain(OperaMinVersion.toString)
+      notSupportedMsg must contain(SafariMinVersion.toString)
       notSupportedMsg must contain(IeMinVersion.toString)
     }
   }

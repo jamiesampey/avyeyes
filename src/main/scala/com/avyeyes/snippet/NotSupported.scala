@@ -7,6 +7,6 @@ import com.avyeyes.util.Constants._
 class NotSupported {
     def render = {
       "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">{getMessage("browserNotSupported",
-        ChromeMinVersion, FirefoxMinVersion, OperaMinVersion, IeMinVersion)}</span>
+        ChromeMinVersion, FirefoxMinVersion, SafariMinVersion, IeMinVersion)}</span>
     }
 }

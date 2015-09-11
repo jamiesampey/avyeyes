@@ -1,6 +1,6 @@
 package bootstrap.liftweb
 
-import akka.actor.{ActorSystem, Props}
+import akka.actor.ActorSystem
 import com.avyeyes.data.DatabaseMaintenance
 import com.avyeyes.rest._
 import com.avyeyes.util.Constants._
@@ -8,6 +8,7 @@ import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.sitemap._
+import net.liftweb.util.Props
 import net.liftweb.util.Vendor.valToVendor
 import omniauth.Omniauth
 
@@ -42,18 +43,36 @@ class Boot extends Loggable {
     val menus = appMenus ::: Omniauth.sitemap
     
     LiftRules.setSiteMap(SiteMap(menus:_*))
-        
+
+    if (Props.productionMode) {
+      // https://www redirect
+      LiftRules.earlyResponse.append { (req: Req) =>
+        val needsHttps = req.request.scheme != "https" && req.header("X-Forwarded-Proto") != Full("https")
+        val needsWWW = !req.request.serverName.startsWith("www")
+
+        needsHttps || needsWWW match {
+          case true =>
+            val wwwServerName = if (needsWWW) s"www.${req.request.serverName}" else req.request.serverName
+            val uri = "https://%s%s".format(wwwServerName, req.uri + req.request.queryString.map("?" + _).openOr(""))
+            Full(PermRedirectResponse(uri, req, req.cookies: _*))
+          case false => Empty
+        }
+      }
+    }
+
+    // browser not supported redirect
+    LiftRules.earlyResponse.append { (req: Req) =>
+      !browserSupported(req) && !req.path.partPath.contains(BrowserNotSupportedPath) match {
+        case true => Full(RedirectResponse(BrowserNotSupportedPath))
+        case false => Empty
+      }
+    }
+
     // external ID URL extraction
     LiftRules.statelessRewrite.prepend {
       case RewriteRequest(ParsePath(extId :: Nil, "", _, false), GetRequest, _) if !contextPaths.contains(extId) => 
         RewriteResponse(ParsePath(IndexPath :: Nil, "", true, true), Map(ExtIdUrlParam -> extId))
     }
-    
-    // browser not supported redirect
-//    LiftRules.statelessDispatch.prepend {
-//      case req @ Req(path, _, _) if (path != List(BrowserNotSupportedPath) && !browserSupported(req)) =>
-//        () => {Full(RedirectResponse(BrowserNotSupportedPath))}
-//    }
     
     // setup REST endpoints
     LiftRules.dispatch.append(new OmniAuthCallback)
@@ -78,7 +97,7 @@ class Boot extends Loggable {
       actorSystem.scheduler.schedule(
         initialDelay = getProp("db.maintenanceDelaySeconds").toInt seconds,
         interval = getProp("db.maintenanceIntervalHours").toInt hours,
-        receiver = actorSystem.actorOf(Props(new DatabaseMaintenance)),
+        receiver = actorSystem.actorOf(akka.actor.Props(new DatabaseMaintenance)),
         message = DatabaseMaintenance.run)
     }
   }
@@ -88,14 +107,15 @@ class Boot extends Loggable {
   	case "css" :: _ => true
   }
   
-//  private def browserSupported(req: Req): Boolean = (
-//      unboxedBrowserVersion(req.chromeVersion) >= ChromeMinVersion
-//      || unboxedBrowserVersion(req.firefoxVersion) >= FirefoxMinVersion
-//      || unboxedBrowserVersion(req.ieVersion) >= IeMinVersion)
-//
-//  private def unboxedBrowserVersion(versionBox: Box[Double]): Double = versionBox openOr 0.0
-//  private def unboxedBrowserVersion(versionBox: Box[Int]): Int = versionBox openOr 0
-  
+  private def browserSupported(req: Req): Boolean = {
+    logger.info(s"UserAgent is '${req.userAgent.openOr("<empty box>")}'")
+
+    req.chromeVersion.openOr(0.0) >= ChromeMinVersion ||
+    req.firefoxVersion.openOr(0.0) >= FirefoxMinVersion ||
+    req.ieVersion.openOr(0) >= IeMinVersion ||
+    req.safariVersion.openOr(0) >= SafariMinVersion
+  }
+
   private var test = false
   private def test_(b: Boolean) = test = b
 }
