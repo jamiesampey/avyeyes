@@ -45,18 +45,13 @@ class Boot extends Loggable {
     LiftRules.setSiteMap(SiteMap(menus:_*))
 
     if (Props.productionMode) {
-      // https://www redirect
+      // www redirect
       LiftRules.earlyResponse.append { (req: Req) =>
-        val needsHttps = req.request.scheme != "https" && req.header("X-Forwarded-Proto") != Full("https")
-        val needsWWW = !req.request.serverName.startsWith("www")
-
-        needsHttps || needsWWW match {
-          case true =>
-            val wwwServerName = if (needsWWW) s"www.${req.request.serverName}" else req.request.serverName
-            val uri = "https://%s%s".format(wwwServerName, req.uri + req.request.queryString.map("?" + _).openOr(""))
-            Full(PermRedirectResponse(uri, req, req.cookies: _*))
-          case false => Empty
+        if (!req.request.serverName.startsWith("www")) {
+          val wwwUri = "https://www.%s%s".format(req.request.serverName, req.uri + req.request.queryString.map("?" + _).openOr(""))
+          Full(PermRedirectResponse(wwwUri, req, req.cookies: _*))
         }
+        else Empty
       }
     }
 
