@@ -7,8 +7,8 @@ object Constants {
     
   val ChromeMinVersion: Double = 35.0
   val FirefoxMinVersion: Double = 30.0
-  val IeMinVersion: Double = 11.0
-  val SafariMinVersion: Double = 23.0
+  val IeMinVersion: Double = 10.0
+  val SafariMinVersion: Double = 7.0
     
 	val HumanNumberUnknown: Int = -1
 

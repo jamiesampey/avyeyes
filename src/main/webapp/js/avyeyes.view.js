@@ -60,6 +60,7 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
 
         var pick = this.cesiumViewer.scene.pick(movement.position);
         if (Cesium.defined(pick)) {
+            $("#cesiumContainer").css("cursor", "wait");
             var selectedAvalanche = pick.id;
 
             $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {

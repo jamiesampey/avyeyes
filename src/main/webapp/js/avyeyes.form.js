@@ -73,6 +73,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     });
 
     $('#roAvyFormDialog').dialog('open');
+    $("#cesiumContainer").css("cursor", "default");
 
     FB.XFBML.parse(fbContainer[0]);
     twttr.widgets.load();
