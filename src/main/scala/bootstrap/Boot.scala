@@ -105,10 +105,11 @@ class Boot extends Loggable {
   private def browserSupported(req: Req): Boolean = {
     logger.info(s"UserAgent is '${req.userAgent.openOr("<empty box>")}'")
 
-    req.chromeVersion.openOr(0.0) >= ChromeMinVersion ||
-    req.firefoxVersion.openOr(0.0) >= FirefoxMinVersion ||
-    req.ieVersion.openOr(0) >= IeMinVersion ||
-    req.safariVersion.openOr(0) >= SafariMinVersion
+    if ((req.isChrome && req.chromeVersion.openOr(0.0) < ChromeMinVersion) ||
+      (req.isFirefox && req.firefoxVersion.openOr(0.0) < FirefoxMinVersion) ||
+      (req.isIE && req.ieVersion.openOr(0) < IeMinVersion) ||
+      (req.isSafari && req.safariVersion.openOr(0) < SafariMinVersion)) false
+    else true
   }
 
   private var test = false
