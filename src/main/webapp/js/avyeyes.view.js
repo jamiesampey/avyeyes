@@ -131,7 +131,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     var showTitle = function() {
         this.showModalDialog("Info", a.date + ": " + a.areaName + "<br/>" +
             "<span style='font-size: .8em;'>Submitter: </span><span style='font: italic .8em times,serif'>"
-            + a.submitterExp.label + "</span><br/><br/><i>Click on the avalanche for details.</i>");
+            + a.submitterExp.label + "</span><br/><br/>Click on the avalanche for details");
     }.bind(this);
 
     this.ui.raiseTheCurtain();
