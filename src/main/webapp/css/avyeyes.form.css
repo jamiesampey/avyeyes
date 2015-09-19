@@ -20,8 +20,7 @@
 }
 
 #roAvyFormTitleContainer {
-    min-width: 540px;
-    max-width: 740px;
+    width: 100%;
     position: relative;
 }
 
@@ -53,10 +52,15 @@
     text-decoration: none;
 }
 
+#roAvyFormShareTable > tbody > tr > td {
+    text-align: right;
+    padding: 0px;
+    margin: 0px;
+}
+
 #roAvyFormSocialButtonsTable > tbody > tr > td {
     vertical-align: top;
-    padding: 0px 5px 0px 0px;
-    margin: 0px;
+    padding: 0px;
 }
 
 .twitter-share-button {
