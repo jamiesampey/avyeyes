@@ -2,7 +2,7 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "0.1.31"
+version := "0.1.32"
 
 scalaVersion := "2.11.7"
 
