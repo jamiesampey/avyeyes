@@ -1,60 +1,60 @@
 define(['lib/jquery.fancybox',
-        'lib/jquery.fileupload',
-        'lib/jquery.iframe-transport',
-        '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
+        "lib/jquery.fileupload",
+        "lib/jquery.iframe-transport",
+        "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 
 function AvyForm(){};
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var title = a.date + ': ' + a.areaName;
+    var title = a.date + ": " + a.areaName;
 
-	$('#roAvyFormTitle').text(title);
-	$('#roAvyFormSubmitterExp').text(a.submitterExp.label);
+	$("#roAvyFormTitle").text(title);
+	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
 
-	$('#roAvyFormExtLink').attr('href', a.extUrl);
-	$('#roAvyFormExtLink').text(a.extUrl);
+	$("#roAvyFormExtLink").attr("href", a.extUrl);
+	$("#roAvyFormExtLink").text("avyeyes.com/" + a.extId);
 
-    var fbContainer = $('#roAvyFormSocialFacebookContainer');
+    var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append('<div class="fb-share-button" data-layout="button_count" data-href="' + a.extUrl + '">');
+    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='https://avyeyes.com/" + a.extId + "' />");
 
-    var twttrContainer = $('#roAvyFormSocialTwitterContainer');
+    var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
-    twttrContainer.append('<a class="twitter-share-button" data-url="' + a.extUrl + '" data-text="' + title
-      + '" href="http://twitter.com/share" data-count="horizontal">');
+    twttrContainer.append("<a class='twitter-share-button' data-url='https://avyeyes.com/" + a.extId + "' data-text='" + title
+      + "' href='http://twitter.com/share' data-count='horizontal' />");
 
-	$('#roAvyFormElevation').text(a.slope.elevation);
-	$('#roAvyFormElevationFt').text(metersToFeet(a.slope.elevation));
-	$('#roAvyFormAspect').text(a.slope.aspect.label);
-	$('#roAvyFormAngle').text(a.slope.angle);
+	$("#roAvyFormElevation").text(a.slope.elevation);
+	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation));
+	$("#roAvyFormAspect").text(a.slope.aspect.label);
+	$("#roAvyFormAngle").text(a.slope.angle);
 	  
-	$('#roAvyFormType').text(a.classification.avyType.label);
-	$('#roAvyFormTrigger').text(a.classification.trigger.label);
-	$('#roAvyFormInterface').text(a.classification.interface.label);
-	$('#roAvyFormRSize').text(a.classification.rSize);
-	$('#roAvyFormDSize').text(a.classification.dSize);
+	$("#roAvyFormType").text(a.classification.avyType.label);
+	$("#roAvyFormTrigger").text(a.classification.trigger.label);
+	$("#roAvyFormInterface").text(a.classification.interface.label);
+	$("#roAvyFormRSize").text(a.classification.rSize);
+	$("#roAvyFormDSize").text(a.classification.dSize);
 
-	$('#roAvyFormSky').text(a.scene.skyCoverage.label);
-	$('#roAvyFormPrecip').text(a.scene.precipitation.label);
+	$("#roAvyFormSky").text(a.scene.skyCoverage.label);
+	$("#roAvyFormPrecip").text(a.scene.precipitation.label);
 	
-	setReadOnlySpinnerVal('#roAvyFormNumCaught', a.humanNumbers.caught);
-	setReadOnlySpinnerVal('#roAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
-	setReadOnlySpinnerVal('#roAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
-	setReadOnlySpinnerVal('#roAvyFormNumInjured', a.humanNumbers.injured);
-	setReadOnlySpinnerVal('#roAvyFormNumKilled', a.humanNumbers.killed);
-	$('#roAvyFormModeOfTravel').text(a.humanNumbers.modeOfTravel.label);
+	setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
+	setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
+	setReadOnlySpinnerVal("#roAvyFormNumFullyBuried", a.humanNumbers.fullyBuried);
+	setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
+	setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
+	$("#roAvyFormModeOfTravel").text(a.humanNumbers.modeOfTravel.label);
 	
 	if (a.comments.length > 0) {
-		$('#roAvyFormCommentsRow').show();
-		$('#roAvyFormComments').val(a.comments);
-        $('#roAvyFormCommentsLightboxDiv textarea').val(a.comments);
-        $(".commentsFancybox").fancybox({padding: 0, openEffect: 'fade', closeEffect: 'fade'});
+		$("#roAvyFormCommentsRow").show();
+		$("#roAvyFormComments").val(a.comments);
+        $("#roAvyFormCommentsLightboxDiv textarea").val(a.comments);
+        $(".commentsFancybox").fancybox({padding: 0, openEffect: "fade", closeEffect: "fade"});
 	}
 
 	if (a.images.length > 0) {
 	    var s3Bucket = $("#s3ImageBucket").val();
-		$('#roAvyFormImageRow').show();
+		$("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
@@ -65,14 +65,14 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         setImgFancyBox();
 	}
 
-	$('#roAvyFormDialog').dialog('option', 'position', {
-        my: 'center bottom-20',
-        at: 'center top',
-        of: $.Event('click', {pageX: mousePos.x, pageY: mousePos.y}),
-        collision: 'fit'
+	$("#roAvyFormDialog").dialog("option", "position", {
+        my: "center bottom-20",
+        at: "center top",
+        of: $.Event("click", {pageX: mousePos.x, pageY: mousePos.y}),
+        collision: "fit"
     });
 
-    $('#roAvyFormDialog').dialog('open');
+    $("#roAvyFormDialog").dialog("open");
     $("#cesiumContainer").css("cursor", "default");
 
     FB.XFBML.parse(fbContainer[0]);
