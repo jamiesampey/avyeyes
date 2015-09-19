@@ -8,13 +8,13 @@ function AvyEyesView() {
 
     this.cesiumViewer = new Cesium.Viewer("cesiumContainer", {
         sceneMode: Cesium.SceneMode.SCENE3D,
-        terrainProvider: new Cesium.CesiumTerrainProvider({
-            url: "//cesiumjs.org/stk-terrain/tilesets/world/tiles"
-        }),
         imageryProvider: new Cesium.BingMapsImageryProvider({
             url: "//dev.virtualearth.net",
             key: this.bingKey,
             mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+        }),
+        terrainProvider: new Cesium.CesiumTerrainProvider({
+            url: "//assets.agi.com/stk-terrain/world"
         }),
         animation: false,
         baseLayerPicker: false,
