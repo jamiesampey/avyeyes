@@ -8,20 +8,21 @@ function AvyForm(){};
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.date + ": " + a.areaName;
+    var url = "https://avyeyes.com/" + a.extId;
 
 	$("#roAvyFormTitle").text(title);
 	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
 
-	$("#roAvyFormExtLink").attr("href", a.extUrl);
-	$("#roAvyFormExtLink").text("avyeyes.com/" + a.extId);
+	$("#roAvyFormExtLink").attr("href", url);
+	$("#roAvyFormExtLink").text(url);
 
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='https://avyeyes.com/" + a.extId + "' />");
+    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='" + url + "' />");
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
-    twttrContainer.append("<a class='twitter-share-button' data-url='https://avyeyes.com/" + a.extId + "' data-text='" + title
+    twttrContainer.append("<a class='twitter-share-button' data-url='" + url + "' data-text='" + title
       + "' href='http://twitter.com/share' data-count='horizontal' />");
 
 	$("#roAvyFormElevation").text(a.slope.elevation);
