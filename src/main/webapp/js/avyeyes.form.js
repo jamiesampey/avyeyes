@@ -8,21 +8,20 @@ function AvyForm(){};
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.date + ": " + a.areaName;
-    var url = "https://avyeyes.com/" + a.extId;
 
 	$("#roAvyFormTitle").text(title);
 	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
 
-	$("#roAvyFormExtLink").attr("href", url);
-	$("#roAvyFormExtLink").text(url);
+	$("#roAvyFormExtLink").attr("href", a.extUrl);
+	$("#roAvyFormExtLink").text(a.extUrl);
 
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='" + url + "' />");
+    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='" + a.extUrl + "' />");
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
-    twttrContainer.append("<a class='twitter-share-button' data-url='" + url + "' data-text='" + title
+    twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + title
       + "' href='http://twitter.com/share' data-count='horizontal' />");
 
 	$("#roAvyFormElevation").text(a.slope.elevation);

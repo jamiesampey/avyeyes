@@ -112,8 +112,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             expect($("#roAvyFormTitle")).toHaveText(avalanche.date + ": " + avalanche.areaName);
             expect($("#roAvyFormSubmitterExp")).toHaveText(avalanche.submitterExp.label);
-            expect($("#roAvyFormExtLink")).toHaveAttr("href", "https://avyeyes.com/" + avalanche.extId);
-            expect($("#roAvyFormExtLink")).toHaveText("https://avyeyes.com/" + avalanche.extId);
+            expect($("#roAvyFormExtLink")).toHaveAttr("href", avalanche.extUrl);
+            expect($("#roAvyFormExtLink")).toHaveText(avalanche.extUrl);
             expect($("#roAvyFormSocialFacebookContainer")).not.toBeEmpty();
             expect($("#roAvyFormSocialTwitterContainer")).not.toBeEmpty();
         });
