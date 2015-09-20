@@ -1,50 +1,56 @@
 package com.avyeyes.service
 
+import com.avyeyes.data.CachedDAL
 import com.avyeyes.test.Generators._
-import com.avyeyes.test._
 import com.avyeyes.util.Helpers._
+import org.specs2.mock.Mockito
+import org.specs2.mutable.Specification
+import org.specs2.specification.Scope
 
-class ExternalIdServiceTest extends WebSpec2 with MockInjectors {
+import scala.util.{Success, Try, Failure}
+
+class ExternalIdServiceTest extends Specification with Mockito {
   isolated
-  
-  class ExtIdTester extends ExternalIdService
-  val extIdTester = new ExtIdTester
-  
-  "External ID reservation" should {
-    "Reserve an external ID if one is available" withSFor("/") in {
-      mockAvalancheDal.getAvalanche(any[String]) returns None
-      val newExtId = extIdTester.reserveNewExtId(mockAvalancheDal)
+
+  class Setup extends Scope {
+    class ExtIdTester extends ExternalIdService
+    val extIdTester = new ExtIdTester
+
+    implicit val dal = mock[CachedDAL]
+  }
+
+  "External ID reservation" >> {
+    "Reserve an external ID if one is available" in new Setup {
+      dal.getAvalanche(any[String]) returns None
+      val newExtId = extIdTester.reserveNewExtId
       
       isValidExtId(Some(newExtId)) must beTrue
       ExtIdReservationCache.reservationExists(newExtId) must beTrue
     }
     
-   "Give up (and throw a RuntimeException) after a specified number of tries" withSFor("/") in {
-     mockAvalancheDal.getAvalanche(any[String]) returns Some(avalancheForTest)
-     try {
-       extIdTester.reserveNewExtId(mockAvalancheDal)
-       failure
-     } catch {
-       case e: RuntimeException => success
+   "Give up (and throw an Exception) after a specified number of tries" in new Setup {
+     dal.getAvalanche(any[String]) returns Some(avalancheForTest)
+
+     Try(extIdTester.reserveNewExtId) match {
+       case Success(_) => failure
+       case Failure(ex) => success
      }
    }
   }
     
-  "External ID unreservation" should {  
-    "Unreserve an external ID if it exists in the reservation cache" withSFor("/") in {
-      mockAvalancheDal.getAvalanche(any[String]) returns None
-      val newExtId = extIdTester.reserveNewExtId(mockAvalancheDal)
+  "External ID unreservation" >> {
+    "Unreserve an external ID if it exists in the reservation cache" in new Setup {
+      dal.getAvalanche(any[String]) returns None
+      val newExtId = extIdTester.reserveNewExtId
       extIdTester.unreserveExtId(newExtId)      
       
       ExtIdReservationCache.reservationExists(newExtId) must beFalse
     }
     
-    "Exit gracefully if asked to unreserve a non-existent external ID" withSFor("/") in {
-      try {
-        extIdTester.unreserveExtId("4ki4")
-        success
-      } catch {
-        case e: Exception => failure
+    "Exit gracefully if asked to unreserve a non-existent external ID" in new Setup {
+      Try(extIdTester.unreserveExtId("4ki4")) match {
+        case Success(_) => success
+        case Failure(ex) => failure
       }
     }
   }
