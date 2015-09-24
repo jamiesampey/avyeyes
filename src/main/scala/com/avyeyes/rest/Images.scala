@@ -1,10 +1,10 @@
 package com.avyeyes.rest
 
 import java.util.UUID
+
 import com.avyeyes.model.AvalancheImage
-import com.avyeyes.service.{UnauthorizedException, Injectors}
+import com.avyeyes.service.{Injectors, UnauthorizedException}
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.Helpers._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
@@ -14,11 +14,12 @@ import org.joda.time.DateTime
 class Images extends RestHelper with Loggable {
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
+  val R = Injectors.resources.vend
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       if (dal.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
-        ResponseWithReason(BadResponse(), getMessage("rwAvyFormMaxImagesExceeded",
+        ResponseWithReason(BadResponse(), R.getMessage("rwAvyFormMaxImagesExceeded",
           MaxImagesPerAvalanche).toString)
       } else {
         val fph = req.uploadedFiles(0)

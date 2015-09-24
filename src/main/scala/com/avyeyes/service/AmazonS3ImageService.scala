@@ -6,15 +6,18 @@ import com.amazonaws.AmazonServiceException
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
-import com.avyeyes.util.Helpers._
 import net.liftweb.common.Loggable
 import scala.collection.JavaConversions._
 
 class AmazonS3ImageService extends Loggable {
-  private val s3ImageBucket = getProp("s3.imageBucket")
-  private val s3Client = new AmazonS3Client(new BasicAWSCredentials(
-    getProp("s3.fullaccess.accessKeyId"),
-    getProp("s3.fullaccess.secretAccessKey")))
+  val R = Injectors.resources.vend
+
+  private val s3ImageBucket = R.getProperty("s3.imageBucket")
+
+  private[service] def s3Client = new AmazonS3Client(new BasicAWSCredentials(
+    R.getProperty("s3.fullaccess.accessKeyId"),
+    R.getProperty("s3.fullaccess.secretAccessKey")
+  ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
     val key = toS3Key(avyExtId, filename)

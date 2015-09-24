@@ -2,7 +2,8 @@ package com.avyeyes.model
 
 import com.avyeyes.model.enums._
 import com.avyeyes.model.JsonSerializers.formats
-import com.avyeyes.util.Helpers._
+import com.avyeyes.service.Injectors
+import com.avyeyes.util.Converters._
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST.JString
 import net.liftweb.json._
@@ -12,6 +13,8 @@ import org.joda.time.DateTime
 
 
 object JsonSerializers {
+  val R = Injectors.resources.vend
+
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
     AvalancheImageSerializer +
@@ -21,7 +24,7 @@ object JsonSerializers {
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-      ("extUrl" -> a.getExtUrl) ~
+      ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
       ("areaName" -> a.areaName) ~
       ("date" -> Extraction.decompose(a.date)) ~
       ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~

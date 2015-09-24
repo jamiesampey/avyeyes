@@ -1,8 +1,9 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.service.Injectors
+
 import scala.xml._
 import com.avyeyes.test._
-import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
 
 class ContentTest extends WebSpec2 with TemplateReader {
@@ -35,13 +36,14 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
     
     "Wire message fields" withSFor("/") in {
+      val P = Injectors.resources.vend
       val messages = renderedPage \\ "span" filter (node => (node\"@class").text == "avyMsg")
       
       for (message <- messages) {
         val id = (message\"@id").text
         id.length() must be_>(0)
         (message\"@class").text must_== "avyMsg"
-        message.text.trim must_== s"${getMessage(id)}".trim
+        message.text.trim must_== s"${P.getMessage(id)}".trim
       }
       success
     }

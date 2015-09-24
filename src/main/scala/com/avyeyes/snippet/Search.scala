@@ -6,7 +6,7 @@ import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Converters._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
@@ -16,11 +16,9 @@ import net.liftweb.json.JsonAST.JArray
 import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils._
 
-import scala.math._
-
 class Search extends Loggable {
   val dal = Injectors.dal.vend
-  
+
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
   var fromDate = ""; var toDate = ""

@@ -5,6 +5,7 @@ import net.liftweb.http.Factory
 import slick.driver.PostgresDriver
 
 object Injectors extends Factory {
+  val resources = new FactoryMaker[ResourceService](new ResourceService) {}
   val user = new FactoryMaker[UserSession](new UserSession) {}
   val s3 = new FactoryMaker[AmazonS3ImageService](new AmazonS3ImageService) {}
   val dal = new FactoryMaker[CachedDAL](

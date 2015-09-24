@@ -1,15 +1,17 @@
 package com.avyeyes.rest
 
 import com.avyeyes.service.{Injectors, ExternalIdService}
-import com.avyeyes.util.Helpers.getRemoteIP
+import net.liftweb.common.Box
 import net.liftweb.http._
+import net.liftweb.http.provider.HTTPRequest
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.json.JsonAST._
 
 
 class ExtIdVendor extends RestHelper with ExternalIdService {
-  implicit lazy val dal = Injectors.dal.vend
-  
+  implicit val dal = Injectors.dal.vend
+  implicit val R = Injectors.resources.vend
+
   serve {
     case "rest" :: "reserveExtId" :: Nil JsonGet req => {
       try {
@@ -24,4 +26,6 @@ class ExtIdVendor extends RestHelper with ExternalIdService {
       }
     }
   }
+
+  private def getRemoteIP(request: Box[HTTPRequest]) = request.map(_.remoteAddress).openOr("<unknown>")
 }

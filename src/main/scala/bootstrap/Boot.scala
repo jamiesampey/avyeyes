@@ -3,12 +3,11 @@ package bootstrap.liftweb
 import akka.actor.ActorSystem
 import com.avyeyes.data.DatabaseMaintenance
 import com.avyeyes.rest._
+import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.sitemap._
-import net.liftweb.util.Props
 import net.liftweb.util.Vendor.valToVendor
 import omniauth.Omniauth
 
@@ -29,7 +28,8 @@ object Boot {
  * to modify lift's environment
  */
 class Boot extends Loggable {
-  val actorSystem = ActorSystem()
+  lazy val R = Injectors.resources.vend
+  lazy val actorSystem = ActorSystem()
 
   def boot() = {
     logger.info("LIFT BOOT")
@@ -76,11 +76,11 @@ class Boot extends Loggable {
     
     if (!test) {
       import actorSystem.dispatcher
-
       import scala.concurrent.duration._
+
       actorSystem.scheduler.schedule(
-        initialDelay = getProp("db.maintenanceDelaySeconds").toInt seconds,
-        interval = getProp("db.maintenanceIntervalHours").toInt hours,
+        initialDelay = R.getProperty("db.maintenanceDelaySeconds").toInt seconds,
+        interval = R.getProperty("db.maintenanceIntervalHours").toInt hours,
         receiver = actorSystem.actorOf(akka.actor.Props(new DatabaseMaintenance)),
         message = DatabaseMaintenance.run)
     }

@@ -4,18 +4,18 @@ import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants.ExtIdUrlParam
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Validators.isValidExtId
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.js.JE._
 import net.liftweb.http.js.JsCmd
 import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
-import net.liftweb.util.Props
 
 class Init extends Loggable {
   val dal = Injectors.dal.vend
-    
+  val R = Injectors.resources.vend
+
   val InitAvyMsgDelayMillis = 5000
 
   private var extId: Option[String] = None
@@ -57,5 +57,5 @@ class Init extends Loggable {
       .cmd
   }
 
-  private def s3ImageBucketCmd: JsCmd = JsRaw(s"$$('#s3ImageBucket').val('${Props.get("s3.imageBucket").openOr("")}');").cmd
+  private def s3ImageBucketCmd: JsCmd = JsRaw(s"$$('#s3ImageBucket').val('${R.getProperty("s3.imageBucket")}');").cmd
 }

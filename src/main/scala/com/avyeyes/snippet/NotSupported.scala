@@ -1,12 +1,14 @@
 package com.avyeyes.snippet
 
+import com.avyeyes.service.Injectors
 import net.liftweb.util.Helpers._
-import com.avyeyes.util.Helpers._
 import com.avyeyes.util.Constants._
 
 class NotSupported {
-    def render = {
-      "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">{getMessage("browserNotSupported",
-        ChromeMinVersion, FirefoxMinVersion, SafariMinVersion, IeMinVersion)}</span>
-    }
+  val R = Injectors.resources.vend
+
+  def render = {
+    "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">{R.getMessage("browserNotSupported",
+      ChromeMinVersion, FirefoxMinVersion, SafariMinVersion, IeMinVersion)}</span>
+  }
 }

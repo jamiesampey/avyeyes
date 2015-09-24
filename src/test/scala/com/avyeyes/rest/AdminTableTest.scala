@@ -1,20 +1,35 @@
 package com.avyeyes.rest
 
-import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
+import com.avyeyes.data.{CachedDAL, AdminAvalancheQuery, OrderDirection, OrderField}
+import com.avyeyes.service.{UserSession, Injectors}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import net.liftweb.http._
+import org.specs2.execute.{Result, AsResult}
+import org.specs2.mock.Mockito
+import org.specs2.specification.AroundExample
 
-class AdminTableTest extends WebSpec2 with MockInjectors {
-  sequential
+class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
+  isolated
 
-  val adminTable = new AdminTable
+  val mockAvalancheDal = mock[CachedDAL]
+  val mockUserSession = mock[UserSession]
+
+  def around[T: AsResult](t: => T): Result =
+    Injectors.user.doWith(mockUserSession) {
+      Injectors.dal.doWith(mockAvalancheDal) {
+        AsResult(t)
+      }
+    }
+
   val adminTableUrl = "https://avyeyes.com/rest/admintable"
 
   "Admin table error handling" should {
     "Returns UnauthorizedResponse if session is not authorized" withSFor(adminTableUrl) in {
       mockUserSession.isAuthorizedSession returns false
+      val adminTable = new AdminTable
+
       val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(adminTable(req)())
       resp must beAnInstanceOf[UnauthorizedResponse]
@@ -22,6 +37,8 @@ class AdminTableTest extends WebSpec2 with MockInjectors {
 
     "Returns InternalServerErrorResponse if an error occurs" withSFor(adminTableUrl) in {
       mockUserSession.isAuthorizedSession returns true
+      val adminTable = new AdminTable
+
       val req = openLiftReqBox(S.request) // req does not contain datatable query params
       val resp = openLiftRespBox(adminTable(req)())
       resp must beAnInstanceOf[InternalServerErrorResponse]
@@ -48,6 +65,8 @@ class AdminTableTest extends WebSpec2 with MockInjectors {
       "search[value]" -> searchParam)
 
     "Extract offset, limit, orderby, and search params from request" withSFor (adminTableUrl) in {
+      val adminTable = new AdminTable
+
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)
       adminTable(req)()
 
@@ -65,6 +84,8 @@ class AdminTableTest extends WebSpec2 with MockInjectors {
     }
 
     "Construct a JSON response" withSFor (adminTableUrl) in {
+      val adminTable = new AdminTable
+
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)
       val resp = openLiftRespBox(adminTable(req)())
 

@@ -4,9 +4,10 @@ import bootstrap.liftweb.Boot
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model.enums._
+import com.avyeyes.service.Injectors
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Converters._
 import net.liftweb.http.S
 import net.liftweb.util.Mailer._
 import org.mockito.ArgumentCaptor
@@ -204,6 +205,8 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
   }
 
   "Report email notifications" should {
+    val R = Injectors.resources.vend
+
     "Send email to both submitter and admin upon initial report submission" withSFor "/" in {
       val fromArg = capture[From]
       val subjectArg = capture[Subject]
@@ -215,11 +218,11 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
 
       fromArg.values.get(0) mustEqual report.adminEmailFrom
       subjectArg.values.get(0).subject mustEqual
-        getMessage("avyReportSubmitEmailAdminSubject", report.submitterEmail).toString
+        R.getMessage("avyReportSubmitEmailAdminSubject", report.submitterEmail).toString
 
       fromArg.values.get(1) mustEqual report.adminEmailFrom
       subjectArg.values.get(1).subject mustEqual
-        getMessage("avyReportSubmitEmailSubmitterSubject", report.extId).toString
+        R.getMessage("avyReportSubmitEmailSubmitterSubject", report.extId).toString
     }
 
     "Send email to submitter upon report approval" withSFor "/" in {
@@ -235,7 +238,7 @@ class ReportTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
 
       fromArg.values.get(0) mustEqual report.adminEmailFrom
       subjectArg.values.get(0).subject mustEqual
-        getMessage("avyReportApproveEmailSubmitterSubject", report.extId).toString
+        R.getMessage("avyReportApproveEmailSubmitterSubject", report.extId).toString
     }
   }
 

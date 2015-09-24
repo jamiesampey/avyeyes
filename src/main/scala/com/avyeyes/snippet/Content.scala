@@ -1,7 +1,6 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.service.Injectors
-import com.avyeyes.util.Helpers._
 import net.liftweb.http.S
 import net.liftweb.util.Helpers._
 
@@ -9,6 +8,7 @@ import scala.xml._
 
 class Content {
   val userSession = Injectors.user.vend
+  val R = Injectors.resources.vend
 
   def render = {
     "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text, asBoolean((ns\"@data-required").text) openOr false)) &
@@ -32,7 +32,7 @@ class Content {
   }
 
   private def setupMessage(id: String): NodeSeq = {
-    <span id={id} class="avyMsg">{getMessage(id)}</span>
+    <span id={id} class="avyMsg">{R.getMessage(id)}</span>
   }
 
   private def setupLink(id: String): NodeSeq = {

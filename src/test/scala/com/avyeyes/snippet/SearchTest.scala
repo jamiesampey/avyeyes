@@ -7,7 +7,7 @@ import com.avyeyes.test.Generators._
 import scala.xml.NodeSeq
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Converters._
 import bootstrap.liftweb.Boot
 import com.avyeyes.model.enums._
 

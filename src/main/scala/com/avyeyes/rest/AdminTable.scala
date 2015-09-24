@@ -3,7 +3,6 @@ package com.avyeyes.rest
 import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
 import com.avyeyes.model._
 import com.avyeyes.service.Injectors
-import com.avyeyes.util.Helpers._
 import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
@@ -13,8 +12,9 @@ import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.ListBuffer
 
 class AdminTable extends RestHelper with Loggable {
-  lazy val dal = Injectors.dal.vend
-  lazy val userSession = Injectors.user.vend
+  val dal = Injectors.dal.vend
+  val userSession = Injectors.user.vend
+  val R = Injectors.resources.vend
 
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
@@ -138,7 +138,7 @@ class AdminTable extends RestHelper with Loggable {
   }
 
   private def getHttpsAvalancheLink(a: Avalanche) = {
-    <a href={s"$getHttpsBaseUrl/${a.extId}"} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
+    <a href={s"${R.getAvalancheUrl(a.extId)}"} target="adminViewWindow">{s"${a.getTitle()}"}</a>.toString
   }
 
   private def getViewableElem(viewable: Boolean) = viewable match {

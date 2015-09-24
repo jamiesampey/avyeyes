@@ -2,7 +2,7 @@ package com.avyeyes.service
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.test.Generators._
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Validators.isValidExtId
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
@@ -13,10 +13,12 @@ class ExternalIdServiceTest extends Specification with Mockito {
   isolated
 
   class Setup extends Scope {
+    implicit val dal = mock[CachedDAL]
+    implicit val R = mock[ResourceService]
+    R.getIntProperty("extId.newIdAttemptLimit") returns 3
+
     class ExtIdTester extends ExternalIdService
     val extIdTester = new ExtIdTester
-
-    implicit val dal = mock[CachedDAL]
   }
 
   "External ID reservation" >> {
@@ -25,7 +27,7 @@ class ExternalIdServiceTest extends Specification with Mockito {
       val newExtId = extIdTester.reserveNewExtId
       
       isValidExtId(Some(newExtId)) must beTrue
-      ExtIdReservationCache.reservationExists(newExtId) must beTrue
+      extIdTester.reservationExists(newExtId) must beTrue
     }
     
    "Give up (and throw an Exception) after a specified number of tries" in new Setup {
@@ -42,9 +44,9 @@ class ExternalIdServiceTest extends Specification with Mockito {
     "Unreserve an external ID if it exists in the reservation cache" in new Setup {
       dal.getAvalanche(any[String]) returns None
       val newExtId = extIdTester.reserveNewExtId
-      extIdTester.unreserveExtId(newExtId)      
-      
-      ExtIdReservationCache.reservationExists(newExtId) must beFalse
+      extIdTester.unreserveExtId(newExtId)
+
+      extIdTester.reservationExists(newExtId) must beFalse
     }
     
     "Exit gracefully if asked to unreserve a non-existent external ID" in new Setup {
@@ -52,6 +54,18 @@ class ExternalIdServiceTest extends Specification with Mockito {
         case Success(_) => success
         case Failure(ex) => failure
       }
+    }
+  }
+
+  "Bad word check" >> {
+    "Catch bad words in a string" in new Setup {
+      extIdTester.containsBadWord("what a fucking day!") must beTrue
+      extIdTester.containsBadWord("what a lovely day!") must beFalse
+    }
+
+    "Catch bad words in external IDs" in new Setup {
+      extIdTester.containsBadWord("193tit3k") must beTrue
+      extIdTester.containsBadWord("49fk9d3k") must beFalse
     }
   }
 }

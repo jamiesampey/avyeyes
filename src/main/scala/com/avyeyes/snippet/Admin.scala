@@ -1,7 +1,6 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.service.Injectors
-import com.avyeyes.util.Helpers._
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.util.Helpers._
@@ -11,16 +10,17 @@ import org.apache.commons.lang3.StringUtils._
 import scala.xml.NodeSeq
 
 class Admin extends Loggable {
-  lazy val dal = Injectors.dal.vend
-  lazy val userSession = Injectors.user.vend
+  val dal = Injectors.dal.vend
+  val userSession = Injectors.user.vend
+  val R = Injectors.resources.vend
 
-  private val AccessDenied = getMessage("avyAdminLocalLoginAccessDenied").toString
-  private val LocalAuthEmailHash = Props.get("localauth.email", "")
-  private val LocalAuthPwHash = Props.get("localauth.pw", "")
+  private val AccessDenied = R.getMessage("avyAdminLocalLoginAccessDenied").toString
+  private val LocalAuthEmailHash = R.getProperty("localauth.email")
+  private val LocalAuthPwHash = R.getProperty("localauth.pw")
   
   private def processLogout() = {
     userSession.logout
-    S.redirectTo(getHttpsBaseUrl)
+    S.redirectTo(R.getHttpsBaseUrl)
   }
 
   def localLogIn = {

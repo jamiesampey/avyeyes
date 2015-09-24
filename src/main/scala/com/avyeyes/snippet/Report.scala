@@ -2,11 +2,13 @@ package com.avyeyes.snippet
 
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
-import com.avyeyes.model._
+
 import com.avyeyes.model.StringSerializers._
+import com.avyeyes.model._
 import com.avyeyes.model.enums._
-import com.avyeyes.service.{Injectors, AmazonS3ImageService, ExternalIdService}
-import com.avyeyes.util.Helpers._
+import com.avyeyes.service.{ExternalIdService, Injectors}
+import com.avyeyes.util.Converters._
+import com.avyeyes.util.Validators._
 import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.SHtml
@@ -26,8 +28,9 @@ import scala.collection.mutable.ListBuffer
 class Report extends ExternalIdService with Mailer with Loggable {
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
+  val R = Injectors.resources.vend
 
-  val adminEmailFrom = From(getProp("mail.admin.address"), Full("AvyEyes"))
+  val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
@@ -70,10 +73,10 @@ class Report extends ExternalIdService with Mailer with Loggable {
   def validateFields(): JsCmd = {
     val problemFields = new ListBuffer[String]
     if (!isValidEmail(submitterEmail)) problemFields.append("rwAvyFormSubmitterEmail")
-    if (!isValidEnumValue(ExperienceLevel, submitterExp)) problemFields.append("rwAvyFormSubmitterExpAC")
+    if (!ExperienceLevel.isValidCode(submitterExp)) problemFields.append("rwAvyFormSubmitterExpAC")
     if (isBlank(areaName)) problemFields.append("rwAvyFormAreaName")
     if (!isValidDate(dateStr)) problemFields.append("rwAvyFormDate")
-    if (!isValidEnumValue(Aspect, aspect)) problemFields.append("rwAvyFormAspectAC")
+    if (!Aspect.isValidCode(aspect)) problemFields.append("rwAvyFormAspectAC")
     if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
 
     if (problemFields.size == 0) {
@@ -112,7 +115,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
 
-          JsDialog.info("avyReportInsertSuccess", avalancheFromValues.getExtUrl)
+          JsDialog.info("avyReportInsertSuccess", s"${R.getAvalancheUrl(avalancheFromValues.extId)}")
         }
       }
     } catch {
@@ -185,39 +188,38 @@ class Report extends ExternalIdService with Mailer with Loggable {
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val adminBody = getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, a.getExtUrl)
-    sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
+    val adminBody = R.getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, R.getAvalancheUrl(a.extId))
+    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = getMessage("avyReportSubmitEmailSubmitterBody", a.extId, a.getExtUrl)
-    sendMail(adminEmailFrom, Subject(getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
+    val submitterBody = R.getMessage("avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId))
+    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
   private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val submitterBody = getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, a.getExtUrl)
-    sendMail(adminEmailFrom, Subject(getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
+    val submitterBody = R.getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, R.getAvalancheUrl(a.extId))
+    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
   private def configureMailer() = {
     customProperties = Map (
-      "mail.smtp.host" -> getProp("mail.smtp.host"),
-      "mail.smtp.port" -> getProp("mail.smtp.port"),
-      "mail.smtp.auth" -> getProp("mail.smtp.auth"),
-      "mail.smtp.starttls.enable" -> getProp("mail.smtp.starttls.enable")
+      "mail.smtp.host" -> R.getProperty("mail.smtp.host"),
+      "mail.smtp.port" -> R.getProperty("mail.smtp.port"),
+      "mail.smtp.auth" -> R.getProperty("mail.smtp.auth"),
+      "mail.smtp.starttls.enable" -> R.getProperty("mail.smtp.starttls.enable")
     )
 
-    if (Props.get("mail.smtp.auth", "false").toBoolean) {
-      (Props.get("mail.admin.address"), Props.get("mail.admin.pw")) match {
-        case (Full(username), Full(password)) =>
-          authenticator = Full(new Authenticator() {
-            override def getPasswordAuthentication = new PasswordAuthentication(username, password)
-          })
-        case _ => logger.error("Missing username and/or password for SMTP email")
-      }
+    if (R.getBooleanProperty("mail.smtp.auth")) {
+      authenticator = Full(new Authenticator() {
+        override def getPasswordAuthentication = new PasswordAuthentication(
+          R.getProperty("mail.admin.address"),
+          R.getProperty("mail.admin.pw")
+        )
+      })
     }
   }
 

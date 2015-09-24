@@ -1,7 +1,7 @@
 package com.avyeyes.model
 
+import com.avyeyes.util.Converters._
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.avyeyes.util.Helpers._
 import org.joda.time.DateTime
 
 case class Avalanche(
@@ -22,6 +22,4 @@ case class Avalanche(
   comments: Option[String]) {
 
   def getTitle() = s"${dateToStr(date)}: ${areaName}"
-
-  def getExtUrl() = s"${getHttpsBaseUrl}/${extId}"
 }

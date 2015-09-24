@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.test.Generators._
 import com.avyeyes.model.enums._
-import com.avyeyes.util.Helpers._
+import com.avyeyes.util.Converters._
 import org.joda.time.DateTime
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification
