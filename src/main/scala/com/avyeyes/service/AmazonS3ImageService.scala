@@ -14,14 +14,13 @@ class AmazonS3ImageService extends Loggable {
 
   private val s3ImageBucket = R.getProperty("s3.imageBucket")
 
-  private[service] def s3Client = new AmazonS3Client(new BasicAWSCredentials(
+  protected val s3Client = new AmazonS3Client(new BasicAWSCredentials(
     R.getProperty("s3.fullaccess.accessKeyId"),
     R.getProperty("s3.fullaccess.secretAccessKey")
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
     val key = toS3Key(avyExtId, filename)
-
     try {
       val metadata = new ObjectMetadata()
       metadata.setContentLength(bytes.length)
@@ -37,10 +36,8 @@ class AmazonS3ImageService extends Loggable {
     }
   }
 
-  def deleteImage(avyExtId: String, fileBaseName: String) {
-    val key = s3Client.listObjects(s3ImageBucket, toS3Key(avyExtId, fileBaseName))
-      .getObjectSummaries.get(0).getKey
-
+  def deleteImage(avyExtId: String, filename: String) {
+    val key = toS3Key(avyExtId, filename)
     try {
       s3Client.deleteObject(s3ImageBucket, key)
       logger.info(s"Deleted image $key from AWS S3")
@@ -75,6 +72,6 @@ class AmazonS3ImageService extends Loggable {
 
   private def toS3Key(avyExtId: String, filename: String) = s"$avyExtId/$filename"
 
-  private def getAllAvalancheImageKeys(avyExtId: String) =
+  protected def getAllAvalancheImageKeys(avyExtId: String) =
     s3Client.listObjects(s3ImageBucket, avyExtId).getObjectSummaries.map(_.getKey)
 }

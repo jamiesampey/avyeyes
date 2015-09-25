@@ -1,5 +1,7 @@
 package com.avyeyes.test
 
+import java.util.UUID
+
 import com.avyeyes.model._
 import com.avyeyes.model.enums.{ExperienceLevel, _}
 import com.avyeyes.util.Constants._
@@ -84,7 +86,7 @@ object Generators {
   def genAvalancheImage = for {
     createTime <- genDateTime()
     avyExtId <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
-    filename <- Gen.alphaStr
+    filename <- Gen.const(s"${UUID.randomUUID().toString}.jpg")
     origFilename <- Gen.alphaStr
     mimeType <- Gen.alphaStr
     size <- Gen.choose(1000, MaxImageSize)

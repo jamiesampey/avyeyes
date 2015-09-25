@@ -126,14 +126,14 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   def countAvalancheImages(extId: String): Int = Await.result(db.run(
     AvalancheImages.filter(_.avyExtId === extId).length.result), Duration.Inf)
 
-  def getAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImage] = {
-    Await.result(db.run(imageQuery(avyExtId, Some(filename)).result.headOption), Duration.Inf)
+  def getAvalancheImage(avyExtId: String, baseFilename: String): Option[AvalancheImage] = {
+    Await.result(db.run(imageQuery(avyExtId, Some(baseFilename)).result.headOption), Duration.Inf)
   }
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage] = Await.result(db.run(
     imageQuery(avyExtId, None).result), Duration.Inf).toList
 
-  private def imageQuery(avyExtId: String, filename: Option[String]) = {
+  private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {
       case true => AvalancheImages.filter(_.avyExtId === avyExtId)
       case false => for {
@@ -142,20 +142,19 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       } yield img
     }
 
-    filename match {
-      case Some(fn) => queryByExtId.filter(_.filename === fn)
+    baseFilename match {
+      case Some(fn) => queryByExtId.filter(_.filename.startsWith(fn))
       case None => queryByExtId
     }
   }
 
-  def deleteAvalancheImage(avyExtId: String, baseFilename: String) = {
+  def deleteAvalancheImage(avyExtId: String, filename: String) = {
     if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
       throw new UnauthorizedException("Not authorized to delete image")
     }
       
     Await.result(db.run(
-      AvalancheImages.filter(img =>
-        img.avyExtId === avyExtId && img.filename.startsWith(baseFilename)).delete >>
+      AvalancheImages.filter(img => img.avyExtId === avyExtId && img.filename === filename).delete >>
       setAvalancheUpdateTimeAction(avyExtId)
     ), Duration.Inf)
   }

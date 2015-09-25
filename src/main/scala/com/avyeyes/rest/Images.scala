@@ -39,11 +39,16 @@ class Images extends RestHelper with Loggable {
         )
       }
     }
-    
-    case "rest" :: "images" :: avyExtId :: fileBaseName :: Nil Delete req => {
+
+    case "rest" :: "images" :: avyExtId :: baseFilename :: Nil Delete req => {
       try {
-        s3.deleteImage(avyExtId, fileBaseName)
-        dal.deleteAvalancheImage(avyExtId, fileBaseName)
+        dal.getAvalancheImage(avyExtId, baseFilename).map(_.filename) match {
+          case Some(filename) =>
+            dal.deleteAvalancheImage(avyExtId, filename)
+            s3.deleteImage(avyExtId, filename)
+          case _ => logger.error(s"Unable to retrieve image filename for delete. Base filename = $baseFilename")
+        }
+
         OkResponse()
       } catch {
         case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")

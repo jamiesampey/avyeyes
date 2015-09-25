@@ -25,11 +25,11 @@ trait CachedDAL {
   
   def insertAvalancheImage(img: AvalancheImage): Unit
   
-  def getAvalancheImage(avyExtId: String, filename: String): Option[AvalancheImage]
+  def getAvalancheImage(avyExtId: String, baseFilename: String): Option[AvalancheImage]
 
   def countAvalancheImages(extId: String): Int
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage]
   
-  def deleteAvalancheImage(avyExtId: String, baseFilename: String): Unit
+  def deleteAvalancheImage(avyExtId: String, filename: String): Unit
 }
