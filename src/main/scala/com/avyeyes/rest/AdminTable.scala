@@ -12,9 +12,10 @@ import org.joda.time.format.DateTimeFormat
 import scala.collection.mutable.ListBuffer
 
 class AdminTable extends RestHelper with Loggable {
+  val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
   val userSession = Injectors.user.vend
-  val R = Injectors.resources.vend
+
 
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 

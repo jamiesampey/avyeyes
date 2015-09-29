@@ -32,7 +32,7 @@ class Content {
   }
 
   private def setupMessage(id: String): NodeSeq = {
-    <span id={id} class="avyMsg">{R.getMessage(id)}</span>
+    <span id={id} class="avyMsg">{R.localizedStringAsXml(s"msg.$id")}</span>
   }
 
   private def setupLink(id: String): NodeSeq = {

@@ -1,7 +1,7 @@
 package com.avyeyes.rest
 
 import com.avyeyes.data.{CachedDAL, AdminAvalancheQuery, OrderDirection, OrderField}
-import com.avyeyes.service.{UserSession, Injectors}
+import com.avyeyes.service.{ResourceService, UserSession, Injectors}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
@@ -13,20 +13,23 @@ import org.specs2.specification.AroundExample
 class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
   isolated
 
-  val mockAvalancheDal = mock[CachedDAL]
+  val mockResources = mock[ResourceService]
   val mockUserSession = mock[UserSession]
+  val mockAvalancheDal = mock[CachedDAL]
 
   def around[T: AsResult](t: => T): Result =
-    Injectors.user.doWith(mockUserSession) {
-      Injectors.dal.doWith(mockAvalancheDal) {
-        AsResult(t)
+    Injectors.resources.doWith(mockResources) {
+      Injectors.user.doWith(mockUserSession) {
+        Injectors.dal.doWith(mockAvalancheDal) {
+          AsResult(t)
+        }
       }
     }
 
   val adminTableUrl = "https://avyeyes.com/rest/admintable"
 
   "Admin table error handling" should {
-    "Returns UnauthorizedResponse if session is not authorized" withSFor(adminTableUrl) in {
+    "Returns UnauthorizedResponse if session is not authorized" withSFor adminTableUrl in {
       mockUserSession.isAuthorizedSession returns false
       val adminTable = new AdminTable
 
@@ -35,7 +38,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
       resp must beAnInstanceOf[UnauthorizedResponse]
     }
 
-    "Returns InternalServerErrorResponse if an error occurs" withSFor(adminTableUrl) in {
+    "Returns InternalServerErrorResponse if an error occurs" withSFor adminTableUrl in {
       mockUserSession.isAuthorizedSession returns true
       val adminTable = new AdminTable
 
@@ -64,7 +67,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
       "columns[0][name]" -> "CreateTime", "columns[3][name]" -> "Viewable",
       "search[value]" -> searchParam)
 
-    "Extract offset, limit, orderby, and search params from request" withSFor (adminTableUrl) in {
+    "Extract offset, limit, orderby, and search params from request" withSFor adminTableUrl in {
       val adminTable = new AdminTable
 
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)
@@ -83,7 +86,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
       adminQuery.submitterEmail mustEqual Some(s"$searchParam")
     }
 
-    "Construct a JSON response" withSFor (adminTableUrl) in {
+    "Construct a JSON response" withSFor adminTableUrl in {
       val adminTable = new AdminTable
 
       val req = addParamsToReq(openLiftReqBox(S.request), dataTablesParams)

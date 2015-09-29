@@ -14,7 +14,7 @@ class Admin extends Loggable {
   val userSession = Injectors.user.vend
   val R = Injectors.resources.vend
 
-  private val AccessDenied = R.getMessage("avyAdminLocalLoginAccessDenied").toString
+  private val AccessDenied = R.localizedString("msg.avyAdminLocalLoginAccessDenied")
   private val LocalAuthEmailHash = R.getProperty("localauth.email")
   private val LocalAuthPwHash = R.getProperty("localauth.pw")
   

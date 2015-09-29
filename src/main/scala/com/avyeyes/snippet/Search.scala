@@ -7,7 +7,6 @@ import com.avyeyes.model.enums._
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Converters._
-import com.avyeyes.util.JsDialog
 import net.liftweb.common.Loggable
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.Call
@@ -16,7 +15,8 @@ import net.liftweb.json.JsonAST.JArray
 import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils._
 
-class Search extends Loggable {
+class Search extends ModalDialogs with Loggable {
+  val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
 
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
@@ -48,9 +48,9 @@ class Search extends Loggable {
   def doSearch(): JsCmd = {
     val camAltitude = strToDblOrZero(camAlt).toInt
     if (camAltitude > CamAltitudeLimit) {
-      JsDialog.error("eyeTooHigh", CamAltitudeLimit)
+      errorDialog("eyeTooHigh", CamAltitudeLimit)
     } else if (Seq(latMax, latMin, lngMax, lngMin).exists(_.isEmpty)) {
-      JsDialog.error("horizonInView")
+      errorDialog("horizonInView")
     } else {
       val avyList = matchingAvalanchesInRange
       
@@ -60,9 +60,9 @@ class Search extends Loggable {
 
       if (avyList.size > 0) {
         Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResult))).cmd &
-        JsDialog.info("avySearchSuccess", avyList.size)
+        infoDialog("avySearchSuccess", avyList.size)
       } else {
-        JsDialog.info("avySearchZeroMatches")
+        infoDialog("avySearchZeroMatches")
       } 
     }
   }

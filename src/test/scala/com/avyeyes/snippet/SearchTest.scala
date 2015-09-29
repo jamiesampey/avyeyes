@@ -1,18 +1,33 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.data.AvalancheQuery
+import com.avyeyes.data.{AvalancheQuery, CachedDAL}
 import com.avyeyes.model.Coordinate
+import com.avyeyes.model.enums._
+import com.avyeyes.service.{Injectors, ResourceService}
 import com.avyeyes.test.Generators._
-
-import scala.xml.NodeSeq
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
 import com.avyeyes.util.Converters._
-import bootstrap.liftweb.Boot
-import com.avyeyes.model.enums._
+import org.specs2.execute.{AsResult, Result}
+import org.specs2.mock.Mockito
+import org.specs2.specification.AroundExample
 
-class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with TemplateReader {
-  "Snippet rendering" should {
+import scala.xml.NodeSeq
+
+class SearchTest extends WebSpec2 with AroundExample with Mockito with TemplateReader {
+  isolated
+
+  val mockResources = mock[ResourceService]
+  val mockAvalancheDal = mock[CachedDAL]
+
+  def around[T: AsResult](t: => T): Result =
+    Injectors.resources.doWith(mockResources) {
+      Injectors.dal.doWith(mockAvalancheDal) {
+        AsResult(t)
+      }
+    }
+
+  "Snippet rendering" >> {
     "Wire input fields via CSS selectors" withSFor "/" in {
 
       val search = newSearchWithTestData()
@@ -24,7 +39,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
 
       def assertInputValue(ns: NodeSeq, nodeType: String, cssSel: String, value: String) = {
         val n = (ns \\ "input" filter (node => (node\"@type").text == nodeType && (node\"@id").text == cssSel)).head
-        (n\"@value").text must_== value
+        (n\"@value").text mustEqual value
       }
       
       assertInputValue(renderedPage, HiddenInputType, "avySearchLatMax", search.latMax)
@@ -46,10 +61,11 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
     }
   }
   
-  "Main search method" should { 
-    isolated
-    
-    "Display 'eye too high' message if camera altitude is too high" withSFor "/" in {
+  "Main search method" >> {
+
+    "Display 'eye too high' message if camera altitude is too high" >> {
+      mockResources.localizedString("title.errorDialog") returns "Error"
+
       val search = new Search 
       search.camAlt = (CamAltitudeLimit + 1).toString
       val jsCmd = search.doSearch()
@@ -58,10 +74,10 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       jsCmd.toJsCmd must contain("Error")
     }
     
-    "Pass search criteria to DAO" withSFor "/" in {
+    "Pass search criteria to DAO" >> {
       mockAvalancheDal.getAvalanches(any[AvalancheQuery]) returns Nil
       
-      val queryArg =capture[AvalancheQuery]
+      val queryArg = capture[AvalancheQuery]
 
       val search = newSearchWithTestData()
       search.doSearch()
@@ -69,21 +85,21 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       there was one(mockAvalancheDal).getAvalanches(queryArg)
       val passedQuery = queryArg.value
       
-      passedQuery.geoBounds.get.latMax must_== strToDblOrZero(search.latMax)
-      passedQuery.geoBounds.get.latMin must_== strToDblOrZero(search.latMin)
-      passedQuery.geoBounds.get.lngMax must_== strToDblOrZero(search.lngMax)
-      passedQuery.geoBounds.get.lngMin must_== strToDblOrZero(search.lngMin)
-      passedQuery.fromDate.get must_== strToDate(search.fromDate)
-      passedQuery.toDate.get must_== strToDate(search.toDate)
-      passedQuery.avyType.get must_== AvalancheType.withCode(search.avyType)
-      passedQuery.trigger.get must_== AvalancheTrigger.withCode(search.avyTrigger)
-      passedQuery.rSize.get must_== strToDblOrZero(search.rSize)
-      passedQuery.dSize.get must_== strToDblOrZero(search.dSize)
-      passedQuery.numCaught.get must_== strToIntOrNegOne(search.numCaught)
-      passedQuery.numKilled.get must_== strToIntOrNegOne(search.numKilled)
+      passedQuery.geoBounds.get.latMax mustEqual strToDblOrZero(search.latMax)
+      passedQuery.geoBounds.get.latMin mustEqual strToDblOrZero(search.latMin)
+      passedQuery.geoBounds.get.lngMax mustEqual strToDblOrZero(search.lngMax)
+      passedQuery.geoBounds.get.lngMin mustEqual strToDblOrZero(search.lngMin)
+      passedQuery.fromDate.get mustEqual strToDate(search.fromDate)
+      passedQuery.toDate.get mustEqual strToDate(search.toDate)
+      passedQuery.avyType.get mustEqual AvalancheType.withCode(search.avyType)
+      passedQuery.trigger.get mustEqual AvalancheTrigger.withCode(search.avyTrigger)
+      passedQuery.rSize.get mustEqual strToDblOrZero(search.rSize)
+      passedQuery.dSize.get mustEqual strToDblOrZero(search.dSize)
+      passedQuery.numCaught.get mustEqual strToIntOrNegOne(search.numCaught)
+      passedQuery.numKilled.get mustEqual strToIntOrNegOne(search.numKilled)
     }
     
-    "Does not use haversine distance if cam tilt is less than cutoff" withSFor "/" in {
+    "Does not use haversine distance if cam tilt is less than cutoff" >> {
       val avalancheInRange = avalancheForTest.copy(viewable = true,
         location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
       
@@ -100,7 +116,7 @@ class SearchTest extends WebSpec2(Boot().boot _) with MockInjectors with Templat
       jsCmd.toJsCmd must contain(avalancheOutOfRange.extId)
     }
     
-    "Uses haversine distance if cam tilt is greater than cutoff" withSFor "/" in {
+    "Uses haversine distance if cam tilt is greater than cutoff" >> {
       val avalancheInRange = avalancheForTest.copy(viewable = true,
         location = Coordinate(-105.875046142935, 39.6634870900582, 2500))
 

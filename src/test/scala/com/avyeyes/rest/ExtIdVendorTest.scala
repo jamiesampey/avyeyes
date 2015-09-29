@@ -38,7 +38,7 @@ class ExtIdVendorTest extends WebSpec2 with AroundExample with Mockito {
       val returnedExtId = extractJsonStringField(resp, "extId")
      
       resp must beAnInstanceOf[JsonResponse]
-      isValidExtId(Some(returnedExtId)) must beTrue
+      isValidExtId(returnedExtId) must beTrue
     }
     
     "Return InternalServerErrorResponse (500) if an extId could not be reserved" withSFor "http://avyeyes.com/rest/reserveExtId" in {

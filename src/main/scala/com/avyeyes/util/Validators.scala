@@ -10,10 +10,9 @@ import scala.util.{Failure, Success, Try}
 
 object Validators {
 
-  def isValidExtId(extId: Option[String]): Boolean = extId match {
-    case None => false
-    case Some(s) if s.length != ExtIdLength => false
-    case Some(s) if s exists (c => !ExtIdChars.contains(c)) => false
+  def isValidExtId(extId: String): Boolean = extId match {
+    case str if str.length != ExtIdLength => false
+    case str if str exists(c => !ExtIdChars.contains(c)) => false
     case _ => true
   }
 

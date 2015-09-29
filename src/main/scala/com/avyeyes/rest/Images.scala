@@ -19,8 +19,8 @@ class Images extends RestHelper with Loggable {
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       if (dal.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
-        ResponseWithReason(BadResponse(), R.getMessage("rwAvyFormMaxImagesExceeded",
-          MaxImagesPerAvalanche).toString)
+        ResponseWithReason(BadResponse(), R.localizedString("msg.rwAvyFormMaxImagesExceeded",
+          MaxImagesPerAvalanche))
       } else {
         val fph = req.uploadedFiles(0)
         val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"

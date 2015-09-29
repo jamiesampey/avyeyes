@@ -1,14 +1,7 @@
 package com.avyeyes.util
 
-import com.avyeyes.service.{ResourceService, Injectors}
 import org.joda.time.DateTime
-import org.mockito.Matchers
-import org.specs2.execute.{Result, AsResult}
-import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import org.specs2.specification.AroundExample
-
-import scala.xml.Unparsed
 
 class ConvertersTest extends Specification {
 

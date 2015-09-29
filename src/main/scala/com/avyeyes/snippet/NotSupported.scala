@@ -8,7 +8,8 @@ class NotSupported {
   val R = Injectors.resources.vend
 
   def render = {
-    "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">{R.getMessage("browserNotSupported",
-      ChromeMinVersion, FirefoxMinVersion, SafariMinVersion, IeMinVersion)}</span>
+    "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">
+      {R.localizedStringAsXml("msg.browserNotSupported", ChromeMinVersion, FirefoxMinVersion, SafariMinVersion, IeMinVersion)}
+    </span>
   }
 }

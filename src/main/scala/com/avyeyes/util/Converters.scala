@@ -21,6 +21,6 @@ object Converters {
 	def strToIntOrNegOne(str: String): Int = asInt(str) openOr -1
 
 	def sizeToStr(size: Double): String =
-    if (size == 0) R.getMessage(UnknownEnumCode).toString
+    if (size == 0) R.localizedString(UnknownEnumCode)
     else size.toString
 }

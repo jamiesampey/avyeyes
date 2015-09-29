@@ -1,45 +1,57 @@
 package com.avyeyes.snippet
 
-import bootstrap.liftweb.Boot
+import com.avyeyes.data.CachedDAL
+import com.avyeyes.service.{Injectors, ResourceService}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
+import net.liftweb.common.{Empty, Full}
+import org.specs2.execute.{Result, AsResult}
+import org.specs2.mock.Mockito
+import org.specs2.specification.AroundExample
 
-class InitTest extends WebSpec2(Boot().boot _) with MockInjectors {
+class InitTest extends WebSpec2 with AroundExample with Mockito {
+  isolated
 
-  "Initial JsCmd" should {
-    isolated 
+  val mockResources = mock[ResourceService]
+  val mockAvalancheDal = mock[CachedDAL]
+
+  mockResources.getProperty("s3.imageBucket") returns "some-bucket"
+
+  def around[T: AsResult](t: => T): Result =
+    Injectors.resources.doWith(mockResources) {
+      Injectors.dal.doWith(mockAvalancheDal) {
+        AsResult(t)
+      }
+    }
+
+  "Initial JsCmd" >> {
     
-    val validExtId = "4jhu2ie9"
-
-    "Fly to an avalanche if passed a valid external ID" withSFor(s"http://avyeyes.com/$validExtId") in {
-      val initAvalanche = avalancheForTest.copy(extId = validExtId, viewable = true)
-      mockAvalancheDal.getAvalanche(any[String]) returns Some(initAvalanche)
+    "Fly to an avalanche if passed a valid external ID" withSFor "/" in {
+      val initAvalanche = avalancheForTest.copy(viewable = true)
+      mockAvalancheDal.getAvalanche(initAvalanche.extId) returns Some(initAvalanche)
 
       val init = new Init
-      init.render
-      val initJsCalls = init.initJsCalls().toJsCmd
+      val initJsCalls = init.initialJsCmds(Full(initAvalanche.extId)).toJsCmd
 
-      there was one(mockAvalancheDal).getAvalanche(validExtId)
+      there was one(mockAvalancheDal).getAvalanche(initAvalanche.extId)
       initJsCalls must contain("avyEyesView.addAvalancheAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
     
-    "Ignore an invalid external ID on the URL" withSFor("http://avyeyes.com/j4ek-d3s") in {
+    "Ignore an invalid external ID on the URL" withSFor "/" in {
       val init = new Init
-      init.render
-      val initJsCalls = init.initJsCalls().toJsCmd
+      val initJsCalls = init.initialJsCmds(Full("j4ek-d3s")).toJsCmd
 
-      there was no(mockAvalancheDal).getAvalanche(any[String])
+      there was no(mockAvalancheDal).getAvalanche(anyString)
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }
 
-    "Initialize the view without an initial avalanche" withSFor("http://avyeyes.com") in {
+    "Initialize the view without an initial avalanche" withSFor "/" in {
       val init = new Init
-      init.render
-      val initJsCalls = init.initJsCalls().toJsCmd
+      val initJsCalls = init.initialJsCmds(Empty).toJsCmd
 
-      there was no(mockAvalancheDal).getAvalanche(any[String])
+      there was no(mockAvalancheDal).getAvalanche(anyString)
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
       autocompleteInitCallCount(initJsCalls) mustEqual 8
     }

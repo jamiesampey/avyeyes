@@ -1,16 +1,37 @@
 package com.avyeyes.rest
 
-import bootstrap.liftweb.Boot
+import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.AvalancheImage
+import com.avyeyes.service.{Injectors, AmazonS3ImageService, ResourceService}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.mocks.MockHttpServletRequest
+import org.specs2.execute.{Result, AsResult}
+import org.specs2.mock.Mockito
+import org.specs2.specification.AroundExample
 
-class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
+class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   sequential
+
+  val mockResources = mock[ResourceService]
+  val mockAvalancheDal = mock[CachedDAL]
+  val mockS3 = mock[AmazonS3ImageService]
+
+  mockResources.getProperty("s3.imageBucket") returns "some-bucket"
+  mockResources.getProperty("s3.fullaccess.accessKeyId") returns "3490griow"
+  mockResources.getProperty("s3.fullaccess.secretAccessKey") returns "34ijgeij4"
+
+  def around[T: AsResult](t: => T): Result =
+    Injectors.resources.doWith(mockResources) {
+      Injectors.dal.doWith(mockAvalancheDal) {
+        Injectors.s3.doWith(mockS3) {
+          AsResult(t)
+        }
+      }
+    }
 
   val extId = "4jf93dkj"
   val goodImgFileName = "imgInDb"
@@ -23,7 +44,9 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
   mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
   mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns noImage
 
-  "Image Post request" should {
+  "Image Post request" >> {
+    isolated
+
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
     mockPostRequest.method = "POST"
   
@@ -59,13 +82,12 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
 
-      there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage]) // one interaction from the prev test
+      there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[ResponseWithReason]
-      resp.asInstanceOf[ResponseWithReason].reason must contain(MaxImagesPerAvalanche.toString)
     }
   }
   
-  "Image Delete request" should {
+  "Image Delete request" >> {
     val mockDeleteRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
     mockDeleteRequest.method = "DELETE"
 
@@ -80,7 +102,7 @@ class ImagesTest extends WebSpec2(Boot().boot _) with MockInjectors {
 
       val resp = openLiftRespBox(images(req)())
 
-      there was one(mockS3Service).deleteImage(s3ExtIdArg, s3FilenameArg)
+      there was one(mockS3).deleteImage(s3ExtIdArg, s3FilenameArg)
       there was one(mockAvalancheDal).deleteAvalancheImage(dalExtIdArg, dalFilenameArg)
       resp must beAnInstanceOf[OkResponse]
       s3ExtIdArg.value mustEqual extId

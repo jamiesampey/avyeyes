@@ -28,25 +28,21 @@ class ValidatorsTest extends Specification {
   }
 
   "External ID validation" >> {
-    "Return false for None" >> {
-      Validators.isValidExtId(None) must beFalse
-    }
-
     "Return false if ID length is wrong" >> {
       val shortExtId = RandomStringUtils.random(ExtIdLength-1, ExtIdChars)
       val longExtId = RandomStringUtils.random(ExtIdLength+1, ExtIdChars)
-      Validators.isValidExtId(Some(shortExtId)) must beFalse
-      Validators.isValidExtId(Some(longExtId)) must beFalse
+      Validators.isValidExtId(shortExtId) must beFalse
+      Validators.isValidExtId(longExtId) must beFalse
     }
 
     "Return false if ID contains a bad char" >> {
       val goodExtId = RandomStringUtils.random(ExtIdLength, ExtIdChars)
-      Validators.isValidExtId(Some(goodExtId.replace(goodExtId.charAt(4), '~'))) must beFalse
+      Validators.isValidExtId(goodExtId.replace(goodExtId.charAt(4), '~')) must beFalse
     }
 
     "Return true if ID is valid" >> {
       val goodExtId = RandomStringUtils.random(ExtIdLength, ExtIdChars)
-      Validators.isValidExtId(Some(goodExtId)) must beTrue
+      Validators.isValidExtId(goodExtId) must beTrue
     }
   }
 }

@@ -26,7 +26,7 @@ class ExternalIdServiceTest extends Specification with Mockito {
       dal.getAvalanche(any[String]) returns None
       val newExtId = extIdTester.reserveNewExtId
       
-      isValidExtId(Some(newExtId)) must beTrue
+      isValidExtId(newExtId) must beTrue
       extIdTester.reservationExists(newExtId) must beTrue
     }
     

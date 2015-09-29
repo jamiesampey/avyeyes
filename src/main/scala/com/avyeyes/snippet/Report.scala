@@ -9,7 +9,6 @@ import com.avyeyes.model.enums._
 import com.avyeyes.service.{ExternalIdService, Injectors}
 import com.avyeyes.util.Converters._
 import com.avyeyes.util.Validators._
-import com.avyeyes.util.JsDialog
 import net.liftweb.common.{Full, Loggable}
 import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.{Call, JsRaw}
@@ -18,17 +17,18 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
 import net.liftweb.util.Mailer._
-import net.liftweb.util.{Mailer, Props}
+import net.liftweb.util.Mailer
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.apache.commons.lang3.StringUtils._
 import org.joda.time.DateTime
 
 import scala.collection.mutable.ListBuffer
 
-class Report extends ExternalIdService with Mailer with Loggable {
+class Report extends ExternalIdService with ModalDialogs with Mailer with Loggable {
+  val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
-  val R = Injectors.resources.vend
+
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
@@ -85,7 +85,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
       var problemFieldJsonArray = Printer.compact(
         JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
       JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd &
-      JsDialog.error("rwAvyFormValidationError")
+      errorDialog("rwAvyFormValidationError")
     }
   }
 
@@ -107,7 +107,7 @@ class Report extends ExternalIdService with Mailer with Loggable {
             s3.denyPublicImageAccess(avalancheFromValues.extId)
           }
 
-          JsDialog.info("avyReportUpdateSuccess")
+          infoDialog("avyReportUpdateSuccess")
         }
         case None => {
           dal.insertAvalanche(avalancheFromValues)
@@ -115,13 +115,13 @@ class Report extends ExternalIdService with Mailer with Loggable {
 
           sendSubmissionNotifications(avalancheFromValues, submitterEmail)
 
-          JsDialog.info("avyReportInsertSuccess", s"${R.getAvalancheUrl(avalancheFromValues.extId)}")
+          infoDialog("avyReportInsertSuccess", s"${R.getAvalancheUrl(avalancheFromValues.extId)}")
         }
       }
     } catch {
       case e: Exception => {
         logger.error(s"Error saving avalanche $extId", e)
-        JsDialog.error("avyReportSaveError")
+        errorDialog("avyReportSaveError")
       }
     } finally {
       unreserveExtId(extId)
@@ -137,11 +137,11 @@ class Report extends ExternalIdService with Mailer with Loggable {
       s3.deleteAllImages(extIdToDelete)
 
       logger.info(s"Avalanche $extIdToDelete deleted")
-      JsDialog.info("avyReportDeleteSuccess")  
+      infoDialog("avyReportDeleteSuccess")
     } catch {
       case e: Exception => {
         logger.error(s"Error deleting avalanche $extIdToDelete", e)
-        JsDialog.error("avyReportDeleteError")
+        errorDialog("avyReportDeleteError")
       }
     }
   }
@@ -188,24 +188,25 @@ class Report extends ExternalIdService with Mailer with Loggable {
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val adminBody = R.getMessage("avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, R.getAvalancheUrl(a.extId))
-    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportSubmitEmailAdminSubject", submitterEmail).toString),
+    val adminBody = R.localizedStringAsXml("msg.avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, R.getAvalancheUrl(a.extId))
+
+    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailAdminSubject", submitterEmail)),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = R.getMessage("avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId))
-    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportSubmitEmailSubmitterSubject", a.extId).toString),
+    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId))
+    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailSubmitterSubject", a.extId)),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
   private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val submitterBody = R.getMessage("avyReportApproveEmailSubmitterBody", a.getTitle, R.getAvalancheUrl(a.extId))
-    sendMail(adminEmailFrom, Subject(R.getMessage("avyReportApproveEmailSubmitterSubject", a.extId).toString),
+    val submitterBody = R.localizedStringAsXml("msg.avyReportApproveEmailSubmitterBody", a.getTitle, R.getAvalancheUrl(a.extId))
+    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportApproveEmailSubmitterSubject", a.extId)),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
-  private def configureMailer() = {
+  private[snippet] def configureMailer() = {
     customProperties = Map (
       "mail.smtp.host" -> R.getProperty("mail.smtp.host"),
       "mail.smtp.port" -> R.getProperty("mail.smtp.port"),

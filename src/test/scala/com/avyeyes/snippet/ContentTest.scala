@@ -36,14 +36,14 @@ class ContentTest extends WebSpec2 with TemplateReader {
     }
     
     "Wire message fields" withSFor("/") in {
-      val P = Injectors.resources.vend
+      val R = Injectors.resources.vend
       val messages = renderedPage \\ "span" filter (node => (node\"@class").text == "avyMsg")
       
       for (message <- messages) {
         val id = (message\"@id").text
         id.length() must be_>(0)
         (message\"@class").text must_== "avyMsg"
-        message.text.trim must_== s"${P.getMessage(id)}".trim
+        message.text.trim must_== s"${R.localizedStringAsXml(s"msg.$id")}".trim
       }
       success
     }

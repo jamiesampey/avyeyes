@@ -26,11 +26,11 @@ class AvyDetails extends RestHelper with Loggable {
 
       avyJsonOption match {
         case Some(json) => {
-          logger.debug("Serving details for avy " + extId)
+          logger.debug(s"Serving details for avalanche $extId")
           JsonResponse(json)
         }
         case None => {
-          logger.warn("Avy details request failed. Could not serve details for avy " + extId)
+          logger.warn(s"Avy details request failed. Could not serve details for avalanche $extId")
           NotFoundResponse("Avalanche not found")
         }
       }
