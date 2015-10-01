@@ -1,7 +1,7 @@
 package bootstrap.liftweb
 
 import akka.actor.ActorSystem
-import com.avyeyes.data.DatabaseMaintenance
+import com.avyeyes.data._
 import com.avyeyes.rest._
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants._
@@ -10,7 +10,10 @@ import net.liftweb.http._
 import net.liftweb.sitemap._
 import net.liftweb.util.Vendor.valToVendor
 import omniauth.Omniauth
+import org.joda.time.{DateTime, Minutes}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 /**
  * Companion object for unit testing
@@ -73,16 +76,19 @@ class Boot extends Loggable {
     LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
     
     Omniauth.init // grabs omniauth.* settings from props file
-    
+
     if (!test) {
-      import actorSystem.dispatcher
-      import scala.concurrent.duration._
+      val dataMaintenanceActor = actorSystem.actorOf(akka.actor.Props(new DataMaintenance))
+      dataMaintenanceActor ! DataMaintenance.run
+
+      val startupTime = DateTime.now
+      val firstScheduledRun = startupTime.plusDays(1).withTime(2, 15, 0, 0)
 
       actorSystem.scheduler.schedule(
-        initialDelay = R.getProperty("db.maintenanceDelaySeconds").toInt seconds,
-        interval = R.getProperty("db.maintenanceIntervalHours").toInt hours,
-        receiver = actorSystem.actorOf(akka.actor.Props(new DatabaseMaintenance)),
-        message = DatabaseMaintenance.run)
+        initialDelay = Minutes.minutesBetween(startupTime, firstScheduledRun).getMinutes minutes,
+        interval = 24 hours,
+        receiver = dataMaintenanceActor,
+      message = DataMaintenance.run)
     }
   }
   

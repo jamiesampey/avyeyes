@@ -14,7 +14,7 @@ package object data {
     val driver: JdbcProfile
   }
 
-  val postgresDataSource = {
+  val PostgresDataSource = {
     val dataSource = new PGSimpleDataSource
     dataSource.setServerName(R.getProperty("db.host"))
     dataSource.setPortNumber(R.getIntProperty("db.port"))

@@ -11,11 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-object DatabaseMaintenance {
-  val run = "run"
-}
-
-class DatabaseMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSource = postgresDataSource)
+class DataMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSource = PostgresDataSource)
   extends DatabaseComponent with SlickColumnMappers with DriverComponent
   with Actor with ExternalIdService with Loggable {
 
@@ -25,19 +21,25 @@ class DatabaseMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSour
   val s3 = Injectors.s3.vend
 
   def receive = {
-    case DatabaseMaintenance.run => {
-      logger.info("Refreshing in-memory avalanche cache")
-      AllAvalanchesMap.clear
-      AllAvalanchesMap ++= Await.result(db.run(Avalanches.result), Duration.Inf).map(a =>
-        (a.extId, a.copy(comments = None)))
-      logger.info(s"Refreshed avalanche cache with ${AllAvalanchesMap.size} avalanches")
-
-      logger.info("Pruning orphan images")
-      val extIdsForPrune = Await.result(pruneImages, Duration.Inf)
-      extIdsForPrune.foreach(s3.deleteAllImages)
-      logger.info(s"Pruned orphan images from database and S3")
-    }
+    case DataMaintenance.run => performMaintenance
     case _ => logger.error("Received unknown message")
+  }
+
+  private def performMaintenance = {
+    logger.info("RUNNING DATA MAINTENANCE")
+
+    logger.info("Refreshing in-memory avalanche cache")
+    AllAvalanchesMap.clear
+    AllAvalanchesMap ++= Await.result(db.run(Avalanches.result), Duration.Inf).map(a =>
+      (a.extId, a.copy(comments = None)))
+    logger.info(s"Refreshed avalanche cache with ${AllAvalanchesMap.size} avalanches")
+
+    logger.info("Pruning orphan images")
+    val extIdsForPrune = Await.result(pruneImages, Duration.Inf)
+    extIdsForPrune.foreach(s3.deleteAllImages)
+    logger.info(s"Pruned orphan images from database and S3")
+
+    logger.info("DATA MAINTENANCE COMPLETE")
   }
 
   private def pruneImages: Future[Seq[String]] = {
@@ -55,5 +57,8 @@ class DatabaseMaintenance(val driver: JdbcProfile = PostgresDriver, ds: DataSour
       }
     }
   }
+}
 
+object DataMaintenance {
+  val run = "run"
 }
