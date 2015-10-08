@@ -141,6 +141,8 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
 
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
+
+    $("#cesiumContainer").css("cursor", "default");
 }
 
 AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
