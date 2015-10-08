@@ -39,8 +39,7 @@ class Boot extends Loggable {
     
     LiftRules.addToPackages("com.avyeyes")
     
-    val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
-    val appMenus: List[Menu] = Menu(Loc("home", IndexPath :: Nil, "Home")) :: 
+    val appMenus: List[Menu] = Menu(Loc("home", IndexPath :: Nil, "Home")) ::
       Menu(Loc("browserNotSupported", BrowserNotSupportedPath :: Nil, "Browser Not Supported")) :: 
       Menu(Loc("logIn", LoginPath :: Nil, "Log In")) :: Nil
     val menus = appMenus ::: Omniauth.sitemap
@@ -54,6 +53,8 @@ class Boot extends Loggable {
         case false => Empty
       }
     }
+
+    val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
 
     // external ID URL extraction
     LiftRules.statelessRewrite.prepend {

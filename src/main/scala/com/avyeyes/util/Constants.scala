@@ -4,7 +4,7 @@ object Constants {
   val IndexPath = "index"
   val BrowserNotSupportedPath = "whawha"
   val LoginPath = "whodat"
-    
+
   val ChromeMinVersion: Double = 35.0
   val FirefoxMinVersion: Double = 30.0
   val IeMinVersion: Double = 10.0
