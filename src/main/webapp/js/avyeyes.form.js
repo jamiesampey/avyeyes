@@ -44,15 +44,18 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
 	setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
 	$("#roAvyFormModeOfTravel").text(a.humanNumbers.modeOfTravel.label);
-	
-	if (a.comments.length > 0) {
+
+    var showComments = a.comments.length > 0;
+    var showImages = a.images.length > 0;
+
+	if (showComments) {
 		$("#roAvyFormCommentsRow").show();
 		$("#roAvyFormComments").val(a.comments);
         $("#roAvyFormCommentsLightboxDiv textarea").val(a.comments);
         $(".commentsFancybox").fancybox({padding: 0, openEffect: "fade", closeEffect: "fade"});
 	}
 
-	if (a.images.length > 0) {
+	if (showImages) {
 	    var s3Bucket = $("#s3ImageBucket").val();
 		$("#roAvyFormImageRow").show();
 
@@ -72,11 +75,17 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         collision: "fit"
     });
 
-    $("#roAvyFormDialog").dialog("open");
     $("#cesiumContainer").css("cursor", "default");
+    $("#roAvyFormDialog").dialog("open");
 
     FB.XFBML.parse(fbContainer[0]);
     twttr.widgets.load();
+
+    $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
+        if (showComments) height += $("#roAvyFormCommentsRow table").height() + 20;
+        if (showImages) height += $("#roAvyFormImageRow table").height() + 20;
+        return height;
+    });
 }
 
 AvyForm.prototype.hideReadOnlyForm = function() {
@@ -141,7 +150,6 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
 
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
-
     $("#cesiumContainer").css("cursor", "default");
 }
 

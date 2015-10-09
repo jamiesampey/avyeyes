@@ -10,8 +10,7 @@
 }
 
 #roAvyFormTable {
-    min-width: 540px;
-    max-width: 740px;
+    width: 740px;
     overflow-x: hidden;
 }
 
@@ -90,7 +89,6 @@
 
 #roAvyFormImageRow table {
     width: 100%;
-    max-width: 740px;
 }
 
 #roAvyFormImageDiv {
@@ -98,8 +96,7 @@
 }
 
 #roAvyFormImageList {
-    width: 100%;
-    max-width: 710px;
+    width: 740px;
 	max-height: 90px;
 	margin: 0px;
 	padding: 0px;
@@ -130,7 +127,6 @@
 
 #roAvyFormCommentsRow table {
     width: 100%;
-    max-width: 740px;
 }
 
 #roAvyFormCommentsHeaderWrapper img {

@@ -279,7 +279,7 @@ function wireLocationInputs(view) {
 
 function wireDialogs(view) {
 	$('#multiDialog').dialog({
-        minWidth: 500,
+        width: 500,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -298,9 +298,8 @@ function wireDialogs(view) {
 	});
 
 	$('#roAvyFormDialog').dialog({
-	    width: "auto",
-        minWidth: 560,
-        maxWidth: 760,
+	    width: 780,
+	    height: 350,
         autoOpen: false,
         modal: false,
         resizable: false,
@@ -310,9 +309,8 @@ function wireDialogs(view) {
 	});
 
 	$('#helpDialog').dialog({
-        minWidth: 750,
-        minHeight: 750,
-        maxHeight: 750,
+        width: 750,
+        height: 750,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -330,10 +328,8 @@ function wireDialogs(view) {
 
 
     $('#avyReportLocationDialog').dialog({
-        minWidth: 700,
-        maxWidth: 700,
-        minHeight: 500,
-        maxHeight: 500,
+        width: 700,
+        height: 500,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -364,8 +360,7 @@ function wireDialogs(view) {
     });
 
     $('#avyReportDrawingConfirmationDialog').dialog({
-        minWidth: 500,
-        maxWidth: 500,
+        width: 500,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -395,8 +390,8 @@ function wireDialogs(view) {
     });
 
     $('#rwAvyFormImageDialog').dialog({
-        minWidth: 750,
-        minHeight: 810,
+        width: 750,
+        height: 800,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -420,10 +415,8 @@ function wireDialogs(view) {
     });
 
     $('#rwAvyFormDialog').dialog({
-        minWidth: 750,
-        maxWidth: 750,
-        minHeight: 800,
-        maxHeight: 810,
+        width: 750,
+        height: 800,
         autoOpen: false,
         modal: true,
         resizable: false,
