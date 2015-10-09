@@ -257,7 +257,7 @@ function wireLocationInputs(view) {
     });
 
     var geocodeFlyToPitch = -70.0;
-    var geocodeFlyToRange = 6900.0;
+    var geocodeFlyToRange = 6700.0;
 
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {
