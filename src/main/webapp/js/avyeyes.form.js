@@ -77,13 +77,14 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     $("#cesiumContainer").css("cursor", "default");
     $("#roAvyFormDialog").dialog("open");
+    $("#roAvyFormDialog, .roAvyFormDialog").height(360);
 
     FB.XFBML.parse(fbContainer[0]);
     twttr.widgets.load();
 
     $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
-        if (showComments) height += $("#roAvyFormCommentsRow table").height() + 20;
-        if (showImages) height += $("#roAvyFormImageRow table").height() + 20;
+        if (showComments) height += 200;
+        if (showImages) height += 120;
         return height;
     });
 }

@@ -299,7 +299,7 @@ function wireDialogs(view) {
 
 	$('#roAvyFormDialog').dialog({
 	    width: 780,
-	    height: 350,
+	    height: 360,
         autoOpen: false,
         modal: false,
         resizable: false,
