@@ -53,6 +53,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 		$("#roAvyFormComments").val(a.comments);
         $("#roAvyFormCommentsLightboxDiv textarea").val(a.comments);
         $(".commentsFancybox").fancybox({padding: 0, openEffect: "fade", closeEffect: "fade"});
+	} else {
+	    $("#roAvyFormCommentsRow").hide();
 	}
 
 	if (showImages) {
@@ -66,6 +68,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 		});
 
         setImgFancyBox();
+	} else {
+	    $("#roAvyFormImageRow").hide();
 	}
 
 	$("#roAvyFormDialog").dialog("option", "position", {
@@ -77,7 +81,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     $("#cesiumContainer").css("cursor", "default");
     $("#roAvyFormDialog").dialog("open");
-    $("#roAvyFormDialog, .roAvyFormDialog").height(360);
+    $("#roAvyFormDialog, .roAvyFormDialog").height(280);
 
     FB.XFBML.parse(fbContainer[0]);
     twttr.widgets.load();

@@ -10,7 +10,7 @@
 }
 
 #roAvyFormTable {
-    width: 770px;
+    width: 100%;
     overflow-x: hidden;
 }
 
@@ -76,6 +76,8 @@
 }
 
 .roAvyFormFieldsSubTable {
+    font-size: .9em;
+    min-width: 200px;
 	padding: 5px;
     margin: 0px;
     border: 1px solid #7D7D7D;
@@ -149,13 +151,13 @@
 
 #roAvyFormCommentsLightboxDiv {
     display: none;
-    width: 700px;
+    width: 800px;
     height: 600px;
     overflow: hidden;
 }
 
 #roAvyFormCommentsLightboxDiv textarea {
-    width: 690px;
+    width: 790px;
     height: 590px;
     resize: none;
     border: 0px;

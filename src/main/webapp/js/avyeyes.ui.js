@@ -298,13 +298,13 @@ function wireDialogs(view) {
 	});
 
 	$('#roAvyFormDialog').dialog({
-	    width: 780,
-	    height: 360,
+	    width: 800,
+	    height: 280,
         autoOpen: false,
         modal: false,
         resizable: false,
         draggable: false,
-        closeOnEscape: false,
+        closeOnEscape: true,
         dialogClass: "roAvyFormDialog"
 	});
 

@@ -63,7 +63,7 @@
 
         <div id="roAvyFormDialog">
            <table id="roAvyFormTable">
-               <tr><td colspan="2">
+               <tr><td colspan="3">
                    <div id="roAvyFormTitleContainer">
                        <table id="roAvyFormTitleAndSubmitterTable">
                            <tr><td><span id="roAvyFormTitle"></span></td></tr>
@@ -80,9 +80,11 @@
                        </table>
                    </div>
                </td></tr>
-               <tr><td colspan="2"><hr/></td></tr>
+
+               <tr><td colspan="3"><hr/></td></tr>
+
                <tr><td>
-               <table id="roAvyFormLeftColumnTable"><tr><td>
+                   <table><tr><td>
                   <table class="roAvyFormSubTable">
                       <tr><td class="roAvyFormSectionHeader">
                           <span id="roAvyFormSlopeCharacter" class="avyHeader"></span>
@@ -108,9 +110,29 @@
                            </table>
                        </td></tr>
                   </table>
-               </td></tr>
-               <tr><td>
+                  </td></tr>
+                  <tr><td>
                   <table class="roAvyFormSubTable">
+                      <tr><td class="roAvyFormSectionHeader">
+                          <span id="roAvyFormConditions" class="avyHeader"></span>
+                      </td></tr>
+                      <tr><td>
+                          <table class="roAvyFormFieldsSubTable">
+                              <tr>
+                                  <td><label for="roAvyFormSky"></label></td>
+                                  <td><span id="roAvyFormSky"></span></td>
+                              </tr>
+                              <tr>
+                                  <td><label for="roAvyFormPrecip"></label></td>
+                                  <td><span id="roAvyFormPrecip"></span></td>
+                              </tr>
+                          </table>
+                      </td></tr>
+                  </table>
+                  </td></tr>
+                  </table>
+               </td><td>
+                   <table class="roAvyFormSubTable">
                        <tr><td class="roAvyFormSectionHeader">
                            <span id="roAvyFormAvyCharacter" class="avyHeader"></span>
                        </td></tr>
@@ -139,65 +161,44 @@
                        </table>
                        </td></tr>
                  </table>
-	          </td></tr></table>
-	          
-            </td><td>
-               
-               <table id="roAvyFormRightColumnTable"><tr><td> 
-	                 <table class="roAvyFormSubTable">
-	                        <tr><td class="roAvyFormSectionHeader">
-	                            <span id="roAvyFormConditions" class="avyHeader"></span>
-	                        </td></tr>
-	                        <tr><td>
-	                       <table class="roAvyFormFieldsSubTable">
-	                           <tr>
-	                              <td><label for="roAvyFormSky"></label></td>
-	                              <td><span id="roAvyFormSky"></span></td>
-	                           </tr>
-	                           <tr>
-	                              <td><label for="roAvyFormPrecip"></label></td>
-	                              <td><span id="roAvyFormPrecip"></span></td>
-	                           </tr>
-	                       </table>
-	                  </td></tr>
-	                  </table>
-	            </td></tr><tr><td>
-                     <table class="roAvyFormSubTable">
-                        <tr><td class="roAvyFormSectionHeader">
-                            <span id="roAvyFormHumanNumbers" class="avyHeader"></span>
-                        </td></tr>
-                        <tr><td>
-                           <table class="roAvyFormFieldsSubTable">
-	                           <tr>
-	                              <td><label for="roAvyFormNumCaught"></label></td>
-	                              <td><span id="roAvyFormNumCaught"></span></td>
-	                           </tr>
-	                           <tr>
-	                              <td><label for="roAvyFormNumPartiallyBuried"></label></td>
-	                              <td><span id="roAvyFormNumPartiallyBuried"></span></td>
-	                           </tr>
-	                           <tr>
-                                  <td><label for="roAvyFormNumFullyBuried"></label></td>
-                                  <td><span id="roAvyFormNumFullyBuried"></span></td>
-                               </tr>
-                               <tr>
-                                  <td><label for="roAvyFormNumInjured"></label></td>
-                                  <td><span id="roAvyFormNumInjured"></span></td>
-                               </tr>
-                               <tr>
-                                  <td><label for="roAvyFormNumKilled"></label></td>
-                                  <td><span id="roAvyFormNumKilled"></span></td>
-                               </tr>
-                               <tr>
-                                  <td><label for="roAvyFormModeOfTravel"></label></td>
-                                  <td><span id="roAvyFormModeOfTravel"></span></td>
-                               </tr>
-                            </table>
-                    </td></tr></table>
-                  </td></tr></table>
+               </td><td>
+                  <table class="roAvyFormSubTable">
+                    <tr><td class="roAvyFormSectionHeader">
+                        <span id="roAvyFormHumanNumbers" class="avyHeader"></span>
+                    </td></tr>
+                    <tr><td>
+                       <table class="roAvyFormFieldsSubTable">
+                           <tr>
+                              <td><label for="roAvyFormNumCaught"></label></td>
+                              <td><span id="roAvyFormNumCaught"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="roAvyFormNumPartiallyBuried"></label></td>
+                              <td><span id="roAvyFormNumPartiallyBuried"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="roAvyFormNumFullyBuried"></label></td>
+                              <td><span id="roAvyFormNumFullyBuried"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="roAvyFormNumInjured"></label></td>
+                              <td><span id="roAvyFormNumInjured"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="roAvyFormNumKilled"></label></td>
+                              <td><span id="roAvyFormNumKilled"></span></td>
+                           </tr>
+                           <tr>
+                              <td><label for="roAvyFormModeOfTravel"></label></td>
+                              <td><span id="roAvyFormModeOfTravel"></span></td>
+                           </tr>
+                        </table>
+                    </td></tr>
+                 </table>
+
                </td></tr>
 
-               <tr id="roAvyFormImageRow"><td colspan="2">
+               <tr id="roAvyFormImageRow"><td colspan="3">
                    <table class="roAvyFormSubTable">
                        <tr><td class="roAvyFormSectionHeader">
                            <span id="roAvyFormImagesHeader" class="avyHeader"></span>
@@ -210,7 +211,7 @@
                    </table>
                </td></tr>
 
-               <tr id="roAvyFormCommentsRow"><td colspan="2">
+               <tr id="roAvyFormCommentsRow"><td colspan="3">
                    <table id="roAvyFormCommentsTable" class="roAvyFormSubTable">
                        <tr><td class="roAvyFormSectionHeader">
                            <div id="roAvyFormCommentsHeaderWrapper"><span id="roAvyFormCommentsHeader" class="avyHeader">
