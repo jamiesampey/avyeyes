@@ -172,6 +172,11 @@
 /* --------------------------- BEGIN READ-WRITE FORM ------------------------ */
 /* -------------------------------------------------------------------------- */
 
+#rwAvyFormDialog {
+    overflow-x: hidden;
+	overflow-y: auto;
+}
+
 .rwAvyFormDialog {
 	padding: 0px;
     margin: 0px;
@@ -189,7 +194,7 @@
 	border: 3px solid #7D7D7D;
 	color: white;
 	width: 650px;
-	height: 500px;
+	height: 370px;
 }
 
 #rwAvyFormImageDropZoneMsgDiv {

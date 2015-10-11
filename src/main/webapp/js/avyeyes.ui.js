@@ -391,7 +391,7 @@ function wireDialogs(view) {
 
     $('#rwAvyFormImageDialog').dialog({
         width: 750,
-        height: 800,
+        height: 620,
         autoOpen: false,
         modal: true,
         resizable: false,
@@ -416,7 +416,7 @@ function wireDialogs(view) {
 
     $('#rwAvyFormDialog').dialog({
         width: 750,
-        height: 800,
+        height: 620,
         autoOpen: false,
         modal: true,
         resizable: false,
