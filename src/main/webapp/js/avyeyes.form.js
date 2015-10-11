@@ -88,7 +88,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
         if (showComments) height += 200;
-        if (showImages) height += 120;
+        if (showImages) height += 130;
         return height;
     });
 }

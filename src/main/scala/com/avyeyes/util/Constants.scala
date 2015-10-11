@@ -17,7 +17,7 @@ object Constants {
 	val AvyDistRangeMiles = 5.0
 
 	val MaxImageSize: Int = 10000000
-  val MaxImagesPerAvalanche = 10
+  val MaxImagesPerAvalanche = 12
 
 	val ExtIdUrlParam = "extId"
 	val ExtIdLength = 8
