@@ -216,7 +216,6 @@ textarea:focus, input:focus {
 #helpDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;
-	overflow: hidden;
 }
 
 #helpDialog .ui-tabs-anchor {
@@ -236,7 +235,7 @@ textarea:focus, input:focus {
 }
 
 #searchHelpDiv, #reportHelpDiv {
-    max-height: 610px;
+    height: 475px;
 	overflow-y: auto;
 }
 

@@ -58,6 +58,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	}
 
 	if (showImages) {
+	    $("#roAvyFormImageList").empty();
 	    var s3Bucket = $("#s3ImageBucket").val();
 		$("#roAvyFormImageRow").show();
 
@@ -88,7 +89,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
         if (showComments) height += 200;
-        if (showImages) height += 130;
+        if (showImages) height += 135;
         return height;
     });
 }
@@ -171,7 +172,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
         dropZone:$('#rwAvyFormImageDropZone'),
         add: function (e, data) {
             appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
-            data.submit();
+            setTimeout(function() { data.submit(); }, 500);
         },
         done: function(e, data) {
             var newImageCellId = getFileBaseName(data.result.filename);
@@ -207,7 +208,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, filename) {
         + "src='/images/img-delete-icon.png' /></div>");
 
     $('#' + imageDeleteIconId).click(function() {
-        if (confirm('Delete image ' + filename + ' from avalanche ' + extId + '?')) {
+        if (confirm('Are you sure you want to delete image ' + filename + ' from avalanche ' + extId + '?')) {
             $.ajax({
                 url: getImageRestUrl(extId, filename),
                 type: 'DELETE',

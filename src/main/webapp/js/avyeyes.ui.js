@@ -310,7 +310,7 @@ function wireDialogs(view) {
 
 	$('#helpDialog').dialog({
         width: 750,
-        height: 750,
+        height: 620,
         autoOpen: false,
         modal: true,
         resizable: false,
