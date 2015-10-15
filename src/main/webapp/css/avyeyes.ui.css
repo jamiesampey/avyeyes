@@ -184,19 +184,16 @@ textarea:focus, input:focus {
   background-color: black;
 }
 
-#loadingMsgDiv {
+#loadingSplash {
     position: absolute;
     margin: auto;
     height: 200px;
     top: -100px; left: 0; bottom: 0; right: 0;
     text-align: center;
-    font: normal 2.5em times,serif !important;
 }
 
-#loadingMsgDiv p {
-    color: white;
-    margin-top: 0px;
-    margin-bottom: 0px;
+#loadingSplashTitle {
+    padding: 10px 0px 0px 10px;
 }
 
 #multiDialog {
@@ -262,7 +259,6 @@ textarea:focus, input:focus {
 }
 
 #aeTitleContainer img {
-    width: inherit;
     padding: 0px;
     margin: 0px 0px 0px 25px;
 }
