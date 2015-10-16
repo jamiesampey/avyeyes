@@ -48,17 +48,20 @@ function wireMainMenu(view) {
         }, 4000);
     });
 
-    $('#searchMenuItem').click(function(){
+    $('#searchMenuItem').parent("li").click(function(e){
+        e.preventDefault();
         view.resetView();
     });
 
-    $('#reportMenuItem').click(function(){
+    $('#reportMenuItem').parent("li").click(function(e){
+        e.preventDefault();
         view.resetView();
         hideSearchDiv();
         view.doReport();
     });
 
-    $('#aboutMenuItem').click(function(){
+    $('#aboutMenuItem').parent("li").click(function(e){
+        e.preventDefault();
         view.showHelp(2);
     });
 
