@@ -96,6 +96,15 @@ function wireAutoCompletes(view) {
 	});
 
 	$('#rwAvyFormDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#rwAvyFormDialog');
+   	$('#rwAvyFormDialog .avyAutoComplete').focus(function() {
+   	    var containerScrollTop = $("#rwAvyFormDialog").scrollTop();
+   	    var dropDownBottom = $(this).position().top + containerScrollTop + 300;
+   	    var containerBottom = containerScrollTop + $("#rwAvyFormDialog").height();
+   	    var unseenDropdown = dropDownBottom - containerBottom;
+   	    if (unseenDropdown > 0) {
+   	        $('#rwAvyFormDialog').scrollTop(containerScrollTop + unseenDropdown);
+   	    }
+    });
 
 	$('.avyAutoComplete').change(function() {
 		$(this).val('');
