@@ -197,35 +197,12 @@ function wireButtons(view) {
 	$('.avyButton').button();
 
 	$('#avySearchButton').click(function() {
-	    var getCoordsAtWindowPos = function(x, y) {
-            var ray = view.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
-            var cart3 = view.cesiumViewer.scene.globe.pick(ray, view.cesiumViewer.scene);
-            if (cart3) {
-                return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
-            }
-        }
+        var boundingBox = view.getBoundingBox();
 
-        var upperLeftCorner = getCoordsAtWindowPos(0, 0);
-        var lowerLeftCorner = getCoordsAtWindowPos(0, view.cesiumViewer.canvas.clientHeight);
-        var upperRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.clientWidth, 0);
-        var lowerRightCorner = getCoordsAtWindowPos(view.cesiumViewer.canvas.clientWidth, view.cesiumViewer.canvas.clientHeight);
-
-        if (Cesium.defined(upperLeftCorner) && Cesium.defined(lowerLeftCorner)
-            && Cesium.defined(upperRightCorner) && Cesium.defined(lowerRightCorner)) {
-            $("#avySearchLatMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.latitude,
-                lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
-            $("#avySearchLatMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.latitude,
-                lowerLeftCorner.latitude, upperRightCorner.latitude, lowerRightCorner.latitude)));
-            $("#avySearchLngMax").val(Cesium.Math.toDegrees(Math.max(upperLeftCorner.longitude,
-                lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
-            $("#avySearchLngMin").val(Cesium.Math.toDegrees(Math.min(upperLeftCorner.longitude,
-                lowerLeftCorner.longitude, upperRightCorner.longitude, lowerRightCorner.longitude)));
-        } else {
-            $("#avySearchLatMax").val('');
-            $("#avySearchLatMin").val('');
-            $("#avySearchLngMax").val('');
-            $("#avySearchLngMin").val('');
-        }
+        $("#avySearchLatMax").val(boundingBox[0]);
+        $("#avySearchLatMin").val(boundingBox[1]);
+        $("#avySearchLngMax").val(boundingBox[2]);
+        $("#avySearchLngMin").val(boundingBox[3]);
 
         $("#avySearchCameraAlt").val(view.cesiumViewer.camera.positionCartographic.height);
         $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch));
@@ -263,7 +240,10 @@ function wireLocationInputs(view) {
                         };
                     }));
                 }
-            });
+            },
+            function(error) {
+                console.log("Failed to geo-complete location field. Error: " + error.textStatus)
+            })
         },
         minLength: 5
     });

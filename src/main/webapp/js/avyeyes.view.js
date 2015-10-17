@@ -145,7 +145,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
     geocodeAttempts++;
 
-    var geocodeFailure = function() {
+    var geocodeFailure = function(error) {
         geocodeAttempts = 0
         this.showModalDialog("Error", "Failed to geocode '" + address + "'");
     }.bind(this);
@@ -173,24 +173,22 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
 AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
     if (!address) return;
-    var camPos = this.cesiumViewer.camera.positionCartographic;
+    var boundingBox = this.getBoundingBox();
 
     $.ajax({
         url: "//dev.virtualearth.net/REST/v1/Locations",
         dataType: "jsonp",
         data: {
             key: this.bingKey,
-            query: address,
-            spatialFilter: "nearby(" + Cesium.Math.toDegrees(camPos.latitude) + ","
-                + Cesium.Math.toDegrees(camPos.longitude) + ",2000)"
+            q: address,
+            umv: boundingBox[1] + "," + boundingBox[3] + "," + boundingBox[0] + "," + boundingBox[2]
         },
         jsonp: "jsonp",
         success: function(data) {
             onSuccess(data);
         },
         error: function(e) {
-            console.log("Error from geocode ajax call: " + e.textStatus);
-            onFailure();
+            onFailure(e);
         }
     });
 }
@@ -274,6 +272,32 @@ AvyEyesView.prototype.camDisplayAlt = function() {
     } else {
         return meters + " meters";
     }
+}
+
+AvyEyesView.prototype.getBoundingBox = function() {
+    var getCoordsAtWindowPos = function(x, y) {
+        var ray = this.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
+        var cart3 = this.cesiumViewer.scene.globe.pick(ray, this.cesiumViewer.scene);
+        if (cart3) {
+            return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
+        }
+    }.bind(this);
+
+    var UL = getCoordsAtWindowPos(0, 0);
+    var UR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, 0);
+    var LR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, this.cesiumViewer.canvas.clientHeight);
+    var LL = getCoordsAtWindowPos(0, this.cesiumViewer.canvas.clientHeight);
+
+    if (!UL || !UR || !LR || !LL) {
+        return ['','','',''];
+    }
+
+    return [
+        Cesium.Math.toDegrees(Math.max(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+        Cesium.Math.toDegrees(Math.min(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+        Cesium.Math.toDegrees(Math.max(UL.longitude, UR.longitude, LR.longitude, LL.longitude)),
+        Cesium.Math.toDegrees(Math.min(UL.longitude, UR.longitude, LR.longitude, LL.longitude))
+    ];
 }
 
 function toHeadingPitchRange(heading, pitch, range) {
