@@ -236,7 +236,7 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
 }
 
 AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range) {
-	var camHeight = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.cesiumViewer.camera.position).height
+	var camHeight = this.cesiumViewer.camera.positionCartographic.height
 
 	var flightDurationSeconds = 3.0;
 

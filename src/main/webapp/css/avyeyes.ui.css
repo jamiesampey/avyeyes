@@ -203,11 +203,20 @@ textarea:focus, input:focus {
 #eyeAltContainer {
 	position: absolute;
     top: 8px;
-    right: 50px;
+    right: 85px;
     z-index: 100;
     padding: 6px;
     background: rgba(0, 0, 0, 0.5);
     color: white;
+    border-radius: 5px;
+}
+
+#northButton {
+	position: absolute;
+	top: 5px;
+    right: 43px;
+    z-index: 100;
+    background-image: url("/images/north-button.png");
 }
 
 #helpDialog {
@@ -373,10 +382,6 @@ textarea:focus, input:focus {
     margin-bottom: 15px;
 }
 
-#avyReportStartDrawingButton {
-    background: #458B00;
-}
-
 .avyReportDrawDialog {
 	margin: 5px 5px 0px 5px;
 	padding: 0px;
@@ -386,10 +391,11 @@ textarea:focus, input:focus {
     position: absolute;
     visibility: hidden;
     top: 5px;
-    right: 200px;
+    right: 250px;
     z-index: 10;
 }
 
-#avyReportDrawButton {
+#avyReportStartDrawingButton {
+    background: #458B00;
     font-size: 1.1em;
 }

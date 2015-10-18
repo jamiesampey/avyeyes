@@ -1,6 +1,9 @@
 define(['lib/jquery-ui'], function() {
 
-function AvyEyesUI(){};
+var GEOCODE_FLYTO_PITCH = -70.0;
+var GEOCODE_FLYTO_RANGE = 6700.0;
+    
+function AvyEyesUI() {};
 
 AvyEyesUI.prototype.wire = function(view, callback) {
     wireMainMenu(view);
@@ -194,6 +197,14 @@ function wireSpinners() {
 }
 
 function wireButtons(view) {
+    $("#northButton").click(function() {
+        var camPos = view.cesiumViewer.camera.positionCartographic;
+        var pitch = camPos.height < 10000 ? GEOCODE_FLYTO_PITCH : -89.9;
+        var range = camPos.height < 10000 ? GEOCODE_FLYTO_RANGE : camPos.height;
+        var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
+        view.flyTo(target, 0.0, pitch, range);
+    });
+
 	$('.avyButton').button();
 
 	$('#avySearchButton').click(function() {
@@ -248,9 +259,6 @@ function wireLocationInputs(view) {
         minLength: 5
     });
 
-    var geocodeFlyToPitch = -70.0;
-    var geocodeFlyToRange = 6700.0;
-
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {
             var dialogParent = $(this).parents('.ui-dialog-content');
@@ -258,14 +266,14 @@ function wireLocationInputs(view) {
                 dialogParent.dialog('close');
             }
             if ($(this).val()) {
-                view.geocodeAndFlyTo($(this).val(), geocodeFlyToPitch, geocodeFlyToRange);
+                view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
             }
             event.preventDefault();
         }
     });
 
 	$('#avySearchLocation').blur(function(event) {
-        view.geocodeAndFlyTo($(this).val(), geocodeFlyToPitch, geocodeFlyToRange);
+        view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
 	});
 }
 
