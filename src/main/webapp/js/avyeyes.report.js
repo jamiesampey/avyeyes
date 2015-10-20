@@ -46,7 +46,7 @@ AvyReport.prototype.startDrawing = function() {
             $('#cesiumContainer').css('cursor','default');
 
             // max coord density of 3 meters per coord
-            while (totalLineDistance / cartesian3Array.length < 3) {
+            while (totalLineDistance / cartesian3Array.length < 2) {
                 for (var i = 1; i < cartesian3Array.length; i += 2) {
                     cartesian3Array.splice(i, 1);
                 }
