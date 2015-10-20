@@ -1,7 +1,7 @@
 define(['lib/jquery-ui'], function() {
 
 var GEOCODE_FLYTO_PITCH = -70.0;
-var GEOCODE_FLYTO_RANGE = 6700.0;
+var GEOCODE_FLYTO_RANGE = 6500.0;
     
 function AvyEyesUI() {};
 
