@@ -223,7 +223,9 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 
   var flyToWesternUS = function() {
     this.ui.raiseTheCurtain();
-    this.flyTo(this.targetEntityFromCoords(-112, 44, false), heading, pitch, range).then(function() {
+    var westernUSTarget = this.targetEntityFromCoords(-112, 44, false);
+    this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
+        this.cesiumViewer.entities.remove(westernUSTarget);
         this.ui.showSearchDiv();
     }.bind(this));
   }.bind(this)
@@ -243,18 +245,19 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
 }
 
 AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
-    var imageUri;
-    if (showPin) {
-        imageUri = "/images/flyto-pin.png";
-    } else {
-        imageUri = "/images/flyto-1px.png";
-    }
-
     var alt = this.cesiumViewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
-	return this.cesiumViewer.entities.add({
-    	position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-    	billboard: {image: imageUri}
-    });
+
+    if (showPin) {
+        return this.cesiumViewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
+            billboard: {image: "/images/flyto-pin.png"}
+        });
+    } else {
+        return this.cesiumViewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
+            point: {color: Cesium.Color.WHITE.withAlpha(0.0)}
+        });
+    }
 }
 
 AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range) {
