@@ -224,9 +224,10 @@ function wireButtons(view) {
 	});
 
 	$('#avySearchResetButton').click(function() {
-        $('#aeSearchControlContainer').find('input:text').val('');
-        $('#aeSearchControlContainer').find('.avyRDSliderValue').val('0');
-        $('#aeSearchControlContainer').find('.avyRDSlider').slider('value', 0);
+        $('#avySearchDetailsTable').find('input:text').val('');
+        $('#avySearchDetailsTable').find('input:hidden').val('');
+        $('#avySearchDetailsTable').find('.avyRDSliderValue').val('0');
+        $('#avySearchDetailsTable').find('.avyRDSlider').slider('value', 0);
     });
 
     $('#avyReportStartDrawingButton').click(function() {
