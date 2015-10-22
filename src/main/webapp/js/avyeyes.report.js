@@ -30,9 +30,7 @@ AvyReport.prototype.startDrawing = function() {
     $('#cesiumContainer').css('cursor','crosshair');
 
     var isDrawing = false;
-    var lastRecordTime = 0;
     var cartesian3Array = [];
-    var totalLineDistance = 0;
     var drawingPolyline;
     var drawingPolylineColor = Cesium.Color.RED;
     var drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
@@ -44,13 +42,6 @@ AvyReport.prototype.startDrawing = function() {
             this.view.setAvySelectEventHandler();
 
             $('#cesiumContainer').css('cursor','default');
-
-            // max coord density of 3 meters per coord
-            while (totalLineDistance / cartesian3Array.length < 2) {
-                for (var i = 1; i < cartesian3Array.length; i += 2) {
-                    cartesian3Array.splice(i, 1);
-                }
-            }
 
             this.drawingPolygon = this.view.cesiumViewer.entities.add({
                 polygon: {
@@ -83,18 +74,17 @@ AvyReport.prototype.startDrawing = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     this.view.cesiumEventHandler.setInputAction(function(movement) {
-        if (!isDrawing || Cesium.getTimestamp() - lastRecordTime < 10) return; // min 10ms between record points
+        if (!isDrawing) return;
 
         var ray = this.view.cesiumViewer.camera.getPickRay(movement.endPosition);
         var cartesianPos = this.view.cesiumViewer.scene.globe.pick(ray, this.view.cesiumViewer.scene);
-        var lastCoordIdx = -1;
+
         if (Cesium.defined(cartesianPos)) {
-            lastCoordIdx = cartesian3Array.length - 1;
-            if (lastCoordIdx >= 0) {
-                totalLineDistance += Cesium.Cartesian3.distance(cartesian3Array[lastCoordIdx], cartesianPos);
+            if (cartesian3Array.length == 0) {
+                cartesian3Array.push(cartesianPos);
+            } else if (Cesium.Cartesian3.distance(cartesian3Array[cartesian3Array.length - 1], cartesianPos) > 4) {
+                cartesian3Array.push(cartesianPos);
             }
-            cartesian3Array.push(cartesianPos);
-            lastRecordTime = Cesium.getTimestamp();
         }
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 }
