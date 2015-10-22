@@ -118,7 +118,10 @@ AvyEyesView.prototype.cancelReport = function() {
 
 AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
-	this.cesiumViewer.scene.primitives.removeAll();
+	if (!this.cesiumViewer.scene.groundPrimitives.isDestroyed()) {
+	    this.cesiumViewer.scene.groundPrimitives.removeAll();
+	}
+
 	this.cancelReport();
 	this.ui.showSearchDiv();
 }
@@ -147,7 +150,7 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
         })
     });
 
-    this.cesiumViewer.scene.primitives.add(new Cesium.GroundPrimitive({
+    this.cesiumViewer.scene.groundPrimitives.add(new Cesium.GroundPrimitive({
         geometryInstance: avalancheGeometry
     }));
 }

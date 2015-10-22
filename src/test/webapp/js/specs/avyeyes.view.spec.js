@@ -15,7 +15,10 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     cesiumViewerStub.returns({
         scene: {
             canvas: {},
-            primitives: {
+            groundPrimitives: {
+                isDestroyed: function() {
+                    return false;
+                },
                 removeAll: removeAllPrimitivesSpy
             }
         },
