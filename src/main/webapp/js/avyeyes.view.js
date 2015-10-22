@@ -38,7 +38,22 @@ function AvyEyesView() {
     this.form = new AvyForm();
     this.ui = new AvyEyesUI();
     this.ui.wire(this, function() {
-        $('#avyInitLiftCallback').submit();
+        var tryLiftCallback = function() {
+             if (typeof window.liftAjax != "undefined") {
+                 $("#avyInitLiftCallback").submit();
+                 return true;
+             } else {
+                 return false;
+             }
+        }
+
+        if (!tryLiftCallback()) {
+            var liftCheckInterval;
+            liftCheckInterval = setInterval(function() {
+                console.log("liftAjax is undefined. Trying again...");
+                if (tryLiftCallback()) clearInterval(liftCheckInterval);
+            }, 500);
+        }
     });
 }
 
