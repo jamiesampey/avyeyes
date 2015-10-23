@@ -5,27 +5,51 @@ create table "avalanche" (
     "viewable" boolean not null,
     "submitter_email" text not null,
     "submitter_experience" text not null,
-    "location" text not null,
-    "area_name" text not null,
+    "longitude" double precision not null,
+    "latitude" double precision not null,
+    "elevation" integer not null,
     "date" date not null,
-    "scene" text not null,
-    "slope" text not null,
-    "classification" text not null,
-    "human_numbers" text not null,
+    "area_name" text not null,
+    "aspect" text not null,
+    "angle" text not null,
     "perimeter" text not null,
     "comments" text
-  );
+);
+
+create table "avalanche_scene" (
+    "avalanche" text not null,
+    "sky_coverage" text not null,
+    "precipitation" text not null
+);
+
+create table "avalanche_classification" (
+    "avalanche" text not null,
+    "avalanche_type" text not null,
+    "trigger" text not null,
+    "interface" text not null,
+    "r_size" double precision not null,
+    "d_size" double precision not null
+);
+
+create table "avalanche_humans" (
+    "avalanche" text not null,
+    "mode_of_travel" text not null,
+    "caught" integer not null,
+    "partially_buried" integer not null,
+    "fully_buried" integer not null,
+    "injured" integer not null,
+    "killed" integer not null
+);
 
 create table "avalanche_image" (
     "create_time" timestamp not null,
-    "avalanche_external_id" text not null,
+    "avalanche" text not null,
     "filename" text not null,
     "original_filename" text not null,
     "mime_type" text not null,
     "size" integer not null,
-    primary key(avalanche_external_id, filename)
+    primary key(avalanche, filename)
 );
-create index "idx76e30961" on "avalanche_image" ("avalanche_external_id");
 
 create table "app_user" (
     "create_time" timestamp not null,
@@ -42,12 +66,18 @@ create table "app_user_role_assignment" (
     primary key(app_user, app_role)
 );
 
--- foreign key constraints :
-alter table "avalanche" add constraint "avalancheFK1" foreign key ("submitter_email") references "app_user"("email");
-alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK2" foreign key ("app_user") references "app_user"("email");
-alter table "app_user_role_assignment" add constraint "app_user_role_assignmentFK3" foreign key ("app_role") references "app_role"("name");
+-- indices
+create index "avalanche_image_extid_idx" on "avalanche_image" ("avalanche");
 
--- initial inserts :
+-- foreign key constraints
+alter table "avalanche" add constraint "avalanche_submitter_email_fk" foreign key ("submitter_email") references "app_user"("email");
+alter table "avalanche_scene" add constraint "avalanche_scene_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
+alter table "avalanche_classification" add constraint "avalanche_classification_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
+alter table "avalanche_humans" add constraint "avalanche_humans_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignment_user_fk" foreign key ("app_user") references "app_user"("email");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignment_role_fk" foreign key ("app_role") references "app_role"("name");
+
+-- initial inserts
 insert into app_user (create_time, email) values (now(), 'jamie.sampey@gmail.com');
 insert into app_user (create_time, email) values (now(), 'avyeyes@gmail.com');
 insert into app_role (name) values ('site_owner');
