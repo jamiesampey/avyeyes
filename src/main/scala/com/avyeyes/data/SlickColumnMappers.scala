@@ -21,24 +21,9 @@ private[data] trait SlickColumnMappers { this: DriverComponent =>
     str => stringToCoordinate(str)
   )
 
-  implicit def sceneMapper = MappedColumnType.base[Scene, String](
-    scene => scene.toString,
-    str => stringToScene(str)
-  )
-
-  implicit def slopeMapper = MappedColumnType.base[Slope, String](
-    slope => slope.toString,
-    str => stringToSlope(str)
-  )
-
-  implicit def classificationMapper = MappedColumnType.base[Classification, String](
-    classification => classification.toString,
-    str => stringToClassification(str)
-  )
-
-  implicit def humanNumbersMapper = MappedColumnType.base[HumanNumbers, String](
-    humanNumbers => humanNumbers.toString,
-    str => stringToHumanNumbers(str)
+  implicit def coordinateSeqMapper = MappedColumnType.base[Seq[Coordinate], String](
+    seq => seq.mkString(" ").trim,
+    str => str.split(" ").map(stringToCoordinate)
   )
 
   private def enumNameMapper(enum: AutocompleteEnum) = MappedColumnType.base[enum.Value, String](

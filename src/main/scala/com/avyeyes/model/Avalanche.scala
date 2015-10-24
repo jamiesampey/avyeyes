@@ -18,7 +18,7 @@ case class Avalanche(
   slope: Slope,
   classification: Classification,
   humanNumbers: HumanNumbers,
-  perimeter: List[Coordinate],
+  perimeter: Seq[Coordinate],
   comments: Option[String]) {
 
   def getTitle() = s"${dateToStr(date)}: ${areaName}"

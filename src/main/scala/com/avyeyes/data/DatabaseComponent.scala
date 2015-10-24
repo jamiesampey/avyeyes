@@ -1,66 +1,98 @@
 package com.avyeyes.data
 
 import com.avyeyes.model._
-import com.avyeyes.model.StringSerializers._
-import com.avyeyes.model.enums.ExperienceLevel._
+import com.avyeyes.model.enums.Aspect.Aspect
+import com.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
+import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
+import com.avyeyes.model.enums.AvalancheType.AvalancheType
+import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
+import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
+import com.avyeyes.model.enums.Precipitation.Precipitation
+import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
 import org.joda.time.DateTime
+
+private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Aspect, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
+private[data] case class AvalancheSceneTableRow(avalanche: String, skyCoverage: SkyCoverage, precipitation: Precipitation)
+private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, interface: AvalancheInterface, rSize: Double, dSize: Double)
+private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverComponent =>
 
   import driver.api._
 
-  val Avalanches = TableQuery[AvalancheTable]
-  val AvalancheImages = TableQuery[AvalancheImageTable]
-  val Users = TableQuery[UsersTable]
-  val UserRoles = TableQuery[UserRoleAssignmentTable]
+  val AvalancheRows = TableQuery[AvalancheTable]
+  val AvalancheSceneRows = TableQuery[AvalancheSceneTable]
+  val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
+  val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
 
-  class AvalancheTable(tag: Tag) extends Table[Avalanche](tag, "avalanche") {
+  val AvalancheImageRows = TableQuery[AvalancheImageTable]
+
+  val UserRows = TableQuery[UsersTable]
+  val UserRoleRows = TableQuery[UserRoleAssignmentTable]
+
+  class AvalancheTable(tag: Tag) extends Table[AvalancheTableRow](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
     def extId = column[String]("external_id", O.PrimaryKey)
     def viewable = column[Boolean]("viewable")
     def submitterEmail = column[String]("submitter_email")
     def submitterExp = column[ExperienceLevel]("submitter_experience")
-    def location = column[Coordinate]("location")
     def areaName = column[String]("area_name")
     def date = column[DateTime]("date")
-    def scene = column[Scene]("scene")
-    def slope = column[Slope]("slope")
-    def classification = column[Classification]("classification")
-    def humanNumbers = column[HumanNumbers]("human_numbers")
-    def perimeter = column[String]("perimeter")
+    def longitude = column[Double]("longitude")
+    def latitude = column[Double]("latitude")
+    def elevation = column[Int]("elevation")
+    def aspect = column[Aspect]("aspect")
+    def angle = column[Int]("slope")
+    def perimeter = column[Seq[Coordinate]]("perimeter")
     def comments = column[Option[String]]("comments")
 
-    def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, location,
-      areaName, date, scene, slope, classification, humanNumbers, perimeter, comments) <> (modelApply.tupled, modelUnapply)
+    def * = (createTime, updateTime, extId, viewable, submitterEmail, submitterExp, areaName, date,
+      longitude, latitude, elevation, aspect, angle, perimeter, comments) <> (AvalancheTableRow.tupled, AvalancheTableRow.unapply)
 
-    private val modelApply = (createTime: DateTime, updateTime: DateTime, extId: String,
-                              viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel,
-                              location: Coordinate, areaName: String, date: DateTime,
-                              scene: Scene, slope: Slope, classification: Classification,
-                              humanNumbers: HumanNumbers, perimeter: String, comments: Option[String]) =>
-      Avalanche(
-        createTime = createTime,
-        updateTime = updateTime,
-        extId = extId,
-        viewable = viewable,
-        submitterEmail = submitterEmail,
-        submitterExp = submitterExp,
-        location = location,
-        date = date,
-        areaName = areaName,
-        scene = scene,
-        slope = slope,
-        classification = classification,
-        humanNumbers = humanNumbers,
-        perimeter = perimeter.split(" ").toList.map(stringToCoordinate),
-        comments = comments
-      )
+  }
 
-    private val modelUnapply = (a: Avalanche) => Some(
-      (a.createTime, a.updateTime, a.extId, a.viewable, a.submitterEmail, a.submitterExp, a.location,
-        a.areaName, a.date, a.scene, a.slope, a.classification, a.humanNumbers,
-        a.perimeter.map(_.toString).mkString(" ").trim, a.comments))
+  class AvalancheSceneTable(tag: Tag) extends Table[AvalancheSceneTableRow](tag, "avalanche_scene") {
+    def avalanche = column[String]("avalanche")
+    def skyCoverage = column[SkyCoverage]("sky_coverage")
+    def precipitation = column[Precipitation]("precipitation")
+
+    def * = (avalanche, skyCoverage, precipitation) <> (AvalancheSceneTableRow.tupled, AvalancheSceneTableRow.unapply)
+
+    def idx = index("avalanche_scene_extid_idx", avalanche, unique = true)
+    def avalancheFk = foreignKey("avalanche_scene_extid_fk", avalanche, AvalancheRows)(a => 
+      a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
+  }
+
+  class AvalancheClassificationTable(tag: Tag) extends Table[AvalancheClassificationTableRow](tag, "avalanche_classification") {
+    def avalanche = column[String]("avalanche")
+    def avalancheType = column[AvalancheType]("avalanche_type")
+    def trigger = column[AvalancheTrigger]("trigger")
+    def interface = column[AvalancheInterface]("interface")
+    def rSize = column[Double]("r_size")
+    def dSize = column[Double]("d_size")
+
+    def * = (avalanche, avalancheType, trigger, interface, rSize, dSize) <> (AvalancheClassificationTableRow.tupled, AvalancheClassificationTableRow.unapply)
+
+    def idx = index("avalanche_classification_extid_idx", avalanche, unique = true)
+    def avalancheFk = foreignKey("avalanche_classification_extid_fk", avalanche, AvalancheRows)(a =>
+      a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
+  }
+
+  class AvalancheHumanTable(tag: Tag) extends Table[AvalancheHumanTableRow](tag, "avalanche_human") {
+    def avalanche = column[String]("avalanche")
+    def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
+    def caught = column[Int]("caught")
+    def partiallyBuried = column[Int]("partially_buried")
+    def fullyBuried = column[Int]("fully_buried")
+    def injured = column[Int]("injured")
+    def killed = column[Int]("killed")
+
+    def * = (avalanche, modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed) <> (AvalancheHumanTableRow.tupled, AvalancheHumanTableRow.unapply)
+
+    def idx = index("avalanche_humans_extid_idx", avalanche, unique = true)
+    def avalancheFk = foreignKey("avalanche_human_extid_fk", avalanche, AvalancheRows)(a =>
+      a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
   }
 
   class AvalancheImageTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
@@ -70,9 +102,10 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
-    def pk = primaryKey("avalanhce_image_pk", (avyExtId, filename))
 
     def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
+
+    def pk = primaryKey("avalanhce_image_pk", (avyExtId, filename))
   }
 
   class UsersTable(tag: Tag) extends Table[User](tag, "app_user") {

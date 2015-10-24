@@ -11,6 +11,8 @@ trait CachedDAL {
 
   def getAvalanche(extId: String): Option[Avalanche]
 
+  def getAvalanchesFromDisk: Seq[Avalanche]
+
   def getAvalancheFromDisk(extId: String): Option[Avalanche]
 
   def getAvalanches(query: AvalancheQuery): List[Avalanche]
@@ -32,4 +34,6 @@ trait CachedDAL {
   def getAvalancheImages(avyExtId: String): List[AvalancheImage]
   
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit
+
+  def getOrphanAvalancheImages: Seq[AvalancheImage]
 }
