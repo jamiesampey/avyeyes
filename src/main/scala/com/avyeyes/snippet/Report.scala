@@ -181,7 +181,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
         killed = strToIntOrNegOne(killed)
       ),
       comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
-      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toList.map(stringToCoordinate) else List.empty
+      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toSeq.map(stringToCoordinate) else Seq.empty
     )
   }
 
