@@ -9,9 +9,11 @@ scalaVersion := "2.11.7"
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
   "-encoding", "UTF-8",
-  "-unchecked", 
+  "-unchecked",
   "-deprecation"
 )
+
+resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
 
 libraryDependencies ++= {
   val liftVersion = "2.6.2"
@@ -41,7 +43,6 @@ webappPostProcess := { origWebapp =>
   if (mode.value == "prod") {
     import sbt.IO._
     println("r.js -o build.js".!!)
-
     val optimizedWebapp = new File("target/webapp-rjs")
     assertDirectory(optimizedWebapp)
     delete(origWebapp)
