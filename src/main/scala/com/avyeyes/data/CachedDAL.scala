@@ -35,5 +35,5 @@ trait CachedDAL {
   
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit
 
-  def getOrphanAvalancheImages: Seq[AvalancheImage]
+  def deleteOrphanAvalancheImages: Seq[String]
 }

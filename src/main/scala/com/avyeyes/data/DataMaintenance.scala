@@ -1,10 +1,10 @@
 package com.avyeyes.data
 
 import akka.actor._
-import com.avyeyes.service.{Injectors, ExternalIdService}
+import com.avyeyes.service.Injectors
 import net.liftweb.common.Loggable
 
-class DataMaintenance extends Actor with ExternalIdService with Loggable {
+class DataMaintenance extends Actor with Loggable {
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
 
@@ -23,21 +23,11 @@ class DataMaintenance extends Actor with ExternalIdService with Loggable {
     logger.info(s"Refreshed avalanche cache with ${AllAvalanchesMap.size} avalanches")
 
     logger.info("Pruning orphan images")
-    val prunedExtIds = pruneImages
+    val prunedExtIds = dal.deleteOrphanAvalancheImages
     prunedExtIds.foreach(s3.deleteAllImages)
     logger.info(s"Pruned orphan images from database and S3")
 
     logger.info("DATA MAINTENANCE COMPLETE")
-  }
-
-  private def pruneImages: Seq[String] = {
-    val orphanImages = dal.getOrphanAvalancheImages.filter(img => !reservationExists(img.avalanche))
-    val unfinishedReports = orphanImages.map(_.avalanche).distinct
-
-    logger.info(s"Pruning ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
-    orphanImages.foreach(img => dal.deleteAvalancheImage(img.avalanche, img.filename))
-
-    unfinishedReports
   }
 }
 

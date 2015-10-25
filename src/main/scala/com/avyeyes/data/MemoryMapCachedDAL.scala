@@ -175,9 +175,18 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     ), Duration.Inf)
   }
 
-  def getOrphanAvalancheImages = Await.result(db.run(
-      AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
-    ), Duration.Inf)
+  def deleteOrphanAvalancheImages: Seq[String] = {
+    val orphanImages = Await.result(db.run(
+      AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result),
+      Duration.Inf).filterNot(img => reservationExists(img.avalanche))
+
+    val unfinishedReports = orphanImages.map(_.avalanche).distinct
+    logger.info(s"Pruning ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
+
+    Await.result(db.run(AvalancheImageRows.filter(img => img.avalanche inSetBind unfinishedReports).delete), Duration.Inf)
+
+    unfinishedReports
+  }
 
   private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {
     case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
@@ -187,13 +196,4 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   private def setAvalancheUpdateTimeAction(extId: String) = AvalancheRows.filter(
     _.extId === extId).map(_.updateTime).update(DateTime.now)
 
-  def createSchema = (
-    AvalancheRows.schema ++
-    AvalancheSceneRows.schema ++
-    AvalancheClassificationRows.schema ++
-    AvalancheHumanRows.schema ++
-    AvalancheImageRows.schema ++
-    UserRows.schema ++
-    UserRoleRows.schema
-  ).create
 }

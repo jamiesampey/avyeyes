@@ -30,6 +30,16 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
   val UserRows = TableQuery[UsersTable]
   val UserRoleRows = TableQuery[UserRoleAssignmentTable]
 
+  def createSchema = (
+    AvalancheRows.schema ++
+    AvalancheSceneRows.schema ++
+    AvalancheClassificationRows.schema ++
+    AvalancheHumanRows.schema ++
+    AvalancheImageRows.schema ++
+    UserRows.schema ++
+    UserRoleRows.schema
+  ).create
+
   class AvalancheTable(tag: Tag) extends Table[AvalancheTableRow](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
