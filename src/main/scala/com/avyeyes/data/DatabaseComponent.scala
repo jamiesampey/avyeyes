@@ -43,7 +43,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
     def latitude = column[Double]("latitude")
     def elevation = column[Int]("elevation")
     def aspect = column[Aspect]("aspect")
-    def angle = column[Int]("slope")
+    def angle = column[Int]("angle")
     def perimeter = column[Seq[Coordinate]]("perimeter")
     def comments = column[Option[String]]("comments")
 
@@ -97,15 +97,15 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
 
   class AvalancheImageTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
     def createTime = column[DateTime]("create_time")
-    def avyExtId = column[String]("avalanche_external_id")
+    def avalanche = column[String]("avalanche")
     def filename = column[String]("filename")
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
 
-    def * = (createTime, avyExtId, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
+    def * = (createTime, avalanche, filename, origFilename, mimeType, size) <> (AvalancheImage.tupled, AvalancheImage.unapply)
 
-    def pk = primaryKey("avalanhce_image_pk", (avyExtId, filename))
+    def pk = primaryKey("avalanche_image_pk", (avalanche, filename))
   }
 
   class UsersTable(tag: Tag) extends Table[User](tag, "app_user") {

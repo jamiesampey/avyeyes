@@ -126,7 +126,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
 
     Await.result(db.run(
-      AvalancheImageRows.filter(_.avyExtId === extId).delete >>
+      AvalancheImageRows.filter(_.avalanche === extId).delete >>
       AvalancheRows.filter(_.extId === extId).delete
     ), Duration.Inf)
     avalancheMap -= extId
@@ -135,12 +135,12 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   def insertAvalancheImage(img: AvalancheImage) = {
     Await.result(db.run(
       (AvalancheImageRows += img) >>
-      setAvalancheUpdateTimeAction(img.avyExtId)
+      setAvalancheUpdateTimeAction(img.avalanche)
     ), Duration.Inf)
   }
 
   def countAvalancheImages(extId: String): Int = Await.result(db.run(
-    AvalancheImageRows.filter(_.avyExtId === extId).length.result), Duration.Inf)
+    AvalancheImageRows.filter(_.avalanche === extId).length.result), Duration.Inf)
 
   def getAvalancheImage(avyExtId: String, baseFilename: String): Option[AvalancheImage] = {
     Await.result(db.run(imageQuery(avyExtId, Some(baseFilename)).result.headOption), Duration.Inf)
@@ -151,10 +151,10 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {
-      case true => AvalancheImageRows.filter(_.avyExtId === avyExtId)
+      case true => AvalancheImageRows.filter(_.avalanche === avyExtId)
       case false => for {
-        img <- AvalancheImageRows if img.avyExtId === avyExtId
-        a <- AvalancheRows if a.extId === img.avyExtId && a.viewable === true
+        img <- AvalancheImageRows if img.avalanche === avyExtId
+        a <- AvalancheRows if a.extId === img.avalanche && a.viewable === true
       } yield img
     }
 
@@ -170,13 +170,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
       
     Await.result(db.run(
-      AvalancheImageRows.filter(img => img.avyExtId === avyExtId && img.filename === filename).delete >>
+      AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
       setAvalancheUpdateTimeAction(avyExtId)
     ), Duration.Inf)
   }
 
   def getOrphanAvalancheImages = Await.result(db.run(
-      AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avyExtId).exists).result
+      AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
     ), Duration.Inf)
 
   private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {

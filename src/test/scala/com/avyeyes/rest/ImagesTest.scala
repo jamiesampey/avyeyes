@@ -36,7 +36,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   val extId = "4jf93dkj"
   val goodImgFileName = "imgInDb"
   val goodImgMimeType = "image/jpeg"
-  val avalancheImage = avalancheImageForTest.copy(avyExtId = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
+  val avalancheImage = avalancheImageForTest.copy(avalanche = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
   
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None

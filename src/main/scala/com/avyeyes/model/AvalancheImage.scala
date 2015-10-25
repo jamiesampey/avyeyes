@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 
 case class AvalancheImage(
   createTime: DateTime = DateTime.now,
-  avyExtId: String = "",
+  avalanche: String = "",
   filename: String = "",
   origFilename: String = "",
   mimeType: String = "",

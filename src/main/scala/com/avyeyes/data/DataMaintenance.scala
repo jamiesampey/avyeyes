@@ -31,11 +31,11 @@ class DataMaintenance extends Actor with ExternalIdService with Loggable {
   }
 
   private def pruneImages: Seq[String] = {
-    val orphanImages = dal.getOrphanAvalancheImages.filter(img => !reservationExists(img.avyExtId))
-    val unfinishedReports = orphanImages.map(_.avyExtId).distinct
+    val orphanImages = dal.getOrphanAvalancheImages.filter(img => !reservationExists(img.avalanche))
+    val unfinishedReports = orphanImages.map(_.avalanche).distinct
 
     logger.info(s"Pruning ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
-    orphanImages.foreach(img => dal.deleteAvalancheImage(img.avyExtId, img.filename))
+    orphanImages.foreach(img => dal.deleteAvalancheImage(img.avalanche, img.filename))
 
     unfinishedReports
   }

@@ -85,14 +85,14 @@ object Generators {
 
   def genAvalancheImage = for {
     createTime <- genDateTime()
-    avyExtId <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
+    avalanche <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
     filename <- Gen.const(s"${UUID.randomUUID().toString}.jpg")
     origFilename <- Gen.alphaStr
     mimeType <- Gen.alphaStr
     size <- Gen.choose(1000, MaxImageSize)
   } yield AvalancheImage(
     createTime = createTime,
-    avyExtId = avyExtId,
+    avalanche = avalanche,
     filename = filename,
     origFilename = origFilename,
     mimeType = mimeType,

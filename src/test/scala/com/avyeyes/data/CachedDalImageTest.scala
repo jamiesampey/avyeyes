@@ -13,8 +13,8 @@ class CachedDalImageTest extends Specification with InMemoryDB {
   "Avalanche Images" >> {
     val nonExistentAvalancheExtId = "594jk3i3"
     
-    val img1 = avalancheImageForTest.copy(avyExtId = testAvalanche.extId)
-    val img2 = avalancheImageForTest.copy(avyExtId = nonExistentAvalancheExtId)
+    val img1 = avalancheImageForTest.copy(avalanche = testAvalanche.extId)
+    val img2 = avalancheImageForTest.copy(avalanche = nonExistentAvalancheExtId)
   
     "Image insert and select works" >> {
       mockUserSession.isAuthorizedSession() returns true
@@ -23,7 +23,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1)
       val returnedImage = dal.getAvalancheImage(testAvalanche.extId, img1.filename).get
       
-      returnedImage.avyExtId mustEqual testAvalanche.extId
+      returnedImage.avalanche mustEqual testAvalanche.extId
       returnedImage.filename mustEqual img1.filename
       returnedImage.mimeType mustEqual img1.mimeType
     }
@@ -69,9 +69,9 @@ class CachedDalImageTest extends Specification with InMemoryDB {
 
       dal.insertAvalancheImage(img1)
       dal.insertAvalancheImage(img2)
-      dal.insertAvalancheImage(avalancheImageForTest.copy(avyExtId = img1.avyExtId))
-      dal.countAvalancheImages(img1.avyExtId) mustEqual 2
-      dal.countAvalancheImages(img2.avyExtId) mustEqual 1
+      dal.insertAvalancheImage(avalancheImageForTest.copy(avalanche = img1.avalanche))
+      dal.countAvalancheImages(img1.avalanche) mustEqual 2
+      dal.countAvalancheImages(img2.avalanche) mustEqual 1
     }
 
   }
