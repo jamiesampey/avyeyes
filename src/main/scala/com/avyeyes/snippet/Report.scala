@@ -153,27 +153,27 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       extId = extId,
       viewable = viewable,
       submitterEmail = submitterEmail,
-      submitterExp = ExperienceLevel.withCode(submitterExp),
+      submitterExp = ExperienceLevel.fromCode(submitterExp),
       location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
       scene = Scene(
-        SkyCoverage.withCode(sky),
-        Precipitation.withCode(precip)),
+        SkyCoverage.fromCode(sky),
+        Precipitation.fromCode(precip)),
       slope = Slope(
-        Aspect.withCode(aspect),
+        Aspect.fromCode(aspect),
         strToIntOrNegOne(angle),
         strToIntOrNegOne(elevation)
       ),
       classification = Classification(
-        avyType = AvalancheType.withCode(avyType),
-        trigger = AvalancheTrigger.withCode(avyTrigger),
-        interface = AvalancheInterface.withCode(avyInterface),
+        avyType = AvalancheType.fromCode(avyType),
+        trigger = AvalancheTrigger.fromCode(avyTrigger),
+        interface = AvalancheInterface.fromCode(avyInterface),
         rSize = strToDblOrZero(rSize),
         dSize = strToDblOrZero(dSize)
       ),
       humanNumbers = HumanNumbers(
-        modeOfTravel = ModeOfTravel.withCode(modeOfTravel),
+        modeOfTravel = ModeOfTravel.fromCode(modeOfTravel),
         caught = strToIntOrNegOne(caught),
         partiallyBuried = strToIntOrNegOne(partiallyBuried),
         fullyBuried = strToIntOrNegOne(fullyBuried),

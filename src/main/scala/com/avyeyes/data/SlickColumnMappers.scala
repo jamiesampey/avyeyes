@@ -27,8 +27,8 @@ private[data] trait SlickColumnMappers { this: DriverComponent =>
   )
 
   private def enumNameMapper(enum: AutocompleteEnum) = MappedColumnType.base[enum.Value, String](
-    enumValue => enumValueToCode(enumValue),
-    str => enum.withCode(str)
+    enumValue => enum.toCode(enumValue),
+    str => enum.fromCode(str)
   )
 
   implicit def aspectMapper = enumNameMapper(Aspect)

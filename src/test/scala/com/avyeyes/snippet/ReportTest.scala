@@ -176,22 +176,22 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       passedAvalanche.extId mustEqual report.extId
       passedAvalanche.viewable must beFalse
       passedAvalanche.submitterEmail mustEqual report.submitterEmail
-      passedAvalanche.submitterExp mustEqual ExperienceLevel.withCode(report.submitterExp)
+      passedAvalanche.submitterExp mustEqual ExperienceLevel.fromCode(report.submitterExp)
       passedAvalanche.location.longitude mustEqual strToDblOrZero(report.lng)
       passedAvalanche.location.latitude mustEqual strToDblOrZero(report.lat)
       passedAvalanche.areaName mustEqual report.areaName
       passedAvalanche.date mustEqual strToDate(report.dateStr)
-      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.withCode(report.sky)
-      passedAvalanche.scene.precipitation mustEqual Precipitation.withCode(report.precip)
-      passedAvalanche.classification.avyType mustEqual AvalancheType.withCode(report.avyType)
-      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.withCode(report.avyTrigger)
-      passedAvalanche.classification.interface mustEqual AvalancheInterface.withCode(report.avyInterface)
+      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.fromCode(report.sky)
+      passedAvalanche.scene.precipitation mustEqual Precipitation.fromCode(report.precip)
+      passedAvalanche.classification.avyType mustEqual AvalancheType.fromCode(report.avyType)
+      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.fromCode(report.avyTrigger)
+      passedAvalanche.classification.interface mustEqual AvalancheInterface.fromCode(report.avyInterface)
       passedAvalanche.humanNumbers.caught mustEqual strToIntOrNegOne(report.caught)
       passedAvalanche.humanNumbers.partiallyBuried mustEqual strToIntOrNegOne(report.partiallyBuried)
       passedAvalanche.humanNumbers.fullyBuried mustEqual strToIntOrNegOne(report.fullyBuried)
       passedAvalanche.humanNumbers.injured mustEqual strToIntOrNegOne(report.injured)
       passedAvalanche.humanNumbers.killed mustEqual strToIntOrNegOne(report.killed)
-      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.withCode(report.modeOfTravel)
+      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.fromCode(report.modeOfTravel)
       passedAvalanche.comments.getOrElse("") mustEqual report.comments
       passedAvalanche.perimeter mustEqual report.coordStr.trim.split(" ").toList.map(stringToCoordinate)
     }

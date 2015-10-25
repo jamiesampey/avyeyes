@@ -1,12 +1,6 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.enums._
-
 object StringSerializers {
-
-  implicit def enumValueToCode(enumValue: AutocompleteEnum#Value): String = {
-    enumValue.toString.split('.')(1)
-  }
 
   implicit def stringToCoordinate(str: String): Coordinate = {
     val arr = str.split(',')
