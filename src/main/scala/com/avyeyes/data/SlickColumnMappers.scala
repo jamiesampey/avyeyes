@@ -1,8 +1,6 @@
 package com.avyeyes.data
 
 import java.sql.Timestamp
-
-import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
@@ -18,12 +16,12 @@ private[data] trait SlickColumnMappers { this: DriverComponent =>
 
   implicit def coordinateMapper = MappedColumnType.base[Coordinate, String](
     coord => coord.toString,
-    str => stringToCoordinate(str)
+    str => Coordinate.fromString(str)
   )
 
   implicit def coordinateSeqMapper = MappedColumnType.base[Seq[Coordinate], String](
     seq => seq.mkString(" ").trim,
-    str => str.split(" ").map(stringToCoordinate)
+    str => str.split(" ").map(Coordinate.fromString)
   )
 
   private def enumNameMapper(enum: AutocompleteEnum) = MappedColumnType.base[enum.Value, String](

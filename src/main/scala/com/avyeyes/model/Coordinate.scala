@@ -16,3 +16,10 @@ case class Coordinate(longitude: Double,
     3959.0 * c    // earth radius in miles * c
   }
 }
+
+object Coordinate {
+  def fromString(str: String): Coordinate = {
+    val arr = str.split(',')
+    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble.toInt)
+  }
+}

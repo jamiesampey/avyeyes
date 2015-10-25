@@ -1,8 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.CachedDAL
-import com.avyeyes.model.Avalanche
-import com.avyeyes.model.StringSerializers._
+import com.avyeyes.model.{Coordinate, Avalanche}
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{AmazonS3ImageService, Injectors, ResourceService}
 import com.avyeyes.test.Generators._
@@ -193,7 +192,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       passedAvalanche.humanNumbers.killed mustEqual strToIntOrNegOne(report.killed)
       passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.fromCode(report.modeOfTravel)
       passedAvalanche.comments.getOrElse("") mustEqual report.comments
-      passedAvalanche.perimeter mustEqual report.coordStr.trim.split(" ").toList.map(stringToCoordinate)
+      passedAvalanche.perimeter mustEqual report.coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     }
     
     "Handles an insertion success correctly" >> {

@@ -2,8 +2,6 @@ package com.avyeyes.snippet
 
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
-
-import com.avyeyes.model.StringSerializers._
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{ExternalIdService, Injectors}
@@ -181,7 +179,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
         killed = strToIntOrNegOne(killed)
       ),
       comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
-      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toSeq.map(stringToCoordinate) else Seq.empty
+      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toSeq.map(Coordinate.fromString) else Seq.empty
     )
   }
 
