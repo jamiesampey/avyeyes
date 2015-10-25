@@ -61,7 +61,7 @@ object Generators {
       slope <- genSlope
       classification <- genClassification
       humanNumbers <- genHumanNumbers
-      perimeter <- Gen.listOf(genCoordinate)
+      perimeter <- Gen.nonEmptyListOf(genCoordinate)
       comments <- Gen.option(Gen.alphaStr)
     } yield Avalanche(
       createTime = createTime,
@@ -74,7 +74,7 @@ object Generators {
       areaName = areaName,
       date = date,
       scene = scene,
-      slope = slope,
+      slope = slope.copy(elevation = location.altitude),
       classification = classification,
       humanNumbers = humanNumbers,
       perimeter = perimeter,

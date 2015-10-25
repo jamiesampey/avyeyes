@@ -55,7 +55,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
 
       val updatedAvalanche = avalancheForTest.copy(extId = origAvalanche.extId)
       dal.updateAvalanche(updatedAvalanche)
-      
+
       val result = dal.getAvalancheFromDisk(origAvalanche.extId).get
       result.createTime mustEqual origAvalanche.createTime
       result.viewable mustEqual updatedAvalanche.viewable
@@ -65,7 +65,9 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
       result.areaName mustEqual updatedAvalanche.areaName
       result.date mustEqual updatedAvalanche.date
       result.scene mustEqual updatedAvalanche.scene
-      result.slope mustEqual updatedAvalanche.slope
+      result.slope.aspect mustEqual updatedAvalanche.slope.aspect
+      result.slope.angle mustEqual updatedAvalanche.slope.angle
+      result.slope.elevation mustEqual origAvalanche.slope.elevation
       result.classification mustEqual updatedAvalanche.classification
       result.humanNumbers mustEqual updatedAvalanche.humanNumbers
       result.comments mustEqual updatedAvalanche.comments
