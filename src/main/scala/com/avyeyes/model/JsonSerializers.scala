@@ -69,12 +69,7 @@ object DateTimeSerializer extends CustomSerializer[DateTime](format => (
 
 object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format => (
   {
-    case json: JValue =>
-      AvalancheImage(
-        filename = (json \ "filename").extract[String],
-        mimeType = (json \ "mimeType").extract[String],
-        size = (json \ "size").extract[Int]
-      )
+    case json: JValue => ???
   },
   {
     case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size) =>

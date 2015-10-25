@@ -4,10 +4,10 @@ import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.StringSerializers.enumValueToCode
 
 case class HumanNumbers(modeOfTravel: ModeOfTravel,
-                        caught: Int = -1,
-                        partiallyBuried: Int = -1,
-                        fullyBuried: Int = -1,
-                        injured: Int = -1,
-                        killed: Int = -1) {
+                        caught: Int,
+                        partiallyBuried: Int,
+                        fullyBuried: Int,
+                        injured: Int,
+                        killed: Int) {
   override def toString = s"${enumValueToCode(modeOfTravel)},$caught,$partiallyBuried,$fullyBuried,$injured,$killed"
 }
