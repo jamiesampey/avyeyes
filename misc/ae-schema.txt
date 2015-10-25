@@ -1,3 +1,7 @@
+create schema public;
+grant usage on schema public to public;
+grant create on schema public to public;
+
 create table "avalanche" (
     "create_time" timestamp not null,
     "update_time" timestamp not null,
@@ -68,9 +72,6 @@ create table "app_user_role_assignment" (
 
 -- indices
 create index "avalanche_image_extid_idx" on "avalanche_image" ("avalanche");
-create index "avalanche_scene_extid_idx" on "avalanche_scene" ("avalanche");
-create index "avalanche_classification_extid_idx" on "avalanche_classification" ("avalanche");
-create index "avalanche_human_extid_idx" on "avalanche_human" ("avalanche");
 
 -- foreign key constraints
 alter table "avalanche" add constraint "avalanche_submitter_email_fk" foreign key ("submitter_email") references "app_user"("email");
