@@ -61,7 +61,7 @@ create table "app_user" (
 );
 
 create table "app_role" (
-    "name" text primary key
+    "role_name" text primary key
 );
 
 create table "app_user_role_assignment" (
@@ -79,12 +79,12 @@ alter table "avalanche_scene" add constraint "avalanche_scene_extid_fk" foreign 
 alter table "avalanche_classification" add constraint "avalanche_classification_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
 alter table "avalanche_human" add constraint "avalanche_human_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
 alter table "app_user_role_assignment" add constraint "app_user_role_assignment_user_fk" foreign key ("app_user") references "app_user"("email");
-alter table "app_user_role_assignment" add constraint "app_user_role_assignment_role_fk" foreign key ("app_role") references "app_role"("name");
+alter table "app_user_role_assignment" add constraint "app_user_role_assignment_role_fk" foreign key ("app_role") references "app_role"("role_name");
 
 -- initial inserts
 insert into app_user (create_time, email) values (now(), 'jamie.sampey@gmail.com');
 insert into app_user (create_time, email) values (now(), 'avyeyes@gmail.com');
-insert into app_role (name) values ('site_owner');
-insert into app_role (name) values ('admin');
+insert into app_role (role_name) values ('site_owner');
+insert into app_role (role_name) values ('admin');
 insert into app_user_role_assignment(app_user, app_role) values ('jamie.sampey@gmail.com', 'site_owner');
 insert into app_user_role_assignment(app_user, app_role) values ('avyeyes@gmail.com', 'admin');

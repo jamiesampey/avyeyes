@@ -127,6 +127,9 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
     Await.result(db.run(
       AvalancheImageRows.filter(_.avalanche === extId).delete >>
+      AvalancheSceneRows.filter(_.avalanche === extId).delete >>
+      AvalancheClassificationRows.filter(_.avalanche === extId).delete >>
+      AvalancheHumanRows.filter(_.avalanche === extId).delete >>
       AvalancheRows.filter(_.extId === extId).delete
     ), Duration.Inf)
     avalancheMap -= extId
