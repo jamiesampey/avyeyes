@@ -22,7 +22,7 @@ libraryDependencies ++= {
     "net.liftweb" %% "lift-testkit" % liftVersion,
     "net.liftmodules" %% "omniauth_2.6" % "0.17",
     "com.typesafe.akka" %% "akka-actor" % "2.3.13",
-    "com.typesafe.slick" %% "slick" % "3.0.2",
+    "com.typesafe.slick" %% "slick" % "3.0.3",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
     "ch.qos.logback" % "logback-classic" % "1.1.3",
