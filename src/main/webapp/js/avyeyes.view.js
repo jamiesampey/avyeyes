@@ -151,6 +151,7 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
     });
 
     this.cesiumViewer.scene.groundPrimitives.add(new Cesium.GroundPrimitive({
+        compressVertices: false,
         geometryInstance: avalancheGeometry
     }));
 }
