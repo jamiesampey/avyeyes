@@ -199,10 +199,9 @@ function wireSpinners() {
 function wireButtons(view) {
     $("#northButton").click(function() {
         var camPos = view.cesiumViewer.camera.positionCartographic;
-        var pitch = camPos.height < 10000 ? GEOCODE_FLYTO_PITCH : -89.9;
-        var range = camPos.height < 10000 ? GEOCODE_FLYTO_RANGE : camPos.height;
+        var range = camPos.height < 20000 ? 20000 : camPos.height;
         var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
-        view.flyTo(target, 0.0, pitch, range);
+        view.flyTo(target, 0.0, -89.9, range);
     });
 
 	$('.avyButton').button();

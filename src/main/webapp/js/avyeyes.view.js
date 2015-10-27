@@ -14,7 +14,8 @@ function AvyEyesView() {
             mapStyle: Cesium.BingMapsStyle.AERIAL_WITH_LABELS
         }),
         terrainProvider: new Cesium.CesiumTerrainProvider({
-            url: "//assets.agi.com/stk-terrain/world"
+            url: "//assets.agi.com/stk-terrain/world",
+            requestVertexNormals: true
         }),
         animation: false,
         baseLayerPicker: false,
@@ -143,11 +144,8 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
             }
         }),
         attributes: {
-            color: new Cesium.ColorGeometryInstanceAttribute(1.0, 0, 0, 0.4)
-        },
-        appearance: new Cesium.PerInstanceColorAppearance({
-            translucent: false
-        })
+            color: Cesium.ColorGeometryInstanceAttribute.fromColor(new Cesium.Color(1.0, 0.0, 0.0, 0.4))
+        }
     });
 
     this.cesiumViewer.scene.groundPrimitives.add(new Cesium.GroundPrimitive({
