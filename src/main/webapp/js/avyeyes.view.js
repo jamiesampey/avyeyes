@@ -136,8 +136,6 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 }
 
 AvyEyesView.prototype.addAvalanche = function(avalanche) {
-    console.log("gpSupported: " + Cesium.GroundPrimitive.isSupported(this.cesiumViewer.scene));
-
     var avalancheGeometry = new Cesium.GeometryInstance({
         id: avalanche.extId,
         geometry: new Cesium.PolygonGeometry({
@@ -152,6 +150,8 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 
     this.cesiumViewer.scene.groundPrimitives.add(new Cesium.GroundPrimitive({
         compressVertices: false,
+        interleave: true,
+        vertexCacheOptimize: true,
         geometryInstance: avalancheGeometry
     }));
 }
