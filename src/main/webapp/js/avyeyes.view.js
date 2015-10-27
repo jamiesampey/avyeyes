@@ -77,8 +77,9 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
         var pick = this.cesiumViewer.scene.pick(movement.position);
         if (Cesium.defined(pick)) {
             $("#cesiumContainer").css("cursor", "wait");
+            var selectedAvalanche = pick.id;
 
-            $.getJSON("/rest/avydetails/" + pick.id, function(data) {
+            $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {
                 if (adminLogin()) {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
@@ -119,10 +120,6 @@ AvyEyesView.prototype.cancelReport = function() {
 
 AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
-	if (!this.cesiumViewer.scene.groundPrimitives.isDestroyed()) {
-	    this.cesiumViewer.scene.groundPrimitives.removeAll();
-	}
-
 	this.cancelReport();
 	this.ui.showSearchDiv();
 }
@@ -136,21 +133,14 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 }
 
 AvyEyesView.prototype.addAvalanche = function(avalanche) {
-    var avalancheGeometry = new Cesium.GeometryInstance({
-        id: avalanche.extId,
-        geometry: new Cesium.PolygonGeometry({
-            polygonHierarchy: {
-                positions: Cesium.Cartesian3.fromDegreesArrayHeights(avalanche.coords)
-            }
-        }),
-        attributes: {
-            color: Cesium.ColorGeometryInstanceAttribute.fromColor(new Cesium.Color(1.0, 0.0, 0.0, 0.4))
+	return this.cesiumViewer.entities.add({
+	    id: avalanche.extId,
+	    polygon: {
+            material: Cesium.Color.RED.withAlpha(0.4),
+            perPositionHeight: true,
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(avalanche.coords)
         }
     });
-
-    this.cesiumViewer.scene.groundPrimitives.add(new Cesium.GroundPrimitive({
-        geometryInstance: avalancheGeometry
-    }));
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
@@ -160,20 +150,8 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
             + a.submitterExp.label + "</span><br/><br/>Click on the red avalanche path for details");
     }.bind(this);
 
-    this.addAvalanche(a);
-    var avalancheTargetEntity = this.cesiumViewer.entities.add({
-        polygon: {
-            material: Cesium.Color.RED.withAlpha(0.0),
-            perPositionHeight: true,
-            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords)
-        }
-    });
-
     this.ui.raiseTheCurtain();
-    this.flyTo(avalancheTargetEntity, flyToHeadingFromAspect(a.slope.aspect.value), -25, 700).then(function() {
-        showTitle();
-        this.cesiumViewer.entities.remove(avalancheTargetEntity);
-    }.bind(this));
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 700).then(showTitle);
 }
 
 var geocodeAttempts = 0;
