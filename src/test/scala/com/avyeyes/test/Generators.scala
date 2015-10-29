@@ -19,13 +19,14 @@ object Generators {
     alt <- Gen.choose(0, 8000)
   } yield Coordinate(lng, lat, alt)
 
-  def genScene = for {
-    sky <- Gen.oneOf(SkyCoverage.values.toSeq)
-    precip <- Gen.oneOf(Precipitation.values.toSeq)
-  } yield Scene(sky, precip)
+  def genWeather = for {
+    snow <- Gen.choose(-1, 1000)
+    windDirection <- Gen.oneOf(Direction.values.toSeq)
+    windSpeed <- Gen.oneOf(WindSpeed.values.toSeq)
+  } yield Weather(snow, windDirection, windSpeed)
 
   def genSlope = for {
-    aspect <- Gen.oneOf(Aspect.values.toSeq)
+    aspect <- Gen.oneOf(Direction.values.toSeq)
     angle <- Gen.choose(0, 90)
     elevation <- Gen.choose(0, 8000)
   } yield Slope(aspect, angle, elevation)
@@ -57,7 +58,7 @@ object Generators {
       location <- genCoordinate
       areaName <- Gen.alphaStr
       date <- genDateTime()
-      scene <- genScene
+      weather <- genWeather
       slope <- genSlope
       classification <- genClassification
       humanNumbers <- genHumanNumbers
@@ -73,7 +74,7 @@ object Generators {
       location = location,
       areaName = areaName,
       date = date,
-      scene = scene,
+      weather = weather,
       slope = slope.copy(elevation = location.altitude),
       classification = classification,
       humanNumbers = humanNumbers,

@@ -20,10 +20,11 @@ create table "avalanche" (
     "comments" text
 );
 
-create table "avalanche_scene" (
+create table "avalanche_weather" (
     "avalanche" text unique,
-    "sky_coverage" text not null,
-    "precipitation" text not null
+    "recent_snow" integer not null,
+    "recent_wind_direction" text not null,
+    "recent_wind_speed" text not null
 );
 
 create table "avalanche_classification" (
@@ -75,7 +76,7 @@ create index "avalanche_image_extid_idx" on "avalanche_image" ("avalanche");
 
 -- foreign key constraints
 alter table "avalanche" add constraint "avalanche_submitter_email_fk" foreign key ("submitter_email") references "app_user"("email");
-alter table "avalanche_scene" add constraint "avalanche_scene_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
+alter table "avalanche_weather" add constraint "avalanche_weather_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
 alter table "avalanche_classification" add constraint "avalanche_classification_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
 alter table "avalanche_human" add constraint "avalanche_human_extid_fk" foreign key ("avalanche") references "avalanche"("external_id");
 alter table "app_user_role_assignment" add constraint "app_user_role_assignment_user_fk" foreign key ("app_user") references "app_user"("email");

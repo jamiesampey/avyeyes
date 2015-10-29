@@ -23,11 +23,12 @@ private[data] object SlickRowMappers {
       comments = avalanche.comments
     )
 
-  implicit def toSceneRow(avalanche: Avalanche): AvalancheSceneTableRow =
-    AvalancheSceneTableRow(
+  implicit def toWeatherRow(avalanche: Avalanche): AvalancheWeatherTableRow =
+    AvalancheWeatherTableRow(
       avalanche = avalanche.extId,
-      skyCoverage = avalanche.scene.skyCoverage,
-      precipitation = avalanche.scene.precipitation
+      recentSnow = avalanche.weather.recentSnow,
+      recentWindDirection = avalanche.weather.recentWindDirection,
+      recentWindSpeed = avalanche.weather.recentWindSpeed
     )
 
   implicit def toClassificationRow(avalanche: Avalanche): AvalancheClassificationTableRow =
@@ -51,7 +52,7 @@ private[data] object SlickRowMappers {
       killed = avalanche.humanNumbers.killed
     )
 
-  def avalancheFromData(data: (AvalancheTableRow, AvalancheSceneTableRow, AvalancheClassificationTableRow, AvalancheHumanTableRow)): Avalanche =
+  def avalancheFromData(data: (AvalancheTableRow, AvalancheWeatherTableRow, AvalancheClassificationTableRow, AvalancheHumanTableRow)): Avalanche =
     Avalanche(
       createTime = data._1.createTime,
       updateTime = data._1.updateTime,
@@ -62,7 +63,7 @@ private[data] object SlickRowMappers {
       location = Coordinate(longitude = data._1.longitude, latitude = data._1.latitude, altitude = data._1.elevation),
       date = data._1.date,
       areaName = data._1.areaName,
-      scene = Scene(skyCoverage = data._2.skyCoverage, precipitation = data._2.precipitation),
+      weather = Weather(recentSnow = data._2.recentSnow, recentWindDirection = data._2.recentWindDirection, recentWindSpeed = data._2.recentWindSpeed),
       slope = Slope(aspect = data._1.aspect, angle = data._1.angle, elevation = data._1.elevation),
       classification = Classification(avyType = data._3.avalancheType, trigger = data._3.trigger, interface = data._3.interface, rSize = data._3.rSize, dSize = data._3.dSize),
       humanNumbers = HumanNumbers(modeOfTravel = data._4.modeOfTravel, caught = data._4.caught, partiallyBuried = data._4.partiallyBuried, fullyBuried = data._4.fullyBuried, injured = data._4.injured, killed = data._4.killed),

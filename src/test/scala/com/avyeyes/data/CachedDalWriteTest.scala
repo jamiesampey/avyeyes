@@ -64,7 +64,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
       result.location mustEqual origAvalanche.location
       result.areaName mustEqual updatedAvalanche.areaName
       result.date mustEqual updatedAvalanche.date
-      result.scene mustEqual updatedAvalanche.scene
+      result.weather mustEqual updatedAvalanche.weather
       result.slope.aspect mustEqual updatedAvalanche.slope.aspect
       result.slope.angle mustEqual updatedAvalanche.slope.angle
       result.slope.elevation mustEqual origAvalanche.slope.elevation

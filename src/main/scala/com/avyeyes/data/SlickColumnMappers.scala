@@ -29,12 +29,11 @@ private[data] trait SlickColumnMappers { this: DriverComponent =>
     str => enum.fromCode(str)
   )
 
-  implicit def aspectMapper = enumNameMapper(Aspect)
+  implicit def directionMapper = enumNameMapper(Direction)
   implicit def avalancheInterfaceMapper = enumNameMapper(AvalancheInterface)
   implicit def avalancheTriggerMapper = enumNameMapper(AvalancheTrigger)
   implicit def avalancheTypeMapper = enumNameMapper(AvalancheType)
   implicit def experienceLevelMapper = enumNameMapper(ExperienceLevel)
   implicit def modeOfTravelMapper = enumNameMapper(ModeOfTravel)
-  implicit def precipitationMapper = enumNameMapper(Precipitation)
-  implicit def skyCoverageMapper = enumNameMapper(SkyCoverage)
+  implicit def windSpeedMapper = enumNameMapper(WindSpeed)
 }

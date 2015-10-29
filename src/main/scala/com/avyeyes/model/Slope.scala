@@ -1,8 +1,8 @@
 package com.avyeyes.model
 
-import com.avyeyes.model.enums.Aspect
-import com.avyeyes.model.enums.Aspect.Aspect
+import com.avyeyes.model.enums.Direction
+import com.avyeyes.model.enums.Direction.Direction
 
-case class Slope(aspect: Aspect, angle: Int, elevation: Int) {
-  override def toString = s"${Aspect.toCode(aspect)}-$angle-$elevation"
+case class Slope(aspect: Direction, angle: Int, elevation: Int) {
+  override def toString = s"${Direction.toCode(aspect)}-$angle-$elevation"
 }

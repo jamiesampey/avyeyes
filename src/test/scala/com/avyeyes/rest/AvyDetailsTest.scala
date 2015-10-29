@@ -56,7 +56,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
       import com.avyeyes.model.JsonSerializers.formats
 
       extractJsonField(resp, "submitterExp") mustEqual Extraction.decompose(a1.submitterExp)
-      extractJsonField(resp, "scene") mustEqual Extraction.decompose(a1.scene)
+      extractJsonField(resp, "weather") mustEqual Extraction.decompose(a1.weather)
       extractJsonField(resp, "slope") mustEqual Extraction.decompose(a1.slope)
       extractJsonField(resp, "classification") mustEqual Extraction.decompose(a1.classification)
       extractJsonField(resp, "humanNumbers") mustEqual Extraction.decompose(a1.humanNumbers)

@@ -59,8 +59,9 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       assertInputValue(HiddenInputType, "rwAvyFormLng", report.lng)
       assertInputValue(TextInputType, "rwAvyFormAreaName", report.areaName)
       assertInputValue(TextInputType, "rwAvyFormDate", report.dateStr)
-      assertInputValue(HiddenInputType, "rwAvyFormSky", report.sky)
-      assertInputValue(HiddenInputType, "rwAvyFormPrecip", report.precip)
+      assertInputValue(HiddenInputType, "rwAvyFormRecentSnow", report.recentSnow)
+      assertInputValue(HiddenInputType, "rwAvyFormRecentWindDirection", report.recentWindDirection)
+      assertInputValue(TextInputType, "rwAvyFormRecentWindSpeed", report.recentWindSpeed)
       assertInputValue(TextInputType, "rwAvyFormElevation", report.elevation)
       assertInputValue(HiddenInputType, "rwAvyFormAspect", report.aspect)
       assertInputValue(TextInputType, "rwAvyFormAngle", report.angle)
@@ -139,8 +140,9 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       val avalancheArg = capture[Avalanche]
       
       val report = newReportWithTestData()
-      report.sky = ""
-      report.precip = ""
+      report.aspect = ""
+      report.recentWindDirection = ""
+      report.recentWindSpeed = ""
       report.avyType = ""
       report.avyTrigger = ""
       report.avyInterface = ""
@@ -152,9 +154,10 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       
       there was one(mockAvalancheDal).insertAvalanche(avalancheArg)
       val passedAvalanche = avalancheArg.value
-      
-      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.U
-      passedAvalanche.scene.precipitation mustEqual Precipitation.U
+
+      passedAvalanche.slope.aspect mustEqual Direction.U
+      passedAvalanche.weather.recentWindDirection mustEqual Direction.U
+      passedAvalanche.weather.recentWindSpeed mustEqual WindSpeed.U
       passedAvalanche.classification.avyType mustEqual AvalancheType.U
       passedAvalanche.classification.trigger mustEqual AvalancheTrigger.U
       passedAvalanche.classification.interface mustEqual AvalancheInterface.U
@@ -180,8 +183,9 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       passedAvalanche.location.latitude mustEqual strToDblOrZero(report.lat)
       passedAvalanche.areaName mustEqual report.areaName
       passedAvalanche.date mustEqual strToDate(report.dateStr)
-      passedAvalanche.scene.skyCoverage mustEqual SkyCoverage.fromCode(report.sky)
-      passedAvalanche.scene.precipitation mustEqual Precipitation.fromCode(report.precip)
+      passedAvalanche.weather.recentSnow mustEqual strToIntOrNegOne(report.recentSnow)
+      passedAvalanche.weather.recentWindDirection mustEqual Direction.fromCode(report.recentWindDirection)
+      passedAvalanche.weather.recentWindSpeed mustEqual WindSpeed.fromCode(report.recentWindSpeed)
       passedAvalanche.classification.avyType mustEqual AvalancheType.fromCode(report.avyType)
       passedAvalanche.classification.trigger mustEqual AvalancheTrigger.fromCode(report.avyTrigger)
       passedAvalanche.classification.interface mustEqual AvalancheInterface.fromCode(report.avyInterface)
@@ -285,8 +289,10 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
     report.areaName = avalanche.areaName
     report.dateStr = dateToStr(avalanche.date)
 
-    report.sky = avalanche.scene.skyCoverage.toString
-    report.precip = avalanche.scene.precipitation.toString
+    report.recentSnow = avalanche.weather.recentSnow.toString
+    report.recentWindDirection = avalanche.weather.recentWindDirection.toString
+    report.recentWindSpeed = avalanche.weather.recentWindSpeed.toString
+
     report.elevation = avalanche.slope.elevation.toString
     report.aspect = avalanche.slope.aspect.toString
     report.angle = avalanche.slope.angle.toString

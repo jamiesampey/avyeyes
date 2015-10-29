@@ -30,8 +30,9 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
-  var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = "";
-  var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""; var sky = ""; var precip = ""
+  var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = ""
+  var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
+  var recentSnow = ""; var recentWindDirection = ""; var recentWindSpeed = ""
   var elevation = ""; var aspect = ""; var angle = ""    
   var avyType = ""; var avyTrigger = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
@@ -46,11 +47,12 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     "#rwAvyFormSubmitterExp" #> SHtml.hidden(submitterExp = _, submitterExp) &
     "#rwAvyFormAreaName" #> SHtml.text(areaName, areaName = _) &
     "#rwAvyFormDate" #> SHtml.text(dateStr, dateStr = _) &
-    "#rwAvyFormSky" #> SHtml.hidden(sky = _, sky) &
-    "#rwAvyFormPrecip" #> SHtml.hidden(precip = _, precip) &
     "#rwAvyFormElevation" #> SHtml.text(elevation, elevation = _) &
     "#rwAvyFormAspect" #> SHtml.hidden(aspect = _, aspect) &
     "#rwAvyFormAngle" #> SHtml.text(angle, angle = _) &
+    "#rwAvyFormRecentSnow" #> SHtml.text(recentSnow, recentSnow = _) &
+    "#rwAvyFormRecentWindDirection" #> SHtml.hidden(recentWindDirection = _, recentWindDirection) &
+    "#rwAvyFormRecentWindSpeed" #> SHtml.hidden(recentWindSpeed = _, recentWindSpeed) &
     "#rwAvyFormType" #> SHtml.hidden(avyType = _, avyType) &
     "#rwAvyFormTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
     "#rwAvyFormInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
@@ -74,7 +76,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     if (!ExperienceLevel.isValidCode(submitterExp)) problemFields.append("rwAvyFormSubmitterExpAC")
     if (isBlank(areaName)) problemFields.append("rwAvyFormAreaName")
     if (!isValidDate(dateStr)) problemFields.append("rwAvyFormDate")
-    if (!Aspect.isValidCode(aspect)) problemFields.append("rwAvyFormAspectAC")
+    if (!Direction.isValidCode(aspect)) problemFields.append("rwAvyFormAspectAC")
     if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
 
     if (problemFields.size == 0) {
@@ -155,13 +157,15 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
-      scene = Scene(
-        SkyCoverage.fromCode(sky),
-        Precipitation.fromCode(precip)),
       slope = Slope(
-        Aspect.fromCode(aspect),
-        strToIntOrNegOne(angle),
-        strToIntOrNegOne(elevation)
+        aspect = Direction.fromCode(aspect),
+        angle = strToIntOrNegOne(angle),
+        elevation = strToIntOrNegOne(elevation)
+      ),
+      weather = Weather(
+        recentSnow = strToIntOrNegOne(recentSnow),
+        recentWindDirection = Direction.fromCode(recentWindDirection),
+        recentWindSpeed = WindSpeed.fromCode(recentWindSpeed)
       ),
       classification = Classification(
         avyType = AvalancheType.fromCode(avyType),

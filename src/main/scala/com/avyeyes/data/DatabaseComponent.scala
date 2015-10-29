@@ -1,18 +1,17 @@
 package com.avyeyes.data
 
 import com.avyeyes.model._
-import com.avyeyes.model.enums.Aspect.Aspect
+import com.avyeyes.model.enums.Direction.Direction
 import com.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
 import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.avyeyes.model.enums.AvalancheType.AvalancheType
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
-import com.avyeyes.model.enums.Precipitation.Precipitation
-import com.avyeyes.model.enums.SkyCoverage.SkyCoverage
+import com.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
 
-private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Aspect, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
-private[data] case class AvalancheSceneTableRow(avalanche: String, skyCoverage: SkyCoverage, precipitation: Precipitation)
+private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
+private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindDirection: Direction, recentWindSpeed: WindSpeed)
 private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
@@ -21,7 +20,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
   import driver.api._
 
   val AvalancheRows = TableQuery[AvalancheTable]
-  val AvalancheSceneRows = TableQuery[AvalancheSceneTable]
+  val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
   val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
   val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
 
@@ -32,7 +31,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
 
   def createSchema = (
     AvalancheRows.schema ++
-    AvalancheSceneRows.schema ++
+    AvalancheWeatherRows.schema ++
     AvalancheClassificationRows.schema ++
     AvalancheHumanRows.schema ++
     AvalancheImageRows.schema ++
@@ -52,7 +51,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
     def longitude = column[Double]("longitude")
     def latitude = column[Double]("latitude")
     def elevation = column[Int]("elevation")
-    def aspect = column[Aspect]("aspect")
+    def aspect = column[Direction]("aspect")
     def angle = column[Int]("angle")
     def perimeter = column[Seq[Coordinate]]("perimeter")
     def comments = column[Option[String]]("comments")
@@ -62,15 +61,16 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
 
   }
 
-  class AvalancheSceneTable(tag: Tag) extends Table[AvalancheSceneTableRow](tag, "avalanche_scene") {
+  class AvalancheWeatherTable(tag: Tag) extends Table[AvalancheWeatherTableRow](tag, "avalanche_weather") {
     def avalanche = column[String]("avalanche")
-    def skyCoverage = column[SkyCoverage]("sky_coverage")
-    def precipitation = column[Precipitation]("precipitation")
+    def recentSnow = column[Int]("recent_snow")
+    def recentWindDirection = column[Direction]("recent_wind_direction")
+    def recentWindSpeed = column[WindSpeed]("recent_wind_speed")
 
-    def * = (avalanche, skyCoverage, precipitation) <> (AvalancheSceneTableRow.tupled, AvalancheSceneTableRow.unapply)
+    def * = (avalanche, recentSnow, recentWindDirection, recentWindSpeed) <> (AvalancheWeatherTableRow.tupled, AvalancheWeatherTableRow.unapply)
 
-    def idx = index("avalanche_scene_extid_idx", avalanche, unique = true)
-    def avalancheFk = foreignKey("avalanche_scene_extid_fk", avalanche, AvalancheRows)(a => 
+    def idx = index("avalanche_weather_extid_idx", avalanche, unique = true)
+    def avalancheFk = foreignKey("avalanche_weather_extid_fk", avalanche, AvalancheRows)(a =>
       a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
   }
 
