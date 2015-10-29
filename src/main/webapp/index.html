@@ -115,17 +115,21 @@
                   <tr><td>
                   <table class="roAvyFormSubTable">
                       <tr><td class="roAvyFormSectionHeader">
-                          <span id="roAvyFormConditions" class="avyHeader"></span>
+                          <span id="roAvyFormWeather" class="avyHeader"></span>
                       </td></tr>
                       <tr><td>
                           <table class="roAvyFormFieldsSubTable">
                               <tr>
-                                  <td><label for="roAvyFormSky"></label></td>
-                                  <td><span id="roAvyFormSky"></span></td>
+                                  <td><label for="roAvyFormRecentSnow"></label></td>
+                                  <td><span id="roAvyFormRecentSnow"></span></td>
                               </tr>
                               <tr>
-                                  <td><label for="roAvyFormPrecip"></label></td>
-                                  <td><span id="roAvyFormPrecip"></span></td>
+                                  <td><label for="roAvyFormRecentWindDirection"></label></td>
+                                  <td><span id="roAvyFormRecentWindDirection"></span></td>
+                              </tr>
+                              <tr>
+                                  <td><label for="roAvyFormRecentWindSpeed"></label></td>
+                                  <td><span id="roAvyFormRecentWindSpeed"></span></td>
                               </tr>
                           </table>
                       </td></tr>
@@ -384,7 +388,7 @@
 	               <tr><td>
 	                 <table class="rwAvyFormSubTable">
 	                   <tr><td class="rwAvyFormSectionHeader">
-	                       <span id="rwAvyFormWeatherDesc" class="avyHeader"></span>
+	                       <span id="rwAvyFormAreaDateDesc" class="avyHeader"></span>
 	                   </td></tr>
 		               <tr><td>
 		                 <table class="rwAvyFormInputsSubTable">
@@ -396,20 +400,33 @@
 			                   <td><label for="rwAvyFormDate" data-required="true"></label></td>
 		                       <td><input id="rwAvyFormDate" class="avyDate" type="text"/></td>
 			                 </tr>
-			                 <tr>
-			                   <td><label for="rwAvyFormSky"></label></td>
-		                       <td>
-		                         <input class="avyAutoComplete avySkyAutoComplete" type="text"/>
-		                         <input id="rwAvyFormSky" type="hidden"/>
-		                       </td>
+                         </table>
+                       </td></tr>
+                     </table>
+                     <table class="rwAvyFormSubTable">
+                       <tr><td class="rwAvyFormSectionHeader">
+                           <span id="rwAvyFormWeatherDesc" class="avyHeader"></span>
+                       </td></tr>
+                       <tr><td>
+                           <table class="rwAvyFormInputsSubTable">
+                             <tr>
+			                   <td><label for="rwAvyFormRecentSnow"></label></td>
+                               <td><input id="rwAvyFormRecentSnow" class="avyHumanNumber" readonly="readonly"/></td>
 			                 </tr>
 			                 <tr>
-			                   <td><label for="rwAvyFormPrecip"></label></td>
+			                   <td><label for="rwAvyFormRecentWindDirection"></label></td>
 		                        <td>
-		                          <input class="avyAutoComplete avyPrecipAutoComplete" type="text"/>
-		                          <input id="rwAvyFormPrecip" type="hidden"/>
+		                          <input class="avyAutoComplete avyDirectionAutoComplete" type="text"/>
+		                          <input id="rwAvyFormRecentWindDirection" type="hidden"/>
 		                        </td>
 			                 </tr>
+                             <tr>
+                                 <td><label for="rwAvyFormRecentWindSpeed"></label></td>
+                                 <td>
+                                     <input class="avyAutoComplete avyWindSpeedAutoComplete" type="text"/>
+                                     <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
+                                 </td>
+                             </tr>
 		                 </table>
 		               </td></tr>
 		             </table>
@@ -483,7 +500,7 @@
 				        <tr>
 				          <td><label for="rwAvyFormAspect" data-required="true"></label></td>
 				          <td>
-				            <input id='rwAvyFormAspectAC' class="avyAutoComplete avyAspectAutoComplete" type="text" />
+				            <input id='rwAvyFormAspectAC' class="avyAutoComplete avyDirectionAutoComplete" type="text" />
 				            <input id="rwAvyFormAspect" type="hidden"/>
 				          </td>
 				        </tr>
