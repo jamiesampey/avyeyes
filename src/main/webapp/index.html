@@ -366,10 +366,15 @@
 	           <tr><td colspan="2">
                 <table id="rwAvyFormSubmitterWrapperTable"><tr><td>
                     <table class="rwAvyFormSubTable">
-                        <tr><td class="rwAvyFormSectionHeader">
-                            <span id="rwAvyFormSubmitterInfo" class="avyHeader"></span>
-                        </td></tr>
-                        <tr><td>
+                        <tr>
+                            <td class="rwAvyFormSectionHeader">
+                                <span id="rwAvyFormSubmitterInfo" class="avyHeader"></span>
+                            </td>
+                            <td id="rwAvyFormRequiredFieldsMsgTd">
+                                <span style="color: red;">* </span><span id="rwAvyFormRequiredFields" class="avyMsg"></span>
+                            </td>
+                        </tr>
+                        <tr><td colspan="2">
                             <table class="rwAvyFormInputsSubTable">
                                 <tr><td><label for="rwAvyFormSubmitterEmail" data-required="true"></label></td>
                                     <td colspan="3"><input id="rwAvyFormSubmitterEmail" class="avyRawTextInput" type="text"/></td>
@@ -550,11 +555,6 @@
            </tr>  
            <tr><td colspan="2"><label for="rwAvyFormComments"></label></td></tr>
            <tr><td colspan="2"><textarea id="rwAvyFormComments" rows="8" maxlength="10000"></textarea></td></tr>
-           <tr>
-               <td colspan="2" id="rwAvyFormRequiredFieldsMsgRow">
-                   <span style="color: red;">* </span><span id="rwAvyFormRequiredFields" class="avyMsg"></span>
-               </td>
-           </tr>
 	   </table>
 	   <input id="rwAvyFormExtId" type="hidden"/>
        <input id="rwAvyFormLat" type="hidden"/>

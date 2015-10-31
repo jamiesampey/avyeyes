@@ -400,7 +400,7 @@ function wireDialogs(view) {
     });
 
     $('#rwAvyFormImageDialog').dialog({
-        width: 750,
+        width: 700,
         height: 620,
         autoOpen: false,
         modal: true,
@@ -425,7 +425,7 @@ function wireDialogs(view) {
     });
 
     $('#rwAvyFormDialog').dialog({
-        width: 750,
+        width: 700,
         height: 620,
         autoOpen: false,
         modal: true,

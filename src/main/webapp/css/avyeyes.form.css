@@ -311,9 +311,7 @@ img.rwAvyFormImageDeleteIcon {
 	width: 100%;
 }
 
-#rwAvyFormRequiredFieldsMsgRow {
-	height: 100%;
-	vertical-align: bottom;
+#rwAvyFormRequiredFieldsMsgTd {
 	text-align: right;
 }
 
