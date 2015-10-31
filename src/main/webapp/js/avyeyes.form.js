@@ -31,7 +31,14 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow);
    	$("#roAvyFormRecentWindSpeed").text(a.weather.recentWindSpeed.label);
-   	$("#roAvyFormRecentWindDirection").text(a.weather.recentWindDirection.label);
+    if (a.weather.recentWindSpeed.value == 'U' || a.weather.recentWindDirection.value == 'U') {
+        $("#roAvyFormRecentWindDirectionText").hide();
+        $("#roAvyFormRecentWindDirection").hide();
+    } else {
+        $("#roAvyFormRecentWindDirection").text(a.weather.recentWindDirection.label);
+        $("#roAvyFormRecentWindDirectionText").show();
+        $("#roAvyFormRecentWindDirection").show();
+    }
 
 	$("#roAvyFormType").text(a.classification.avyType.label);
 	$("#roAvyFormTrigger").text(a.classification.trigger.label);

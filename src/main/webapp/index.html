@@ -121,10 +121,10 @@
                           <table class="roAvyFormFieldsSubTable">
                               <tr>
                                   <td><label for="roAvyFormRecentSnow"></label></td>
-                                  <td><span id="roAvyFormRecentSnow"></span></td>
+                                  <td><span id="roAvyFormRecentSnow"></span>&nbsp;cm</td>
                               </tr>
                               <tr>
-                                  <td><label for="roAvyFormRecentWindDirection"></label></td>
+                                  <td><label for="roAvyFormRecentWindSpeed"></label></td>
                                   <td>
                                     <span id="roAvyFormRecentWindSpeed"></span>
                                     <span id="roAvyFormRecentWindDirectionText" class="avyMsg"></span>
@@ -418,13 +418,15 @@
                        <table class="rwAvyFormInputsSubTable">
                          <tr>
                            <td><label for="rwAvyFormRecentSnow"></label></td>
-                           <td><input id="rwAvyFormRecentSnow" class="avyHumanNumber" readonly="readonly"/>&nbsp;cm</td>
+                           <td colspan="2"><input id="rwAvyFormRecentSnow" class="avyHumanNumber" readonly="readonly"/>&nbsp;cm</td>
                          </tr>
                          <tr>
                              <td><label for="rwAvyFormRecentWindSpeed"></label></td>
                              <td>
                                  <input class="avyAutoComplete avyWindSpeedAutoComplete" type="text"/>
                                  <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
+                             </td>
+                             <td>
                                  <span id="rwAvyFormRecentWindDirectionText" class="avyMsg"></span>
                                  <input class="avyAutoComplete avyDirectionAutoComplete" type="text"/>
                                  <input id="rwAvyFormRecentWindDirection" type="hidden"/>
