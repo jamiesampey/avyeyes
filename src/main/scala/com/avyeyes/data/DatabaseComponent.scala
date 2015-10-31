@@ -11,7 +11,7 @@ import com.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
 
 private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
-private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindDirection: Direction, recentWindSpeed: WindSpeed)
+private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
 private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
@@ -64,10 +64,10 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
   class AvalancheWeatherTable(tag: Tag) extends Table[AvalancheWeatherTableRow](tag, "avalanche_weather") {
     def avalanche = column[String]("avalanche")
     def recentSnow = column[Int]("recent_snow")
-    def recentWindDirection = column[Direction]("recent_wind_direction")
     def recentWindSpeed = column[WindSpeed]("recent_wind_speed")
+    def recentWindDirection = column[Direction]("recent_wind_direction")
 
-    def * = (avalanche, recentSnow, recentWindDirection, recentWindSpeed) <> (AvalancheWeatherTableRow.tupled, AvalancheWeatherTableRow.unapply)
+    def * = (avalanche, recentSnow, recentWindSpeed, recentWindDirection) <> (AvalancheWeatherTableRow.tupled, AvalancheWeatherTableRow.unapply)
 
     def idx = index("avalanche_weather_extid_idx", avalanche, unique = true)
     def avalancheFk = foreignKey("avalanche_weather_extid_fk", avalanche, AvalancheRows)(a =>

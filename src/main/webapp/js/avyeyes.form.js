@@ -24,12 +24,12 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + title
       + "' href='http://twitter.com/share' data-count='horizontal' />");
 
-	$("#roAvyFormElevation").text(a.slope.elevation);
-	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation));
+	$("#roAvyFormElevation").text(a.slope.elevation + " m");
+	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
 	$("#roAvyFormAspect").text(a.slope.aspect.label);
 	$("#roAvyFormAngle").text(a.slope.angle);
 
- 	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow);
+ 	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
    	$("#roAvyFormRecentWindSpeed").text(a.weather.recentWindSpeed.label);
     if (a.weather.recentWindSpeed.value == 'U' || a.weather.recentWindDirection.value == 'U') {
         $("#roAvyFormRecentWindDirectionText").hide();
@@ -382,11 +382,12 @@ AvyForm.prototype.toggleTechnicalReportFields = function(enabled) {
     }
 }
 
-function setReadOnlySpinnerVal(inputElem, value) {
+function setReadOnlySpinnerVal(inputElem, value, unit) {
     if (value == -1) {
         $(inputElem).text('Unknown');
     } else {
-        $(inputElem).text(value);
+        if (unit) $(inputElem).text(value + " " + unit);
+        else $(inputElem).text(value);
     }
 }
 

@@ -85,6 +85,11 @@
     text-align: left;
 }
 
+.roAvyFormFieldsSubTable tbody tr td:first-child {
+    width: 1%;
+    white-space: nowrap;
+}
+
 #roAvyFormImageRow {
     display: none;
 }

@@ -27,8 +27,8 @@ private[data] object SlickRowMappers {
     AvalancheWeatherTableRow(
       avalanche = avalanche.extId,
       recentSnow = avalanche.weather.recentSnow,
-      recentWindDirection = avalanche.weather.recentWindDirection,
-      recentWindSpeed = avalanche.weather.recentWindSpeed
+      recentWindSpeed = avalanche.weather.recentWindSpeed,
+      recentWindDirection = avalanche.weather.recentWindDirection
     )
 
   implicit def toClassificationRow(avalanche: Avalanche): AvalancheClassificationTableRow =
@@ -63,7 +63,7 @@ private[data] object SlickRowMappers {
       location = Coordinate(longitude = data._1.longitude, latitude = data._1.latitude, altitude = data._1.elevation),
       date = data._1.date,
       areaName = data._1.areaName,
-      weather = Weather(recentSnow = data._2.recentSnow, recentWindDirection = data._2.recentWindDirection, recentWindSpeed = data._2.recentWindSpeed),
+      weather = Weather(recentSnow = data._2.recentSnow, recentWindSpeed = data._2.recentWindSpeed, recentWindDirection = data._2.recentWindDirection),
       slope = Slope(aspect = data._1.aspect, angle = data._1.angle, elevation = data._1.elevation),
       classification = Classification(avyType = data._3.avalancheType, trigger = data._3.trigger, interface = data._3.interface, rSize = data._3.rSize, dSize = data._3.dSize),
       humanNumbers = HumanNumbers(modeOfTravel = data._4.modeOfTravel, caught = data._4.caught, partiallyBuried = data._4.partiallyBuried, fullyBuried = data._4.fullyBuried, injured = data._4.injured, killed = data._4.killed),

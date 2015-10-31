@@ -23,8 +23,8 @@ create table "avalanche" (
 create table "avalanche_weather" (
     "avalanche" text unique,
     "recent_snow" integer not null,
-    "recent_wind_direction" text not null,
-    "recent_wind_speed" text not null
+    "recent_wind_speed" text not null,
+    "recent_wind_direction" text not null
 );
 
 create table "avalanche_classification" (
