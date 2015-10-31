@@ -344,6 +344,16 @@ AvyForm.prototype.closeReportDialogs = function() {
         .children('.ui-dialog-content').dialog('close');
 }
 
+AvyForm.prototype.toggleWindDirectionFields = function(enabled) {
+    if (enabled) {
+        $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
+        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
+    } else {
+        $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
+        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', true);
+    }
+}
+
 AvyForm.prototype.toggleTechnicalReportFields = function(enabled) {
     if (enabled) {
         $('#rwAvyFormClassification .avyHeader').css('color', 'white');

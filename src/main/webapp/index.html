@@ -125,11 +125,11 @@
                               </tr>
                               <tr>
                                   <td><label for="roAvyFormRecentWindDirection"></label></td>
-                                  <td><span id="roAvyFormRecentWindDirection"></span></td>
-                              </tr>
-                              <tr>
-                                  <td><label for="roAvyFormRecentWindSpeed"></label></td>
-                                  <td><span id="roAvyFormRecentWindSpeed"></span></td>
+                                  <td>
+                                    <span id="roAvyFormRecentWindSpeed"></span>
+                                    <span id="roAvyFormRecentWindDirectionText" class="avyMsg"></span>
+                                    <span id="roAvyFormRecentWindDirection"></span>
+                                  </td>
                               </tr>
                           </table>
                       </td></tr>
@@ -364,24 +364,24 @@
 	               <label for="rwAvyFormViewable"></label><input id="rwAvyFormViewable" type="checkbox"/>
 	           </td></tr>
 	           <tr><td colspan="2">
-                    <table id="rwAvyFormSubmitterWrapperTable"><tr><td>
-                        <table class="rwAvyFormSubTable">
-                            <tr><td class="rwAvyFormSectionHeader">
-                                <span id="rwAvyFormSubmitterInfo" class="avyHeader"></span>
-                            </td></tr>
-                            <tr><td>
-                                <table class="rwAvyFormInputsSubTable">
-                                    <tr><td><label for="rwAvyFormSubmitterEmail" data-required="true"></label></td>
-                                        <td colspan="3"><input id="rwAvyFormSubmitterEmail" class="avyRawTextInput" type="text"/></td>
-                                        <td><label for="rwAvyFormSubmitterExp" data-required="true"></label></td>
-                                        <td>
-                                            <input id="rwAvyFormSubmitterExpAC" class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
-                                            <input id="rwAvyFormSubmitterExp" type="hidden"/>
-                                        </td>
-                                    </tr>
-                                </table></td></tr>
-                        </table></td></tr>
-                    </table>
+                <table id="rwAvyFormSubmitterWrapperTable"><tr><td>
+                    <table class="rwAvyFormSubTable">
+                        <tr><td class="rwAvyFormSectionHeader">
+                            <span id="rwAvyFormSubmitterInfo" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                            <table class="rwAvyFormInputsSubTable">
+                                <tr><td><label for="rwAvyFormSubmitterEmail" data-required="true"></label></td>
+                                    <td colspan="3"><input id="rwAvyFormSubmitterEmail" class="avyRawTextInput" type="text"/></td>
+                                    <td><label for="rwAvyFormSubmitterExp" data-required="true"></label></td>
+                                    <td>
+                                        <input id="rwAvyFormSubmitterExpAC" class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
+                                        <input id="rwAvyFormSubmitterExp" type="hidden"/>
+                                    </td>
+                                </tr>
+                            </table></td></tr>
+                    </table></td></tr>
+                </table>
                </td></tr>
 	           <tr><td>
 	             <table id="rwAvyFormDetailsLeftColumnTable">
@@ -402,87 +402,85 @@
 			                 </tr>
                          </table>
                        </td></tr>
+                    </table>
+               </td></tr>
+               <tr><td id="rwAvyFormWeather">
+                 <table class="rwAvyFormSubTable">
+                   <tr><td class="rwAvyFormSectionHeader">
+                       <span id="rwAvyFormWeatherDesc" class="avyHeader"></span>
+                   </td></tr>
+                   <tr><td>
+                       <table class="rwAvyFormInputsSubTable">
+                         <tr>
+                           <td><label for="rwAvyFormRecentSnow"></label></td>
+                           <td><input id="rwAvyFormRecentSnow" class="avyHumanNumber" readonly="readonly"/>&nbsp;cm</td>
+                         </tr>
+                         <tr>
+                             <td><label for="rwAvyFormRecentWindSpeed"></label></td>
+                             <td>
+                                 <input class="avyAutoComplete avyWindSpeedAutoComplete" type="text"/>
+                                 <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
+                                 <span id="rwAvyFormRecentWindDirectionText" class="avyMsg"></span>
+                                 <input class="avyAutoComplete avyDirectionAutoComplete" type="text"/>
+                                 <input id="rwAvyFormRecentWindDirection" type="hidden"/>
+                             </td>
+                         </tr>
                      </table>
-                     <table class="rwAvyFormSubTable">
-                       <tr><td class="rwAvyFormSectionHeader">
-                           <span id="rwAvyFormWeatherDesc" class="avyHeader"></span>
-                       </td></tr>
-                       <tr><td>
-                           <table class="rwAvyFormInputsSubTable">
-                             <tr>
-			                   <td><label for="rwAvyFormRecentSnow"></label></td>
-                               <td><input id="rwAvyFormRecentSnow" class="avyHumanNumber" readonly="readonly"/></td>
-			                 </tr>
-			                 <tr>
-			                   <td><label for="rwAvyFormRecentWindDirection"></label></td>
-		                        <td>
-		                          <input class="avyAutoComplete avyDirectionAutoComplete" type="text"/>
-		                          <input id="rwAvyFormRecentWindDirection" type="hidden"/>
-		                        </td>
-			                 </tr>
-                             <tr>
-                                 <td><label for="rwAvyFormRecentWindSpeed"></label></td>
-                                 <td>
-                                     <input class="avyAutoComplete avyWindSpeedAutoComplete" type="text"/>
-                                     <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
-                                 </td>
-                             </tr>
-		                 </table>
-		               </td></tr>
-		             </table>
-	               </td></tr>
-	               <tr><td id="rwAvyFormClassification">
-	                 <table class="rwAvyFormSubTable">
-	                   <tr><td class="rwAvyFormSectionHeader">
-	                       <span id="rwAvyFormAvalancheClass" class="avyHeader"></span>
-	                   </td></tr>
-	                   <tr><td><table class="rwAvyFormInputsSubTable">
-		                 <tr>
-		                   <td><label for="rwAvyFormType"></label></td>
-	                       <td>
-	                         <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
-	                         <input id="rwAvyFormType" type="hidden"/>
-	                       </td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="rwAvyFormTrigger"></label></td>
-	                       <td>
-	                         <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
-	                         <input id="rwAvyFormTrigger" type="hidden" />
-	                       </td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="rwAvyFormInterface"></label></td>
-	                       <td>
-	                         <input class="avyAutoComplete avyInterfaceAutoComplete" type="text"/>
-	                         <input id="rwAvyFormInterface" type="hidden"/>
-	                       </td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="rwAvyFormRsizeValue"></label></td>
-	                       <td>
-	                         <div class="avyRDSliderContainer">
-	                            <input id="rwAvyFormRsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
-	                            <div id="rwAvyFormRsizeSlider" class="avyRDSlider"/>
-	                         </div>
-	                       </td>
-		                 </tr>
-		                 <tr>
-		                   <td><label for="rwAvyFormDsizeValue"></label></td>
-	                       <td>
-	                         <div class="avyRDSliderContainer">
-	                            <input id="rwAvyFormDsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
-	                            <div id="rwAvyFormDsizeSlider" class="avyRDSlider"/>
-	                         </div>
-	                       </td>
-		                 </tr>
-	                   </table></td></tr>
-	                 </table>
-	               </td></tr>
-	               </table>
-	             <!-- END LEFT COLUMN -->
-	             </td><td>
-	             <!-- BEGIN RIGHT COLUMN -->
+                   </td></tr>
+                 </table>
+               </td></tr>
+               <tr><td id="rwAvyFormClassification">
+                 <table class="rwAvyFormSubTable">
+                   <tr><td class="rwAvyFormSectionHeader">
+                       <span id="rwAvyFormAvalancheClass" class="avyHeader"></span>
+                   </td></tr>
+                   <tr><td><table class="rwAvyFormInputsSubTable">
+                     <tr>
+                       <td><label for="rwAvyFormType"></label></td>
+                       <td>
+                         <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
+                         <input id="rwAvyFormType" type="hidden"/>
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><label for="rwAvyFormTrigger"></label></td>
+                       <td>
+                         <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                         <input id="rwAvyFormTrigger" type="hidden" />
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><label for="rwAvyFormInterface"></label></td>
+                       <td>
+                         <input class="avyAutoComplete avyInterfaceAutoComplete" type="text"/>
+                         <input id="rwAvyFormInterface" type="hidden"/>
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><label for="rwAvyFormRsizeValue"></label></td>
+                       <td>
+                         <div class="avyRDSliderContainer">
+                            <input id="rwAvyFormRsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
+                            <div id="rwAvyFormRsizeSlider" class="avyRDSlider"></div>
+                         </div>
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><label for="rwAvyFormDsizeValue"></label></td>
+                       <td>
+                         <div class="avyRDSliderContainer">
+                            <input id="rwAvyFormDsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
+                            <div id="rwAvyFormDsizeSlider" class="avyRDSlider"></div>
+                         </div>
+                       </td>
+                     </tr>
+                   </table></td></tr>
+                 </table>
+               </td></tr>
+               </table>
+             <!-- END LEFT COLUMN -->
+             </td><td>
+             <!-- BEGIN RIGHT COLUMN -->
 				<table id="rwAvyFormDetailsRightColumnTable">
 				    <tr><td><table class="rwAvyFormSubTable">
                       <tr><td class="rwAvyFormSectionHeader">

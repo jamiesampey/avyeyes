@@ -125,6 +125,15 @@ function wireAutoCompletes(view) {
 		$(this).select();
     });
 
+	$('.avyWindSpeedAutoComplete').on("autocompleteselect", function(event, ui){
+		if (ui.item.value === 'U') {
+		  view.form.toggleWindDirectionFields(false);
+		} else {
+		  view.form.toggleWindDirectionFields(true);
+		}
+		return false;
+	});
+
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
 		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
 		  view.form.toggleTechnicalReportFields(true);
@@ -376,6 +385,7 @@ function wireDialogs(view) {
             click: function(event, ui) {
                 $(this).dialog('close');
                 $.ui.dialog.prototype._focusTabbable = function(){};
+                view.form.toggleWindDirectionFields(false);
                 view.form.toggleTechnicalReportFields(false);
                 view.form.displayReadWriteForm();
             }

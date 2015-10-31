@@ -344,8 +344,16 @@ img.rwAvyFormImageDeleteIcon {
     text-align: left;
 }
 
-#rwAvyFormAspectAC {
+.avyDirectionAutoComplete {
     width: 35px;
+}
+
+.avyWindSpeedAutoComplete, .avyModeOfTravelAutoComplete {
+    width: 125px;
+}
+
+.avyWindSpeedAutoComplete.ui-autocomplete-input {
+    width: 125px;
 }
 
 #rwAvyFormComments {
