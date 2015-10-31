@@ -32,7 +32,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = ""
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
-  var recentSnow = ""; var recentWindDirection = ""; var recentWindSpeed = ""
+  var recentSnow = ""; var recentWindSpeed = ""; var recentWindDirection = ""
   var elevation = ""; var aspect = ""; var angle = ""    
   var avyType = ""; var avyTrigger = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
@@ -51,8 +51,8 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     "#rwAvyFormAspect" #> SHtml.hidden(aspect = _, aspect) &
     "#rwAvyFormAngle" #> SHtml.text(angle, angle = _) &
     "#rwAvyFormRecentSnow" #> SHtml.text(recentSnow, recentSnow = _) &
-    "#rwAvyFormRecentWindDirection" #> SHtml.hidden(recentWindDirection = _, recentWindDirection) &
     "#rwAvyFormRecentWindSpeed" #> SHtml.hidden(recentWindSpeed = _, recentWindSpeed) &
+    "#rwAvyFormRecentWindDirection" #> SHtml.hidden(recentWindDirection = _, recentWindDirection) &
     "#rwAvyFormType" #> SHtml.hidden(avyType = _, avyType) &
     "#rwAvyFormTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
     "#rwAvyFormInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
@@ -164,8 +164,8 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       ),
       weather = Weather(
         recentSnow = strToIntOrNegOne(recentSnow),
-        recentWindDirection = Direction.fromCode(recentWindDirection),
-        recentWindSpeed = WindSpeed.fromCode(recentWindSpeed)
+        recentWindSpeed = WindSpeed.fromCode(recentWindSpeed),
+        recentWindDirection = Direction.fromCode(recentWindDirection)
       ),
       classification = Classification(
         avyType = AvalancheType.fromCode(avyType),

@@ -28,16 +28,17 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation));
 	$("#roAvyFormAspect").text(a.slope.aspect.label);
 	$("#roAvyFormAngle").text(a.slope.angle);
-	  
+
+ 	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow);
+   	$("#roAvyFormRecentWindSpeed").text(a.weather.recentWindSpeed.label);
+   	$("#roAvyFormRecentWindDirection").text(a.weather.recentWindDirection.label);
+
 	$("#roAvyFormType").text(a.classification.avyType.label);
 	$("#roAvyFormTrigger").text(a.classification.trigger.label);
 	$("#roAvyFormInterface").text(a.classification.interface.label);
 	$("#roAvyFormRSize").text(a.classification.rSize);
 	$("#roAvyFormDSize").text(a.classification.dSize);
 
-	$("#roAvyFormSky").text(a.weather.skyCoverage.label);
-	$("#roAvyFormPrecip").text(a.weather.precipitation.label);
-	
 	setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
 	setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
 	setReadOnlySpinnerVal("#roAvyFormNumFullyBuried", a.humanNumbers.fullyBuried);
@@ -123,9 +124,10 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormAreaName').val(a.areaName);
     $('#rwAvyFormDate').val(a.date);
 
-    this.setReadWriteAutocompleteVal('#rwAvyFormSky', a.weather.skyCoverage);
-    this.setReadWriteAutocompleteVal('#rwAvyFormPrecip', a.weather.precipitation);
-    
+    this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
+    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', a.weather.recentWindSpeed);
+    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', a.weather.recentWindDirection);
+
     this.setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
     this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
     this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
