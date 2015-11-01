@@ -21,9 +21,9 @@ object Generators {
 
   def genWeather = for {
     snow <- Gen.choose(-1, 1000)
-    windDirection <- Gen.oneOf(Direction.values.toSeq)
     windSpeed <- Gen.oneOf(WindSpeed.values.toSeq)
-  } yield Weather(snow, windDirection, windSpeed)
+    windDirection <- Gen.oneOf(Direction.values.toSeq)
+  } yield Weather(snow, windSpeed, windDirection)
 
   def genSlope = for {
     aspect <- Gen.oneOf(Direction.values.toSeq)

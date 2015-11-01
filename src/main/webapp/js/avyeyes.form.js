@@ -131,6 +131,11 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormAreaName').val(a.areaName);
     $('#rwAvyFormDate').val(a.date);
 
+    $('#rwAvyFormElevation').val(a.slope.elevation);
+    $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
+    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
+    $('#rwAvyFormAngle').val(a.slope.angle);
+
     this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', a.weather.recentWindSpeed);
     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', a.weather.recentWindDirection);
@@ -140,11 +145,6 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
     this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
     this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
-
-    $('#rwAvyFormElevation').val(a.slope.elevation);
-    $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
-    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
-    $('#rwAvyFormAngle').val(a.slope.angle);
 
     this.setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
     this.setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);

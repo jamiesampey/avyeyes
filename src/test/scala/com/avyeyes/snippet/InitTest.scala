@@ -35,7 +35,7 @@ class InitTest extends WebSpec2 with AroundExample with Mockito {
 
       there was one(mockAvalancheDal).getAvalanche(initAvalanche.extId)
       initJsCalls must contain("avyEyesView.addAvalancheAndFlyTo")
-      autocompleteInitCallCount(initJsCalls) mustEqual 8
+      autocompleteInitCallCount(initJsCalls) mustEqual 7
     }
     
     "Ignore an invalid external ID on the URL" withSFor "/" in {
@@ -44,7 +44,7 @@ class InitTest extends WebSpec2 with AroundExample with Mockito {
 
       there was no(mockAvalancheDal).getAvalanche(anyString)
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
-      autocompleteInitCallCount(initJsCalls) mustEqual 8
+      autocompleteInitCallCount(initJsCalls) mustEqual 7
     }
 
     "Initialize the view without an initial avalanche" withSFor "/" in {
@@ -53,7 +53,7 @@ class InitTest extends WebSpec2 with AroundExample with Mockito {
 
       there was no(mockAvalancheDal).getAvalanche(anyString)
       initJsCalls must contain("avyEyesView.geolocateAndFlyTo")
-      autocompleteInitCallCount(initJsCalls) mustEqual 8
+      autocompleteInitCallCount(initJsCalls) mustEqual 7
     }
   }
   

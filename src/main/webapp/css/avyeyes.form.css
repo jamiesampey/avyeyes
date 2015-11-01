@@ -339,12 +339,13 @@ img.rwAvyFormImageDeleteIcon {
     border: none;
 }
 
-#rwAvyFormElevation.rwAvyFormElevation {
+#rwAvyFormElevation, #rwAvyFormElevationFt {
     text-align: right;
 }
 
-#rwAvyFormElevationFt.rwAvyFormElevation {
-    text-align: left;
+.rwAvyFormUnitSuffix {
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .avyDirectionAutoComplete {
