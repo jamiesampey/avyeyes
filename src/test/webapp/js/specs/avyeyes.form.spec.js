@@ -10,14 +10,15 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         "value":"PE",
         "label":"Professional avalanche forecaster or technician"
       },
-      "scene":{
-        "skyCoverage":{
-          "value":"FEW",
-          "label":"FEW - Few clouds"
+      "weather":{
+        "recentSnow":15,
+        "recentWindSpeed":{
+          "value":"ModerateBreeze",
+          "label":"Moderate breeze"
         },
-        "precipitation":{
-          "value":"SN",
-          "label":"SN - Snow"
+        "recentWindDirection":{
+          "value":"NW",
+          "label":"NW"
         }
       },
       "slope":{
@@ -126,10 +127,22 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
-            expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation);
-            expect($("#roAvyFormElevationFt")).toHaveText(Math.round(avalanche.slope.elevation * 3.28084));
+            expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation + " m");
+            expect($("#roAvyFormElevationFt")).toHaveText(Math.round(avalanche.slope.elevation * 3.28084) + " ft");
             expect($("#roAvyFormAspect")).toHaveText(avalanche.slope.aspect.label);
             expect($("#roAvyFormAngle")).toHaveText(avalanche.slope.angle);
+        });
+
+        it("sets weather fields", function() {
+            setFixtures("<span id='roAvyFormRecentSnow'></span>"
+                + "<span id='roAvyFormRecentWindSpeed'></span>"
+                + "<span id='roAvyFormRecentWindDirection'></span>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormRecentSnow")).toHaveText(avalanche.weather.recentSnow + " cm");
+            expect($("#roAvyFormRecentWindSpeed")).toHaveText(avalanche.weather.recentWindSpeed.label);
+            expect($("#roAvyFormRecentWindDirection")).toHaveText(avalanche.weather.recentWindDirection.label);
         });
 
         it("sets classification fields", function() {
@@ -146,16 +159,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#roAvyFormInterface")).toHaveText(avalanche.classification.interface.label);
             expect($("#roAvyFormRSize")).toHaveText(avalanche.classification.rSize);
             expect($("#roAvyFormDSize")).toHaveText(avalanche.classification.dSize);
-        });
-
-        it("sets scene fields", function() {
-            setFixtures("<span id='roAvyFormSky'></span>"
-                + "<span id='roAvyFormPrecip'></span>");
-
-            avyForm.displayReadOnlyForm(mousePos, avalanche);
-
-            expect($("#roAvyFormSky")).toHaveText(avalanche.scene.skyCoverage.label);
-            expect($("#roAvyFormPrecip")).toHaveText(avalanche.scene.precipitation.label);
         });
 
         it("sets human number fields", function() {
@@ -254,8 +257,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             sinon.stub(avyForm, "resetReadWriteImageUpload");
             var mock = sinon.mock(avyForm);
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSubmitterExp", avalanche.submitterExp).once();
-            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSky", avalanche.scene.skyCoverage).once();
-            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormPrecip", avalanche.scene.precipitation).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindSpeed", avalanche.weather.recentWindSpeed).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindDirection", avalanche.weather.recentWindDirection).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormType", avalanche.classification.avyType).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTrigger", avalanche.classification.trigger).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormInterface", avalanche.classification.interface).once();
@@ -279,6 +282,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("set spinner fields", function() {
             sinon.stub(avyForm, "resetReadWriteImageUpload");
             var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormRecentSnow", avalanche.weather.recentSnow).once();
             mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumCaught", avalanche.humanNumbers.caught).once();
             mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumPartiallyBuried", avalanche.humanNumbers.partiallyBuried).once();
             mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumFullyBuried", avalanche.humanNumbers.fullyBuried).once();
