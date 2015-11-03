@@ -245,7 +245,7 @@ function wireButtons(view) {
 
 function wireLocationInputs(view) {
 	$('.avyLocation').click(function(){
-		$(this).select();
+		$(this).val("");
     });
 
     $('.avyLocation').autocomplete({
