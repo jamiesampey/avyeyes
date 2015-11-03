@@ -72,8 +72,10 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
+            var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
-                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a></li>");
+                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages' title='" + caption
+                + "'><img src='" + imgUrl + "' /></a></li>");
 		});
 
         setImgFancyBox();
@@ -158,7 +160,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $.each(a.images, function(i, image) {
         var imageCellId = getFileBaseName(image.filename);
         appendImageCellToReadWriteForm(imageCellId);
-        this.setImageCellContent(imageCellId, a.extId, image.filename);
+        this.setImageCellContent(imageCellId, a.extId, image);
     }.bind(this));
 
     setImgFancyBox();
@@ -186,7 +188,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
         done: function(e, data) {
             var newImageCellId = getFileBaseName(data.result.filename);
             $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
-            this.setImageCellContent(newImageCellId, extId, data.result.filename);
+            this.setImageCellContent(newImageCellId, extId, data.result);
         }.bind(this),
         fail: function(e, data) {
             console.log("Error", data.errorThrown);
@@ -206,26 +208,27 @@ function appendImageCellToReadWriteForm(imageCellId) {
             + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
 }
 
-AvyForm.prototype.setImageCellContent = function(imageCellId, extId, filename) {
-    var imageUrl = getSignedImageUrl(extId, filename)
+AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
+    var imageUrl = getSignedImageUrl(extId, image.filename)
     var imageDeleteIconId = getImageDeleteIconUniqueId(imageCellId);
+    var caption = (typeof image.caption != "undefined") ? image.caption : "";
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'><a href='" + imageUrl
-        + "' class='imgFancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl
-        + "' /></a><img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' "
-        + "src='/images/img-delete-icon.png' /></div>");
+        + "' class='imgFancybox' rel='rwAvyFormImages' title='" + caption
+        + "'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a><img id='" + imageDeleteIconId
+        + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' /></div>");
 
     $('#' + imageDeleteIconId).click(function() {
-        if (confirm('Are you sure you want to delete image ' + filename + ' from avalanche ' + extId + '?')) {
+        if (confirm('Are you sure you want to delete image ' + image.filename + ' from avalanche ' + extId + '?')) {
             $.ajax({
-                url: getImageRestUrl(extId, filename),
+                url: getImageRestUrl(extId, image.filename),
                 type: 'DELETE',
                 success: function(result) {
                     removeImageFromReadWriteForm(imageCellId);
                 },
                 fail: function(jqxhr, textStatus, error) {
-                    alert('Failed to delete ' + filename + '. Error: ' + textStatus + ", " + error);
+                    alert('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
                 }
             });
         }

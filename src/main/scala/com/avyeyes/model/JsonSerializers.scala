@@ -72,8 +72,8 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
     case json: JValue => ???
   },
   {
-    case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size) =>
-      ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size)
+    case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size, caption) =>
+      ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size) ~ ("caption" -> caption)
   }
 ))
 
