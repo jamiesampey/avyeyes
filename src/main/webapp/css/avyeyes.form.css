@@ -255,6 +255,12 @@ img.rwAvyFormImage {
     cursor: zoom-in;
 }
 
+img.rwAvyFormImageEditIcon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
 img.rwAvyFormImageDeleteIcon {
     position: absolute;
     top: 0px;

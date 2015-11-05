@@ -8,6 +8,7 @@ import com.avyeyes.util.Constants._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
+import net.liftweb.json.JsonAST.JString
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
@@ -38,6 +39,18 @@ class Images extends RestHelper with Loggable {
           ("size" -> fph.length)
         )
       }
+    }
+
+    case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req => json \ "caption" match {
+      case JString(caption) if caption.nonEmpty =>
+        dal.updateAvalancheImage(avyExtId, baseFilename, Some(caption))
+        OkResponse()
+      case JString("") =>
+        dal.updateAvalancheImage(avyExtId, baseFilename, None)
+        OkResponse()
+      case _ =>
+        logger.error("Received an image caption REST post, but the caption payload was missing")
+        BadResponse()
     }
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil Delete req => {

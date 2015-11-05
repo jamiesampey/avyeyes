@@ -210,14 +210,37 @@ function appendImageCellToReadWriteForm(imageCellId) {
 
 AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     var imageUrl = getSignedImageUrl(extId, image.filename)
-    var imageDeleteIconId = getImageDeleteIconUniqueId(imageCellId);
-    var caption = (typeof image.caption != "undefined") ? image.caption : "";
+    var imageEditIconId = imageCellId + "-edit";
+    var imageDeleteIconId = imageCellId + "-delete";
+    var existingCaption = (typeof image.caption != "undefined") ? image.caption : "";
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'><a href='" + imageUrl
-        + "' class='imgFancybox' rel='rwAvyFormImages' title='" + caption
+        + "' class='imgFancybox' rel='rwAvyFormImages' title='" + existingCaption
         + "'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a><img id='" + imageDeleteIconId
-        + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' /></div>");
+        + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
+        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' /></div>");
+
+    $("#" + imageEditIconId).click(function() {
+        var caption = prompt("Enter the caption", existingCaption);
+        if (caption != null) {
+            $.ajax({
+                type: "PUT",
+                contentType : 'application/json',
+                url: getImageRestUrl(extId, image.filename),
+                data: JSON.stringify({
+                    "caption": caption
+                }),
+                success: function(result) {
+                    existingCaption = caption;
+                    $("#" + imageCellId).find("a").attr("title", caption);
+                },
+                fail: function(jqxhr, textStatus, error) {
+                    alert("Failed to edit image caption. Error: " + textStatus + ", " + error);
+                }
+            });
+        }
+    });
 
     $('#' + imageDeleteIconId).click(function() {
         if (confirm('Are you sure you want to delete image ' + image.filename + ' from avalanche ' + extId + '?')) {
@@ -274,10 +297,6 @@ function getImageRestUrl(extId, filename) {
 
 function getFileBaseName(filename) {
     return filename.substring(0, filename.lastIndexOf('.'));
-}
-
-function getImageDeleteIconUniqueId(imageCellId) {
-    return imageCellId + "-delete";
 }
 
 function setImgFancyBox() {

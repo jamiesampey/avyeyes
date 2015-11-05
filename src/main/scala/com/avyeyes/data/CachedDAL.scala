@@ -32,7 +32,9 @@ trait CachedDAL {
   def countAvalancheImages(extId: String): Int
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage]
-  
+
+  def updateAvalancheImage(avyExtId: String, baseFilename: String, caption: Option[String]): Unit
+
   def deleteAvalancheImage(avyExtId: String, filename: String): Unit
 
   def deleteOrphanAvalancheImages: Seq[String]
