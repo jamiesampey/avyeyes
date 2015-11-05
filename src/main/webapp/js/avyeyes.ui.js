@@ -244,10 +244,6 @@ function wireButtons(view) {
 }
 
 function wireLocationInputs(view) {
-	$('.avyLocation').click(function(){
-		$(this).val("");
-    });
-
     $('.avyLocation').autocomplete({
         source: function (request, response) {
             view.geocode(request.term, function(data) {
@@ -270,18 +266,16 @@ function wireLocationInputs(view) {
 
     $('.avyLocation').keydown(function (event) {
         if (event.keyCode == 13) {
-            var dialogParent = $(this).parents('.ui-dialog-content');
-            if (dialogParent) {
-                dialogParent.dialog('close');
-            }
-            if ($(this).val()) {
-                view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
-            }
+            $(this).blur();
             event.preventDefault();
         }
     });
 
-	$('#avySearchLocation').blur(function(event) {
+	$('.avyLocation').blur(function(event) {
+        var dialogParent = $(this).parents('.ui-dialog-content');
+        if (dialogParent) {
+            dialogParent.dialog('close');
+        }
         view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
 	});
 }
