@@ -215,11 +215,11 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     var existingCaption = (typeof image.caption != "undefined") ? image.caption : "";
 
     $("#" + imageCellId).empty();
-    $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'><a href='" + imageUrl
-        + "' class='imgFancybox' rel='rwAvyFormImages' title='" + existingCaption
-        + "'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a><img id='" + imageDeleteIconId
-        + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
-        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' /></div>");
+    $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
+        + "<a href='" + imageUrl + "' class='imgFancybox' rel='rwAvyFormImages' title='" + existingCaption + "'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
+        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' />"
+        + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
+        + "</div>");
 
     $("#" + imageEditIconId).click(function() {
         var caption = prompt("Enter the caption", existingCaption);
