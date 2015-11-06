@@ -8,6 +8,7 @@ import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
 import net.liftweb.http._
+import net.liftweb.json.JsonDSL._
 import net.liftweb.mocks.MockHttpServletRequest
 import org.specs2.execute.{Result, AsResult}
 import org.specs2.mock.Mockito
@@ -50,7 +51,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
     mockPostRequest.method = "POST"
   
-    "Insert a new image in the DB" withSFor(mockPostRequest) in {
+    "Insert a new image in the DB" withSFor mockPostRequest in {
       val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns 0
 
@@ -70,7 +71,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       extractJsonLongField(resp, "size") mustEqual fileBytes.length
     }
 
-    "Don't insert an image above the max images count" withSFor(mockPostRequest) in {
+    "Don't insert an image above the max images count" withSFor mockPostRequest in {
       val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns MaxImagesPerAvalanche
 
@@ -86,12 +87,61 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       resp must beAnInstanceOf[ResponseWithReason]
     }
   }
-  
+
+  "Image caption put request" >> {
+    val mockPutRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
+    mockPutRequest.method = "PUT"
+    mockPutRequest.contentType = "application/json"
+
+    "Write a caption to the DB" >> {
+      val testCaption = "look at this crazy avalanche"
+      mockPutRequest.body_=("caption" -> testCaption)
+
+      "do request" withSFor mockPutRequest in {
+        val images = new Images
+        val req = openLiftReqBox(S.request)
+
+        val extIdArg = capture[String]
+        val filenameArg = capture[String]
+        val captionArg = capture[Option[String]]
+
+        val resp = openLiftRespBox(images(req)())
+
+        resp must beAnInstanceOf[OkResponse]
+        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        extIdArg.value mustEqual extId
+        filenameArg.value mustEqual goodImgFileName
+        captionArg.value mustEqual Some(testCaption)
+      }
+    }
+
+    "Remove a caption from the DB" >> {
+      mockPutRequest.body_=("caption" -> "")
+
+      "do request" withSFor mockPutRequest in {
+        val images = new Images
+        val req = openLiftReqBox(S.request)
+
+        val extIdArg = capture[String]
+        val filenameArg = capture[String]
+        val captionArg = capture[Option[String]]
+
+        val resp = openLiftRespBox(images(req)())
+
+        resp must beAnInstanceOf[OkResponse]
+        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        extIdArg.value mustEqual extId
+        filenameArg.value mustEqual goodImgFileName
+        captionArg.value mustEqual None
+      }
+    }
+  }
+
   "Image Delete request" >> {
     val mockDeleteRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
     mockDeleteRequest.method = "DELETE"
 
-    "Delete an image from the DB" withSFor(mockDeleteRequest) in {
+    "Delete an image from the DB" withSFor mockDeleteRequest in {
       val images = new Images
       val req = openLiftReqBox(S.request)
 
