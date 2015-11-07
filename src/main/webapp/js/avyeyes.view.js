@@ -147,7 +147,10 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     var showTitle = function() {
         this.showModalDialog("Info", a.date + ": " + a.areaName + "<br/>" +
             "<span style='font-size: .8em;'>Submitter: </span><span style='font: italic .8em times,serif'>"
-            + a.submitterExp.label + "</span><br/><br/>Click on the red avalanche path for details");
+            + a.submitterExp.label + "</span><br/><br/>Click on the red avalanche path for details<br/><br/>"
+            + "<table><tr><td class='dialogTipsTd'>Tips:</td>"
+            + "<td class='dialogTipsTd'>Click & drag to pan the view<br/>Hold the Control key + click & drag to rotate or tilt the view<br/>Mouse wheel or right-click & drag to zoom the view"
+            + "</td></tr></table>");
     }.bind(this);
 
     this.ui.raiseTheCurtain();

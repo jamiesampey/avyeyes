@@ -200,6 +200,16 @@ textarea:focus, input:focus {
 	z-index: 101;
 }
 
+.dialogTipsTd :first-child {
+    width: 1%;
+}
+
+.dialogTipsTd {
+    vertical-align: top;
+    font-size: .8em;
+    font-style: italic;
+}
+
 #eyeAltContainer {
 	position: absolute;
     top: 8px;
