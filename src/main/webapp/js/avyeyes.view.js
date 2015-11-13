@@ -95,6 +95,17 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
+AvyEyesView.prototype.showControls = function(divId) {
+    var controlDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
+    $(controlDiv).css("visible", true);
+    $(controlDiv).slideDown("slow");
+    var a = 5;
+}
+
+AvyEyesView.prototype.hideControls = function() {
+    return $('.aeControlsContent :visible').slideUp("slow").promise();
+}
+
 AvyEyesView.prototype.showModalDialog = function(title, msg) {
     $("#multiDialog").html(msg);
     $("#multiDialog").dialog("option", "title", title);
@@ -121,7 +132,9 @@ AvyEyesView.prototype.cancelReport = function() {
 AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
 	this.cancelReport();
-	this.ui.showSearchDiv();
+	this.hideControls().then(function() {
+	    this.showControls();
+	}.bind(this));
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
@@ -129,7 +142,7 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         this.addAvalanche(avalanche);
     }.bind(this));
 
-    this.ui.hideSearchDiv();
+    this.hideControls();
 }
 
 AvyEyesView.prototype.addAvalanche = function(avalanche) {
@@ -223,7 +236,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
     var westernUSTarget = this.targetEntityFromCoords(-112, 44, false);
     this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
         this.cesiumViewer.entities.remove(westernUSTarget);
-        this.ui.showSearchDiv();
+        this.showControls();
     }.bind(this));
   }.bind(this)
 
@@ -233,7 +246,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
         var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true);
 		this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
 		    this.cesiumViewer.entities.remove(geolocatedTarget);
-		    this.ui.showSearchDiv();
+		    this.showControls();
 		}.bind(this));
 	  }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
   } else {

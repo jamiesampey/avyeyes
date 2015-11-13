@@ -19,8 +19,9 @@ AvyReport.prototype.reserveExtId = function() {
 AvyReport.prototype.beginReport = function() {
 	this.reserveExtId();
     $('#avyReportInitLocation').val('');
-	$('#avyReportLocationDialog').dialog('open');
-	$('#avyReportDrawButtonContainer').css('visibility', 'visible');
+    $('#avyReportStep1').show(function() {
+    	this.view.showControls('#aeControlsReportInstructions');
+    }.bind(this));
 }
 
 AvyReport.prototype.startDrawing = function() {

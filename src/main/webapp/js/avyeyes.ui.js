@@ -19,35 +19,35 @@ AvyEyesUI.prototype.wire = function(view, callback) {
 }
 
 function wireMainMenu(view) {
-    $('#aeMenu').menu().position({
+    $('#aeControlsMenu').menu().position({
         my: 'left top',
         at: 'right top',
-        of: $('#aeMenuButtonContainer'),
+        of: $('#aeControlsMenuButtonContainer'),
         collision: 'none none'
     });
 
     var menuBlurTimer;
 
-    $('#aeMenu').on('menufocus', function(event, ui) {
+    $('#aeControlsMenu').on('menufocus', function(event, ui) {
         clearTimeout(menuBlurTimer);
     });
 
-    $('#aeMenu').on('menublur', function(event, ui) {
+    $('#aeControlsMenu').on('menublur', function(event, ui) {
         menuBlurTimer = setTimeout(function() {
-        $('#aeMenu').hide('slide', 400);
-    }, 200);
+            $('#aeControlsMenu').hide('slide', 400);
+        }, 200);
     });
 
-    $('#aeMenu').on('menuselect', function(event, ui){
-        $('#aeMenu').hide('slide', 400);
+    $('#aeControlsMenu').on('menuselect', function(event, ui){
+        $('#aeControlsMenu').hide('slide', 400);
     });
 
-    $('#aeMenu').hide();
+    $('#aeControlsMenu').hide();
 
-    $('#aeMenuButton').click(function(){
-        $('#aeMenu').show('slide', 400);
+    $('#aeControlsMenuButton').click(function(){
+        $('#aeControlsMenu').show('slide', 400);
         menuBlurTimer = setTimeout(function() {
-            $('#aeMenu').hide('slide', 400);
+            $('#aeControlsMenu').hide('slide', 400);
         }, 4000);
     });
 
@@ -59,8 +59,9 @@ function wireMainMenu(view) {
     $('#reportMenuItem').parent("li").click(function(e){
         e.preventDefault();
         view.resetView();
-        hideSearchDiv();
-        view.doReport();
+        view.hideControls().then(function() {
+            view.doReport();
+        });
     });
 
     $('#aboutMenuItem').parent("li").click(function(e){
@@ -330,68 +331,68 @@ function wireDialogs(view) {
 	$('#helpDialog').tabs();
 
 
-    $('#avyReportLocationDialog').dialog({
-        width: 700,
-        height: 500,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        beforeclose: function (event, ui) {
-            return false;
-        },
-        dialogClass: "avyReportDrawDialog",
-        title: "Avalanche Report",
-        open: function() {
-            $('#avyReportInitLocation').focus();
-        },
-        buttons: [{
-            text: "Begin Report",
-            click: function(event, ui) {
-                $(this).dialog('close');
-                if ($('#avyReportInitLocation').val()) {
-                    view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
-                }
-            }
-        },{
-            text: "Cancel",
-            click: function(event, ui) {
-                view.resetView();
-            }
-        }]
-    });
-
-    $('#avyReportDrawingConfirmationDialog').dialog({
-        width: 500,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: true,
-        closeOnEscape: false,
-        beforeclose: function (event, ui) {
-            return false;
-        },
-        dialogClass: "avyReportDrawDialog",
-        title: "Avalanche Report",
-        buttons: [{
-            text: "Accept Drawing",
-            click: function(event, ui) {
-                $(this).dialog('close');
-                $.ui.dialog.prototype._focusTabbable = function(){};
-                view.form.toggleWindDirectionFields(false);
-                view.form.toggleTechnicalReportFields(false);
-                view.form.displayReadWriteForm();
-            }
-        },{
-            text: "Redraw",
-            click: function(event, ui) {
-                $(this).dialog('close');
-                $('#avyReportDrawButtonContainer').css('visibility', 'visible');
-                view.currentReport.clearDrawing();
-            }
-        }]
-    });
+//    $('#avyReportLocationDialog').dialog({
+//        width: 700,
+//        height: 500,
+//        autoOpen: false,
+//        modal: true,
+//        resizable: false,
+//        draggable: false,
+//        closeOnEscape: false,
+//        beforeclose: function (event, ui) {
+//            return false;
+//        },
+//        dialogClass: "avyReportDrawDialog",
+//        title: "Avalanche Report",
+//        open: function() {
+//            $('#avyReportInitLocation').focus();
+//        },
+//        buttons: [{
+//            text: "Begin Report",
+//            click: function(event, ui) {
+//                $(this).dialog('close');
+//                if ($('#avyReportInitLocation').val()) {
+//                    view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
+//                }
+//            }
+//        },{
+//            text: "Cancel",
+//            click: function(event, ui) {
+//                view.resetView();
+//            }
+//        }]
+//    });
+//
+//    $('#avyReportDrawingConfirmationDialog').dialog({
+//        width: 500,
+//        autoOpen: false,
+//        modal: true,
+//        resizable: false,
+//        draggable: true,
+//        closeOnEscape: false,
+//        beforeclose: function (event, ui) {
+//            return false;
+//        },
+//        dialogClass: "avyReportDrawDialog",
+//        title: "Avalanche Report",
+//        buttons: [{
+//            text: "Accept Drawing",
+//            click: function(event, ui) {
+//                $(this).dialog('close');
+//                $.ui.dialog.prototype._focusTabbable = function(){};
+//                view.form.toggleWindDirectionFields(false);
+//                view.form.toggleTechnicalReportFields(false);
+//                view.form.displayReadWriteForm();
+//            }
+//        },{
+//            text: "Redraw",
+//            click: function(event, ui) {
+//                $(this).dialog('close');
+//                $('#avyReportDrawButtonContainer').css('visibility', 'visible');
+//                view.currentReport.clearDrawing();
+//            }
+//        }]
+//    });
 
     $('#rwAvyFormImageDialog').dialog({
         width: 700,
@@ -461,20 +462,6 @@ AvyEyesUI.prototype.raiseTheCurtain = function() {
     }
 }
 
-AvyEyesUI.prototype.showSearchDiv = function(delay) {
-    if (delay > 0) {
-        setTimeout(function() {
-            $('#aeSearchControlContainer').slideDown("slow");
-        }, delay);
-    } else {
-        $('#aeSearchControlContainer').slideDown("slow");
-    }
-}
-
-AvyEyesUI.prototype.hideSearchDiv = hideSearchDiv;
-function hideSearchDiv() {
-    $('#aeSearchControlContainer').slideUp("slow");
-}
 
 return AvyEyesUI;
 });

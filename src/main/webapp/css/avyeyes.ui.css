@@ -255,7 +255,7 @@ textarea:focus, input:focus {
 	overflow-y: auto;
 }
 
-#aeControlContainer {
+#aeControls {
 	position: absolute;
     top: 10px;
     left: 10px;
@@ -266,7 +266,7 @@ textarea:focus, input:focus {
     color: white;
 }
 
-#aeTitleContainer {
+#aeControlsTitle {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -277,12 +277,12 @@ textarea:focus, input:focus {
     box-sizing:border-box;
 }
 
-#aeTitleContainer img {
+#aeControlsTitle img {
     padding: 0px;
     margin: 0px 0px 0px 25px;
 }
 
-#aeMenuButtonContainer {
+#aeControlsMenuButtonContainer {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -301,7 +301,7 @@ textarea:focus, input:focus {
     font: normal 1em times,serif !important;
 }
 
-#aeSearchControlContainer {
+.aeControlsContent {
     display: none;
     position: absolute;
     top: 60px;
@@ -312,7 +312,7 @@ textarea:focus, input:focus {
     background: rgba(0, 0, 0, 0.5);
 }
 
-#aeSearchControlContainer hr {
+.aeControlsContent hr {
     margin: 0px 10px 0px 10px;
     padding: 0px;
 }
@@ -383,29 +383,8 @@ textarea:focus, input:focus {
     margin: 20px 10px 20px 0px;
 }
 
-#avyReportLocationDialog {
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-#avyReportLocationDialog div {
-    margin-bottom: 15px;
-}
-
-.avyReportDrawDialog {
-	margin: 5px 5px 0px 5px;
-	padding: 0px;
-}
-
-#avyReportDrawButtonContainer {
-    position: absolute;
-    visibility: hidden;
-    top: 5px;
-    right: 250px;
-    z-index: 10;
-}
-
-#avyReportStartDrawingButton {
-    background: #458B00;
-    font-size: 1.1em;
+.reportInstructions {
+    display: none;
+    padding: 20px 10px 20px 10px;
+    background-color: transparent;
 }
