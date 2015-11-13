@@ -237,6 +237,12 @@ function wireButtons(view) {
         $('#avySearchDetailsTable').find('.avyRDSlider').slider('value', 0);
     });
 
+    $("#avyReportInitLocationButton").click(function() {
+        $("#avyReportStep1").hide("slide", {"direction":"down"}, 800, function() {
+            $("#avyReportStep2").slideDown("slow");
+        });
+    });
+
     $('#avyReportStartDrawingButton').click(function() {
         view.currentReport.startDrawing();
     });

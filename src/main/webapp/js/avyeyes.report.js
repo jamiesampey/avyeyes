@@ -25,7 +25,6 @@ AvyReport.prototype.beginReport = function() {
 }
 
 AvyReport.prototype.startDrawing = function() {
-    $('#avyReportDrawButtonContainer').css('visibility', 'hidden');
     this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     $('#cesiumContainer').css('cursor','crosshair');

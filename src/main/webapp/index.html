@@ -169,15 +169,18 @@
                 <hr/>
 
                 <div id="avyReportStep1" class="reportInstructions">
-                    <span id="avyReportLocationInstructions1" class="avyMsg"></span>
-                    <div>
-                        <label for="avyReportInitLocation"></label>
-                        <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text"/>
-                    </div>
+                    <span id="avyReportInstructions1" class="avyMsg"></span>
+                    <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text" placeholder="Location"/>
+                    <input id="avyReportInitLocationButton" type="button" class="avyButton"/>
                 </div>
 
-                <div id="avyReportDrawButtonContainer" class="aeControlsContent">
-                    <input id="avyReportStartDrawingButton" type="button" class="cesium-button avyButton"/>
+                <div id="avyReportStep2" class="reportInstructions">
+                    <span id="avyReportInstructions2" class="avyMsg"></span>
+                    <input id="avyReportStartDrawingButton" type="button" class="avyButton"/>
+                </div>
+
+                <div id="avyReportStep3" class="reportInstructions">
+                    <span id="avyReportInstructions3" class="avyMsg"></span>
                 </div>
 
                 <div id="avyReportDrawingConfirmationDialog" class="reportInstructions">

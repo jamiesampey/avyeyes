@@ -388,3 +388,17 @@ textarea:focus, input:focus {
     padding: 20px 10px 20px 10px;
     background-color: transparent;
 }
+
+#avyReportInitLocation {
+    width: 150px;
+    margin-right: 10px;
+}
+
+#avyReportInitLocationButton {
+    padding: 5px;
+}
+
+#avyReportStartDrawingButton {
+    margin-top: 20px;
+    margin-left: 35px;
+}

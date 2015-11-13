@@ -356,7 +356,6 @@ AvyForm.prototype.clearReportFields = function() {
 	$('#rwAvyFormDialog').find('.avyRDSliderValue').val('0');
 	$('#rwAvyFormDialog').find('.avyRDSlider').slider('value', 0);
 	$('#rwAvyFormImageGrid').empty();
-	$('#avyReportDrawButtonContainer').css('visibility', 'hidden');
 }
 
 AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
