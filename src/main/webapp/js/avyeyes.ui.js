@@ -59,9 +59,7 @@ function wireMainMenu(view) {
     $('#reportMenuItem').parent("li").click(function(e){
         e.preventDefault();
         view.resetView();
-        view.hideControls().then(function() {
-            view.doReport();
-        });
+        view.doReport();
     });
 
     $('#aboutMenuItem').parent("li").click(function(e){

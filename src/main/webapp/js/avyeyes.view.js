@@ -96,14 +96,16 @@ AvyEyesView.prototype.setAvySelectEventHandler = function() {
 }
 
 AvyEyesView.prototype.showControls = function(divId) {
-    var controlDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
-    $(controlDiv).css("visible", true);
-    $(controlDiv).slideDown("slow");
-    var a = 5;
+    var controlContentDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
+    if ($(controlContentDiv).css("display") == "none") {
+        this.hideControls().then(function() {
+            $(controlContentDiv).slideDown("slow");
+        });
+    }
 }
 
 AvyEyesView.prototype.hideControls = function() {
-    return $('.aeControlsContent :visible').slideUp("slow").promise();
+    return $('#aeControlsSearchForm, #aeControlsReportInstructions').slideUp("slow").promise();
 }
 
 AvyEyesView.prototype.showModalDialog = function(title, msg) {
@@ -132,9 +134,7 @@ AvyEyesView.prototype.cancelReport = function() {
 AvyEyesView.prototype.resetView = function() {
 	this.cesiumViewer.entities.removeAll();
 	this.cancelReport();
-	this.hideControls().then(function() {
-	    this.showControls();
-	}.bind(this));
+	this.showControls();
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
