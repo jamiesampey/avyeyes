@@ -295,9 +295,8 @@ function wireLocationInputs(view) {
     });
 
 	$('.avyLocation').blur(function(event) {
-        var dialogParent = $(this).parents('.ui-dialog-content');
-        if (dialogParent) {
-            dialogParent.dialog('close');
+        if ($(this).siblings("#avyReportInitLocationButton").length) {
+            $("#avyReportInitLocationButton").click();
         }
         view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
 	});
