@@ -238,13 +238,31 @@ function wireButtons(view) {
     });
 
     $("#avyReportInitLocationButton").click(function() {
-        $("#avyReportStep1").hide("slide", {"direction":"down"}, 800, function() {
+        $("#avyReportStep1").hide("slide", {"direction":"down"}, 600, function() {
             $("#avyReportStep2").slideDown("slow");
         });
     });
 
     $('#avyReportStartDrawingButton').click(function() {
         view.currentReport.startDrawing();
+        $("#avyReportStep2").hide("slide", {"direction":"down"}, 600, function() {
+            $("#avyReportStep3").slideDown("slow");
+        });
+    });
+
+    $('#avyReportAcceptDrawingButton').click(function() {
+        view.hideControls().then(function() {
+            view.form.toggleWindDirectionFields(false);
+            view.form.toggleTechnicalReportFields(false);
+            view.form.displayReadWriteForm();
+        });
+    });
+
+    $('#avyReportRedrawButton').click(function() {
+        view.currentReport.clearDrawing();
+        $("#avyReportStep4").hide("slide", {"direction":"down"}, 600, function() {
+            $("#avyReportStep2").slideDown("slow");
+        });
     });
 }
 
@@ -334,70 +352,6 @@ function wireDialogs(view) {
 	});
 	$('#helpDialog').tabs();
 
-
-//    $('#avyReportLocationDialog').dialog({
-//        width: 700,
-//        height: 500,
-//        autoOpen: false,
-//        modal: true,
-//        resizable: false,
-//        draggable: false,
-//        closeOnEscape: false,
-//        beforeclose: function (event, ui) {
-//            return false;
-//        },
-//        dialogClass: "avyReportDrawDialog",
-//        title: "Avalanche Report",
-//        open: function() {
-//            $('#avyReportInitLocation').focus();
-//        },
-//        buttons: [{
-//            text: "Begin Report",
-//            click: function(event, ui) {
-//                $(this).dialog('close');
-//                if ($('#avyReportInitLocation').val()) {
-//                    view.geocodeAndFlyTo($('#avyReportInitLocation').val(), -60.0, 8000.0);
-//                }
-//            }
-//        },{
-//            text: "Cancel",
-//            click: function(event, ui) {
-//                view.resetView();
-//            }
-//        }]
-//    });
-//
-//    $('#avyReportDrawingConfirmationDialog').dialog({
-//        width: 500,
-//        autoOpen: false,
-//        modal: true,
-//        resizable: false,
-//        draggable: true,
-//        closeOnEscape: false,
-//        beforeclose: function (event, ui) {
-//            return false;
-//        },
-//        dialogClass: "avyReportDrawDialog",
-//        title: "Avalanche Report",
-//        buttons: [{
-//            text: "Accept Drawing",
-//            click: function(event, ui) {
-//                $(this).dialog('close');
-//                $.ui.dialog.prototype._focusTabbable = function(){};
-//                view.form.toggleWindDirectionFields(false);
-//                view.form.toggleTechnicalReportFields(false);
-//                view.form.displayReadWriteForm();
-//            }
-//        },{
-//            text: "Redraw",
-//            click: function(event, ui) {
-//                $(this).dialog('close');
-//                $('#avyReportDrawButtonContainer').css('visibility', 'visible');
-//                view.currentReport.clearDrawing();
-//            }
-//        }]
-//    });
-
     $('#rwAvyFormImageDialog').dialog({
         width: 700,
         height: 620,
@@ -465,7 +419,6 @@ AvyEyesUI.prototype.raiseTheCurtain = function() {
         $('#loadingDiv').fadeOut(500);
     }
 }
-
 
 return AvyEyesUI;
 });

@@ -56,8 +56,10 @@ AvyReport.prototype.startDrawing = function() {
             this.view.cesiumViewer.entities.remove(drawingPolyline);
 
             this.digestDrawing(cartesian3Array);
-            $.ui.dialog.prototype._focusTabbable = function(){};
-           	$('#avyReportDrawingConfirmationDialog').dialog('open');
+
+            $("#avyReportStep3").hide("slide", {"direction":"down"}, 600, function() {
+                $("#avyReportStep4").slideDown("slow");
+            });
         } else {
             drawingPolyline = this.view.cesiumViewer.entities.add({
                 polyline: {
