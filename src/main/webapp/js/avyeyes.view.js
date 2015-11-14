@@ -128,6 +128,7 @@ AvyEyesView.prototype.doReport = function() {
 AvyEyesView.prototype.cancelReport = function() {
     this.form.closeReportDialogs();
     this.form.clearReportFields();
+    $(".reportInstructions").hide();
 	this.currentReport = null;
 }
 

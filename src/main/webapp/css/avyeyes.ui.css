@@ -405,7 +405,13 @@ textarea:focus, input:focus {
     padding: 5px;
 }
 
-#avyReportStartDrawingButton {
-    margin-top: 20px;
-    margin-left: 35px;
+.avyReportInstructionsButtonWrapper {
+    position: relative;
+    width: 280px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.avyReportInstructionsButtonWrapper > .avyButton {
+    margin: 0px 5px 0px 5px;
 }
