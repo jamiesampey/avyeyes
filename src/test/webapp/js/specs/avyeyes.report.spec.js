@@ -70,7 +70,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("makes the necessary calls", function() {
-            setFixtures("<input id='avyReportInitLocation' value='blahblah' /><div id='avyReportDrawButtonContainer'></div>");
+            setFixtures("<input id='avyReportInitLocation' value='blahblah' />");
             var avyReportMock = sinon.mock(avyReport);
             var reserveExtIdExpectation = avyReportMock.expects("reserveExtId").once();
 

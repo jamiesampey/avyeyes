@@ -359,14 +359,12 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("clear fields", function() {
-            setFixtures("<div id='avyReportDrawButtonContainer'></div");
             var mock = sinon.mock(avyForm);
             mock.expects("resetReportErrorFields").once();
             mock.expects("setReportDrawingInputs").withExactArgs('', '', '', '', '', '').once();
 
             avyForm.clearReportFields();
 
-            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "hidden"});
             mock.verify();
         });
 
