@@ -181,8 +181,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("Cancels a report", function() {
+//            var jQueryMock = sinon.mock($.fn)
             avyEyesView.currentReport = {};
             avyEyesView.cancelReport();
+
+//            jQueryMock.expects("hide").once();
             expect(closeReportDialogsStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();

@@ -126,9 +126,9 @@ AvyEyesView.prototype.doReport = function() {
 }
 
 AvyEyesView.prototype.cancelReport = function() {
+    $(".reportInstructions").hide();
     this.form.closeReportDialogs();
     this.form.clearReportFields();
-    $(".reportInstructions").hide();
 	this.currentReport = null;
 }
 

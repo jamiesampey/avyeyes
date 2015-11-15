@@ -77,7 +77,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             avyReport.beginReport();
             reserveExtIdExpectation.verify();
             expect($("#avyReportInitLocation")).toHaveValue("");
-            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "visible"});
         });
     });
 
@@ -95,16 +94,19 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("Starts a new drawing", function() {
-            setFixtures("<div id='cesiumContainer'/><div id='avyReportDrawButtonContainer'></div>");
+            setFixtures("<div id='cesiumContainer'/><div id='avyReportStep3'/><div id='avyReportStep4'/>");
+            var jQueryMock = sinon.mock($.fn)
 
             avyReport.startDrawing();
 
-            expect($("#avyReportDrawButtonContainer")).toHaveCss({visibility: "hidden"});
             expect($("#cesiumContainer")).toHaveCss({cursor: "crosshair"});
             expect(cesiumEventHandlerStub.removeInputAction.calledWith(cesiumSpy.ScreenSpaceEventType.LEFT_CLICK)).toBe(true);
 
             expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.LEFT_CLICK)).toBe(true);
             expect(cesiumEventHandlerStub.setInputAction.calledWith(sinon.match.func, cesiumSpy.ScreenSpaceEventType.MOUSE_MOVE)).toBe(true);
+
+            jQueryMock.expects("hide").withArgs("slide", {"direction":"down"}, 600, sinon.match.func).once();
+            jQueryMock.expects("slideDown").withArgs("slow").once();
         });
 
         it("Clears a drawing", function() {
