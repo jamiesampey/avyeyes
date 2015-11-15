@@ -181,7 +181,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("Cancels a report", function() {
             avyEyesView.currentReport = {};
             avyEyesView.cancelReport();
-
             expect(closeReportDialogsStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();
