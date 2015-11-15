@@ -50,10 +50,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
     var avyEyesUiStub = sinon.stub();
     var uiWireStub = sinon.stub();
-    var showSearchDivStub = sinon.stub();
     avyEyesUiStub.returns({
-        wire: uiWireStub,
-        showSearchDiv: showSearchDivStub
+        wire: uiWireStub
     });
 
     describe("AvyEyesView constructor", function () {
@@ -181,11 +179,9 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("Cancels a report", function() {
-//            var jQueryMock = sinon.mock($.fn)
             avyEyesView.currentReport = {};
             avyEyesView.cancelReport();
 
-//            jQueryMock.expects("hide").once();
             expect(closeReportDialogsStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();
@@ -209,10 +205,13 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         it("works", function() {
             var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
+            var showControlsStub = sinon.stub(avyEyesView, "showControls");
+
             avyEyesView.resetView();
+
             expect(removeAllSpy.callCount).toBe(1);
             expect(cancelReportStub.callCount).toBe(1);
-            expect(showSearchDivStub.callCount).toBe(1);
+            expect(showControlsStub.callCount).toBe(1);
         });
     });
 });

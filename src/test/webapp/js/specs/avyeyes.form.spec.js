@@ -60,7 +60,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
       "images":[{
         "filename":"f2c4b446-53c7-432f-838a-fe46d4bff987.jpg",
         "mimeType":"image/jpeg",
-        "size":3206315
+        "size":3206315,
+        "caption": "some text abount the image"
       },{
         "filename":"216c68e5-6c97-4706-813f-abeadd61bc99.jpg",
         "mimeType":"image/jpeg",
