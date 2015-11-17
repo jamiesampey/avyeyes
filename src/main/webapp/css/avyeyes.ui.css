@@ -392,7 +392,8 @@ textarea:focus, input:focus {
 
 .reportInstructions {
     display: none;
-    padding: 20px 10px 20px 10px;
+    height: 430px;
+    padding: 20px 10px 0px 10px;
     background-color: transparent;
 }
 
@@ -408,7 +409,7 @@ textarea:focus, input:focus {
 .avyReportInstructionsButtonWrapper {
     position: relative;
     width: 280px;
-    margin: 20px auto;
+    margin: 10px auto;
     text-align: center;
 }
 
