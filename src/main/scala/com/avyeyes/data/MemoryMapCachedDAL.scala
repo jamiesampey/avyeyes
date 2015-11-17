@@ -22,6 +22,8 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
   import driver.api._
 
+  implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
+
   private val user = Injectors.user.vend
   private val db = Database.forDataSource(ds)
 
@@ -150,7 +152,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage] = Await.result(db.run(
-    imageQuery(avyExtId, None).result), Duration.Inf).toList
+    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.createTime)
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {

@@ -57,8 +57,8 @@ class Images extends RestHelper with Loggable {
       try {
         dal.getAvalancheImage(avyExtId, baseFilename).map(_.filename) match {
           case Some(filename) =>
-            dal.deleteAvalancheImage(avyExtId, filename)
             s3.deleteImage(avyExtId, filename)
+            dal.deleteAvalancheImage(avyExtId, filename)
           case _ => logger.error(s"Unable to retrieve image filename for delete. Base filename = $baseFilename")
         }
 
