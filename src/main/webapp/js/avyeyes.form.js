@@ -43,8 +43,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormType").text(a.classification.avyType.label);
 	$("#roAvyFormTrigger").text(a.classification.trigger.label);
 	$("#roAvyFormInterface").text(a.classification.interface.label);
-	$("#roAvyFormRSize").text(a.classification.rSize);
-	$("#roAvyFormDSize").text(a.classification.dSize);
+	setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
+	setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
 
 	setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
 	setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
@@ -400,6 +400,14 @@ AvyForm.prototype.toggleTechnicalReportFields = function(enabled) {
         $('#rwAvyFormClassification .avyRDSlider').slider('disable');
         $('#rwAvyFormClassification .avyRDSliderValue').val('0');
         $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
+    }
+}
+
+function setReadOnlySliderVal(inputElem, value) {
+    if (value <= 0) {
+        $(inputElem).text('Unknown');
+    } else {
+        $(inputElem).text(value);
     }
 }
 
