@@ -74,8 +74,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
-                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages' title='" + caption
-                + "'><img src='" + imgUrl + "' /></a></li>");
+                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
+                + "<div style='display: none;'>" + caption + "</div></li>");
 		});
 
         setImgFancyBox();
@@ -216,7 +216,8 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
-        + "<a href='" + imageUrl + "' class='imgFancybox' rel='rwAvyFormImages' title='" + existingCaption + "'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
+        + "<a href='" + imageUrl + "' class='imgFancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
+        + "<div style='display: none;'>" + existingCaption + "</div>"
         + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' />"
         + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
         + "</div>");
@@ -300,7 +301,15 @@ function getFileBaseName(filename) {
 }
 
 function setImgFancyBox() {
-    $(".imgFancybox").fancybox({padding: 0, openEffect: 'elastic', closeEffect: 'elastic'});
+    $(".imgFancybox").fancybox({
+        padding: 0,
+        openEffect: "elastic",
+        closeEffect: "elastic",
+        beforeShow: function() {
+            this.title = "<div style='max-width:" + $(this.element).data("width")
+                + ";white-space: pre-wrap;'>" + $(this.element).next("div").html() + "</div>";
+        }
+    });
 }
 
 AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
