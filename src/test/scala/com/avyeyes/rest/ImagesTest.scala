@@ -41,7 +41,8 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   
   val badImgFileName = "imgNotInDb"
   val noImage: Option[AvalancheImage] = None
-  
+
+  mockAvalancheDal.getAvalanche(extId) returns None
   mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
   mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns noImage
 
@@ -84,7 +85,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       val resp = openLiftRespBox(images(reqWithFPH)())
 
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
-      resp must beAnInstanceOf[ResponseWithReason]
+      resp must beAnInstanceOf[BadResponse]
     }
   }
 

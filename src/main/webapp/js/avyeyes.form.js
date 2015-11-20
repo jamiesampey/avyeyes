@@ -182,8 +182,14 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
         url: "/rest/images/" + extId,
         dropZone:$('#rwAvyFormImageDropZone'),
         add: function (e, data) {
-            appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
-            setTimeout(function() { data.submit(); }, 500);
+            if ($("#rwAvyFormImageGrid").find(".rwAvyFormImageCell").length >= 20) {
+                alert("Image limit exceeded. There is a max of 20 images per report.");
+            } else if (data.files[0].size && data.files[0].size > 5000000) {
+                alert("Image " + data.files[0].name + " is too big. Images must be less than 5 MB.");
+            } else {
+                appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
+                setTimeout(function() { data.submit(); }, 800);
+            }
         },
         done: function(e, data) {
             var newImageCellId = getFileBaseName(data.result.filename);

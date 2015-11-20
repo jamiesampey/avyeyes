@@ -90,7 +90,7 @@ object Generators {
     filename <- Gen.const(s"${UUID.randomUUID().toString}.jpg")
     origFilename <- Gen.alphaStr
     mimeType <- Gen.alphaStr
-    size <- Gen.choose(1000, MaxImageSize)
+    size <- Gen.choose(1000, 5000000)
   } yield AvalancheImage(
     createTime = createTime,
     avalanche = avalanche,

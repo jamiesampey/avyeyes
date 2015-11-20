@@ -200,6 +200,8 @@
 	color: white;
 	width: 650px;
 	height: 370px;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 #rwAvyFormImageDropZoneMsgDiv {

@@ -72,8 +72,6 @@ class Boot extends Loggable {
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) => new Html5Properties(r.userAgent))
 
-    LiftRules.maxMimeFileSize = MaxImageSize
-    LiftRules.maxMimeSize = MaxImageSize
     LiftRules.resourceNames = "text" :: "enum" :: "help" :: Nil
     
     Omniauth.init // grabs omniauth.* settings from props file
