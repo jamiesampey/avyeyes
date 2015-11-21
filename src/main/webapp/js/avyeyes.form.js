@@ -312,8 +312,11 @@ function setImgFancyBox() {
         openEffect: "elastic",
         closeEffect: "elastic",
         beforeShow: function() {
-            this.title = "<div style='max-width:" + $(this.element).data("width")
-                + ";white-space: pre-wrap;'>" + $(this.element).next("div").html() + "</div>";
+            var captionHtml = $(this.element).next("div").html();
+            if (captionHtml.length) {
+                this.title = "<div style='max-width:" + $(this.element).data("width")
+                    + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
+            }
         }
     });
 }
