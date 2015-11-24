@@ -205,16 +205,17 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
 AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
     if (!address) return;
+
     var boundingBox = this.getBoundingBox();
+    var dataObj = { key: this.bingKey, q: address };
+    if (boundingBox[0] && boundingBox[1] && boundingBox[2] && boundingBox[3]) {
+        dataObj.umv = boundingBox[1] + "," + boundingBox[3] + "," + boundingBox[0] + "," + boundingBox[2];
+    }
 
     $.ajax({
         url: "//dev.virtualearth.net/REST/v1/Locations",
         dataType: "jsonp",
-        data: {
-            key: this.bingKey,
-            q: address,
-            umv: boundingBox[1] + "," + boundingBox[3] + "," + boundingBox[0] + "," + boundingBox[2]
-        },
+        data: dataObj,
         jsonp: "jsonp",
         success: function(data) {
             onSuccess(data);

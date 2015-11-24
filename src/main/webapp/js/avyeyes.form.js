@@ -17,7 +17,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append("<div class='fb-share-button' data-layout='button_count' data-href='" + a.extUrl + "' />");
+    fbContainer.append("<div class='fb-share-button' data-layout='button' data-href='" + a.extUrl + "' />");
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
