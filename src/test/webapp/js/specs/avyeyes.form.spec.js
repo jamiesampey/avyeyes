@@ -7,7 +7,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
       "date":"07-04-2015",
       "submitterEmail": "joe.bob@here.com",
       "submitterExp":{
-        "value":"PE",
+        "value":"P2",
         "label":"Professional avalanche forecaster or technician"
       },
       "weather":{

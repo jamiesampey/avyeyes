@@ -134,7 +134,7 @@ function wireAutoCompletes(view) {
 	});
 
 	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
-		if (ui.item.value === 'P2' || ui.item.value === 'PE') {
+		if (ui.item.value === 'P1' || ui.item.value === 'P2') {
 		  view.form.toggleTechnicalReportFields(true);
 		} else {
 		  view.form.toggleTechnicalReportFields(false);
