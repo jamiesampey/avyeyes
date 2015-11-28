@@ -154,7 +154,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       viewable = viewable,
       submitterEmail = submitterEmail,
       submitterExp = ExperienceLevel.fromCode(submitterExp),
-      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToIntOrNegOne(elevation)),
+      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToDblOrZero(elevation)),
       areaName = areaName,
       date = strToDate(dateStr),
       slope = Slope(

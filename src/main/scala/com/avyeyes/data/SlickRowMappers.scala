@@ -16,7 +16,7 @@ private[data] object SlickRowMappers {
       date = avalanche.date,
       longitude = avalanche.location.longitude,
       latitude = avalanche.location.latitude,
-      elevation = avalanche.location.altitude,
+      elevation = avalanche.location.altitude.toInt,
       aspect = avalanche.slope.aspect,
       angle = avalanche.slope.angle,
       perimeter = avalanche.perimeter,

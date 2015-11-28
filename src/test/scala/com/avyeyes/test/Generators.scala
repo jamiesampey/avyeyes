@@ -75,7 +75,7 @@ object Generators {
       areaName = areaName,
       date = date,
       weather = weather,
-      slope = slope.copy(elevation = location.altitude),
+      slope = slope.copy(elevation = location.altitude.toInt),
       classification = classification,
       humanNumbers = humanNumbers,
       perimeter = perimeter,

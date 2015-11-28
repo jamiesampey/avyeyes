@@ -284,7 +284,7 @@ function wireLocationInputs(view) {
                 console.log("Failed to geo-complete location field. Error: " + error.textStatus)
             })
         },
-        minLength: 5
+        minLength: 8
     });
 
     $('.avyLocation').keydown(function (event) {

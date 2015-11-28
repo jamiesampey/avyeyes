@@ -4,7 +4,7 @@ import scala.math._
 
 case class Coordinate(longitude: Double,
                       latitude: Double,
-                      altitude: Int) {
+                      altitude: Double) {
   override def toString = s"$longitude,$latitude,$altitude"
 
   def distanceTo(other: Coordinate) = {
@@ -20,6 +20,6 @@ case class Coordinate(longitude: Double,
 object Coordinate {
   def fromString(str: String): Coordinate = {
     val arr = str.split(',')
-    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble.toInt)
+    Coordinate(arr(0).toDouble, arr(1).toDouble, arr(2).toDouble)
   }
 }
