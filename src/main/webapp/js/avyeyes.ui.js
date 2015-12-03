@@ -1,8 +1,5 @@
 define(['lib/jquery-ui'], function() {
 
-var GEOCODE_FLYTO_PITCH = -70.0;
-var GEOCODE_FLYTO_RANGE = 6300.0;
-    
 function AvyEyesUI() {};
 
 AvyEyesUI.prototype.wire = function(view, callback) {
@@ -298,7 +295,7 @@ function wireLocationInputs(view) {
         if ($(this).siblings("#avyReportInitLocationButton").length) {
             $("#avyReportInitLocationButton").click();
         }
-        view.geocodeAndFlyTo($(this).val(), GEOCODE_FLYTO_PITCH, GEOCODE_FLYTO_RANGE);
+        view.geocodeAndFlyTo($(this).val(), -70.0, 6300.0);
 	});
 }
 

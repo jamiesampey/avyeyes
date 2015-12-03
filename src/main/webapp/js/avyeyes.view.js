@@ -168,7 +168,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     }.bind(this);
 
     this.ui.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1000).then(showTitle);
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25).then(showTitle);
 }
 
 var geocodeAttempts = 0;
@@ -272,7 +272,7 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     }
 }
 
-AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range) {
+AvyEyesView.prototype.flyTo = function(targetEntity, heading, pitch, range) {
 	var camHeight = this.cesiumViewer.camera.positionCartographic.height
 
 	var flightDurationSeconds = 3.0;
@@ -284,7 +284,7 @@ AvyEyesView.prototype.flyTo = function (targetEntity, heading, pitch, range) {
         });
     }.bind(this);
 
-    if (range < 2000 && camHeight > 50000) {
+    if (targetEntity.polygon && camHeight > 50000) {
         return this.cesiumViewer.flyTo(targetEntity, {
             duration: flightDurationSeconds,
             offset: toHeadingPitchRange(0, -89.9, 4000)
