@@ -73,9 +73,9 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
-			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'><a href='"
-                + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
-                + "<div style='display: none;'>" + caption + "</div></li>");
+			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
+			    + "<a href='" + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
+                + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
 		});
 
         setImgFancyBox();
@@ -195,6 +195,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
             var newImageCellId = getFileBaseName(data.result.filename);
             $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
             this.setImageCellContent(newImageCellId, extId, data.result);
+            setImgFancyBox();
         }.bind(this),
         fail: function(e, data) {
             console.log("Error", data.errorThrown);
@@ -223,7 +224,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
         + "<a href='" + imageUrl + "' class='imgFancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
-        + "<div style='display: none;'>" + existingCaption + "</div>"
+        + "<div class='captionContainer' style='display: none;'>" + existingCaption + "</div>"
         + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' />"
         + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
         + "</div>");
@@ -240,7 +241,8 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 }),
                 success: function(result) {
                     existingCaption = caption;
-                    $("#" + imageCellId).find("a").attr("title", caption);
+                    $("#" + imageCellId).find(".captionContainer").html(caption);
+                    setImgFancyBox();
                 },
                 fail: function(jqxhr, textStatus, error) {
                     alert("Failed to edit image caption. Error: " + textStatus + ", " + error);
@@ -312,7 +314,7 @@ function setImgFancyBox() {
         openEffect: "elastic",
         closeEffect: "elastic",
         beforeShow: function() {
-            var captionHtml = $(this.element).next("div").html();
+            var captionHtml = $(this.element).next(".captionContainer").html();
             if (captionHtml.length) {
                 this.title = "<div style='max-width:" + $(this.element).data("width")
                     + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
