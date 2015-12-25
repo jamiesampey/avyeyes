@@ -128,8 +128,6 @@
 .roAvyFormImageListItem img {
     max-width: 100px;
     max-height: 70px;
-    cursor: -moz-zoom-in;
-    cursor: -webkit-zoom-in;
     cursor: zoom-in;
 }
 
@@ -211,15 +209,26 @@
 
 #rwAvyFormImageDropZoneMsgDiv {
     width: 100%;
-    text-align: center;
 }
 
 #rwAvyFormImageDropZoneMsgDiv > span {
 	display: block;
 	margin: 0 auto;
-    padding: 10px 0px 20px 0px;
+    padding: 0px;
 	width: 650px;
     font-size: 1.5em;
+    text-align: center;
+}
+
+#rwAvyFormImageDropZoneMsgDiv ul {
+	width: 100%;
+    font-size: .9em;
+    text-align: left;
+}
+
+#rwAvyFormImageDropZoneMsgDiv li {
+    padding: 0px 0px 3px 0px;
+    margin: 0px;
 }
 
 #rwAvyFormImageGrid {
@@ -237,11 +246,11 @@
 
 .rwAvyFormImageCell {
     display: inline-block;
-    width: 154px;
+    width: 150px;
     height: 100px;
     text-align: center;
     vertical-align: middle;
-    margin: 3px;
+    margin: 3px 3px 3px 0px;
 }
 
 .rwAvyFormImageWrapper {
@@ -253,13 +262,11 @@
 
 img.rwAvyFormImage {
     max-width: 150px;
-    max-height: 105px;
+    max-height: 100px;
     position: relative;
     top: 0;
     left: 0;
-    cursor: -moz-zoom-in;
-    cursor: -webkit-zoom-in;
-    cursor: zoom-in;
+    cursor: move;
 }
 
 img.rwAvyFormImageEditIcon {

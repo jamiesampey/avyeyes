@@ -4,7 +4,14 @@ define(['lib/jquery.fancybox',
         "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 
-function AvyForm(){};
+function AvyForm() {
+    $('#rwAvyFormImageGrid').sortable({
+        items: '> .rwAvyFormImageCell',
+        change: function(event, ui) {
+            alert("detected position change!");
+        }
+    });
+};
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.date + ": " + a.areaName;
@@ -74,11 +81,11 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
-			    + "<a href='" + imgUrl + "' class='imgFancybox' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
+			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
                 + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
 		});
 
-        setImgFancyBox();
+        setImageFancyBox('.roAvyFormImageAnchor');
 	} else {
 	    $("#roAvyFormImageRow").hide();
 	}
@@ -163,8 +170,6 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
         this.setImageCellContent(imageCellId, a.extId, image);
     }.bind(this));
 
-    setImgFancyBox();
-
     $('#rwAvyFormDeleteBinding').val(a.extId);
     $('#rwAvyFormDialog').dialog('open');
     $("#cesiumContainer").css("cursor", "default");
@@ -195,7 +200,6 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
             var newImageCellId = getFileBaseName(data.result.filename);
             $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
             this.setImageCellContent(newImageCellId, extId, data.result);
-            setImgFancyBox();
         }.bind(this),
         fail: function(e, data) {
             console.log("Error", data.errorThrown);
@@ -203,31 +207,29 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     });
 }
 
-function appendImageCellToReadWriteForm(imageCellId) {
-    var lastTableRow = $('#rwAvyFormImageGrid .rwAvyFormImageRow:last');
-    if(!lastTableRow.length || lastTableRow.find('.rwAvyFormImageCell').length >= 4) {
-        $('#rwAvyFormImageGrid').append("<div class='rwAvyFormImageRow'>");
-    }
-
-    $('#rwAvyFormImageGrid .rwAvyFormImageRow:last')
-        .append("<div id='" + imageCellId + "' class='rwAvyFormImageCell'>"
-            + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
-            + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
+function appendImageCellToReadWriteForm(cellId) {
+    $('#rwAvyFormImageGrid').append("<div id='" + cellId + "' class='rwAvyFormImageCell'>"
+        + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
+        + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
+    $('#rwAvyFormImageGrid').sortable('refresh');
 }
 
 AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     var imageUrl = getSignedImageUrl(extId, image.filename)
+    var imageAnchorId = imageCellId + "-anchor";
     var imageEditIconId = imageCellId + "-edit";
     var imageDeleteIconId = imageCellId + "-delete";
     var existingCaption = (typeof image.caption != "undefined") ? image.caption : "";
 
     $("#" + imageCellId).empty();
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
-        + "<a href='" + imageUrl + "' class='imgFancybox' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
+        + "<a id='" + imageAnchorId + "' href='" + imageUrl + "' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
         + "<div class='captionContainer' style='display: none;'>" + existingCaption + "</div>"
         + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' />"
         + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
         + "</div>");
+
+    setImageFancyBox('#' + imageAnchorId);
 
     $("#" + imageEditIconId).click(function() {
         var caption = prompt("Enter the caption", existingCaption);
@@ -242,7 +244,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 success: function(result) {
                     existingCaption = caption;
                     $("#" + imageCellId).find(".captionContainer").html(caption);
-                    setImgFancyBox();
+                    setImgFancyBox('#' + imageAnchorId);
                 },
                 fail: function(jqxhr, textStatus, error) {
                     alert("Failed to edit image caption. Error: " + textStatus + ", " + error);
@@ -257,7 +259,8 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 url: getImageRestUrl(extId, image.filename),
                 type: 'DELETE',
                 success: function(result) {
-                    removeImageFromReadWriteForm(imageCellId);
+                    $('#rwAvyFormImageGrid').find('#' + imageCellId).remove();
+                    $('#rwAvyFormImageGrid').sortable('refresh');
                 },
                 fail: function(jqxhr, textStatus, error) {
                     alert('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
@@ -267,19 +270,16 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     });
 }
 
-function removeImageFromReadWriteForm(imageUniqueId) {
-    $('#rwAvyFormImageGrid').find('#' + imageUniqueId).remove();
-    $('#rwAvyFormImageGrid .rwAvyFormImageRow').each(function(i) {
-        var images = $(this).find('.rwAvyFormImageCell');
-        if (images.length < 4) {
-            var nextImageRow = $(this).next();
-            if (!nextImageRow.length) return;
-
-            var nextImage = nextImageRow.find('.rwAvyFormImageCell').first();
-            $(this).append(nextImage.detach());
-
-            if (nextImageRow.find('.rwAvyFormImageCell').length === 0) {
-                nextImageRow.remove();
+function setImageFancyBox(selector) {
+    $(selector).fancybox({
+        padding: 0,
+        openEffect: "elastic",
+        closeEffect: "elastic",
+        beforeShow: function() {
+            var captionHtml = $(this.element).next(".captionContainer").html();
+            if (captionHtml.length) {
+                this.title = "<div style='max-width:" + $(this.element).data("width")
+                    + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
             }
         }
     });
@@ -306,21 +306,6 @@ function getImageRestUrl(extId, filename) {
 
 function getFileBaseName(filename) {
     return filename.substring(0, filename.lastIndexOf('.'));
-}
-
-function setImgFancyBox() {
-    $(".imgFancybox").fancybox({
-        padding: 0,
-        openEffect: "elastic",
-        closeEffect: "elastic",
-        beforeShow: function() {
-            var captionHtml = $(this.element).next(".captionContainer").html();
-            if (captionHtml.length) {
-                this.title = "<div style='max-width:" + $(this.element).data("width")
-                    + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
-            }
-        }
-    });
 }
 
 AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
