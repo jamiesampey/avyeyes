@@ -194,19 +194,6 @@
 	display: none;
 }
 
-#rwAvyFormImageDropZone {
-	display: block;
-	margin: 0 auto;
-	padding: 0px;
-	background-color: transparent;
-	border: 3px solid #7D7D7D;
-	color: white;
-	width: 650px;
-	height: 370px;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
 #rwAvyFormImageDropZoneMsgDiv {
     width: 100%;
 }
@@ -221,7 +208,9 @@
 }
 
 #rwAvyFormImageDropZoneMsgDiv ul {
-	width: 100%;
+	width: 600px;
+	padding: 0px;
+	margin: 10px 0px 10px 80px;
     font-size: .9em;
     text-align: left;
 }
@@ -231,17 +220,23 @@
     margin: 0px;
 }
 
+#rwAvyFormImageDropZone {
+	display: block;
+	margin: 0 auto;
+	padding: 0px;
+	background-color: transparent;
+	border: 3px solid #7D7D7D;
+	color: white;
+	width: 650px;
+	height: 370px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 #rwAvyFormImageGrid {
     vertical-align: top;
     width: 640px;
     margin: 0 auto;
-}
-
-.rwAvyFormImageRow {
-    vertical-align: top;
-    height: 115px;
-    padding: 0px;
-    margin: 0px;
 }
 
 .rwAvyFormImageCell {

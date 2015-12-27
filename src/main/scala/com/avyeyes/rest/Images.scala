@@ -53,7 +53,18 @@ class Images extends RestHelper with Loggable {
         dal.updateAvalancheImage(avyExtId, baseFilename, None)
         OkResponse()
       case _ =>
-        logger.error("Received an image caption REST post, but the caption payload was missing")
+        logger.error("Received an image caption PUT request, but the caption payload was missing")
+        BadResponse()
+    }
+
+    case "rest" :: "images" :: avyExtId :: Nil JsonPut json->req => json \ "order" match {
+      case JString(order) if order.nonEmpty =>
+        println(s"image order is $order")
+        OkResponse()
+      case JString("") =>
+        OkResponse()
+      case _ =>
+        logger.error("Received an image order PUT request, but the order payload was missing")
         BadResponse()
     }
 

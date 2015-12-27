@@ -4,14 +4,7 @@ define(['lib/jquery.fancybox',
         "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 
-function AvyForm() {
-    $('#rwAvyFormImageGrid').sortable({
-        items: '> .rwAvyFormImageCell',
-        change: function(event, ui) {
-            alert("detected position change!");
-        }
-    });
-};
+function AvyForm() {}
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.date + ": " + a.areaName;
@@ -181,6 +174,26 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     var tempImageCellId = function(filename) {
         return extId + "-" + getFileBaseName(filename);
     }
+
+    $('#rwAvyFormImageGrid').sortable({
+        items: '> .rwAvyFormImageCell',
+        change: function(event, ui) {
+            $.ajax({
+                type: "PUT",
+                contentType : 'application/json',
+                url: '/rest/images/' + extId,
+                data: JSON.stringify({
+                    "order": $('#rwAvyFormImageGrid').sortable( "serialize")
+                }),
+                success: function(result) {
+                    console.log("Successful image order call");
+                },
+                fail: function(jqxhr, textStatus, error) {
+                    alert("Failed to set image order. Error: " + textStatus + ", " + error);
+                }
+            });
+        }
+    });
 
     $("#rwAvyFormImageUploadForm").fileupload({
         dataType:'json',
