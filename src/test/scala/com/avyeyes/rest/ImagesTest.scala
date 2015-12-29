@@ -109,7 +109,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
-        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        there was one(mockAvalancheDal).updateAvalancheImageCaption(extIdArg, filenameArg, captionArg)
         extIdArg.value mustEqual extId
         filenameArg.value mustEqual goodImgFileName
         captionArg.value mustEqual Some(testCaption)
@@ -130,7 +130,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
-        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        there was one(mockAvalancheDal).updateAvalancheImageCaption(extIdArg, filenameArg, captionArg)
         extIdArg.value mustEqual extId
         filenameArg.value mustEqual goodImgFileName
         captionArg.value mustEqual None

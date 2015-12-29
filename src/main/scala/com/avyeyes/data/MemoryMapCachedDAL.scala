@@ -169,13 +169,20 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
   }
 
-  def updateAvalancheImage(avyExtId: String, baseFilename: String, caption: Option[String]) = {
+  def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]) = {
     if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
-      throw new UnauthorizedException("Not authorized to update image")
+      throw new UnauthorizedException("Not authorized to update image caption")
     }
 
     val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.caption))
     Await.result(db.run(imageUpdateQuery.update((caption))), Duration.Inf)
+  }
+
+  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
+    if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
+      throw new UnauthorizedException("Not authorized to update image order")
+    }
+    println(s"new filename order is $filenameOrder")
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {

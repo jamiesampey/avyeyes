@@ -47,10 +47,10 @@ class Images extends RestHelper with Loggable {
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req => json \ "caption" match {
       case JString(caption) if caption.nonEmpty =>
-        dal.updateAvalancheImage(avyExtId, baseFilename, Some(caption))
+        dal.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
         OkResponse()
       case JString("") =>
-        dal.updateAvalancheImage(avyExtId, baseFilename, None)
+        dal.updateAvalancheImageCaption(avyExtId, baseFilename, None)
         OkResponse()
       case _ =>
         logger.error("Received an image caption PUT request, but the caption payload was missing")
@@ -59,7 +59,7 @@ class Images extends RestHelper with Loggable {
 
     case "rest" :: "images" :: avyExtId :: Nil JsonPut json->req => json \ "order" match {
       case JArray(order) =>
-        println(s"image order ARRAY is $order")
+        dal.updateAvalancheImageOrder(avyExtId, order.map(_.extract[String]))
         OkResponse()
       case _ =>
         logger.error("Received an image order PUT request, but the order payload was missing")
