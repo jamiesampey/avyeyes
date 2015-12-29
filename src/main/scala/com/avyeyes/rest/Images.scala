@@ -8,7 +8,7 @@ import com.avyeyes.util.Constants._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.json.JsonAST.JString
+import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
@@ -58,10 +58,8 @@ class Images extends RestHelper with Loggable {
     }
 
     case "rest" :: "images" :: avyExtId :: Nil JsonPut json->req => json \ "order" match {
-      case JString(order) if order.nonEmpty =>
-        println(s"image order is $order")
-        OkResponse()
-      case JString("") =>
+      case JArray(order) =>
+        println(s"image order ARRAY is $order")
         OkResponse()
       case _ =>
         logger.error("Received an image order PUT request, but the order payload was missing")

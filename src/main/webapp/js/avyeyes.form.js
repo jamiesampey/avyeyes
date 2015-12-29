@@ -177,13 +177,13 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
 
     $('#rwAvyFormImageGrid').sortable({
         items: '> .rwAvyFormImageCell',
-        change: function(event, ui) {
+        update: function(event, ui) {
             $.ajax({
                 type: "PUT",
                 contentType : 'application/json',
                 url: '/rest/images/' + extId,
                 data: JSON.stringify({
-                    "order": $('#rwAvyFormImageGrid').sortable( "serialize")
+                    "order": $('#rwAvyFormImageGrid').sortable('toArray')
                 }),
                 success: function(result) {
                     console.log("Successful image order call");
@@ -220,8 +220,8 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     });
 }
 
-function appendImageCellToReadWriteForm(cellId) {
-    $('#rwAvyFormImageGrid').append("<div id='" + cellId + "' class='rwAvyFormImageCell'>"
+function appendImageCellToReadWriteForm(filenameBase) {
+    $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
         + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
         + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
     $('#rwAvyFormImageGrid').sortable('refresh');
