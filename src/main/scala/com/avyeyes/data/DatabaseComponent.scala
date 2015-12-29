@@ -112,9 +112,10 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
     def origFilename = column[String]("original_filename")
     def mimeType = column[String]("mime_type")
     def size = column[Int]("size")
+    def order = column[Int]("order")
     def caption = column[Option[String]]("caption")
 
-    def * = (createTime, avalanche, filename, origFilename, mimeType, size, caption) <> (AvalancheImage.tupled, AvalancheImage.unapply)
+    def * = (createTime, avalanche, filename, origFilename, mimeType, size, order, caption) <> (AvalancheImage.tupled, AvalancheImage.unapply)
 
     def pk = primaryKey("avalanche_image_pk", (avalanche, filename))
   }

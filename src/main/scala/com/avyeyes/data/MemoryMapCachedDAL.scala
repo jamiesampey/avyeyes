@@ -152,7 +152,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage] = Await.result(db.run(
-    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.createTime)
+    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.order)
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {
@@ -182,6 +182,12 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
       throw new UnauthorizedException("Not authorized to update image order")
     }
+
+    filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
+      val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.order))
+      Await.result(db.run(imageUpdateQuery.update((order))), Duration.Inf)
+    }
+
     println(s"new filename order is $filenameOrder")
   }
 
@@ -194,6 +200,8 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
       setAvalancheUpdateTimeAction(avyExtId)
     ), Duration.Inf)
+
+    // TODO: now reorder all remaining sibling images
   }
 
   def deleteOrphanAvalancheImages: Seq[String] = {

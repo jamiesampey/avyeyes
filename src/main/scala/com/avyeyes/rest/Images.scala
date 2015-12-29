@@ -19,7 +19,9 @@ class Images extends RestHelper with Loggable {
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
-      if (dal.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
+      val siblingImageCount = dal.countAvalancheImages(avyExtId)
+
+      if (siblingImageCount >= MaxImagesPerAvalanche) {
         BadResponse()
       } else {
         val fph = req.uploadedFiles(0)
@@ -27,9 +29,15 @@ class Images extends RestHelper with Loggable {
 
         s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-        dal.insertAvalancheImage(
-          AvalancheImage(DateTime.now, avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
-        )
+        dal.insertAvalancheImage(AvalancheImage(
+          createTime = DateTime.now,
+          avalanche = avyExtId,
+          filename = newFilename,
+          origFilename = fph.fileName,
+          mimeType = fph.mimeType,
+          size = fph.length.toInt,
+          order = siblingImageCount
+        ))
 
         // if adding an image to an existing viewable avalanche, allow the image to be viewed
         for (avalanche <- dal.getAvalanche(avyExtId) if avalanche.viewable) {
