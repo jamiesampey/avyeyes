@@ -53,7 +53,7 @@ create table "avalanche_image" (
     "original_filename" text not null,
     "mime_type" text not null,
     "size" integer not null,
-    "order" integer not null,
+    "sort_order" integer not null,
     "caption" text,
     primary key(avalanche, filename)
 );
