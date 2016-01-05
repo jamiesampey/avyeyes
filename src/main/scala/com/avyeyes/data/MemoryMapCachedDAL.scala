@@ -184,11 +184,9 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
 
     filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
-      val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.order))
-      Await.result(db.run(imageUpdateQuery.update((order))), Duration.Inf)
+      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.order))
+      Await.result(db.run(imageOrderUpdateQuery.update((order))), Duration.Inf)
     }
-
-    println(s"new filename order is $filenameOrder")
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
@@ -201,7 +199,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       setAvalancheUpdateTimeAction(avyExtId)
     ), Duration.Inf)
 
-    // TODO: now reorder all remaining sibling images
+    updateAvalancheImageOrder(avyExtId, getAvalancheImages(avyExtId).map(_.filename))
   }
 
   def deleteOrphanAvalancheImages: Seq[String] = {
