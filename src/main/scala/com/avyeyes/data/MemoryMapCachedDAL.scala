@@ -152,7 +152,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage] = Await.result(db.run(
-    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.order)
+    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.sortOrder)
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {

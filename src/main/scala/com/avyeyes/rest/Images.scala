@@ -36,7 +36,7 @@ class Images extends RestHelper with Loggable {
           origFilename = fph.fileName,
           mimeType = fph.mimeType,
           size = fph.length.toInt,
-          order = siblingImageCount
+          sortOrder = siblingImageCount
         ))
 
         // if adding an image to an existing viewable avalanche, allow the image to be viewed

@@ -9,7 +9,7 @@ case class AvalancheImage(
   origFilename: String,
   mimeType: String,
   size: Int,
-  order: Int,
+  sortOrder: Int,
   caption: Option[String] = None
 )
 
