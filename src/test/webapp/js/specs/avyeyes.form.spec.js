@@ -213,7 +213,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             });
         });
 
-        it("wire image upload", function() {
+        it("wire image upload and sort", function() {
             var mock = sinon.mock(avyForm)
             mock.expects("resetReadWriteImageUpload").once();
             avyForm.displayReadWriteForm();
@@ -312,11 +312,13 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<div id='rwAvyFormImageGrid'></div>"
                 + "<div id='rwAvyFormDeleteBinding'></div>");
             sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var sortableFnStub = sinon.stub($.fn, "sortable");
 
             avyForm.displayReadWriteForm(avalanche);
 
             expect($("#rwAvyFormComments")).toHaveValue(avalanche.comments);
             expect($("#rwAvyFormImageGrid .rwAvyFormImageCell").length).toBe(3);
+            expect(sortableFnStub.callCount).toBe(3);
             expect($("#rwAvyFormDeleteBinding")).toHaveValue(avalanche.extId);
         });
     });
