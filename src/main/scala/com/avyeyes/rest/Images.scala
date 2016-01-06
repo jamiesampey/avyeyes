@@ -44,6 +44,7 @@ class Images extends RestHelper with Loggable {
           s3.allowPublicImageAccess(avyExtId)
         }
 
+        logger.debug(s"Successfully inserted new image $avyExtId/$newFilename")
         JsonResponse(
           ("extId" -> avyExtId) ~
           ("filename" -> newFilename) ~
@@ -56,9 +57,11 @@ class Images extends RestHelper with Loggable {
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req => json \ "caption" match {
       case JString(caption) if caption.nonEmpty =>
         dal.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
+        logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
         OkResponse()
       case JString("") =>
         dal.updateAvalancheImageCaption(avyExtId, baseFilename, None)
+        logger.debug(s"Successfully cleared caption on $avyExtId/$baseFilename")
         OkResponse()
       case _ =>
         logger.error("Received an image caption PUT request, but the caption payload was missing")
@@ -68,6 +71,7 @@ class Images extends RestHelper with Loggable {
     case "rest" :: "images" :: avyExtId :: Nil JsonPut json->req => json \ "order" match {
       case JArray(order) =>
         dal.updateAvalancheImageOrder(avyExtId, order.map(_.extract[String]))
+        logger.debug(s"Successfully set image order on avalanche $avyExtId")
         OkResponse()
       case _ =>
         logger.error("Received an image order PUT request, but the order payload was missing")
@@ -83,6 +87,7 @@ class Images extends RestHelper with Loggable {
           case _ => logger.error(s"Unable to retrieve image filename for delete. Base filename = $baseFilename")
         }
 
+        logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
         OkResponse()
       } catch {
         case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
