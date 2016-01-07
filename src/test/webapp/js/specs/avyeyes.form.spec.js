@@ -213,7 +213,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             });
         });
 
-        it("wire image upload and sort", function() {
+        it("Reset the image upload form", function() {
             var mock = sinon.mock(avyForm)
             mock.expects("resetReadWriteImageUpload").once();
             avyForm.displayReadWriteForm();
@@ -321,6 +321,74 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect(sortableFnStub.callCount).toBe(3);
             expect($("#rwAvyFormDeleteBinding")).toHaveValue(avalanche.extId);
         });
+    });
+
+    describe("Reset image upload form", function() {
+        var avyForm;
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                done();
+            });
+        });
+
+        it("Empties the current image grid", function() {
+            setFixtures("<div id='rwAvyFormImageGrid'><div id='child1'/><div id='child2'/></div>");
+            avyForm.resetReadWriteImageUpload("49f94e0d");
+            expect($('#rwAvyFormImageGrid').html().length).toBe(0);
+        });
+
+        it("Sets sortable and fileupload on the grid", function() {
+            setFixtures("<div id='rwAvyFormImageGrid'></div>");
+            var sortableFnStub = sinon.stub($.fn, "sortable");
+            var fileuploadFnStub = sinon.stub($.fn, "fileupload");
+
+            avyForm.resetReadWriteImageUpload("49f94e0d");
+            expect(sortableFnStub.callCount).toBe(1);
+            expect(fileuploadFnStub.callCount).toBe(1);
+        });
+    });
+
+    describe("Append image cell and set content", function() {
+        var avyForm;
+
+        var getFileBaseName = function(filename) {
+            return filename.substring(0, filename.lastIndexOf('.'));
+        }
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm();
+                sinon.stub(avyForm, "getSignedImageUrl");
+                done();
+            });
+        });
+
+        it("Adds the anchor, image, edit, and delete tags", function() {
+            setFixtures("<div id='rwAvyFormImageGrid'></div>");
+            var sortableFnStub = sinon.stub($.fn, "sortable");
+            var fancyboxFnStub = sinon.stub($.fn, "fancybox");
+
+            var imageZeroFilenameBase = getFileBaseName(avalanche.images[0].filename);
+
+            avyForm.appendImageCellToReadWriteForm(imageZeroFilenameBase);
+            avyForm.setImageCellContent(imageZeroFilenameBase, avalanche.extId, avalanche.images[0]);
+
+            var imageWrapperDiv = $("#rwAvyFormImageGrid .rwAvyFormImageCell .rwAvyFormImageWrapper");
+            expect(imageWrapperDiv.length).toBe(1);
+            expect(imageWrapperDiv.children('a[id=' + imageZeroFilenameBase + '-anchor]').length).toBe(1);
+            expect(imageWrapperDiv.children('img[id=' + imageZeroFilenameBase + '-edit]').length).toBe(1);
+            expect(imageWrapperDiv.children('img[id=' + imageZeroFilenameBase + '-delete]').length).toBe(1);
+
+            expect(sortableFnStub.callCount).toBe(1);
+            expect(fancyboxFnStub.callCount).toBe(1);
+        });
+
     });
 
     describe("Field validation", function() {

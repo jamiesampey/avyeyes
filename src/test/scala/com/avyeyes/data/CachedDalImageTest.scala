@@ -26,7 +26,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       returnedImage.avalanche mustEqual testAvalanche.extId
       returnedImage.filename mustEqual img1.filename
       returnedImage.mimeType mustEqual img1.mimeType
-      returnedImage.caption must beNone
+      returnedImage.caption mustEqual img1.caption
     }
     
     "Image without corresponding avalanche is not selected" >> {

@@ -159,7 +159,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     
     $.each(a.images, function(i, image) {
         var imageCellId = getFileBaseName(image.filename);
-        appendImageCellToReadWriteForm(imageCellId);
+        this.appendImageCellToReadWriteForm(imageCellId);
         this.setImageCellContent(imageCellId, a.extId, image);
     }.bind(this));
 
@@ -205,10 +205,10 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
             } else if (data.files[0].size && data.files[0].size > 5000000) {
                 alert("Image " + data.files[0].name + " is too big. Images must be less than 5 MB.");
             } else {
-                appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
+                this.appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
                 setTimeout(function() { data.submit(); }, 800);
             }
-        },
+        }.bind(this),
         done: function(e, data) {
             var newImageCellId = getFileBaseName(data.result.filename);
             $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
@@ -220,7 +220,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     });
 }
 
-function appendImageCellToReadWriteForm(filenameBase) {
+AvyForm.prototype.appendImageCellToReadWriteForm = function(filenameBase) {
     $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
         + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
         + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
@@ -228,7 +228,7 @@ function appendImageCellToReadWriteForm(filenameBase) {
 }
 
 AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
-    var imageUrl = getSignedImageUrl(extId, image.filename)
+    var imageUrl = this.getSignedImageUrl(extId, image.filename)
     var imageAnchorId = imageCellId + "-anchor";
     var imageEditIconId = imageCellId + "-edit";
     var imageDeleteIconId = imageCellId + "-delete";
@@ -299,7 +299,7 @@ function setImageFancyBox(selector) {
 }
 
 var s3Client;
-function getSignedImageUrl(extId, filename) {
+AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
     if (!s3Client) {
         s3Client = new AWS.S3({
             accessKeyId: 'AKIAIGF6JECD4PNKHYOQ',
