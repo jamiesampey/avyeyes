@@ -8,7 +8,7 @@ import com.avyeyes.util.Constants._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.json.JsonAST.JString
+import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
@@ -19,7 +19,9 @@ class Images extends RestHelper with Loggable {
 
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
-      if (dal.countAvalancheImages(avyExtId) >= MaxImagesPerAvalanche) {
+      val siblingImageCount = dal.countAvalancheImages(avyExtId)
+
+      if (siblingImageCount >= MaxImagesPerAvalanche) {
         BadResponse()
       } else {
         val fph = req.uploadedFiles(0)
@@ -27,15 +29,22 @@ class Images extends RestHelper with Loggable {
 
         s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-        dal.insertAvalancheImage(
-          AvalancheImage(DateTime.now, avyExtId, newFilename, fph.fileName, fph.mimeType, fph.length.toInt)
-        )
+        dal.insertAvalancheImage(AvalancheImage(
+          createTime = DateTime.now,
+          avalanche = avyExtId,
+          filename = newFilename,
+          origFilename = fph.fileName,
+          mimeType = fph.mimeType,
+          size = fph.length.toInt,
+          sortOrder = siblingImageCount
+        ))
 
         // if adding an image to an existing viewable avalanche, allow the image to be viewed
         for (avalanche <- dal.getAvalanche(avyExtId) if avalanche.viewable) {
           s3.allowPublicImageAccess(avyExtId)
         }
 
+        logger.debug(s"Successfully inserted new image $avyExtId/$newFilename")
         JsonResponse(
           ("extId" -> avyExtId) ~
           ("filename" -> newFilename) ~
@@ -47,13 +56,25 @@ class Images extends RestHelper with Loggable {
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req => json \ "caption" match {
       case JString(caption) if caption.nonEmpty =>
-        dal.updateAvalancheImage(avyExtId, baseFilename, Some(caption))
+        dal.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
+        logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
         OkResponse()
       case JString("") =>
-        dal.updateAvalancheImage(avyExtId, baseFilename, None)
+        dal.updateAvalancheImageCaption(avyExtId, baseFilename, None)
+        logger.debug(s"Successfully cleared caption on $avyExtId/$baseFilename")
         OkResponse()
       case _ =>
-        logger.error("Received an image caption REST post, but the caption payload was missing")
+        logger.error("Received an image caption PUT request, but the caption payload was missing")
+        BadResponse()
+    }
+
+    case "rest" :: "images" :: avyExtId :: Nil JsonPut json->req => json \ "order" match {
+      case JArray(order) =>
+        dal.updateAvalancheImageOrder(avyExtId, order.map(_.extract[String]))
+        logger.debug(s"Successfully set image order on avalanche $avyExtId")
+        OkResponse()
+      case _ =>
+        logger.error("Received an image order PUT request, but the order payload was missing")
         BadResponse()
     }
 
@@ -66,6 +87,7 @@ class Images extends RestHelper with Loggable {
           case _ => logger.error(s"Unable to retrieve image filename for delete. Base filename = $baseFilename")
         }
 
+        logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
         OkResponse()
       } catch {
         case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")

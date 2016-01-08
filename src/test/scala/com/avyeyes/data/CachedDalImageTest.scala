@@ -26,7 +26,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       returnedImage.avalanche mustEqual testAvalanche.extId
       returnedImage.filename mustEqual img1.filename
       returnedImage.mimeType mustEqual img1.mimeType
-      returnedImage.caption must beNone
+      returnedImage.caption mustEqual img1.caption
     }
     
     "Image without corresponding avalanche is not selected" >> {
@@ -55,7 +55,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1)
 
       val testCaption = "look at this image!"
-      dal.updateAvalancheImage(testAvalanche.extId, img1.filename, Some(testCaption))
+      dal.updateAvalancheImageCaption(testAvalanche.extId, img1.filename, Some(testCaption))
       val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename)
 
       imageOpt.get.caption mustEqual Some(testCaption)
@@ -67,7 +67,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalanche(testAvalanche)
       dal.insertAvalancheImage(img1.copy(caption = Some("some caption text")))
 
-      dal.updateAvalancheImage(testAvalanche.extId, img1.filename, None)
+      dal.updateAvalancheImageCaption(testAvalanche.extId, img1.filename, None)
       val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename)
 
       imageOpt.get.caption must beNone
@@ -75,8 +75,31 @@ class CachedDalImageTest extends Specification with InMemoryDB {
 
     "Image caption update does not work for unauthorized session" >> {
       mockUserSession.isAuthorizedSession() returns false
+      dal.updateAvalancheImageCaption(testAvalanche.extId, img1.filename, Some("some caption text")) must throwA[UnauthorizedException]
+    }
 
-      dal.updateAvalancheImage(testAvalanche.extId, img1.filename, Some("some caption text")) must throwA[UnauthorizedException]
+    "Image order works for authorized session" >> {
+      mockUserSession.isAuthorizedSession() returns true
+
+      val order0 = avalancheImageForTest.copy(avalanche = testAvalanche.extId, sortOrder = 0)
+      val order1 = avalancheImageForTest.copy(avalanche = testAvalanche.extId, sortOrder = 1)
+      val order2 = avalancheImageForTest.copy(avalanche = testAvalanche.extId, sortOrder = 2)
+
+      dal.insertAvalancheImage(order2)
+      dal.insertAvalancheImage(order0)
+      dal.insertAvalancheImage(order1)
+
+      val firstImageList = dal.getAvalancheImages(testAvalanche.extId).map(_.filename)
+      dal.updateAvalancheImageOrder(testAvalanche.extId, List(order1.filename, order2.filename, order0.filename))
+      val secondImageList = dal.getAvalancheImages(testAvalanche.extId).map(_.filename)
+
+      firstImageList mustEqual List(order0.filename, order1.filename, order2.filename)
+      secondImageList mustEqual List(order1.filename, order2.filename, order0.filename)
+    }
+
+    "Image order does not work for unauthorized session" >> {
+      mockUserSession.isAuthorizedSession() returns false
+      dal.updateAvalancheImageOrder(testAvalanche.extId, List("a40ee710", "5d4e3a37")) must throwA[UnauthorizedException]
     }
 
     "Image delete works for authorized session" >> {
@@ -92,7 +115,6 @@ class CachedDalImageTest extends Specification with InMemoryDB {
     
     "Image delete does not work for unauthorized session" >> {
       mockUserSession.isAuthorizedSession() returns false
-
       dal.deleteAvalancheImage(testAvalanche.extId, img1.filename) must throwA[UnauthorizedException]
     }
 

@@ -152,7 +152,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalancheImages(avyExtId: String): List[AvalancheImage] = Await.result(db.run(
-    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.createTime)
+    imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.sortOrder)
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
     val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {
@@ -169,13 +169,24 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
   }
 
-  def updateAvalancheImage(avyExtId: String, baseFilename: String, caption: Option[String]) = {
+  def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]) = {
     if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
-      throw new UnauthorizedException("Not authorized to update image")
+      throw new UnauthorizedException("Not authorized to update image caption")
     }
 
     val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.caption))
-    Await.result(db.run(imageUpdateQuery.update((caption))), Duration.Inf)
+    Await.result(db.run(imageUpdateQuery.update(caption)), Duration.Inf)
+  }
+
+  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
+    if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
+      throw new UnauthorizedException("Not authorized to update image order")
+    }
+
+    filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
+      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.sortOrder))
+      Await.result(db.run(imageOrderUpdateQuery.update(order)), Duration.Inf)
+    }
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
@@ -187,6 +198,8 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
       setAvalancheUpdateTimeAction(avyExtId)
     ), Duration.Inf)
+
+    updateAvalancheImageOrder(avyExtId, getAvalancheImages(avyExtId).map(_.filename))
   }
 
   def deleteOrphanAvalancheImages: Seq[String] = {

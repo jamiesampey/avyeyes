@@ -46,7 +46,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
   mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns noImage
 
-  "Image Post request" >> {
+  "Image post request" >> {
     isolated
 
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
@@ -90,15 +90,15 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   }
 
   "Image caption put request" >> {
-    val mockPutRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
-    mockPutRequest.method = "PUT"
-    mockPutRequest.contentType = "application/json"
+    val mockCaptionPutRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
+    mockCaptionPutRequest.method = "PUT"
+    mockCaptionPutRequest.contentType = "application/json"
 
     "Write a caption to the DB" >> {
       val testCaption = "look at this crazy avalanche"
-      mockPutRequest.body_=("caption" -> testCaption)
+      mockCaptionPutRequest.body_=("caption" -> testCaption)
 
-      "do request" withSFor mockPutRequest in {
+      "do request" withSFor mockCaptionPutRequest in {
         val images = new Images
         val req = openLiftReqBox(S.request)
 
@@ -109,7 +109,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
-        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        there was one(mockAvalancheDal).updateAvalancheImageCaption(extIdArg, filenameArg, captionArg)
         extIdArg.value mustEqual extId
         filenameArg.value mustEqual goodImgFileName
         captionArg.value mustEqual Some(testCaption)
@@ -117,9 +117,9 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
     }
 
     "Remove a caption from the DB" >> {
-      mockPutRequest.body_=("caption" -> "")
+      mockCaptionPutRequest.body_=("caption" -> "")
 
-      "do request" withSFor mockPutRequest in {
+      "do request" withSFor mockCaptionPutRequest in {
         val images = new Images
         val req = openLiftReqBox(S.request)
 
@@ -130,10 +130,41 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
-        there was one(mockAvalancheDal).updateAvalancheImage(extIdArg, filenameArg, captionArg)
+        there was one(mockAvalancheDal).updateAvalancheImageCaption(extIdArg, filenameArg, captionArg)
         extIdArg.value mustEqual extId
         filenameArg.value mustEqual goodImgFileName
         captionArg.value mustEqual None
+      }
+    }
+  }
+
+  "Image Order put request" >> {
+    val mockOrderPutRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
+    mockOrderPutRequest.method = "PUT"
+    mockOrderPutRequest.contentType = "application/json"
+
+    "Write image order to the DB" >> {
+      val testImageOrder = List(
+        "a40ee710-645f-43ce-9130-3d7dfd773c55",
+        "5d4e3a37-7fb7-4d73-8276-8f550b09f8ae",
+        "449162f5-1a75-4b3f-ab13-8903ae3bdce6",
+        "cdc9761c-15ba-4be8-99f2-e4bb3d81eb60"
+      )
+      mockOrderPutRequest.body_=("order" -> testImageOrder)
+
+      "do request" withSFor mockOrderPutRequest in {
+        val images = new Images
+        val req = openLiftReqBox(S.request)
+
+        val extIdArg = capture[String]
+        val orderArg = capture[List[String]]
+
+        val resp = openLiftRespBox(images(req)())
+
+        resp must beAnInstanceOf[OkResponse]
+        there was one(mockAvalancheDal).updateAvalancheImageOrder(extIdArg, orderArg)
+        extIdArg.value mustEqual extId
+        orderArg.value mustEqual testImageOrder
       }
     }
   }

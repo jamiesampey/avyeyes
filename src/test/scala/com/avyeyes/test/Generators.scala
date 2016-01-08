@@ -91,13 +91,17 @@ object Generators {
     origFilename <- Gen.alphaStr
     mimeType <- Gen.alphaStr
     size <- Gen.choose(1000, 5000000)
+    sort_order <- Gen.choose(0, 19)
+    caption <- Gen.option(Gen.alphaStr)
   } yield AvalancheImage(
     createTime = createTime,
     avalanche = avalanche,
     filename = filename,
     origFilename = origFilename,
     mimeType = mimeType,
-    size = size
+    size = size,
+    sortOrder = sort_order,
+    caption = caption
   )
 
   def avalancheImageForTest = genAvalancheImage.sample.get
