@@ -175,7 +175,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
 
     val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.caption))
-    Await.result(db.run(imageUpdateQuery.update((caption))), Duration.Inf)
+    Await.result(db.run(imageUpdateQuery.update(caption)), Duration.Inf)
   }
 
   def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
@@ -184,8 +184,8 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     }
 
     filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
-      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.order))
-      Await.result(db.run(imageOrderUpdateQuery.update((order))), Duration.Inf)
+      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.sortOrder))
+      Await.result(db.run(imageOrderUpdateQuery.update(order)), Duration.Inf)
     }
   }
 
