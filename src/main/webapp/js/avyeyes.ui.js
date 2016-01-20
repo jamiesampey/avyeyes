@@ -130,15 +130,6 @@ function wireAutoCompletes(view) {
 		return false;
 	});
 
-	$('.avyExperienceLevelAutoComplete').on("autocompleteselect", function(event, ui){
-		if (ui.item.value === 'P1' || ui.item.value === 'P2') {
-		  view.form.toggleTechnicalReportFields(true);
-		} else {
-		  view.form.toggleTechnicalReportFields(false);
-		}
-		return false;
-	});
-
     $.extend($.ui.autocomplete.prototype, {
         _renderItem: function( ul, item ) {
             var re = new RegExp('(' + this.element.val() + ')', 'gi');
@@ -250,7 +241,6 @@ function wireButtons(view) {
     $('#avyReportAcceptDrawingButton').click(function() {
         view.hideControls().then(function() {
             view.form.toggleWindDirectionFields(false);
-            view.form.toggleTechnicalReportFields(false);
             view.form.displayReadWriteForm();
         });
     });

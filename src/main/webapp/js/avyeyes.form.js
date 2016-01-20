@@ -402,25 +402,6 @@ AvyForm.prototype.toggleWindDirectionFields = function(enabled) {
     }
 }
 
-AvyForm.prototype.toggleTechnicalReportFields = function(enabled) {
-    if (enabled) {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'white');
-        $('#rwAvyFormClassification label').css('color', 'white');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'white');
-        $('#rwAvyFormClassification :input').prop('disabled', false);
-        $('#rwAvyFormClassification .avyRDSlider').slider('enable');
-    } else {
-        $('#rwAvyFormClassification .avyHeader').css('color', 'gray');
-        $('#rwAvyFormClassification label').css('color', 'gray');
-        $('#rwAvyFormClassification .avyRDSliderValue').css('color', 'gray');
-        $('#rwAvyFormClassification :input').val('');
-        $('#rwAvyFormClassification :input').prop("disabled", true);
-        $('#rwAvyFormClassification .avyRDSlider').slider('disable');
-        $('#rwAvyFormClassification .avyRDSliderValue').val('0');
-        $('#rwAvyFormClassification .avyRDSlider').slider('value', 0);
-    }
-}
-
 function setReadOnlySliderVal(inputElem, value) {
     if (value <= 0) {
         $(inputElem).text('Unknown');

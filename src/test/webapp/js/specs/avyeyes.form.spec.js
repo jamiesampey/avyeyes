@@ -461,15 +461,5 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#rwAvyFormAngle")).toHaveValue(angle);
             expect($("#rwAvyFormCoords")).toHaveValue(coordStr);
         });
-
-        it("toggle technical classification fields", function() {
-            setFixtures("<div id='rwAvyFormClassification'><input id='techField' disabled='true'/></div");
-
-            avyForm.toggleTechnicalReportFields(true);
-            expect($("#techField")).toHaveProp('disabled', false);
-
-            avyForm.toggleTechnicalReportFields(false);
-            expect($("#techField")).toHaveProp('disabled', true);
-        });
     });
 });
