@@ -11,8 +11,9 @@ import scala.collection.JavaConversions._
 
 class AmazonS3ImageService extends Loggable {
   val R = Injectors.resources.vend
-
   private val s3ImageBucket = R.getProperty("s3.imageBucket")
+
+  private[service] val CacheControlMaxAge = "max-age=31536000" // 1 year in seconds
 
   protected val s3Client = new AmazonS3Client(new BasicAWSCredentials(
     R.getProperty("s3.fullaccess.accessKeyId"),
@@ -25,6 +26,7 @@ class AmazonS3ImageService extends Loggable {
       val metadata = new ObjectMetadata()
       metadata.setContentLength(bytes.length)
       metadata.setContentType(mimeType)
+      metadata.setCacheControl(CacheControlMaxAge)
 
       val putObjectRequest = new PutObjectRequest(s3ImageBucket, key,
         new ByteArrayInputStream(bytes), metadata)

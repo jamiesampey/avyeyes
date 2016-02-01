@@ -48,6 +48,7 @@ class AmazonS3ImageServiceTest extends Specification with AroundExample with Moc
       putRequestCapture.value.getKey mustEqual s"$extId/$filename"
       putRequestCapture.value.getMetadata.getContentType mustEqual mimeType
       putRequestCapture.value.getMetadata.getContentLength mustEqual imgBytes.length
+      putRequestCapture.value.getMetadata.getCacheControl mustEqual s3ImageService.CacheControlMaxAge
     }
   }
 
