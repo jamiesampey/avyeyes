@@ -155,7 +155,20 @@ function wireDatePickers() {
 }
 
 function wireSliders() {
-    $('.avyRDSlider').slider({
+    $('.avyRSlider').slider({
+        min: 0,
+        max: 5,
+        step: 1,
+        range: 'min',
+        create: function (event, ui) {
+            $(this).siblings(".avyRDSliderValue").val(0);
+        },
+        slide: function (event, ui) {
+            $(this).siblings(".avyRDSliderValue").val(ui.value);
+        }
+    });
+
+    $('.avyDSlider').slider({
         min: 0,
         max: 5,
         step: 0.5,
