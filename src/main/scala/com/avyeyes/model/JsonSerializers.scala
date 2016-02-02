@@ -78,26 +78,25 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
 ))
 
 class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
-  private val predicate = classOf[Enumeration#Value]
-
-  private def throwOn(value: JValue) =
-    throw new MappingException("Can't convert %s to any of (%s)".format(value, enums.mkString(", ")))
 
   def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
     case ev: Enumeration#Value => {
       val tokens = ev.toString.split('.')
-      ("value" -> tokens(1)) ~ ("label" -> getLocalizedLabel(tokens))
+      tokens.size match {
+        case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
+        case 3 => ("category" -> tokens(1)) ~ ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(2))
+      }
+
     }
   }
 
   private def getLocalizedLabel(tokens: Array[String]): String = {
-    val labelKey = if (tokens(1) == "U") "enum.U" else s"enum.${tokens(0)}.${tokens(1)}"
-    val label = S ? labelKey
+    val label = S ? (if (tokens.last == "U") "enum.U" else s"enum.${tokens.mkString(".")}")
 
-    compositeLabelEnums.contains(tokens(0)) match {
-      case true => s"${tokens(1)} - $label"
+    compositeLabelEnums.contains(tokens.head) match {
+      case true => s"${tokens.last} - $label"
       case false => label
     }
   }

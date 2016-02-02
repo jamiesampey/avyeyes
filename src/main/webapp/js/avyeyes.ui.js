@@ -131,6 +131,24 @@ function wireAutoCompletes(view) {
 	});
 
     $.extend($.ui.autocomplete.prototype, {
+        _renderMenu: function( ul, items ) {
+            var self = this;
+            var currentCategory = "";
+
+             $.each(items, function( index, item ) {
+                var li;
+                if ( item.category != currentCategory ) {
+                    ul.append( "<li class='ui-autocomplete-category " + item.category + "'>" + item.category + "</li>" );
+                    currentCategory = item.category;
+                }
+
+                li = self._renderItemData( ul, item );
+
+                if ( item.category ) {
+                    li.attr( "aria-label", item.category + " : " + item.label );
+                }
+            });
+        },
         _renderItem: function( ul, item ) {
             var re = new RegExp('(' + this.element.val() + ')', 'gi');
             var html = item.label.replace(re, '<span style="background-color: #1978AB">$&</span>');

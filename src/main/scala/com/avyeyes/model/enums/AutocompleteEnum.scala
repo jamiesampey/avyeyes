@@ -5,7 +5,7 @@ abstract class AutocompleteEnum extends Enumeration {
 
   def fromCode(code: String) = values.find(_.toString.endsWith(s".$code")).getOrElse(default)
 
-  def toCode(enumValue: AutocompleteEnum#Value): String = enumValue.toString.split('.')(1)
+  def toCode(enumValue: AutocompleteEnum#Value): String = enumValue.toString.split('.').last
   
   def isValidCode(code: String): Boolean = !code.isEmpty && values.exists(_.toString.endsWith(code))
 }
