@@ -399,6 +399,7 @@ function wireDialogs(view) {
         closeOnEscape: false,
         dialogClass: "rwAvyFormDialog",
         open: function(ev, ui) {
+            $('#rwAvyFormAreaName').focus();
             $('.ui-widget-overlay').css({opacity: .60});
             $(this).parent().find('.ui-dialog-buttonset').css({'width':'100%','text-align':'right'});
             $(this).parent().find('button:contains("Image")').css({'float':'left'});

@@ -56,12 +56,9 @@ textarea:focus, input:focus {
     font-size: 1em;
 }
 
-.ui-menu {
-    max-width: 290px;
-}
-
 .ui-menu a {
     text-decoration: none;
+    white-space: nowrap;
     font: normal .9em times,serif !important;
 }
 
@@ -87,7 +84,9 @@ textarea:focus, input:focus {
 .ui-autocomplete {
     background: #1D1D1D;
     max-height: 250px;
-    overflow-y: scroll;
+    max-width: auto;
+    padding-right: 15px;
+    overflow-y: auto;
     overflow-x: hidden;
     z-index: 1000 !important;
 }
@@ -299,12 +298,8 @@ textarea:focus, input:focus {
     padding: 0px;
 }
 
-#aeMenuList {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 100%;
-    margin: 0px;
+#aeControlsMenu {
+    max-width: 175px;
     font: normal 1em times,serif !important;
 }
 
