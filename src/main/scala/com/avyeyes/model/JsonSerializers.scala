@@ -24,16 +24,16 @@ object JsonSerializers {
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-      ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
-      ("areaName" -> a.areaName) ~
-      ("date" -> Extraction.decompose(a.date)) ~
-      ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
-      ("weather" -> Extraction.decompose(a.weather)) ~
-      ("slope" -> Extraction.decompose(a.slope)) ~
-      ("classification" -> Extraction.decompose(a.classification)) ~
-      ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
-      ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
-      ("images" -> Extraction.decompose(images))
+    ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
+    ("areaName" -> a.areaName) ~
+    ("date" -> Extraction.decompose(a.date)) ~
+    ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
+    ("weather" -> Extraction.decompose(a.weather)) ~
+    ("slope" -> Extraction.decompose(a.slope)) ~
+    ("classification" -> Extraction.decompose(a.classification)) ~
+    ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
+    ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
+    ("images" -> Extraction.decompose(images))
   }
 
   def avalancheAdminDetails(a: Avalanche, images: List[AvalancheImage]) = {

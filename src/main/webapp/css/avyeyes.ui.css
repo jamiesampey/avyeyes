@@ -57,12 +57,12 @@ textarea:focus, input:focus {
 }
 
 .ui-menu {
-	width: 185px;
+    max-width: 290px;
 }
 
 .ui-menu a {
     text-decoration: none;
-    font: normal 1em times,serif !important;
+    font: normal .9em times,serif !important;
 }
 
 .ui-datepicker{
@@ -87,7 +87,7 @@ textarea:focus, input:focus {
 .ui-autocomplete {
     background: #1D1D1D;
     max-height: 250px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     z-index: 1000 !important;
 }
@@ -98,6 +98,13 @@ textarea:focus, input:focus {
     width: 200px;
     height: 20px;
     background: transparent;
+}
+
+.ui-autocomplete-category {
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;
 }
 
 .ui-button-text {

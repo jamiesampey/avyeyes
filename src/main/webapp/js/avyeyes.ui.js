@@ -131,22 +131,17 @@ function wireAutoCompletes(view) {
 	});
 
     $.extend($.ui.autocomplete.prototype, {
-        _renderMenu: function( ul, items ) {
+        _renderMenu: function(ul, items) {
             var self = this;
             var currentCategory = "";
 
-             $.each(items, function( index, item ) {
-                var li;
-                if ( item.category != currentCategory ) {
-                    ul.append( "<li class='ui-autocomplete-category " + item.category + "'>" + item.category + "</li>" );
+             $.each(items, function(index, item) {
+                if (item.category && item.category != currentCategory) {
+                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
                     currentCategory = item.category;
                 }
 
-                li = self._renderItemData( ul, item );
-
-                if ( item.category ) {
-                    li.attr( "aria-label", item.category + " : " + item.label );
-                }
+                var li = self._renderItemData(ul, item);
             });
         },
         _renderItem: function( ul, item ) {
