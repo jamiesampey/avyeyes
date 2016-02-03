@@ -87,7 +87,36 @@ function wireTooltips() {
 }
 
 function wireAutoCompletes(view) {
-	$('.avyAutoComplete').autocomplete({
+
+  $.widget("custom.avycomplete", $.ui.autocomplete, {
+      _create: function() {
+        this._super();
+        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+      },
+      _renderMenu: function(ul, items) {
+          var self = this;
+          var currentCategory = "";
+
+           $.each(items, function(index, item) {
+              if (item.category && item.category != currentCategory) {
+                  ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                  currentCategory = item.category;
+              }
+
+              self._renderItemData(ul, item);
+          });
+      },
+      _renderItem: function( ul, item ) {
+          var re = new RegExp('(' + this.element.val() + ')', 'gi');
+          var html = item.label.replace(re, '<span style="background-color: #1978AB">$&</span>');
+          return $( "<li></li>" )
+              .data( "item.autocomplete", item )
+              .append( $("<a></a>").html(html) )
+              .appendTo( ul );
+      }
+  });
+
+	$('.avyAutoComplete').avycomplete({
 		minLength: 0,
 		delay: 0,
 		select: function(event, ui) {
@@ -97,7 +126,7 @@ function wireAutoCompletes(view) {
 		}
 	});
 
-	$('#rwAvyFormDialog .avyAutoComplete').autocomplete('option', 'appendTo', '#rwAvyFormDialog');
+	$('#rwAvyFormDialog .avyAutoComplete').avycomplete('option', 'appendTo', '#rwAvyFormDialog');
    	$('#rwAvyFormDialog .avyAutoComplete').focus(function() {
    	    var containerScrollTop = $("#rwAvyFormDialog").scrollTop();
    	    var dropDownBottom = $(this).position().top + containerScrollTop + 300;
@@ -114,7 +143,7 @@ function wireAutoCompletes(view) {
 	});
 
 	$('.avyAutoComplete').focus(function(){
-		$(this).autocomplete("search");
+		$(this).avycomplete("search");
     });
 
 	$('.avyAutoComplete').click(function(){
@@ -129,30 +158,6 @@ function wireAutoCompletes(view) {
 		}
 		return false;
 	});
-
-    $.extend($.ui.autocomplete.prototype, {
-        _renderMenu: function(ul, items) {
-            var self = this;
-            var currentCategory = "";
-
-             $.each(items, function(index, item) {
-                if (item.category && item.category != currentCategory) {
-                    ul.append( "<hr/><li class='ui-autocomplete-category'>" + item.category + "</li>" );
-                    currentCategory = item.category;
-                }
-
-                self._renderItem(ul, item);
-            });
-        },
-        _renderItem: function( ul, item ) {
-            var re = new RegExp('(' + this.element.val() + ')', 'gi');
-            var html = item.label.replace(re, '<span style="background-color: #1978AB">$&</span>');
-            return $( "<li></li>" )
-                .data( "item.autocomplete", item )
-                .append( $("<a></a>").html(html) )
-                .appendTo( ul );
-        }
-    });
 }
 
 function wireDatePickers() {
@@ -280,7 +285,7 @@ function wireButtons(view) {
 }
 
 function wireLocationInputs(view) {
-    $('.avyLocation').autocomplete({
+    $('.avyLocation').avycomplete({
         source: function (request, response) {
             view.geocode(request.term, function(data) {
                 var resourceSet = data.resourceSets[0];

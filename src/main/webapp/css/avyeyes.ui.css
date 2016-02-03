@@ -83,7 +83,7 @@ textarea:focus, input:focus {
 
 .ui-autocomplete {
     background: #1D1D1D;
-    max-height: 250px;
+    max-height: 275px;
     max-width: auto;
     padding-right: 15px;
     overflow-y: auto;
@@ -99,9 +99,13 @@ textarea:focus, input:focus {
     background: transparent;
 }
 
-.ui-autocomplete-category {
+li.ui-autocomplete-category {
     font-size: 1.1em;
     white-space: nowrap;
+    color: gray;
+    padding: 0px;
+    margin: 10px 0px 0px 5px;
+    border-top: solid 1px gray;
 }
 
 .ui-button-text {
