@@ -100,10 +100,8 @@ textarea:focus, input:focus {
 }
 
 .ui-autocomplete-category {
-    font-weight: bold;
-    padding: .2em .4em;
-    margin: .8em 0 .2em;
-    line-height: 1.5;
+    font-size: 1.1em;
+    white-space: nowrap;
 }
 
 .ui-button-text {

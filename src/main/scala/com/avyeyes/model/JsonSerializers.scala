@@ -86,7 +86,10 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
       val tokens = ev.toString.split('.')
       tokens.size match {
         case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
-        case 3 => ("category" -> tokens(1)) ~ ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(2))
+        case 3 =>
+          ("category" -> S ? s"enum.${tokens(0)}.${tokens(1)}") ~
+          ("label" -> getLocalizedLabel(tokens)) ~
+          ("value" -> tokens(2))
       }
 
     }

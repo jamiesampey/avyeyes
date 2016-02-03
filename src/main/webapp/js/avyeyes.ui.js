@@ -137,11 +137,11 @@ function wireAutoCompletes(view) {
 
              $.each(items, function(index, item) {
                 if (item.category && item.category != currentCategory) {
-                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                    ul.append( "<hr/><li class='ui-autocomplete-category'>" + item.category + "</li>" );
                     currentCategory = item.category;
                 }
 
-                var li = self._renderItemData(ul, item);
+                self._renderItem(ul, item);
             });
         },
         _renderItem: function( ul, item ) {
