@@ -392,15 +392,15 @@ AvyForm.prototype.closeReportDialogs = function() {
         .children('.ui-dialog-content').dialog('close');
 }
 
-AvyForm.prototype.toggleWindDirectionFields = function(enabled) {
-    if (enabled) {
-        $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
-        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
-    } else {
+AvyForm.prototype.toggleWindDirectionFields = function(value) {
+    if (value === 'U' || value.length == 0) {
         $('#rwAvyFormRecentWindDirection').val('');
         $('#rwAvyFormRecentWindDirection').siblings('.avyDirectionAutoComplete').val('');
         $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
         $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', true);
+    } else {
+        $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
+        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
     }
 }
 

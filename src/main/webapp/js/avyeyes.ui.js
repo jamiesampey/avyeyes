@@ -122,10 +122,7 @@ function wireAutoCompletes(view) {
 		select: function(event, ui) {
 			$(this).siblings(':hidden').val(ui.item.value);
 			$(this).val(ui.item.label);
-
-			if ($(this).hasClass('avyWindSpeedAutoComplete')) {
-			    view.form.toggleWindDirectionFields(ui.item.value !== 'U');
-            }
+			if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields(ui.item.value);
 			return false;
 		}
 	});
@@ -144,13 +141,14 @@ function wireAutoCompletes(view) {
 	$('.avyAutoComplete').change(function() {
 		$(this).val('');
 		$(this).siblings(':hidden').val('');
+		if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields('');
 	});
 
-	$('.avyAutoComplete').focus(function(){
+	$('.avyAutoComplete').focus(function() {
 		$(this).avycomplete("search");
     });
 
-	$('.avyAutoComplete').click(function(){
+	$('.avyAutoComplete').click(function() {
 		$(this).select();
     });
 }
