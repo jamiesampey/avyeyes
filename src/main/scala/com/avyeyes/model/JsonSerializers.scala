@@ -78,7 +78,6 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
 ))
 
 class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
-
   def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {

@@ -122,6 +122,10 @@ function wireAutoCompletes(view) {
 		select: function(event, ui) {
 			$(this).siblings(':hidden').val(ui.item.value);
 			$(this).val(ui.item.label);
+
+			if ($(this).hasClass('avyWindSpeedAutoComplete')) {
+			    view.form.toggleWindDirectionFields(ui.item.value !== 'U');
+            }
 			return false;
 		}
 	});
@@ -149,15 +153,6 @@ function wireAutoCompletes(view) {
 	$('.avyAutoComplete').click(function(){
 		$(this).select();
     });
-
-	$('.avyWindSpeedAutoComplete').on("autocompleteselect", function(event, ui){
-		if (ui.item.value === 'U') {
-		  view.form.toggleWindDirectionFields(false);
-		} else {
-		  view.form.toggleWindDirectionFields(true);
-		}
-		return false;
-	});
 }
 
 function wireDatePickers() {

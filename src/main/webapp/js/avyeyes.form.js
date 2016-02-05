@@ -397,6 +397,8 @@ AvyForm.prototype.toggleWindDirectionFields = function(enabled) {
         $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
         $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
     } else {
+        $('#rwAvyFormRecentWindDirection').val('');
+        $('#rwAvyFormRecentWindDirection').siblings('.avyDirectionAutoComplete').val('');
         $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
         $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', true);
     }
