@@ -34,7 +34,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
   var recentSnow = ""; var recentWindSpeed = ""; var recentWindDirection = ""
   var elevation = ""; var aspect = ""; var angle = ""    
-  var avyType = ""; var avyTrigger = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
+  var avyType = ""; var avyTrigger = ""; var avyTriggerCause = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
   var modeOfTravel = ""; var comments = ""; var coordStr = ""
   
@@ -55,6 +55,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     "#rwAvyFormRecentWindDirection" #> SHtml.hidden(recentWindDirection = _, recentWindDirection) &
     "#rwAvyFormType" #> SHtml.hidden(avyType = _, avyType) &
     "#rwAvyFormTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
+    "#rwAvyFormTriggerCause" #> SHtml.hidden(avyTriggerCause = _, avyTriggerCause) &
     "#rwAvyFormInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
     "#rwAvyFormRsizeValue" #> SHtml.text(rSize, rSize = _) &
     "#rwAvyFormDsizeValue" #> SHtml.text(dSize, dSize = _) &
@@ -170,6 +171,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       classification = Classification(
         avyType = AvalancheType.fromCode(avyType),
         trigger = AvalancheTrigger.fromCode(avyTrigger),
+        triggerCause = AvalancheTriggerCause.fromCode(avyTriggerCause),
         interface = AvalancheInterface.fromCode(avyInterface),
         rSize = strToDblOrZero(rSize),
         dSize = strToDblOrZero(dSize)
