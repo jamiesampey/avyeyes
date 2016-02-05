@@ -57,5 +57,5 @@ class InitTest extends WebSpec2 with AroundExample with Mockito {
     }
   }
   
-  private def autocompleteInitCallCount(jsStr: String) = """\$\('\.[a-zA-Z]+'\)\.autocomplete""".r.findAllMatchIn(jsStr).length
+  private def autocompleteInitCallCount(jsStr: String) = """\$\('\.[a-zA-Z]+'\)\.avycomplete""".r.findAllMatchIn(jsStr).length
 }
