@@ -47,6 +47,7 @@ class Init extends Loggable {
   private def autoCompleteSourcesCmd: JsCmd = {
     JsRaw(s"$$('.avyTypeAutoComplete').avycomplete('option', 'source', ${write(AvalancheType.values)});"
       + s"$$('.avyTriggerAutoComplete').avycomplete('option', 'source', ${write(AvalancheTrigger.values)});"
+      + s"$$('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', ${write(AvalancheTriggerCause.values)});"
       + s"$$('.avyInterfaceAutoComplete').avycomplete('option', 'source', ${write(AvalancheInterface.values)});"
       + s"$$('.avyDirectionAutoComplete').avycomplete('option', 'source', ${write(Direction.values)});"
       + s"$$('.avyWindSpeedAutoComplete').avycomplete('option', 'source', ${write(WindSpeed.values)});"

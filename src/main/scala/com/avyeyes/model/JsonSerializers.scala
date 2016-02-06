@@ -109,6 +109,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
     Seq(
       getSimpleEnumName(AvalancheInterface),
       getSimpleEnumName(AvalancheTrigger),
+      getSimpleEnumName(AvalancheTriggerCause),
       getSimpleEnumName(AvalancheType)
     )
   }
