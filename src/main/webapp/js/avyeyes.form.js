@@ -404,6 +404,18 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
     }
 }
 
+AvyForm.prototype.toggleTriggerCauseFields = function(category) {
+    if (category && (category.startsWith('Natural') || category.endsWith('Explosive') || category.endsWith('Human'))) {
+        $('.avyTriggerCauseAutoComplete').prop('disabled', false);
+        $('label[for="rwAvyFormTriggerCause"]').css('color', 'white');
+    } else {
+        $('#rwAvyFormTriggerCause').val('');
+        $('.avyTriggerCauseAutoComplete').val('');
+        $('.avyTriggerCauseAutoComplete').prop('disabled', true);
+        $('label[for="rwAvyFormTriggerCause"]').css('color', 'gray');
+    }
+}
+
 function setReadOnlySliderVal(inputElem, value) {
     if (value <= 0) {
         $(inputElem).text('Unknown');

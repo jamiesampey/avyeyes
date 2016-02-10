@@ -123,6 +123,7 @@ function wireAutoCompletes(view) {
 			$(this).siblings(':hidden').val(ui.item.value);
 			$(this).val(ui.item.label);
 			if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields(ui.item.value);
+			if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields(ui.item.category)
 			return false;
 		}
 	});
@@ -142,6 +143,7 @@ function wireAutoCompletes(view) {
 		$(this).val('');
 		$(this).siblings(':hidden').val('');
 		if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields('');
+		if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields('');
 	});
 
 	$('.avyAutoComplete').focus(function() {
@@ -264,7 +266,8 @@ function wireButtons(view) {
 
     $('#avyReportAcceptDrawingButton').click(function() {
         view.hideControls().then(function() {
-            view.form.toggleWindDirectionFields(false);
+            view.form.toggleWindDirectionFields('');
+            view.form.toggleTriggerCauseFields('');
             view.form.displayReadWriteForm();
         });
     });
