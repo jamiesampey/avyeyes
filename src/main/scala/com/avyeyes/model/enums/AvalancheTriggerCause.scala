@@ -6,10 +6,12 @@ object AvalancheTriggerCause extends AutocompleteEnum {
   type AvalancheTriggerCause = Value
 
   val U = Value("AvalancheTriggerCause.U")
-  val NE_R = Value("AvalancheTriggerCause.NaturalExplosive.R")
-  val NE_Y = Value("AvalancheTriggerCause.NaturalExplosive.Y")
-  val H_C = Value("AvalancheTriggerCause.Human.C")
-  val H_U = Value("AvalancheTriggerCause.Human.U")
-  val H_R = Value("AvalancheTriggerCause.Human.R")
-  val H_Y = Value("AvalancheTriggerCause.Human.Y")
+  val Natural_r = Value("AvalancheTriggerCause.Natural.r")
+  val Natural_y = Value("AvalancheTriggerCause.Natural.y")
+  val Explosive_r = Value("AvalancheTriggerCause.Explosive.r")
+  val Explosive_y = Value("AvalancheTriggerCause.Explosive.y")
+  val Human_c = Value("AvalancheTriggerCause.Human.c")
+  val Human_u = Value("AvalancheTriggerCause.Human.u")
+  val Human_r = Value("AvalancheTriggerCause.Human.r")
+  val Human_y = Value("AvalancheTriggerCause.Human.y")
 }

@@ -13,5 +13,5 @@ case class Classification(avyType: AvalancheType,
                           rSize: Double,
                           dSize: Double) {
 
-  override def toString = s"${AvalancheType.toCode(avyType)}-${AvalancheTrigger.toCode(trigger)}-$rSize-$dSize-${AvalancheInterface.toCode(interface)}"
+  override def toString = s"${AvalancheType.toCode(avyType)}-${AvalancheTrigger.toCode(trigger)}${AvalancheTriggerCause.toCode(triggerCause)}-$rSize-$dSize-${AvalancheInterface.toCode(interface)}"
 }

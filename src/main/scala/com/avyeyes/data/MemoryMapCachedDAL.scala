@@ -106,13 +106,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
     val avalancheUpdateQuery = AvalancheRows.filter(_.extId === update.extId).map(a => (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp, a.areaName, a.date, a.aspect, a.angle, a.comments))
     val sceneUpdateQuery = AvalancheWeatherRows.filter(_.avalanche === update.extId).map(w => (w.recentSnow, w.recentWindDirection, w.recentWindSpeed))
-    val classificationUpdateQuery = AvalancheClassificationRows.filter(_.avalanche === update.extId).map(c => (c.avalancheType, c.trigger, c.interface, c.rSize, c.dSize))
+    val classificationUpdateQuery = AvalancheClassificationRows.filter(_.avalanche === update.extId).map(c => (c.avalancheType, c.trigger, c.triggerCause, c.interface, c.rSize, c.dSize))
     val humanUpdateQuery = AvalancheHumanRows.filter(_.avalanche === update.extId).map(h => (h.modeOfTravel, h.caught, h.partiallyBuried, h.fullyBuried, h.injured, h.killed))
 
     Await.result(db.run {
       avalancheUpdateQuery.update((DateTime.now, update.viewable, update.submitterEmail, update.submitterExp, update.areaName, update.date, update.slope.aspect, update.slope.angle, update.comments)) >>
       sceneUpdateQuery.update((update.weather.recentSnow, update.weather.recentWindDirection, update.weather.recentWindSpeed)) >>
-      classificationUpdateQuery.update((update.classification.avyType, update.classification.trigger, update.classification.interface, update.classification.rSize, update.classification.dSize)) >>
+      classificationUpdateQuery.update((update.classification.avyType, update.classification.trigger, update.classification.triggerCause, update.classification.interface, update.classification.rSize, update.classification.dSize)) >>
       humanUpdateQuery.update((update.humanNumbers.modeOfTravel, update.humanNumbers.caught, update.humanNumbers.partiallyBuried, update.humanNumbers.fullyBuried, update.humanNumbers.injured, update.humanNumbers.killed))
     }, Duration.Inf)
 
