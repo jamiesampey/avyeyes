@@ -405,10 +405,22 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
 }
 
 AvyForm.prototype.toggleTriggerCauseFields = function(category) {
-    if (category && (category.startsWith('Natural') || category.endsWith('Explosive') || category.endsWith('Human'))) {
+    var triggerCauseSource = $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source');
+    if (triggerCauseSource.length == 5) this.fullTriggerCauseSource = triggerCauseSource;
+
+    var enableTriggerCauseFields = function() {
         $('.avyTriggerCauseAutoComplete').prop('disabled', false);
         $('label[for="rwAvyFormTriggerCause"]').css('color', 'white');
+    }
+
+    if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
+        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource.slice(0,3));
+        enableTriggerCauseFields();
+    } else if (category && category.endsWith('Human')) {
+        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource);
+        enableTriggerCauseFields();
     } else {
+        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource);
         $('#rwAvyFormTriggerCause').val('');
         $('.avyTriggerCauseAutoComplete').val('');
         $('.avyTriggerCauseAutoComplete').prop('disabled', true);
