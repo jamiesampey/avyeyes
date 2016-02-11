@@ -18,8 +18,8 @@ object JsonSerializers {
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
     AvalancheImageSerializer +
-    new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheType,
-      ExperienceLevel, ModeOfTravel, WindSpeed)
+    new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheTriggerModifier,
+      AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
 
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
@@ -109,7 +109,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
     Seq(
       getSimpleEnumName(AvalancheInterface),
       getSimpleEnumName(AvalancheTrigger),
-      getSimpleEnumName(AvalancheTriggerCause),
+      getSimpleEnumName(AvalancheTriggerModifier),
       getSimpleEnumName(AvalancheType)
     )
   }

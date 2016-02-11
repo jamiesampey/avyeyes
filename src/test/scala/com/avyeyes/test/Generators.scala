@@ -34,11 +34,11 @@ object Generators {
   def genClassification = for {
     avyType <- Gen.oneOf(AvalancheType.values.toSeq)
     trigger <- Gen.oneOf(AvalancheTrigger.values.toSeq)
-    triggerCause <- Gen.oneOf(AvalancheTriggerCause.values.toSeq)
+    triggerModifier <- Gen.oneOf(AvalancheTriggerModifier.values.toSeq)
     interface <- Gen.oneOf(AvalancheInterface.values.toSeq)
     rSize <- Gen.choose(0, 5)
     dSize <- Gen.oneOf(0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)
-  } yield Classification(avyType, trigger, triggerCause, interface, rSize, dSize)
+  } yield Classification(avyType, trigger, triggerModifier, interface, rSize, dSize)
 
   def genHumanNumbers = for {
     modeOfTravel <- Gen.oneOf(ModeOfTravel.values.toSeq)

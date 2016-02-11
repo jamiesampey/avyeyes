@@ -38,6 +38,10 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
           "value":"NE",
           "label":"NE - Earthquake"
         },
+        "triggerModifier":{
+          "value":"c",
+          "label":"c - A controlled or intentional release by the indicated trigger"
+        },
         "interface":{
           "value":"G",
           "label":"G - Ground, glacial ice, or firm"
@@ -149,6 +153,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("sets classification fields", function() {
             setFixtures("<span id='roAvyFormType'></span>"
                 + "<span id='roAvyFormTrigger'></span>"
+                + "<span id='roAvyFormTriggerModifier'></span>"
                 + "<span id='roAvyFormInterface'></span>"
                 + "<span id='roAvyFormRSize'></span>"
                 + "<span id='roAvyFormDSize'></span>");
@@ -157,6 +162,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             expect($("#roAvyFormType")).toHaveText(avalanche.classification.avyType.label);
             expect($("#roAvyFormTrigger")).toHaveText(avalanche.classification.trigger.label);
+            expect($("#roAvyFormTriggerModifier")).toHaveText(avalanche.classification.triggerModifier.label);
             expect($("#roAvyFormInterface")).toHaveText(avalanche.classification.interface.label);
             expect($("#roAvyFormRSize")).toHaveText(avalanche.classification.rSize);
             expect($("#roAvyFormDSize")).toHaveText(avalanche.classification.dSize);
@@ -262,6 +268,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindDirection", avalanche.weather.recentWindDirection).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormType", avalanche.classification.avyType).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTrigger", avalanche.classification.trigger).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTriggerModifier", avalanche.classification.triggerModifier).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormInterface", avalanche.classification.interface).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormAspect", avalanche.slope.aspect).once();
             mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormModeOfTravel", avalanche.humanNumbers.modeOfTravel).once();

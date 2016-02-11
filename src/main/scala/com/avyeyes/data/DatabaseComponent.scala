@@ -4,7 +4,7 @@ import com.avyeyes.model._
 import com.avyeyes.model.enums.Direction.Direction
 import com.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
 import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
-import com.avyeyes.model.enums.AvalancheTriggerCause.AvalancheTriggerCause
+import com.avyeyes.model.enums.AvalancheTriggerModifier.AvalancheTriggerModifier
 import com.avyeyes.model.enums.AvalancheType.AvalancheType
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
@@ -13,7 +13,7 @@ import org.joda.time.DateTime
 
 private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
 private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
-private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerCause: AvalancheTriggerCause, interface: AvalancheInterface, rSize: Double, dSize: Double)
+private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverComponent =>
@@ -79,12 +79,12 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverCompo
     def avalanche = column[String]("avalanche")
     def avalancheType = column[AvalancheType]("avalanche_type")
     def trigger = column[AvalancheTrigger]("trigger")
-    def triggerCause = column[AvalancheTriggerCause]("trigger_cause")
+    def triggerModifier = column[AvalancheTriggerModifier]("trigger_modifier")
     def interface = column[AvalancheInterface]("interface")
     def rSize = column[Double]("r_size")
     def dSize = column[Double]("d_size")
 
-    def * = (avalanche, avalancheType, trigger, triggerCause, interface, rSize, dSize) <> (AvalancheClassificationTableRow.tupled, AvalancheClassificationTableRow.unapply)
+    def * = (avalanche, avalancheType, trigger, triggerModifier, interface, rSize, dSize) <> (AvalancheClassificationTableRow.tupled, AvalancheClassificationTableRow.unapply)
 
     def idx = index("avalanche_classification_extid_idx", avalanche, unique = true)
     def avalancheFk = foreignKey("avalanche_classification_extid_fk", avalanche, AvalancheRows)(a =>

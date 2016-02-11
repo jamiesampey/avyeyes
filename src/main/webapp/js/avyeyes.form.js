@@ -42,6 +42,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
 	$("#roAvyFormType").text(a.classification.avyType.label);
 	$("#roAvyFormTrigger").text(a.classification.trigger.label);
+	$("#roAvyFormTriggerModifier").text(a.classification.triggerModifier.label);
 	$("#roAvyFormInterface").text(a.classification.interface.label);
 	setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
 	setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
@@ -144,6 +145,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
 
     this.setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
     this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
+    this.setReadWriteAutocompleteVal('#rwAvyFormTriggerModifier', a.classification.triggerModifier);
     this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
     this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
     this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
@@ -405,25 +407,25 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
 }
 
 AvyForm.prototype.toggleTriggerCauseFields = function(category) {
-    var triggerCauseSource = $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source');
-    if (triggerCauseSource.length == 5) this.fullTriggerCauseSource = triggerCauseSource;
+    var triggerModifierSource = $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source');
+    if (triggerModifierSource.length == 5) this.fullTriggerModifierSource = triggerModifierSource;
 
-    var enableTriggerCauseFields = function() {
-        $('.avyTriggerCauseAutoComplete').prop('disabled', false);
+    var enableTriggerModifierFields = function() {
+        $('.avyTriggerModifierAutoComplete').prop('disabled', false);
         $('label[for="rwAvyFormTriggerCause"]').css('color', 'white');
     }
 
     if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
-        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource.slice(0,3));
-        enableTriggerCauseFields();
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource.slice(0,3));
+        enableTriggerModifierFields();
     } else if (category && category.endsWith('Human')) {
-        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource);
-        enableTriggerCauseFields();
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
+        enableTriggerModifierFields();
     } else {
-        $('.avyTriggerCauseAutoComplete').avycomplete('option', 'source', this.fullTriggerCauseSource);
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
         $('#rwAvyFormTriggerCause').val('');
-        $('.avyTriggerCauseAutoComplete').val('');
-        $('.avyTriggerCauseAutoComplete').prop('disabled', true);
+        $('.avyTriggerModifierAutoComplete').val('');
+        $('.avyTriggerModifierAutoComplete').prop('disabled', true);
         $('label[for="rwAvyFormTriggerCause"]').css('color', 'gray');
     }
 }

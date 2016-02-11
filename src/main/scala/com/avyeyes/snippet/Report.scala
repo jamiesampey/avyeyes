@@ -171,7 +171,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       classification = Classification(
         avyType = AvalancheType.fromCode(avyType),
         trigger = AvalancheTrigger.fromCode(avyTrigger),
-        triggerCause = AvalancheTriggerCause.fromCode(avyTriggerCause),
+        triggerModifier = AvalancheTriggerModifier.fromCode(avyTriggerCause),
         interface = AvalancheInterface.fromCode(avyInterface),
         rSize = strToDblOrZero(rSize),
         dSize = strToDblOrZero(dSize)

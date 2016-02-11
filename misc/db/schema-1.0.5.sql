@@ -31,7 +31,7 @@ create table "avalanche_classification" (
     "avalanche" text unique,
     "avalanche_type" text not null,
     "trigger" text not null,
-    "trigger_cause" text not null,
+    "trigger_modifier" text not null,
     "interface" text not null,
     "r_size" double precision not null,
     "d_size" double precision not null
