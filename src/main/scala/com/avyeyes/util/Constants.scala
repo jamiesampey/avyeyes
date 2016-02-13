@@ -24,6 +24,4 @@ object Constants {
 
   val SiteOwnerRole = "site_owner"
   val AdminRole = "admin"
-
-  val UnknownEnumCode = "enum.U"
 }

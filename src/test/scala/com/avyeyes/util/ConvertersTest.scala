@@ -30,19 +30,4 @@ class ConvertersTest extends Specification {
       Converters.strToDblOrZero("blah") must_== 0
     }
   }
-
-  "Avalanche size Double to String conversion" >> {
-    "Work on sizes of different precesions" >> {
-      Converters.sizeToStr(3) must_== "3.0"
-      Converters.sizeToStr(3.5) must_== "3.5"
-    }
-  }
-
-  "Avalanche size Double to String conversion" >> {
-    "Work on sizes of different precesions" >> {
-      Converters.sizeToStr(3) must_== "3.0"
-      Converters.sizeToStr(3.5) must_== "3.5"
-    }
-  }
-
 }
