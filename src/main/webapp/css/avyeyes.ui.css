@@ -224,7 +224,7 @@ li.ui-autocomplete-category {
     right: 85px;
     z-index: 100;
     padding: 6px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(48, 51, 54, 1.0);
     color: white;
     border-radius: 5px;
 }
