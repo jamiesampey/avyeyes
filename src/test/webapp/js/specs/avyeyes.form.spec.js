@@ -182,7 +182,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#roAvyFormNumPartiallyBuried")).toHaveText(avalanche.humanNumbers.partiallyBuried);
             expect($("#roAvyFormNumFullyBuried")).toHaveText(avalanche.humanNumbers.fullyBuried);
             expect($("#roAvyFormNumInjured")).toHaveText(avalanche.humanNumbers.injured);
-            expect($("#roAvyFormNumKilled")).toHaveText("Unknown");
+            expect($("#roAvyFormNumKilled")).toHaveText("unspecified");
             expect($("#roAvyFormModeOfTravel")).toHaveText(avalanche.humanNumbers.modeOfTravel.label);
         });
 
