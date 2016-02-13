@@ -30,7 +30,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormAngle").text(a.slope.angle);
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
-   	$("#roAvyFormRecentWindSpeed").text(a.weather.recentWindSpeed.label);
+   	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", a.weather.recentWindSpeed);
     if (a.weather.recentWindSpeed.value == 'U' || a.weather.recentWindDirection.value == 'U') {
         $("#roAvyFormRecentWindDirectionText").hide();
         $("#roAvyFormRecentWindDirection").hide();
@@ -40,10 +40,10 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         $("#roAvyFormRecentWindDirection").show();
     }
 
-	$("#roAvyFormType").text(a.classification.avyType.label);
-	$("#roAvyFormTrigger").text(a.classification.trigger.label);
-	$("#roAvyFormTriggerModifier").text(a.classification.triggerModifier.label);
-	$("#roAvyFormInterface").text(a.classification.interface.label);
+	setReadOnlyAutoCompleteVal("#roAvyFormType", a.classification.avyType);
+	setReadOnlyAutoCompleteVal("#roAvyFormTrigger", a.classification.trigger);
+	setReadOnlyAutoCompleteVal("#roAvyFormTriggerModifier", a.classification.triggerModifier);
+	setReadOnlyAutoCompleteVal("#roAvyFormInterface", a.classification.interface);
 	setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
 	setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
 
@@ -52,7 +52,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	setReadOnlySpinnerVal("#roAvyFormNumFullyBuried", a.humanNumbers.fullyBuried);
 	setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
 	setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
-	$("#roAvyFormModeOfTravel").text(a.humanNumbers.modeOfTravel.label);
+
+	setReadOnlyAutoCompleteVal("#roAvyFormModeOfTravel", a.humanNumbers.modeOfTravel);
 
     var showComments = a.comments.length > 0;
     var showImages = a.images.length > 0;
@@ -430,18 +431,32 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
     }
 }
 
+function setReadOnlyAutoCompleteVal(inputElem, obj) {
+    if (obj.value == 'U') {
+        $(inputElem).css('color', 'gray');
+        $(inputElem).text('unspecified');
+    } else {
+        $(inputElem).css('color', 'white');
+        $(inputElem).text(obj.label);
+    }
+}
+
 function setReadOnlySliderVal(inputElem, value) {
     if (value <= 0) {
-        $(inputElem).text('Unknown');
+        $(inputElem).css('color', 'gray');
+        $(inputElem).text('unspecified');
     } else {
+        $(inputElem).css('color', 'white');
         $(inputElem).text(value);
     }
 }
 
 function setReadOnlySpinnerVal(inputElem, value, unit) {
     if (value == -1) {
-        $(inputElem).text('Unknown');
+        $(inputElem).css('color', 'gray');
+        $(inputElem).text('unspecified');
     } else {
+        $(inputElem).css('color', 'white');
         if (unit) $(inputElem).text(value + " " + unit);
         else $(inputElem).text(value);
     }
