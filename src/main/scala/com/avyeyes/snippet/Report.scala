@@ -34,10 +34,10 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
   var recentSnow = ""; var recentWindSpeed = ""; var recentWindDirection = ""
   var elevation = ""; var aspect = ""; var angle = ""    
-  var avyType = ""; var avyTrigger = ""; var avyTriggerCause = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
+  var avyType = ""; var avyTrigger = ""; var avyTriggerModifier = ""; var avyInterface = ""; var rSize = ""; var dSize = ""
   var caught = ""; var partiallyBuried = ""; var fullyBuried = ""; var injured = ""; var killed = ""
   var modeOfTravel = ""; var comments = ""; var coordStr = ""
-  
+
   def render = {
     "#rwAvyFormExtId" #> SHtml.hidden(extId = _, extId) &
     "#rwAvyFormLat" #> SHtml.hidden(lat = _, lat) &
@@ -55,7 +55,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     "#rwAvyFormRecentWindDirection" #> SHtml.hidden(recentWindDirection = _, recentWindDirection) &
     "#rwAvyFormType" #> SHtml.hidden(avyType = _, avyType) &
     "#rwAvyFormTrigger" #> SHtml.hidden(avyTrigger = _, avyTrigger) &
-    "#rwAvyFormTriggerCause" #> SHtml.hidden(avyTriggerCause = _, avyTriggerCause) &
+    "#rwAvyFormTriggerModifier" #> SHtml.hidden(avyTriggerModifier = _, avyTriggerModifier) &
     "#rwAvyFormInterface" #> SHtml.hidden(avyInterface = _, avyInterface) &
     "#rwAvyFormRsizeValue" #> SHtml.text(rSize, rSize = _) &
     "#rwAvyFormDsizeValue" #> SHtml.text(dSize, dSize = _) &
@@ -130,7 +130,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
     jsDialogCmd & Call("avyEyesView.resetView").cmd
   }
-  
+
   def deleteReport(extIdToDelete: String) = {
     try {
       dal.deleteAvalanche(extIdToDelete)
@@ -146,7 +146,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       }
     }
   }
-  
+
   private def createAvalancheFromValues = {
     Avalanche(
       createTime = DateTime.now,
@@ -171,7 +171,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
       classification = Classification(
         avyType = AvalancheType.fromCode(avyType),
         trigger = AvalancheTrigger.fromCode(avyTrigger),
-        triggerModifier = AvalancheTriggerModifier.fromCode(avyTriggerCause),
+        triggerModifier = AvalancheTriggerModifier.fromCode(avyTriggerModifier),
         interface = AvalancheInterface.fromCode(avyInterface),
         rSize = strToDblOrZero(rSize),
         dSize = strToDblOrZero(dSize)

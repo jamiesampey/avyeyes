@@ -413,7 +413,7 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
 
     var enableTriggerModifierFields = function() {
         $('.avyTriggerModifierAutoComplete').prop('disabled', false);
-        $('label[for="rwAvyFormTriggerCause"]').css('color', 'white');
+        $('label[for="rwAvyFormTriggerModifier"]').css('color', 'white');
     }
 
     if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
@@ -424,10 +424,10 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
         enableTriggerModifierFields();
     } else {
         $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
-        $('#rwAvyFormTriggerCause').val('');
+        $('#rwAvyFormTriggerModifier').val('');
         $('.avyTriggerModifierAutoComplete').val('');
         $('.avyTriggerModifierAutoComplete').prop('disabled', true);
-        $('label[for="rwAvyFormTriggerCause"]').css('color', 'gray');
+        $('label[for="rwAvyFormTriggerModifier"]').css('color', 'gray');
     }
 }
 
