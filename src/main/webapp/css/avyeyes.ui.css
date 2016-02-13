@@ -224,7 +224,7 @@ li.ui-autocomplete-category {
     right: 85px;
     z-index: 100;
     padding: 6px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
     border-radius: 5px;
 }
@@ -270,7 +270,7 @@ li.ui-autocomplete-category {
     width: 300px;
     height: 60px;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     color: white;
 }
 
@@ -314,7 +314,7 @@ li.ui-autocomplete-category {
     height: 450px;
     margin: 0px;
     padding: 0px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
 }
 
 .aeControlsContent hr {
