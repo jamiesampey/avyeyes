@@ -1,11 +1,12 @@
 package com.avyeyes.model.enums
 
 object Direction extends AutocompleteEnum {
-  override def default = U
+  override def default = empty
 
   type Direction = Value
 
-  val U = Value("Direction.U")
+  val empty = Value("Direction.empty")
+
 	val N = Value("Direction.N")
 	val NE = Value("Direction.NE")
 	val E = Value("Direction.E")

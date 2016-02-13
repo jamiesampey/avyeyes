@@ -155,13 +155,13 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       there was one(mockAvalancheDal).insertAvalanche(avalancheArg)
       val passedAvalanche = avalancheArg.value
 
-      passedAvalanche.slope.aspect mustEqual Direction.U
-      passedAvalanche.weather.recentWindDirection mustEqual Direction.U
-      passedAvalanche.weather.recentWindSpeed mustEqual WindSpeed.U
-      passedAvalanche.classification.avyType mustEqual AvalancheType.U
-      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.U
-      passedAvalanche.classification.interface mustEqual AvalancheInterface.U
-      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.U
+      passedAvalanche.slope.aspect mustEqual Direction.empty
+      passedAvalanche.weather.recentWindDirection mustEqual Direction.empty
+      passedAvalanche.weather.recentWindSpeed mustEqual WindSpeed.empty
+      passedAvalanche.classification.avyType mustEqual AvalancheType.empty
+      passedAvalanche.classification.trigger mustEqual AvalancheTrigger.empty
+      passedAvalanche.classification.interface mustEqual AvalancheInterface.empty
+      passedAvalanche.humanNumbers.modeOfTravel mustEqual ModeOfTravel.empty
     }
     
     "Insert an avalanche with the correct values" >> {

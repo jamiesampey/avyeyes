@@ -1,11 +1,12 @@
 package com.avyeyes.model.enums
 
 object AvalancheType extends AutocompleteEnum {
-  override def default = U
+  override def default = empty
 
   type AvalancheType = Value
 
-  val U = Value("AvalancheType.U")
+  val empty = Value("AvalancheType.empty")
+
   val L = Value("AvalancheType.L")
   val WL = Value("AvalancheType.WL")
   val SS = Value("AvalancheType.SS")

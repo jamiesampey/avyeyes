@@ -8,4 +8,6 @@ abstract class AutocompleteEnum extends Enumeration {
   def toCode(enumValue: AutocompleteEnum#Value): String = enumValue.toString.split('.').last
   
   def isValidCode(code: String): Boolean = !code.isEmpty && values.exists(_.toString.endsWith(code))
+
+  def selectableValues = this.values.filter(toCode(_) != "empty")
 }

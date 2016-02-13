@@ -1,11 +1,12 @@
 package com.avyeyes.model.enums
 
 object WindSpeed extends AutocompleteEnum {
-  override def default = U
+  override def default = empty
 
   type WindSpeed = Value
 
-  val U = Value("WindSpeed.U")
+  val empty = Value("WindSpeed.empty")
+
   val Calm = Value("WindSpeed.Calm")
   val LightBreeze = Value("WindSpeed.LightBreeze")
   val ModerateBreeze = Value("WindSpeed.ModerateBreeze")

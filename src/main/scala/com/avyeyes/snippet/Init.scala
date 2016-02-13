@@ -45,14 +45,14 @@ class Init extends Loggable {
   }
 
   private def autoCompleteSourcesCmd: JsCmd = {
-    JsRaw(s"$$('.avyTypeAutoComplete').avycomplete('option', 'source', ${write(AvalancheType.values)});"
-      + s"$$('.avyTriggerAutoComplete').avycomplete('option', 'source', ${write(AvalancheTrigger.values)});"
-      + s"$$('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', ${write(AvalancheTriggerModifier.values)});"
-      + s"$$('.avyInterfaceAutoComplete').avycomplete('option', 'source', ${write(AvalancheInterface.values)});"
-      + s"$$('.avyDirectionAutoComplete').avycomplete('option', 'source', ${write(Direction.values)});"
-      + s"$$('.avyWindSpeedAutoComplete').avycomplete('option', 'source', ${write(WindSpeed.values)});"
-      + s"$$('.avyModeOfTravelAutoComplete').avycomplete('option', 'source', ${write(ModeOfTravel.values)});"
-      + s"$$('.avyExperienceLevelAutoComplete').avycomplete('option', 'source', ${write(ExperienceLevel.values)});")
+    JsRaw(s"$$('.avyTypeAutoComplete').avycomplete('option', 'source', ${write(AvalancheType.selectableValues)});"
+      + s"$$('.avyTriggerAutoComplete').avycomplete('option', 'source', ${write(AvalancheTrigger.selectableValues)});"
+      + s"$$('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', ${write(AvalancheTriggerModifier.selectableValues)});"
+      + s"$$('.avyInterfaceAutoComplete').avycomplete('option', 'source', ${write(AvalancheInterface.selectableValues)});"
+      + s"$$('.avyDirectionAutoComplete').avycomplete('option', 'source', ${write(Direction.selectableValues)});"
+      + s"$$('.avyWindSpeedAutoComplete').avycomplete('option', 'source', ${write(WindSpeed.selectableValues)});"
+      + s"$$('.avyModeOfTravelAutoComplete').avycomplete('option', 'source', ${write(ModeOfTravel.selectableValues)});"
+      + s"$$('.avyExperienceLevelAutoComplete').avycomplete('option', 'source', ${write(ExperienceLevel.selectableValues)});")
       .cmd
   }
 

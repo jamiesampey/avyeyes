@@ -1,11 +1,12 @@
 package com.avyeyes.model.enums
 
 object AvalancheTriggerModifier extends AutocompleteEnum {
-  override def default = U
+  override def default = empty
 
   type AvalancheTriggerModifier = Value
 
-  val U = Value("AvalancheTriggerModifier.U")
+  val empty = Value("AvalancheTriggerModifier.empty")
+
   val r = Value("AvalancheTriggerModifier.r")
   val y = Value("AvalancheTriggerModifier.y")
   val c = Value("AvalancheTriggerModifier.c")

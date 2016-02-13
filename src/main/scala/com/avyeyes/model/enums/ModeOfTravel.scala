@@ -1,11 +1,12 @@
 package com.avyeyes.model.enums
 
 object ModeOfTravel extends AutocompleteEnum {
-  override def default = U
+  override def default = empty
 
   type ModeOfTravel = Value
   
-  val U = Value("ModeOfTravel.U")
+  val empty = Value("ModeOfTravel.empty")
+
   val Skier = Value("ModeOfTravel.Skier")
   val Snowboarder = Value("ModeOfTravel.Snowboarder")
   val Snowmobiler = Value("ModeOfTravel.Snowmobiler")

@@ -95,7 +95,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
   }
 
   private def getLocalizedLabel(tokens: Array[String]): String = {
-    val label = S ? (if (tokens.last == "U") "enum.U" else s"enum.${tokens.mkString(".")}")
+    val label = if (tokens.last == "empty") "" else S ? s"enum.${tokens.mkString(".")}"
 
     compositeLabelEnums.contains(tokens.head) match {
       case true => s"${tokens.last} - $label"

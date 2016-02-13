@@ -31,7 +31,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
    	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", a.weather.recentWindSpeed);
-    if (a.weather.recentWindSpeed.value == 'U' || a.weather.recentWindDirection.value == 'U') {
+    if (a.weather.recentWindSpeed.value == 'empty' || a.weather.recentWindDirection.value == 'empty') {
         $("#roAvyFormRecentWindDirectionText").hide();
         $("#roAvyFormRecentWindDirection").hide();
     } else {
@@ -396,7 +396,7 @@ AvyForm.prototype.closeReportDialogs = function() {
 }
 
 AvyForm.prototype.toggleWindDirectionFields = function(value) {
-    if (value === 'U' || value.length == 0) {
+    if (value === 'empty' || value.length == 0) {
         $('#rwAvyFormRecentWindDirection').val('');
         $('#rwAvyFormRecentWindDirection').siblings('.avyDirectionAutoComplete').val('');
         $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
@@ -409,7 +409,7 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
 
 AvyForm.prototype.toggleTriggerCauseFields = function(category) {
     var triggerModifierSource = $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source');
-    if (triggerModifierSource.length == 5) this.fullTriggerModifierSource = triggerModifierSource;
+    if (triggerModifierSource.length == 4) this.fullTriggerModifierSource = triggerModifierSource;
 
     var enableTriggerModifierFields = function() {
         $('.avyTriggerModifierAutoComplete').prop('disabled', false);
@@ -417,7 +417,7 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
     }
 
     if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource.slice(0,3));
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource.slice(0,2));
         enableTriggerModifierFields();
     } else if (category && category.endsWith('Human')) {
         $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
@@ -432,7 +432,7 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
 }
 
 function setReadOnlyAutoCompleteVal(inputElem, obj) {
-    if (obj.value == 'U') {
+    if (obj.value == 'empty') {
         $(inputElem).css('color', 'gray');
         $(inputElem).text('unspecified');
     } else {
@@ -462,9 +462,14 @@ function setReadOnlySpinnerVal(inputElem, value, unit) {
     }
 }
 
-AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, enumObj) {
-  $(hiddenSibling).val(enumObj.value);
-  $(hiddenSibling).siblings('.avyAutoComplete').val(enumObj.label);
+AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, obj) {
+  if (obj.value == 'empty') {
+      $(hiddenSibling).val('');
+      $(hiddenSibling).siblings('.avyAutoComplete').val('');
+  } else {
+      $(hiddenSibling).val(obj.value);
+      $(hiddenSibling).siblings('.avyAutoComplete').val(obj.label);
+  }
 }
 
 AvyForm.prototype.setReadWriteSliderVal = function(inputElem, value) {
