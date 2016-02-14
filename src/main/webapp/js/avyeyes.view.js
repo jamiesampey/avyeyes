@@ -168,7 +168,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     }.bind(this);
 
     this.ui.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25).then(showTitle);
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200).then(showTitle);
 }
 
 var geocodeAttempts = 0;
