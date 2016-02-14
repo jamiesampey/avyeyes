@@ -426,7 +426,6 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
         $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
         enableTriggerModifierFields();
     } else {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
         $('#rwAvyFormTriggerModifier').val('');
         $('.avyTriggerModifierAutoComplete').val('');
         $('.avyTriggerModifierAutoComplete').prop('disabled', true);
