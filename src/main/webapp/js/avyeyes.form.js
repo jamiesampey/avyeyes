@@ -408,8 +408,11 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
 }
 
 AvyForm.prototype.toggleTriggerCauseFields = function(category) {
-    var triggerModifierSource = $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source');
-    if (triggerModifierSource.length == 4) this.fullTriggerModifierSource = triggerModifierSource;
+    if (!this.fullTriggerModifierSource) {
+        Object.defineProperty(this, "fullTriggerModifierSource", {
+            value: $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source')
+        });
+    }
 
     var enableTriggerModifierFields = function() {
         $('.avyTriggerModifierAutoComplete').prop('disabled', false);
