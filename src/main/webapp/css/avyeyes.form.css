@@ -230,7 +230,7 @@
 	margin: 0 auto;
 	padding: 0px;
 	background-color: transparent;
-	border: 3px solid #7D7D7D;
+	border: 3px dashed #7D7D7D;
 	color: white;
 	width: 650px;
 	height: 370px;
