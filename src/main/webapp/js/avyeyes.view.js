@@ -169,6 +169,8 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
             + "</td></tr></table></div>");
 
         titleOverlay.show().appendTo('body');
+        window.addEventListener("keypress", function(e) { titleOverlay.hide(); }, false);
+        window.addEventListener("click", function(e) { titleOverlay.hide(); }, false);
     }
 
     this.ui.raiseTheCurtain();

@@ -236,17 +236,22 @@ li.ui-autocomplete-category {
 }
 
 #avyOverlayClickInstructions {
-    font-size:1.5em;
-    padding-top:150px;
+    position: absolute;
+    width: 500px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    font-size: 1.5em;
 }
 
 #avyOverlayTipsTable {
     position: absolute;
-    width:450px;
-    height:50px;
-    bottom:0px;
-    left:50%;
-    margin-left:-170px;
+    width: 450px;
+    height: 50px;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -170px;
     text-align: left;
 }
 
