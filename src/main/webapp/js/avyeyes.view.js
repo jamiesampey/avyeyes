@@ -159,14 +159,14 @@ AvyEyesView.prototype.addAvalanche = function(avalanche) {
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     var showTitle = function() {
-        var titleOverlay = $("<div id='avyOverlay' class='ui-widget-overlay'>"
+        var titleOverlay = $("<div id='avyOverlay'>"
             + "<div id='avyOverlayText'>"
             + "<div id='avyOverlayTitle'>" + a.date + ": " + a.areaName + "</div>"
             + "<div id='avyOverlaySubmitter'>Submitter: " + a.submitterExp.label + "</div>"
             + "<div id='avyOverlayClickInstructions'>Click on the red avalanche path for details</div>"
             + "<table id='avyOverlayTipsTable'><tr><td class='dialogTipsTd'>Tips:</td>"
             + "<td class='dialogTipsTd'>Click & drag to pan the view<br/>Hold the Control key + click & drag to rotate or tilt the view<br/>Mouse wheel or right-click & drag to zoom the view"
-            + "</td></tr></table></div>");
+            + "</td></tr></table></div></div>");
 
         titleOverlay.show().appendTo('body');
         window.addEventListener("keypress", function(e) { titleOverlay.hide(); }, false);

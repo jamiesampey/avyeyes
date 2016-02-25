@@ -206,21 +206,16 @@ li.ui-autocomplete-category {
 
 #avyOverlay {
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
+    top: 0; left: 0; bottom: 0; right: 0;
     z-index: 9999;
-    background-color: black;
-    opacity: .70;
-    filter: Alpha(Opacity=70);
+    background-color: rgba(0, 0, 0, 0.55);
 }
 
 #avyOverlayText {
     position: absolute;
     margin: auto;
     height: 50%;
-    top: 0px; left: 0; bottom: 0; right: 0;
+    top: 0; left: 0; bottom: 0; right: 0;
     text-align: center;
     color: white;
 }
