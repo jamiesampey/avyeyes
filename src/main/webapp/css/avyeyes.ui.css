@@ -283,6 +283,14 @@ li.ui-autocomplete-category {
     background-image: url("/images/north-button.png");
 }
 
+#avyMouseHoverTitle {
+    position: absolute;
+    color: white;
+    background: rgba(48, 51, 54, 1.0);
+    padding: 6px;
+    border-radius: 5px;
+}
+
 #helpDialog {
 	font: normal 1em times,serif !important;
 	padding: 0px;

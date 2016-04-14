@@ -44,14 +44,14 @@ object JsonSerializers {
 
   def avalancheSearchResult(a: Avalanche) = {
     ("extId" -> a.extId) ~
+    ("date" -> Extraction.decompose(a.date)) ~
+    ("areaName" -> a.areaName) ~
     ("coords" -> a.perimeter.flatMap(coord =>
       Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 
   def avalancheInitView(a: Avalanche) = {
     avalancheSearchResult(a) ~
-    ("date" -> Extraction.decompose(a.date)) ~
-    ("areaName" -> a.areaName) ~
     ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
     ("slope" -> Extraction.decompose(a.slope))
   }

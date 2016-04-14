@@ -34,7 +34,7 @@ function AvyEyesView() {
     this.setCameraMoveEventListener();
 
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
-    this.setAvySelectEventHandler();
+    this.setAvyMouseEventHandlers();
 
     this.form = new AvyForm();
     this.ui = new AvyEyesUI();
@@ -70,12 +70,32 @@ AvyEyesView.prototype.setCameraMoveEventListener = function() {
     }.bind(this));
 }
 
-AvyEyesView.prototype.setAvySelectEventHandler = function() {
+AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
+    this.cesiumEventHandler.setInputAction(function(movement) {
+        if ($("#cesiumContainer").css("cursor") === "wait") return; // in the process of opening a report
+
+        $("#avyMouseHoverTitle").hide();
+        var pick = this.cesiumViewer.scene.pick(movement.endPosition);
+
+        if (Cesium.defined(pick)) {
+            $("#avyMouseHoverTitle").text(pick.id.name);
+            $("#avyMouseHoverTitle").css({
+                "left": movement.endPosition.x + 12,
+                "top": movement.endPosition.y + 10
+            });
+            $("#avyMouseHoverTitle").show();
+            $("#cesiumContainer").css("cursor", "pointer");
+        } else {
+            $("#cesiumContainer").css("cursor", "default");
+        }
+    }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
     this.cesiumEventHandler.setInputAction(function(movement) {
         this.form.hideReadOnlyForm();
 
         var pick = this.cesiumViewer.scene.pick(movement.position);
         if (Cesium.defined(pick)) {
+            $("#avyMouseHoverTitle").hide();
             $("#cesiumContainer").css("cursor", "wait");
             var selectedAvalanche = pick.id;
 
@@ -146,13 +166,14 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
     this.hideControls();
 }
 
-AvyEyesView.prototype.addAvalanche = function(avalanche) {
+AvyEyesView.prototype.addAvalanche = function(a) {
 	return this.cesiumViewer.entities.add({
-	    id: avalanche.extId,
+	    id: a.extId,
+	    name: a.date + ": " + a.areaName,
 	    polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
             perPositionHeight: true,
-            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(avalanche.coords)
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords)
         }
     });
 }
