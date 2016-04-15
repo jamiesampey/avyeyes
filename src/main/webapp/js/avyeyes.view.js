@@ -32,9 +32,11 @@ function AvyEyesView() {
     });
 
     this.setCameraMoveEventListener();
-
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvyMouseEventHandlers();
+
+    window.addEventListener("keypress", function(e) { $(".avyOverlay").hide(); }, false);
+    window.addEventListener("click", function(e) { $(".avyOverlay").hide(); }, false);
 
     this.form = new AvyForm();
     this.ui = new AvyEyesUI();
@@ -163,7 +165,11 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         this.addAvalanche(avalanche);
     }.bind(this));
 
-    this.hideControls();
+    this.hideControls().then(function() {
+        $("#avySearchOverlayResults").text("Found " + avalancheArray.length
+            + " avalanche(s) within the current view that match the search criteria");
+        $("#avySearchOverlay").show();
+    });
 }
 
 AvyEyesView.prototype.addAvalanche = function(a) {
@@ -179,23 +185,12 @@ AvyEyesView.prototype.addAvalanche = function(a) {
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
-    var showTitle = function() {
-        var titleOverlay = $("<div id='avyOverlay'>"
-            + "<div id='avyOverlayText'>"
-            + "<div id='avyOverlayTitle'>" + a.date + ": " + a.areaName + "</div>"
-            + "<div id='avyOverlaySubmitter'>Submitter: " + a.submitterExp.label + "</div>"
-            + "<div id='avyOverlayClickInstructions'>Click on the red avalanche path for details</div>"
-            + "<table id='avyOverlayTipsTable'><tr><td class='dialogTipsTd'>Tips:</td>"
-            + "<td class='dialogTipsTd'>Click & drag to pan the view<br/>Hold the Control key + click & drag to rotate or tilt the view<br/>Mouse wheel or right-click & drag to zoom the view"
-            + "</td></tr></table></div></div>");
-
-        titleOverlay.show().appendTo('body');
-        window.addEventListener("keypress", function(e) { titleOverlay.hide(); }, false);
-        window.addEventListener("click", function(e) { titleOverlay.hide(); }, false);
-    }
-
     this.ui.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200).then(showTitle);
+    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200).then(function() {
+        $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
+        $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
+        $("#avyTitleOverlay").show();
+    });
 }
 
 var geocodeAttempts = 0;

@@ -204,14 +204,15 @@ li.ui-autocomplete-category {
     padding: 10px 0px 0px 10px;
 }
 
-#avyOverlay {
+.avyOverlay {
+    display: none;
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
     z-index: 9999;
     background-color: rgba(0, 0, 0, 0.55);
 }
 
-#avyOverlayText {
+.avyOverlayText {
     position: absolute;
     margin: auto;
     height: 50%;
@@ -220,17 +221,21 @@ li.ui-autocomplete-category {
     color: white;
 }
 
-#avyOverlayTitle {
+#avyTitleOverlayName {
     font-size: 3em;
 }
 
-#avyOverlaySubmitter {
+#avyTitleOverlaySubmitter {
     font-size: 1em;
     font-style: italic;
     padding-top: 10px;
 }
 
-#avyOverlayClickInstructions {
+#avySearchOverlayResults {
+    font-size: 2em;
+}
+
+.avyOverlayClickInstructions {
     position: absolute;
     width: 500px;
     height: 50px;
@@ -240,7 +245,7 @@ li.ui-autocomplete-category {
     font-size: 1.5em;
 }
 
-#avyOverlayTipsTable {
+.avyOverlayTipsTable {
     position: absolute;
     width: 450px;
     height: 50px;
