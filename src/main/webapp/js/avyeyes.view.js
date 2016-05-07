@@ -297,7 +297,7 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
 AvyEyesView.prototype.flyTo = function(targetEntity, heading, pitch, range) {
 	var camHeight = this.cesiumViewer.camera.positionCartographic.height
 
-	var flightDurationSeconds = 3.0;
+	var flightDurationSeconds = 4.0;
 
     var finalFlight = function() {
         return this.cesiumViewer.flyTo(targetEntity, {

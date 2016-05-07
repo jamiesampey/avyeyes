@@ -39,7 +39,7 @@ AvyReport.prototype.startDrawing = function() {
         if (isDrawing) {
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.view.setAvySelectEventHandler();
+            this.view.setAvyMouseEventHandlers();
 
             $('#cesiumContainer').css('cursor','default');
 
