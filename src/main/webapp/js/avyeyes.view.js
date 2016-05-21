@@ -79,7 +79,7 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         $("#avyMouseHoverTitle").hide();
         var pick = this.cesiumViewer.scene.pick(movement.endPosition);
 
-        if (Cesium.defined(pick)) {
+        if (Cesium.defined(pick) && pick.id.name) {
             $("#avyMouseHoverTitle").text(pick.id.name);
             $("#avyMouseHoverTitle").css({
                 "left": movement.endPosition.x + 12,
@@ -96,7 +96,7 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         this.form.hideReadOnlyForm();
 
         var pick = this.cesiumViewer.scene.pick(movement.position);
-        if (Cesium.defined(pick)) {
+        if (Cesium.defined(pick) && pick.id.name) {
             $("#avyMouseHoverTitle").hide();
             $("#cesiumContainer").css("cursor", "wait");
             var selectedAvalanche = pick.id;
