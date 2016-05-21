@@ -1,21 +1,16 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
-    var removeAllSpy = sinon.spy();
     var cesiumCameraMoveStartSpy = sinon.spy();
     var cesiumCameraMoveEndSpy = sinon.spy();
     var cesiumViewerStub = sinon.stub();
     cesiumViewerStub.resetAll = function() {
         this.reset();
-        removeAllSpy.reset();
         cesiumCameraMoveStartSpy.reset();
         cesiumCameraMoveEndSpy.reset();
     };
     cesiumViewerStub.returns({
         scene: {
             canvas: {}
-        },
-        entities: {
-            removeAll: removeAllSpy
         },
         camera: {
             moveStart: {addEventListener: cesiumCameraMoveStartSpy},
@@ -203,12 +198,13 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("works", function() {
+            var removeAllEntitiesStub = sinon.stub(avyEyesView, "removeAllEntities");
             var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
             var showControlsStub = sinon.stub(avyEyesView, "showControls");
 
             avyEyesView.resetView();
 
-            expect(removeAllSpy.callCount).toBe(1);
+            expect(removeAllEntitiesStub.callCount).toBe(1);
             expect(cancelReportStub.callCount).toBe(1);
             expect(showControlsStub.callCount).toBe(1);
         });

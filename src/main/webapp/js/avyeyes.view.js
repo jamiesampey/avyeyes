@@ -117,6 +117,24 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 }
 
+AvyEyesView.prototype.addEntity = function(entity) {
+  entity.createdBy = "AvyEyes";
+  return this.cesiumViewer.entities.add(entity);
+}
+
+AvyEyesView.prototype.removeEntity = function(entity) {
+  return this.cesiumViewer.entities.remove(entity);
+}
+
+AvyEyesView.prototype.removeAllEntities = function() {
+    var entitiesToRemove = [];
+    $.each(this.cesiumViewer.entities.values, function(idx, entity) {
+      if (entity.createdBy && entity.createdBy === "AvyEyes") entitiesToRemove.push(entity);
+    });
+
+    $.each(entitiesToRemove, function(idx, entity) { this.removeEntity(entity); }.bind(this));
+}
+
 AvyEyesView.prototype.showControls = function(divId) {
     var controlContentDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
     if ($(controlContentDiv).css("display") == "none") {
@@ -155,7 +173,7 @@ AvyEyesView.prototype.cancelReport = function() {
 }
 
 AvyEyesView.prototype.resetView = function() {
-	this.cesiumViewer.entities.removeAll();
+	this.removeAllEntities();
 	this.cancelReport();
 	this.showControls();
 }
@@ -173,7 +191,7 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 }
 
 AvyEyesView.prototype.addAvalanche = function(a) {
-	return this.cesiumViewer.entities.add({
+	return this.addEntity({
 	    id: a.extId,
 	    name: a.date + ": " + a.areaName,
 	    polygon: {
@@ -219,7 +237,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
         var geocodePoints = data.resourceSets[0].resources[0].geocodePoints[0];
         var geocodedTarget = this.targetEntityFromCoords(geocodePoints.coordinates[1], geocodePoints.coordinates[0], true);
         this.flyTo(geocodedTarget, 0.0, pitch, range).then(function() {
-            this.cesiumViewer.entities.remove(geocodedTarget);
+            this.removeEntity(geocodedTarget);
         }.bind(this));
         geocodeAttempts = 0;
     }.bind(this), geocodeFailure);
@@ -259,7 +277,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
     this.ui.raiseTheCurtain();
     var westernUSTarget = this.targetEntityFromCoords(-112, 44, false);
     this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
-        this.cesiumViewer.entities.remove(westernUSTarget);
+        this.removeEntity(westernUSTarget);
         this.showControls();
     }.bind(this));
   }.bind(this)
@@ -269,7 +287,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
         this.ui.raiseTheCurtain();
         var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true);
 		this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
-		    this.cesiumViewer.entities.remove(geolocatedTarget);
+		    this.removeEntity(geolocatedTarget);
 		    this.showControls();
 		}.bind(this));
 	  }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
@@ -282,12 +300,12 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     var alt = this.cesiumViewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
 
     if (showPin) {
-        return this.cesiumViewer.entities.add({
+        return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
             billboard: {image: "/images/flyto-pin.png"}
         });
     } else {
-        return this.cesiumViewer.entities.add({
+        return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
             point: {color: Cesium.Color.WHITE.withAlpha(0.0)}
         });

@@ -11,19 +11,15 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     };
 
     var resetViewStub = sinon.stub();
-    var removeEntitiesStub = sinon.stub();
+    var removeEntityStub = sinon.stub();
     var viewStub = {
         resetView: resetViewStub,
-        cesiumViewer: {
-            entities: {
-                remove: removeEntitiesStub
-            }
-        },
+        removeEntity: removeEntityStub,
         cesiumEventHandler: cesiumEventHandlerStub,
         form: formStub,
         reset: function() {
             this.resetView.reset();
-            this.cesiumViewer.entities.remove.reset();
+            this.removeEntity.reset();
             this.cesiumEventHandler.setInputAction.reset();
             this.cesiumEventHandler.removeInputAction.reset();
             this.form.setReportDrawingInputs.reset();
@@ -111,7 +107,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             avyReport.clearDrawing();
 
-            expect(removeEntitiesStub.calledWithExactly(testPolygon)).toBe(true);
+            expect(removeEntityStub.calledWithExactly(testPolygon)).toBe(true);
             expect(formStub.setReportDrawingInputs.calledWithExactly('', '', '', '', '', '')).toBe(true);
             expect(avyReport.drawingPolygon).toBeNull();
         });

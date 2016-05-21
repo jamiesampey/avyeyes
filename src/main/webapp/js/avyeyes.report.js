@@ -43,7 +43,7 @@ AvyReport.prototype.startDrawing = function() {
 
             $('#cesiumContainer').css('cursor','default');
 
-            this.drawingPolygon = this.view.cesiumViewer.entities.add({
+            this.drawingPolygon = this.view.addEntity({
                 polygon: {
                     hierarchy: {
                         positions: cartesian3Array
@@ -53,7 +53,7 @@ AvyReport.prototype.startDrawing = function() {
                     outline: true
                 }
             });
-            this.view.cesiumViewer.entities.remove(drawingPolyline);
+            this.view.removeEntity(drawingPolyline);
 
             this.digestDrawing(cartesian3Array);
 
@@ -61,7 +61,7 @@ AvyReport.prototype.startDrawing = function() {
                 $("#avyReportStep4").slideDown("slow");
             });
         } else {
-            drawingPolyline = this.view.cesiumViewer.entities.add({
+            drawingPolyline = this.view.addEntity({
                 polyline: {
                     positions: new Cesium.CallbackProperty(function() {
                         return cartesian3Array;
@@ -148,7 +148,7 @@ function getAspect(highestCartographic, lowestCartographic) {
 AvyReport.prototype.clearDrawing = function() {
 	this.view.form.setReportDrawingInputs('', '', '', '', '', '');
 	if (this.drawingPolygon) {
-    	this.view.cesiumViewer.entities.remove(this.drawingPolygon);
+    	this.view.removeEntity(this.drawingPolygon);
     	this.drawingPolygon = null;
 	}
 }
