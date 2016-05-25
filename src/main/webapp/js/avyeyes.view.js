@@ -92,6 +92,12 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         }
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
+    var withinEditWindow = function(createTimeSeconds) {
+        var sevenDaysSeconds = 604800;
+        var nowSeconds = (new Date()).getTime() / 1000;
+        return (nowSeconds - createTimeSeconds) < sevenDaysSeconds;
+    }
+
     this.cesiumEventHandler.setInputAction(function(movement) {
         this.form.hideReadOnlyForm();
 
@@ -105,12 +111,10 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
                 if (adminLogin()) {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
+                } else if (Number(getParameterByName("edit")) === data.createTime && withinEditWindow(data.createTime)) {
+                    this.form.displayReadWriteForm(data);
                 } else {
-                    if (Number(getParameterByName("edit")) === data.createTime) {
-                      this.form.displayReadWriteForm(data);
-                    } else {
-                      this.form.displayReadOnlyForm(movement.position, data);
-                    }
+                    this.form.displayReadOnlyForm(movement.position, data);
                 }
             }.bind(this))
             .fail(function(jqxhr, textStatus, error) {
