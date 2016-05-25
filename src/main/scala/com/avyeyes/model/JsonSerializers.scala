@@ -23,7 +23,6 @@ object JsonSerializers {
 
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
-    ("createTime" -> a.createTime.getMillis / 1000) ~
     ("extId" -> a.extId) ~
     ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
     ("areaName" -> a.areaName) ~
@@ -37,7 +36,7 @@ object JsonSerializers {
     ("images" -> Extraction.decompose(images))
   }
 
-  def avalancheAdminDetails(a: Avalanche, images: List[AvalancheImage]) = {
+  def avalancheEditDetails(a: Avalanche, images: List[AvalancheImage]) = {
     ("viewable" -> a.viewable) ~
     ("submitterEmail" -> a.submitterEmail) ~
     avalancheDetails(a, images)

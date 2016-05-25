@@ -92,12 +92,6 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         }
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    var withinEditWindow = function(createTimeSeconds) {
-        var sevenDaysSeconds = 604800;
-        var nowSeconds = (new Date()).getTime() / 1000;
-        return (nowSeconds - createTimeSeconds) < sevenDaysSeconds;
-    }
-
     this.cesiumEventHandler.setInputAction(function(movement) {
         this.form.hideReadOnlyForm();
 
@@ -105,13 +99,17 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         if (Cesium.defined(pick) && pick.id.name) {
             $("#avyMouseHoverTitle").hide();
             $("#cesiumContainer").css("cursor", "wait");
-            var selectedAvalanche = pick.id;
 
-            $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {
+            var selectedAvalanche = pick.id;
+            var avyDetailsUrl = "/rest/avydetails/" + selectedAvalanche.id;
+            var editKeyParam = getParameterByName("edit");
+            if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
+
+            $.getJSON(avyDetailsUrl, function(data) {
                 if (adminLogin()) {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
-                } else if (Number(getParameterByName("edit")) === data.createTime && withinEditWindow(data.createTime)) {
+                } else if (data.submitterEmail) {
                     this.form.displayReadWriteForm(data);
                 } else {
                     this.form.displayReadOnlyForm(movement.position, data);
