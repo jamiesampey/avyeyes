@@ -21,5 +21,7 @@ case class Avalanche(
   perimeter: Seq[Coordinate],
   comments: Option[String]) {
 
-  def getTitle() = s"${dateToStr(date)}: ${areaName}"
+  lazy val title: String = s"${dateToStr(date)}: ${areaName}"
+
+  lazy val editKey: Long = createTime.getMillis / 1000
 }

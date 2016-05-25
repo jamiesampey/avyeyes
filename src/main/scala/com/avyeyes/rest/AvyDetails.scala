@@ -40,7 +40,7 @@ class AvyDetails extends RestHelper with Loggable {
   }
 
   private def withinEditWindow(avalanche: Avalanche, editKeyBox: Box[String]): Boolean = editKeyBox match {
-    case Full(editKey) if editKey.toLong == (avalanche.createTime.getMillis / 1000) =>
+    case Full(editKey) if editKey.toLong == avalanche.editKey =>
       Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
     case _ => false
   }

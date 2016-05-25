@@ -215,8 +215,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     unfinishedReports
   }
 
-
-
   private def setAvalancheUpdateTimeAction(extId: String) = AvalancheRows.filter(
     _.extId === extId).map(_.updateTime).update(DateTime.now)
 

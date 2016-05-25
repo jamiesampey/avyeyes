@@ -34,5 +34,5 @@ class ResourceService extends Loggable {
   
   def getAvalancheUrl(extId: String) = s"${getHttpsBaseUrl}/$extId"
 
-  def getAvalancheEditUrl(a: Avalanche) = s"${getAvalancheUrl(a.extId)}?edit=${a.createTime.getMillis / 1000}"
+  def getAvalancheEditUrl(a: Avalanche) = s"${getAvalancheUrl(a.extId)}?edit=${a.editKey}"
 }
