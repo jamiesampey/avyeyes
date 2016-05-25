@@ -27,6 +27,19 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   private val user = Injectors.user.vend
   private val db = Database.forDataSource(ds)
 
+  private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {
+    case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
+    case None => None
+  }
+
+  private def avalancheEditAllowed(avyExtId: String): Boolean = {
+    lazy val withinEditWindow = getAvalanche(avyExtId) match {
+      case Some(a) => DateTime.now isBefore a.createTime.plus(AvalancheEditWindow.toMillis)
+      case _ => false
+    }
+    user.isAuthorizedSession || reservationExists(avyExtId) || withinEditWindow
+  }
+
   def isUserAuthorized(email: String): Future[Boolean] = db.run {
     UserRoleRows.filter(_.email === email).result
   }.flatMap { userRolesResult =>
@@ -79,9 +92,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
-    if (avalanche.viewable && !user.isAuthorizedSession()) {
-      throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
-    }
+    if (!avalancheEditAllowed(avalanche.extId)) throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
 
     val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
 
@@ -100,9 +111,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def updateAvalanche(update: Avalanche) = {
-    if (!user.isAuthorizedSession) {
-      throw new UnauthorizedException("Not authorized to update avalanche")
-    }
+    if (!avalancheEditAllowed(update.extId)) throw new UnauthorizedException("Not authorized to update avalanche")
 
     val avalancheUpdateQuery = AvalancheRows.filter(_.extId === update.extId).map(a => (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp, a.areaName, a.date, a.aspect, a.angle, a.comments))
     val sceneUpdateQuery = AvalancheWeatherRows.filter(_.avalanche === update.extId).map(w => (w.recentSnow, w.recentWindDirection, w.recentWindSpeed))
@@ -123,9 +132,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def deleteAvalanche(extId: String) = {
-    if (!user.isAuthorizedSession) {
-      throw new UnauthorizedException("Not authorized to delete avalanches")
-    }
+    if (!user.isAuthorizedSession) throw new UnauthorizedException("Not authorized to delete avalanches")
 
     Await.result(db.run(
       AvalancheImageRows.filter(_.avalanche === extId).delete >>
@@ -155,7 +162,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     imageQuery(avyExtId, None).result), Duration.Inf).toList.sortBy(_.sortOrder)
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
-    val queryByExtId = reservationExists(avyExtId) || user.isAuthorizedSession() match {
+    val queryByExtId = avalancheEditAllowed(avyExtId) match {
       case true => AvalancheImageRows.filter(_.avalanche === avyExtId)
       case false => for {
         img <- AvalancheImageRows if img.avalanche === avyExtId
@@ -170,18 +177,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]) = {
-    if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
-      throw new UnauthorizedException("Not authorized to update image caption")
-    }
-
+    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image caption")
     val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.caption))
     Await.result(db.run(imageUpdateQuery.update(caption)), Duration.Inf)
   }
 
   def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
-    if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
-      throw new UnauthorizedException("Not authorized to update image order")
-    }
+    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image order")
 
     filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
       val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.sortOrder))
@@ -190,9 +192,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
-    if (!user.isAuthorizedSession && !reservationExists(avyExtId)) {
-      throw new UnauthorizedException("Not authorized to delete image")
-    }
+    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to delete image")
       
     Await.result(db.run(
       AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
@@ -215,10 +215,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     unfinishedReports
   }
 
-  private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {
-    case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
-    case None => None
-  }
+
 
   private def setAvalancheUpdateTimeAction(extId: String) = AvalancheRows.filter(
     _.extId === extId).map(_.updateTime).update(DateTime.now)

@@ -23,6 +23,7 @@ object JsonSerializers {
 
 
   def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
+    ("createTime" -> a.createTime.getMillis / 1000) ~
     ("extId" -> a.extId) ~
     ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
     ("areaName" -> a.areaName) ~

@@ -106,7 +106,11 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
                 } else {
-                    this.form.displayReadOnlyForm(movement.position, data);
+                    if (Number(getParameterByName("edit")) === data.createTime) {
+                      this.form.displayReadWriteForm(data);
+                    } else {
+                      this.form.displayReadOnlyForm(movement.position, data);
+                    }
                 }
             }.bind(this))
             .fail(function(jqxhr, textStatus, error) {
@@ -383,6 +387,15 @@ function flyToHeadingFromAspect(aspect) {
     else if (aspect === "W") return 90.0;
     else if (aspect === "NW") return 135.0;
     else return 0.0;
+}
+
+function getParameterByName(name) {
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(window.location.href);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 function adminLogin() {

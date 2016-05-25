@@ -1,5 +1,7 @@
 package com.avyeyes.util
 
+import scala.concurrent.duration._
+
 object Constants {
   val IndexPath = "index"
   val BrowserNotSupportedPath = "whawha"
@@ -17,6 +19,8 @@ object Constants {
 	val AvyDistRangeMiles = 5.0
 
   val MaxImagesPerAvalanche = 20
+
+  val AvalancheEditWindow = 7 days
 
 	val ExtIdUrlParam = "extId"
 	val ExtIdLength = 8
