@@ -112,7 +112,8 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
           dal.insertAvalanche(newAvalanche)
           logger.info(s"Avalanche $extId successfully inserted")
           sendSubmissionNotifications(newAvalanche, submitterEmail)
-          infoDialog("avyReportInsertSuccess", s"${R.getAvalancheUrl(newAvalanche.extId)}")
+          val avalancheUrl = R.getAvalancheUrl(newAvalanche.extId)
+          infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
         }
       }
     } catch {
