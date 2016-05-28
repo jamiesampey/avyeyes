@@ -19,9 +19,9 @@ class AvyDetails extends RestHelper with Loggable {
         case Some(a) => {
           val images = dal.getAvalancheImages(a.extId)
           if (userSession.isAuthorizedSession || withinEditWindow(a, S.param("edit")))
-            Some(avalancheEditDetails(a, images))
+            Some(avalancheReadWriteData(a, images))
           else
-            Some(avalancheDetails(a, images))
+            Some(avalancheReadOnlyData(a, images))
         }
         case None => None
       }

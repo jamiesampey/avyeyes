@@ -35,7 +35,7 @@ class Init extends Loggable {
     initAvalanche match {
       case Some(a) => {
         logger.debug(s"Initial page view with init avalanche ${a.extId}")
-        Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitView(a)).cmd
+        Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitViewData(a)).cmd
       }
       case None => {
         logger.debug("Initial page view without an init avalanche")
