@@ -19,8 +19,6 @@ class CachedDalAdminSelectTest extends Specification with InMemoryDB {
   "Admin avalanche select auth check" should {
     "Admin select not allowed with unauthorized session" >> {
       mockUserSession.isAuthorizedSession() returns false
-      val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
-      dal.insertAvalanche(nonviewableAvalanche)
       dal.getAvalanchesAdmin(AdminAvalancheQuery()) must throwA[UnauthorizedException]
     }
 
@@ -28,6 +26,7 @@ class CachedDalAdminSelectTest extends Specification with InMemoryDB {
       mockUserSession.isAuthorizedSession() returns true
       val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
       dal.insertAvalanche(nonviewableAvalanche)
+
       dal.getAvalanchesAdmin(AdminAvalancheQuery())._1.size mustEqual 1
       dal.getAvalanchesAdmin(AdminAvalancheQuery())._2 mustEqual 1
       dal.getAvalanchesAdmin(AdminAvalancheQuery())._3 mustEqual 1
