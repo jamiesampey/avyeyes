@@ -270,7 +270,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     });
 
     $('#' + imageDeleteIconId).click(function() {
-        if (confirm('Are you sure you want to delete image ' + image.filename + ' from avalanche ' + extId + '?')) {
+        if (confirm('Are you sure you want to delete the image?')) {
             $.ajax({
                 url: getImageRestUrl(extId, image.filename),
                 type: 'DELETE',

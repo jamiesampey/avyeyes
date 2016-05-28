@@ -111,6 +111,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
           val newAvalanche = avalancheFromValues.copy(viewable = true)
           dal.insertAvalanche(newAvalanche)
           logger.info(s"Avalanche $extId successfully inserted")
+          s3.allowPublicImageAccess(newAvalanche.extId)
           sendSubmissionNotifications(newAvalanche, submitterEmail)
           val avalancheUrl = R.getAvalancheUrl(newAvalanche.extId)
           infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
@@ -217,13 +218,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     }
   }
 
-  devModeSend.default.set((m: MimeMessage) => {
-    val multipartContent = m.getContent.asInstanceOf[Multipart]
-    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
-    logger.info( s"""Dev mode report email:
-         From: ${m.getFrom()(0).toString}
-         To: ${m.getAllRecipients()(0).toString}
-         Subject: ${m.getSubject}
-         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
-  })
+//  devModeSend.default.set((m: MimeMessage) => {
+//    val multipartContent = m.getContent.asInstanceOf[Multipart]
+//    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
+//    logger.info( s"""Dev mode report email:
+//         From: ${m.getFrom()(0).toString}
+//         To: ${m.getAllRecipients()(0).toString}
+//         Subject: ${m.getSubject}
+//         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+//  })
 }
