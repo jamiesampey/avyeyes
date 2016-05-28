@@ -14,8 +14,10 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
 
     "Not allowed with unauthorized session" >> {
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAuthorizedSession() returns true // must be admin to insert
       dal.insertAvalanche(nonviewableAvalanche)
+
+      mockUserSession.isAuthorizedSession() returns false
       dal.getAvalanche(nonviewableAvalanche.extId) must beNone
     }
     

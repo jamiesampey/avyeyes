@@ -92,7 +92,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
-    if (!avalancheEditAllowed(avalanche.extId)) throw new UnauthorizedException("Not authorized to insert a viewable avalanche")
+    if (!avalancheEditAllowed(avalanche.extId)) throw new UnauthorizedException("Not authorized to insert avalanche")
 
     val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
 
