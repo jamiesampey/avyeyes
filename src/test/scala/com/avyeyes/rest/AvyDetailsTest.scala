@@ -3,12 +3,14 @@ package com.avyeyes.rest
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.Avalanche
 import com.avyeyes.model.JsonSerializers.formats
-import com.avyeyes.service.{ResourceService, Injectors}
+import com.avyeyes.service.{UserSession, ResourceService, Injectors}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.test._
+import com.avyeyes.util.Constants._
 import net.liftweb.http._
 import net.liftweb.json.Extraction
+import org.joda.time.DateTime
 import org.specs2.execute.{Result, AsResult}
 import org.specs2.mock.Mockito
 import org.specs2.specification.AroundExample
@@ -16,22 +18,28 @@ import org.specs2.specification.AroundExample
 class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
   val mockResources = mock[ResourceService]
+  val mockUserSession = mock[UserSession]
   val mockAvalancheDal = mock[CachedDAL]
 
   def around[T: AsResult](t: => T): Result =
     Injectors.resources.doWith(mockResources) {
-      Injectors.dal.doWith(mockAvalancheDal) {
-        AsResult(t)
+      Injectors.user.doWith(mockUserSession) {
+        Injectors.dal.doWith(mockAvalancheDal) {
+          AsResult(t)
+        }
       }
     }
 
+  val oldAvalanche = avalancheForTest.copy(viewable = true, createTime = DateTime.now.minus(AvalancheEditWindow.toMillis + 30000))
+  val newAvalanche = avalancheForTest.copy(viewable = true, createTime = DateTime.now.minus(AvalancheEditWindow.toMillis - 30000))
+
   "Valid avalanche details REST request" >> {
     isolated
-    val a1 = avalancheForTest.copy(viewable = true)
 
-    "Return avalanche details" withSFor s"http://avyeyes.com/rest/avydetails/${a1.extId}" in {
-      mockAvalancheDal.getAvalancheFromDisk(a1.extId) returns Some(a1)
-      mockAvalancheDal.getAvalancheImages(a1.extId) returns Nil
+    "Return read-only avalanche details" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
+      mockUserSession.isAuthorizedSession returns false
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -39,14 +47,52 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
       val resp = openLiftRespBox(avyDetails(req)())
 
       resp must beAnInstanceOf[JsonResponse]
-      extractJsonStringField(resp, "extId") mustEqual a1.extId
-      extractJsonStringField(resp, "areaName") mustEqual a1.areaName
-      extractJsonStringField(resp, "comments") mustEqual a1.comments.getOrElse("")
+      extractJsonStringField(resp, "extId") mustEqual oldAvalanche.extId
+      extractJsonStringField(resp, "areaName") mustEqual oldAvalanche.areaName
+      extractJsonStringField(resp, "comments") mustEqual oldAvalanche.comments.getOrElse("")
+      extractJsonBoolOptionField(resp, "viewable") must beNone
+      extractJsonStringOptionField(resp, "submitterEmail") must beNone
     }
 
-    "Return JSON objects for enum (autocomplete) fields" withSFor s"http://avyeyes.com/rest/avydetails/${a1.extId}" in {
-      mockAvalancheDal.getAvalancheFromDisk(a1.extId) returns Some(a1)
-      mockAvalancheDal.getAvalancheImages(a1.extId) returns Nil
+    "Return edit details for admin session" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
+      mockUserSession.isAuthorizedSession returns true
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
+
+      val avyDetails = new AvyDetails
+
+      val req = openLiftReqBox(S.request)
+      val resp = openLiftRespBox(avyDetails(req)())
+
+      resp must beAnInstanceOf[JsonResponse]
+      extractJsonStringField(resp, "extId") mustEqual oldAvalanche.extId
+      extractJsonStringField(resp, "areaName") mustEqual oldAvalanche.areaName
+      extractJsonBoolOptionField(resp, "viewable").get mustEqual oldAvalanche.viewable
+      extractJsonStringOptionField(resp, "submitterEmail").get mustEqual oldAvalanche.submitterEmail
+    }
+
+    "Return edit details within edit window with valid edit key" withSFor s"http://avyeyes.com/rest/avydetails/${newAvalanche.extId}?edit=${newAvalanche.editKey}" in {
+      mockUserSession.isAuthorizedSession returns false
+
+      mockAvalancheDal.getAvalancheFromDisk(newAvalanche.extId) returns Some(newAvalanche)
+      mockAvalancheDal.getAvalancheImages(newAvalanche.extId) returns Nil
+
+      val avyDetails = new AvyDetails
+
+      val req = openLiftReqBox(S.request)
+      val resp = openLiftRespBox(avyDetails(req)())
+
+      resp must beAnInstanceOf[JsonResponse]
+      extractJsonStringField(resp, "extId") mustEqual newAvalanche.extId
+      extractJsonStringField(resp, "areaName") mustEqual newAvalanche.areaName
+      extractJsonBoolOptionField(resp, "viewable").get mustEqual newAvalanche.viewable
+      extractJsonStringOptionField(resp, "submitterEmail").get mustEqual newAvalanche.submitterEmail
+    }
+
+    "Return JSON objects for enum (autocomplete) fields" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
+      mockUserSession.isAuthorizedSession returns false
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -55,11 +101,11 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
       import com.avyeyes.model.JsonSerializers.formats
 
-      extractJsonField(resp, "submitterExp") mustEqual Extraction.decompose(a1.submitterExp)
-      extractJsonField(resp, "weather") mustEqual Extraction.decompose(a1.weather)
-      extractJsonField(resp, "slope") mustEqual Extraction.decompose(a1.slope)
-      extractJsonField(resp, "classification") mustEqual Extraction.decompose(a1.classification)
-      extractJsonField(resp, "humanNumbers") mustEqual Extraction.decompose(a1.humanNumbers)
+      extractJsonField(resp, "submitterExp") mustEqual Extraction.decompose(oldAvalanche.submitterExp)
+      extractJsonField(resp, "weather") mustEqual Extraction.decompose(oldAvalanche.weather)
+      extractJsonField(resp, "slope") mustEqual Extraction.decompose(oldAvalanche.slope)
+      extractJsonField(resp, "classification") mustEqual Extraction.decompose(oldAvalanche.classification)
+      extractJsonField(resp, "humanNumbers") mustEqual Extraction.decompose(oldAvalanche.humanNumbers)
     }
   }
   

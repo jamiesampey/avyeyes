@@ -24,7 +24,9 @@ object LiftHelpers {
     JsonParser.parse(response.asInstanceOf[JsonResponse].json.toJsCmd)
   }
   
-  def extractJsonStringField(resp: LiftResponse, field: String):String = extractJsonField(resp, field).extract[String]
+  def extractJsonStringField(resp: LiftResponse, field: String): String = extractJsonField(resp, field).extract[String]
+  def extractJsonStringOptionField(resp: LiftResponse, field: String): Option[String] = extractJsonField(resp, field).extractOpt[String]
+  def extractJsonBoolOptionField(resp: LiftResponse, field: String): Option[Boolean] = extractJsonField(resp, field).extractOpt[Boolean]
   def extractJsonIntField(resp: LiftResponse, field: String): Int = extractJsonField(resp, field).extract[Int]
   def extractJsonLongField(resp: LiftResponse, field: String): Long = extractJsonField(resp, field).extract[Long]
   def extractJsonField(resp: LiftResponse, field: String): JValue = jsonResponseAsJValue(resp) \\ field
