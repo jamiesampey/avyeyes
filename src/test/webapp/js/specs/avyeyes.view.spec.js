@@ -165,8 +165,10 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("Starts a new report", function() {
+            var removeAllEntitiesStub = sinon.stub(avyEyesView, "removeAllEntities");
             var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
             avyEyesView.doReport();
+            expect(removeAllEntitiesStub.callCount).toBe(1);
             expect(cancelReportStub.callCount).toBe(1);
             expect(reportStub.calledWithNew()).toBe(true);
             expect(avyEyesView.currentReport).toBeDefined();

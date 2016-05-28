@@ -160,6 +160,7 @@ AvyEyesView.prototype.showHelp = function(tab) {
 }
 
 AvyEyesView.prototype.doReport = function() {
+	this.removeAllEntities();
 	this.cancelReport();
 	this.currentReport = new AvyReport(this);
 	this.currentReport.beginReport();

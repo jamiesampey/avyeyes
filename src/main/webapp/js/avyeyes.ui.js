@@ -55,7 +55,6 @@ function wireMainMenu(view) {
 
     $('#reportMenuItem').parent("li").click(function(e){
         e.preventDefault();
-        view.resetView();
         view.doReport();
     });
 
