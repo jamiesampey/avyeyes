@@ -218,13 +218,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     }
   }
 
-//  devModeSend.default.set((m: MimeMessage) => {
-//    val multipartContent = m.getContent.asInstanceOf[Multipart]
-//    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
-//    logger.info( s"""Dev mode report email:
-//         From: ${m.getFrom()(0).toString}
-//         To: ${m.getAllRecipients()(0).toString}
-//         Subject: ${m.getSubject}
-//         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
-//  })
+  devModeSend.default.set((m: MimeMessage) => {
+    val multipartContent = m.getContent.asInstanceOf[Multipart]
+    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
+    logger.info( s"""Dev mode report email:
+         From: ${m.getFrom()(0).toString}
+         To: ${m.getAllRecipients()(0).toString}
+         Subject: ${m.getSubject}
+         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+  })
 }
