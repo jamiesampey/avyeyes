@@ -176,7 +176,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       val passedAvalanche = avalancheArg.value
       
       passedAvalanche.extId mustEqual report.extId
-      passedAvalanche.viewable must beFalse
+      passedAvalanche.viewable must beTrue
       passedAvalanche.submitterEmail mustEqual report.submitterEmail
       passedAvalanche.submitterExp mustEqual ExperienceLevel.fromCode(report.submitterExp)
       passedAvalanche.location.longitude mustEqual strToDblOrZero(report.lng)
@@ -258,24 +258,6 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
 
       fromArg.values.get(1) mustEqual report.adminEmailFrom
       subjectArg.values.get(1).subject mustEqual testSubmitterSubject
-    }
-
-    "Send email to submitter upon report approval" >> {
-      val testApprovalSubject = "your report has been approved"
-      mockResources.localizedString(Matchers.eq("msg.avyReportApproveEmailSubmitterSubject"), anyVararg()) returns testApprovalSubject
-
-      val fromArg = capture[From]
-      val subjectArg = capture[Subject]
-      val report = spy(newReportWithTestData())
-      report.viewable = true
-      val unapprovedAvalanche = avalancheForTest.copy(extId = report.extId, viewable = false)
-      mockAvalancheDal.getAvalanche(report.extId) returns Some(unapprovedAvalanche)
-
-      report.saveReport()
-      there was one(report).sendMail(fromArg, subjectArg, any[MailTypes])
-
-      fromArg.values.get(0) mustEqual report.adminEmailFrom
-      subjectArg.values.get(0).subject mustEqual testApprovalSubject
     }
   }
 

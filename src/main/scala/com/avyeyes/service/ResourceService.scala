@@ -1,5 +1,6 @@
 package com.avyeyes.service
 
+import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Constants.LoginPath
 import net.liftweb.common.Loggable
 import net.liftweb.http.S
@@ -32,4 +33,6 @@ class ResourceService extends Loggable {
   def getAdminLoginUrl = s"${getHttpsBaseUrl}/$LoginPath"
   
   def getAvalancheUrl(extId: String) = s"${getHttpsBaseUrl}/$extId"
+
+  def getAvalancheEditUrl(a: Avalanche) = s"${getAvalancheUrl(a.extId)}?edit=${a.editKey}"
 }

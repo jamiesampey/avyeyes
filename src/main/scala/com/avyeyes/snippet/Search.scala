@@ -59,7 +59,7 @@ class Search extends ModalDialogs with Loggable {
           + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
 
       if (avyList.size > 0) {
-        Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResult))).cmd
+        Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResultData))).cmd
       } else {
         infoDialog("avySearchZeroMatches")
       } 

@@ -10,7 +10,6 @@ import net.liftweb.json.JsonAST._
 
 class ExtIdVendor extends RestHelper with ExternalIdService {
   implicit val dal = Injectors.dal.vend
-  implicit val R = Injectors.resources.vend
 
   serve {
     case "rest" :: "reserveExtId" :: Nil JsonGet req => {

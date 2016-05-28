@@ -99,11 +99,17 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         if (Cesium.defined(pick) && pick.id.name) {
             $("#avyMouseHoverTitle").hide();
             $("#cesiumContainer").css("cursor", "wait");
-            var selectedAvalanche = pick.id;
 
-            $.getJSON("/rest/avydetails/" + selectedAvalanche.id, function(data) {
+            var selectedAvalanche = pick.id;
+            var avyDetailsUrl = "/rest/avydetails/" + selectedAvalanche.id;
+            var editKeyParam = getParameterByName("edit");
+            if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
+
+            $.getJSON(avyDetailsUrl, function(data) {
                 if (adminLogin()) {
                     this.form.wireReadWriteFormAdminControls(this);
+                    this.form.displayReadWriteForm(data);
+                } else if (data.submitterEmail) {
                     this.form.displayReadWriteForm(data);
                 } else {
                     this.form.displayReadOnlyForm(movement.position, data);
@@ -384,6 +390,15 @@ function flyToHeadingFromAspect(aspect) {
     else if (aspect === "W") return 90.0;
     else if (aspect === "NW") return 135.0;
     else return 0.0;
+}
+
+function getParameterByName(name) {
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(window.location.href);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
 function adminLogin() {

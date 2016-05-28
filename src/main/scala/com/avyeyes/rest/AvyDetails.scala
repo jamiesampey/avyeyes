@@ -1,11 +1,13 @@
 package com.avyeyes.rest
 
+import com.avyeyes.model.Avalanche
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.service.Injectors
-import net.liftweb.common.Loggable
+import com.avyeyes.util.Constants.AvalancheEditWindow
+import net.liftweb.common.{Full, Box, Loggable}
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.{JsonResponse, NotFoundResponse}
-
+import net.liftweb.http.{S, JsonResponse, NotFoundResponse}
+import org.joda.time.{Seconds, DateTime}
 
 class AvyDetails extends RestHelper with Loggable {
   lazy val dal = Injectors.dal.vend
@@ -16,10 +18,10 @@ class AvyDetails extends RestHelper with Loggable {
       val avyJsonOption = dal.getAvalancheFromDisk(extId) match {
         case Some(a) => {
           val images = dal.getAvalancheImages(a.extId)
-          userSession.isAuthorizedSession match {
-            case true => Some(avalancheAdminDetails(a, images))
-            case false => Some(avalancheDetails(a, images))
-          }
+          if (userSession.isAuthorizedSession || withinEditWindow(a, S.param("edit")))
+            Some(avalancheReadWriteData(a, images))
+          else
+            Some(avalancheReadOnlyData(a, images))
         }
         case None => None
       }
@@ -37,4 +39,9 @@ class AvyDetails extends RestHelper with Loggable {
     }
   }
 
+  private def withinEditWindow(avalanche: Avalanche, editKeyBox: Box[String]): Boolean = editKeyBox match {
+    case Full(editKey) if editKey.toLong == avalanche.editKey =>
+      Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
+    case _ => false
+  }
 }

@@ -12,15 +12,16 @@ import org.joda.time.DateTime
 import scala.xml.NodeSeq
 
 trait ExternalIdService extends Loggable {
+  val NewExternalIdAttemptLimit = 100
 
-  def reserveNewExtId(implicit dal: CachedDAL, R: ResourceService) = {
+  def reserveNewExtId(implicit dal: CachedDAL) = {
     var extIdAttempt = ""
     var attemptCount = 0
     
     do {
       extIdAttempt = RandomStringUtils.random(ExtIdLength, ExtIdChars)
       attemptCount += 1
-      if (attemptCount >= R.getIntProperty("extId.newIdAttemptLimit")) {
+      if (attemptCount >= NewExternalIdAttemptLimit) {
         throw new RuntimeException("Could not find an available ID")
       }
     } while (reservationExists(extIdAttempt)

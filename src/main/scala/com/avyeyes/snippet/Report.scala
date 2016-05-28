@@ -30,7 +30,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
-  var extId = ""; var viewable = false; var submitterEmail = ""; var submitterExp = ""
+  var extId = ""; var viewable = true; var submitterEmail = ""; var submitterExp = ""
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
   var recentSnow = ""; var recentWindSpeed = ""; var recentWindDirection = ""
   var elevation = ""; var aspect = ""; var angle = ""    
@@ -95,28 +95,26 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     val jsDialogCmd = try {
       dal.getAvalanche(extId) match {
         case Some(existingAvalanche) => {
-          dal.updateAvalanche(avalancheFromValues)
+          val updatedAvalanche = avalancheFromValues.copy(createTime = existingAvalanche.createTime)
+          dal.updateAvalanche(updatedAvalanche)
           logger.info(s"Avalanche $extId successfully updated")
 
-          if (!existingAvalanche.viewable && avalancheFromValues.viewable) {
-            sendApprovalNotification(avalancheFromValues, submitterEmail)
-          }
-
-          if (avalancheFromValues.viewable) {
-            s3.allowPublicImageAccess(avalancheFromValues.extId)
+          if (updatedAvalanche.viewable) {
+            s3.allowPublicImageAccess(updatedAvalanche.extId)
           } else {
-            s3.denyPublicImageAccess(avalancheFromValues.extId)
+            s3.denyPublicImageAccess(updatedAvalanche.extId)
           }
 
           infoDialog("avyReportUpdateSuccess")
         }
         case None => {
-          dal.insertAvalanche(avalancheFromValues)
+          val newAvalanche = avalancheFromValues.copy(viewable = true)
+          dal.insertAvalanche(newAvalanche)
           logger.info(s"Avalanche $extId successfully inserted")
-
-          sendSubmissionNotifications(avalancheFromValues, submitterEmail)
-
-          infoDialog("avyReportInsertSuccess", s"${R.getAvalancheUrl(avalancheFromValues.extId)}")
+          s3.allowPublicImageAccess(newAvalanche.extId)
+          sendSubmissionNotifications(newAvalanche, submitterEmail)
+          val avalancheUrl = R.getAvalancheUrl(newAvalanche.extId)
+          infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
         }
       }
     } catch {
@@ -192,21 +190,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val adminBody = R.localizedStringAsXml("msg.avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.getTitle, R.getAvalancheUrl(a.extId))
+    val adminBody = R.localizedStringAsXml("msg.avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.title, R.getAvalancheUrl(a.extId))
 
     sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailAdminSubject", submitterEmail)),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId))
+    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId), R.getAvalancheEditUrl(a))
     sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailSubmitterSubject", a.extId)),
-      XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
-  }
-
-  private def sendApprovalNotification(a: Avalanche, submitterEmail: String) = {
-    configureMailer()
-
-    val submitterBody = R.localizedStringAsXml("msg.avyReportApproveEmailSubmitterBody", a.getTitle, R.getAvalancheUrl(a.extId))
-    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportApproveEmailSubmitterSubject", a.extId)),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
@@ -228,13 +218,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     }
   }
 
-  devModeSend.default.set((m: MimeMessage) => {
-    val multipartContent = m.getContent.asInstanceOf[Multipart]
-    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
-    logger.info( s"""Dev mode report email:
-         From: ${m.getFrom()(0).toString}
-         To: ${m.getAllRecipients()(0).toString}
-         Subject: ${m.getSubject}
-         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
-  })
+//  devModeSend.default.set((m: MimeMessage) => {
+//    val multipartContent = m.getContent.asInstanceOf[Multipart]
+//    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
+//    logger.info( s"""Dev mode report email:
+//         From: ${m.getFrom()(0).toString}
+//         To: ${m.getAllRecipients()(0).toString}
+//         Subject: ${m.getSubject}
+//         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+//  })
 }

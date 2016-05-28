@@ -14,8 +14,6 @@ class ExternalIdServiceTest extends Specification with Mockito {
 
   class Setup extends Scope {
     implicit val dal = mock[CachedDAL]
-    implicit val R = mock[ResourceService]
-    R.getIntProperty("extId.newIdAttemptLimit") returns 3
 
     class ExtIdTester extends ExternalIdService
     val extIdTester = new ExtIdTester

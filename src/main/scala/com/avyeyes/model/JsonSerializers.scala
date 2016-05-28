@@ -22,7 +22,7 @@ object JsonSerializers {
       AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
 
 
-  def avalancheDetails(a: Avalanche, images: List[AvalancheImage]) = {
+  def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
     ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
     ("areaName" -> a.areaName) ~
@@ -36,13 +36,13 @@ object JsonSerializers {
     ("images" -> Extraction.decompose(images))
   }
 
-  def avalancheAdminDetails(a: Avalanche, images: List[AvalancheImage]) = {
+  def avalancheReadWriteData(a: Avalanche, images: List[AvalancheImage]) = {
     ("viewable" -> a.viewable) ~
     ("submitterEmail" -> a.submitterEmail) ~
-    avalancheDetails(a, images)
+    avalancheReadOnlyData(a, images)
   }
 
-  def avalancheSearchResult(a: Avalanche) = {
+  def avalancheSearchResultData(a: Avalanche) = {
     ("extId" -> a.extId) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("areaName" -> a.areaName) ~
@@ -50,8 +50,8 @@ object JsonSerializers {
       Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 
-  def avalancheInitView(a: Avalanche) = {
-    avalancheSearchResult(a) ~
+  def avalancheInitViewData(a: Avalanche) = {
+    avalancheSearchResultData(a) ~
     ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
     ("slope" -> Extraction.decompose(a.slope))
   }
