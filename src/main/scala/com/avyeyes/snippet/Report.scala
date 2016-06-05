@@ -195,8 +195,8 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailAdminSubject", submitterEmail)),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.extId, R.getAvalancheUrl(a.extId), R.getAvalancheEditUrl(a))
-    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailSubmitterSubject", a.extId)),
+    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.title, R.getAvalancheUrl(a.extId), R.getAvalancheEditUrl(a))
+    sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailSubmitterSubject", a.areaName)),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }
 
