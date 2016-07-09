@@ -46,8 +46,7 @@ object JsonSerializers {
     ("extId" -> a.extId) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("areaName" -> a.areaName) ~
-    ("coords" -> a.perimeter.flatMap(coord =>
-      Array(coord.longitude, coord.latitude, coord.altitude)))
+    ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude)))
   }
 
   def avalancheInitViewData(a: Avalanche) = {

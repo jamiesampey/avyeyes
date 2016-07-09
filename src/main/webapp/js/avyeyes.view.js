@@ -50,13 +50,15 @@ function AvyEyesView() {
              }
         }
 
-        if (!tryLiftCallback()) {
-            var liftCheckInterval;
-            liftCheckInterval = setInterval(function() {
-                console.log("liftAjax is undefined. Trying again...");
-                if (tryLiftCallback()) clearInterval(liftCheckInterval);
-            }, 500);
-        }
+        Cesium.GroundPrimitive.initializeTerrainHeights().then(function() {
+            if (!tryLiftCallback()) {
+                var liftCheckInterval;
+                liftCheckInterval = setInterval(function() {
+                    console.log("liftAjax is undefined. Trying again...");
+                    if (tryLiftCallback()) clearInterval(liftCheckInterval);
+                }, 500);
+            }
+        });
     });
 }
 
@@ -203,8 +205,8 @@ AvyEyesView.prototype.addAvalanche = function(a) {
 	    name: a.date + ": " + a.areaName,
 	    polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
-            perPositionHeight: true,
-            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords)
+            hierarchy: Cesium.Cartesian3.fromDegreesArray(a.coords),
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
         }
     });
 }
@@ -309,12 +311,14 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     if (showPin) {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            billboard: {image: "/images/flyto-pin.png"}
+            billboard: {image: "/images/flyto-pin.png"},
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
         });
     } else {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            point: {color: Cesium.Color.WHITE.withAlpha(0.0)}
+            point: {color: Cesium.Color.WHITE.withAlpha(0.0)},
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
         });
     }
 }
