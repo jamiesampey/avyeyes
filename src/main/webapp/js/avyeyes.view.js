@@ -205,13 +205,13 @@ AvyEyesView.prototype.addAvalanche = function(a) {
 	    name: a.date + ": " + a.areaName,
 	    polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
-            hierarchy: Cesium.Cartesian3.fromDegreesArray(a.coords),
-            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            hierarchy: Cesium.Cartesian3.fromDegreesArray(a.coords)
         }
     });
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
+    var range = a.location.altitude;
     this.ui.raiseTheCurtain();
     this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200).then(function() {
         $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
@@ -311,14 +311,12 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     if (showPin) {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            billboard: {image: "/images/flyto-pin.png"},
-            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            billboard: {image: "/images/flyto-pin.png"}
         });
     } else {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            point: {color: Cesium.Color.WHITE.withAlpha(0.0)},
-            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+            point: {color: Cesium.Color.WHITE.withAlpha(0.0)}
         });
     }
 }

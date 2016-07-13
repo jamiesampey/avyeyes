@@ -17,6 +17,7 @@ object JsonSerializers {
 
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
+    CoordinateSerializer +
     AvalancheImageSerializer +
     new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheTriggerModifier,
       AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
@@ -46,6 +47,7 @@ object JsonSerializers {
     ("extId" -> a.extId) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("areaName" -> a.areaName) ~
+    ("location" -> Extraction.decompose(a.location)) ~
     ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude)))
   }
 
@@ -65,6 +67,15 @@ object DateTimeSerializer extends CustomSerializer[DateTime](format => (
     case d: DateTime => JString(dateToStr(d))
   }
 ))
+
+object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
+  {
+    case json: JValue => ???
+  },
+  {
+    case c: Coordinate => ("latitude" -> c.latitude) ~ ("longitude" -> c.longitude) ~ ("altitude" -> c.altitude)
+  }
+  ))
 
 object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format => (
   {
