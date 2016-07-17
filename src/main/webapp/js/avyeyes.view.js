@@ -28,7 +28,9 @@ function AvyEyesView() {
         timeline: false,
         navigationHelpButton: true,
         navigationInstructionsInitiallyVisible: false,
-        scene3DOnly: true
+        scene3DOnly: true,
+        shadows: false,
+        terrainShadows: false
     });
 
     this.setCameraMoveEventListener();
@@ -200,23 +202,38 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 }
 
 AvyEyesView.prototype.addAvalanche = function(a) {
-	return this.addEntity({
+    var coordArray = Cesium.Cartesian3.fromDegreesArrayHeights(a.coords);
+
+	this.addEntity({
 	    id: a.extId,
 	    name: a.date + ": " + a.areaName,
 	    polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
-            hierarchy: Cesium.Cartesian3.fromDegreesArray(a.coords)
+            hierarchy: coordArray,
+            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
         }
     });
+
+    return coordArray;
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
-    var range = a.location.altitude;
+    var boundingSphere = Cesium.BoundingSphere.fromPoints(this.addAvalanche(a));
     this.ui.raiseTheCurtain();
-    this.flyTo(this.addAvalanche(a), flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200).then(function() {
-        $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
-        $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
-        $("#avyTitleOverlay").show();
+
+    this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
+        duration: 4.0,
+        offset: toHeadingPitchRange(0, -89.9, 4000),
+        complete: function() {
+            this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
+                duration: 4.0,
+                offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200),
+                complete: function() {
+                    $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
+                    $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
+                    $("#avyTitleOverlay").show();
+                }
+        });}.bind(this)
     });
 }
 
@@ -322,25 +339,10 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
 }
 
 AvyEyesView.prototype.flyTo = function(targetEntity, heading, pitch, range) {
-	var camHeight = this.cesiumViewer.camera.positionCartographic.height
-
-	var flightDurationSeconds = 4.0;
-
-    var finalFlight = function() {
-        return this.cesiumViewer.flyTo(targetEntity, {
-            duration: flightDurationSeconds,
-            offset: toHeadingPitchRange(heading, pitch, range)
-        });
-    }.bind(this);
-
-    if (targetEntity.polygon && camHeight > 50000) {
-        return this.cesiumViewer.flyTo(targetEntity, {
-            duration: flightDurationSeconds,
-            offset: toHeadingPitchRange(0, -89.9, 4000)
-        }).then(finalFlight);
-    } else {
-        return finalFlight();
-    }
+    return this.cesiumViewer.flyTo(targetEntity, {
+        duration: 4.0,
+        offset: toHeadingPitchRange(heading, pitch, range)
+    });
 }
 
 AvyEyesView.prototype.camDisplayAlt = function() {
