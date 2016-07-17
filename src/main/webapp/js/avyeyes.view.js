@@ -52,15 +52,13 @@ function AvyEyesView() {
              }
         }
 
-        Cesium.GroundPrimitive.initializeTerrainHeights().then(function() {
-            if (!tryLiftCallback()) {
-                var liftCheckInterval;
-                liftCheckInterval = setInterval(function() {
-                    console.log("liftAjax is undefined. Trying again...");
-                    if (tryLiftCallback()) clearInterval(liftCheckInterval);
-                }, 500);
-            }
-        });
+        if (!tryLiftCallback()) {
+            var liftCheckInterval;
+            liftCheckInterval = setInterval(function() {
+                console.log("liftAjax is undefined. Trying again...");
+                if (tryLiftCallback()) clearInterval(liftCheckInterval);
+            }, 500);
+        }
     });
 }
 
