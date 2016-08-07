@@ -121,17 +121,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#multiDialog")).toHaveHtml(htmlMsg);
             jQueryMock.verify();
         });
-
-        it("opens the jQuery UI help dialog to the correct tab", function() {
-            var tab = Math.floor((Math.random() * 5) + 1);
-
-            var jQueryMock = sinon.mock($.fn)
-            jQueryMock.expects("tabs").withArgs("option", "active", tab).once();
-            jQueryMock.expects("dialog").withArgs("open").once();
-
-            avyEyesView.showHelp(tab);
-            jQueryMock.verify();
-        });
     });
 
     describe("AvyEyesView start/end report", function () {
@@ -143,11 +132,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             beginReport: beginReportStub
         });
 
-        var closeReportDialogsStub = sinon.stub();
+        var closeReportFormStub = sinon.stub();
         var clearReportFieldsStub = sinon.stub();
         var formStub = sinon.stub();
         formStub.returns({
-            closeReportDialogs: closeReportDialogsStub,
+            closeReportForm: closeReportFormStub,
             clearReportFields: clearReportFieldsStub
         });
 
@@ -178,7 +167,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("Cancels a report", function() {
             avyEyesView.currentReport = {};
             avyEyesView.cancelReport();
-            expect(closeReportDialogsStub.callCount).toBe(1);
+            expect(closeReportFormStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();
         });

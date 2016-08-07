@@ -66,6 +66,11 @@ function wireMainMenu(view) {
     $('#howItWorks').click(function(){
         view.showHelp(0);
     });
+
+    $('#helpOverlayText').tabs();
+
+    $("#rwAvyFormAccordian").accordion({heightStyle: "fill"});
+    $("#rwAvyFormAccordian .ui-accordion-content").css("overflow", "hidden");
 }
 
 function wireTooltips() {
@@ -127,14 +132,14 @@ function wireAutoCompletes(view) {
 		}
 	});
 
-	$('#rwAvyFormDialog .avyAutoComplete').avycomplete('option', 'appendTo', '#rwAvyFormDialog');
-   	$('#rwAvyFormDialog .avyAutoComplete').focus(function() {
-   	    var containerScrollTop = $("#rwAvyFormDialog").scrollTop();
+	$('#rwAvyFormDiv .avyAutoComplete').avycomplete('option', 'appendTo', '#rwAvyFormDiv');
+   	$('#rwAvyFormDiv .avyAutoComplete').focus(function() {
+   	    var containerScrollTop = $("#rwAvyFormDiv").scrollTop();
    	    var dropDownBottom = $(this).position().top + containerScrollTop + 300;
-   	    var containerBottom = containerScrollTop + $("#rwAvyFormDialog").height();
+   	    var containerBottom = containerScrollTop + $("#rwAvyFormDiv").height();
    	    var unseenDropdown = dropDownBottom - containerBottom;
    	    if (unseenDropdown > 0) {
-   	        $('#rwAvyFormDialog').scrollTop(containerScrollTop + unseenDropdown);
+   	        $('#rwAvyFormDiv').scrollTop(containerScrollTop + unseenDropdown);
    	    }
     });
 
@@ -277,6 +282,22 @@ function wireButtons(view) {
             $("#avyReportStep2").slideDown("slow");
         });
     });
+
+    $("#rwAvyFormSubmitButton").click(function() {
+        $('#rwAvyFormDiv').children("form").submit();
+        view.resetView();
+    });
+
+    $("#rwAvyFormCancelButton").click(function() {
+        view.resetView();
+    });
+
+    $("#rwAvyFormDeleteButton").click(function() {
+        if (confirm("Are you sure you want to delete report " + $('#rwAvyFormExtId').val())) {
+            $('#rwAvyFormDeleteBinding').click();
+            view.resetView();
+        }
+    });
 }
 
 function wireLocationInputs(view) {
@@ -345,86 +366,6 @@ function wireDialogs(view) {
         closeOnEscape: true,
         dialogClass: "roAvyFormDialog"
 	});
-
-	$('#helpDialog').dialog({
-        width: 750,
-        height: 620,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: true,
-        dialogClass: "rwAvyFormDialog",
-        buttons: [{
-            text: 'Close',
-            click: function(event, ui) {
-                $(this).dialog('close');
-            }
-        }]
-	});
-	$('#helpDialog').tabs();
-
-    $('#rwAvyFormImageDialog').dialog({
-        width: 700,
-        height: 620,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        dialogClass: "rwAvyFormDialog",
-        show: {
-            effect: "slide",
-            duration: 500
-        },
-        hide: {
-            effect: "slide",
-            duration: 500
-        },
-        buttons: [{
-            text: "Done with Images",
-            click: function(event, ui) {
-                $(this).dialog('close');
-            }
-        }]
-    });
-
-    $('#rwAvyFormDialog').dialog({
-        width: 700,
-        height: 620,
-        autoOpen: false,
-        modal: true,
-        resizable: false,
-        draggable: false,
-        closeOnEscape: false,
-        dialogClass: "rwAvyFormDialog",
-        open: function(ev, ui) {
-            $('#rwAvyFormAreaName').focus();
-            $('.ui-widget-overlay').css({opacity: .60});
-            $(this).parent().find('.ui-dialog-buttonset').css({'width':'100%','text-align':'right'});
-            $(this).parent().find('button:contains("Image")').css({'float':'left'});
-        },
-        close: function(ev, ui) {
-            $('.ui-widget-overlay').css({opacity: .40});
-        },
-        buttons: [{
-            text: "Image Attachment",
-            click: function(event, ui) {
-                $('#rwAvyFormImageDialog').dialog('open');
-            }
-        },{
-            text: "Submit",
-            click: function(event, ui) {
-                $("#rwAvyFormDialog").children('form').submit();
-            }
-        },{
-            text: "Cancel",
-            click: function(event, ui) {
-                $(this).dialog('close');
-                view.resetView();
-            }
-        }]
-    });
 }
 
 AvyEyesUI.prototype.raiseTheCurtain = function() {

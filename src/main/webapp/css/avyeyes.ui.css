@@ -37,6 +37,7 @@ body {
 label {
     cursor: help;
 	font: normal 1em times,serif !important;
+	white-space: nowrap;
 }
 
 input {
@@ -73,6 +74,10 @@ textarea:focus, input:focus {
    filter: Alpha(Opacity=40);
 }
 
+.fancybox-overlay {
+    z-index: 1000;
+}
+
 .hasDatepicker {
     background: transparent;
     color: white;
@@ -88,13 +93,14 @@ textarea:focus, input:focus {
     padding-right: 15px;
     overflow-y: auto;
     overflow-x: hidden;
+    text-align: left;
     z-index: 1000 !important;
 }
 
 .ui-autocomplete-input {
     color: white;
     border: 1px solid #7D7D7D;
-    width: 200px;
+    width: 95%;
     height: 20px;
     background: transparent;
 }
@@ -141,7 +147,7 @@ li.ui-autocomplete-category {
 }
 
 .avyRawTextInput {
-	width: 200px;
+	width: 95%;
     height: 20px;
     background: transparent;
     color: white;
@@ -212,11 +218,11 @@ li.ui-autocomplete-category {
     display: none;
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
-    z-index: 9999;
+    z-index: 999;
     background-color: rgba(0, 0, 0, 0.55);
 }
 
-.avyOverlayText {
+.avyOverlayContent {
     position: absolute;
     margin: auto;
     height: 50%;
@@ -259,8 +265,51 @@ li.ui-autocomplete-category {
     text-align: left;
 }
 
+#helpOverlay .ui-tabs-anchor {
+	padding: 3px 20px;
+}
+
+#helpOverlay .ui-tabs-panel {
+    padding: 20px 10px;
+}
+
+#helpOverlay li:focus, a:focus {
+	outline: 0;
+}
+
+#helpOverlay .ui-widget-header {
+    background: transparent;
+    height: 30px;
+    border: 0px;
+    border-bottom: 1px solid #333333;
+}
+
+#helpOverlay .ui-widget-content {
+    background: transparent;
+}
+
+#helpOverlay > .avyOverlayContent {
+    width: 1000px;
+    height: 600px;
+    text-align: left;
+    background-color: rgba(0, 0, 0, .7);
+	font: normal 1em times,serif !important;
+}
+
+#anyKeyToCloseWrapper {
+    float: right;
+    color: white;
+    text-align: right;
+    font: italic .8em times,serif !important
+}
+
+.helpContent {
+    height: 525px;
+	overflow-y: auto;
+}
+
 #multiDialog {
-	z-index: 101;
+	z-index: 1000;
 }
 
 .dialogTipsTd :first-child {
@@ -298,32 +347,6 @@ li.ui-autocomplete-category {
     background: rgba(48, 51, 54, 1.0);
     padding: 6px;
     border-radius: 5px;
-}
-
-#helpDialog {
-	font: normal 1em times,serif !important;
-	padding: 0px;
-}
-
-#helpDialog .ui-tabs-anchor {
-	padding: 3px 20px;
-}
-
-#helpDialog .ui-tabs-panel {
-    padding: 20px 10px;
-}
-
-#helpDialog li:focus, a:focus {
-	outline: 0;
-}
-
-#helpDialog .ui-widget-header {
-    background: transparent;
-}
-
-#searchHelpDiv, #reportHelpDiv {
-    height: 475px;
-	overflow-y: auto;
 }
 
 #aeControls {
@@ -420,7 +443,6 @@ li.ui-autocomplete-category {
 }
 
 .avySearchTableInput {
-	width:210px;
 	padding: 5px 0px 0px 0px;
     margin: 0px;
 }

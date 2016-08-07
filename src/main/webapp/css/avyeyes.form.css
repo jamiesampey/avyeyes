@@ -180,68 +180,179 @@
 /* --------------------------- BEGIN READ-WRITE FORM ------------------------ */
 /* -------------------------------------------------------------------------- */
 
-#rwAvyFormDialog {
-    overflow-x: hidden;
-	overflow-y: auto;
+#rwAvyFormOverlay {
+    display: block;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
-.rwAvyFormDialog {
-	padding: 0px;
+#rwAvyFormDiv {
+    width: 800px;
+    height: 700px;
+	background-color: #1d1d1d;
+	z-index: 10;
+}
+
+#rwAvyFormDiv > form {
+    width: 800px;
+    height: 650px;
+}
+
+#rwAvyFormButtonBar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    text-align: right;
+}
+
+#rwAvyFormButtonBar > .avyButton {
+    padding: 5px 12px 5px 12px;
+    margin: 10px 10px 0px 0px;
+}
+
+#rwAvyFormDeleteButton.avyButton {
+    display: none;
+    float: left;
+    margin: 10px 0px 0px 10px;
+    border: 1px solid red;
+}
+
+#rwAvyFormDetailsMainTable {
+    width: 100%;
+    height: 100%;
+}
+
+.ui-accordion {
+    text-align: left;
+    font: normal .9em times,serif !important;
+}
+
+#rwAvyFormAccordian .ui-accordion-header {
+    padding: 5px 5px 5px 30px;
+}
+
+#rwAvyFormAccordian .ui-accordion-content {
+    padding: 5px 10px 5px 10px;
+}
+
+#rwAvyFormDetailsMainTable > tbody > tr > td {
+    vertical-align: top;
+}
+
+#rwAvyFormDetailsLeftColumnTable {
+    width: 410px;
+}
+
+.rwAvyFormSubTable {
+    width: 100%;
+	margin: 0px 0px 10px 0px;
+}
+
+.rwAvyFormInputsSubTable {
+    width: 100%;
+    padding: 5px;
     margin: 0px;
+	border: 1px solid #7D7D7D;
+	border-radius: 10px;
 }
 
-.rwAvyFormDialog .ui-dialog-titlebar {
+.rwAvyFormInputsSubTable > tbody > tr > td {
+    padding-top: 5px;
+    margin: 0px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.rwAvyFormInputsSubTable > tbody > tr > td:nth-child(2) {
+    width: 99%;
+}
+
+#rwAvyFormRequiredFieldsMsgTd {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.rwAvyFormSectionHeader {
+	font-weight: bold;
+	padding: 0px;
+}
+
+#rwAvyFormAdminTd {
 	display: none;
 }
 
-#rwAvyFormImageDropZoneMsgDiv {
-    width: 100%;
+#rwAvyFormAdminTd .rwAvyFormInputsSubTable {
+    border: 1px solid red;
 }
 
-#rwAvyFormImageDropZoneMsgDiv > span {
-	display: block;
-	margin: 0 auto;
+.rwAvyFormElevation {
+    width: 40px;
+    height: 20px;
     padding: 0px;
-	width: 650px;
-    font-size: 1.5em;
-    text-align: center;
+    margin: 0px;
+    background: transparent;
+    color: white;
+    border: none;
 }
 
-#rwAvyFormImageDropZoneMsgDiv ul {
-	width: 600px;
-	padding: 0px;
-	margin: 10px 0px 10px 80px;
-    font-size: .9em;
+#rwAvyFormElevation, #rwAvyFormElevationFt {
+    text-align: right;
+}
+
+.rwAvyFormUnitSuffix {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.avyDirectionAutoComplete {
+    width: 35px;
+}
+
+#rwAvyFormCommentsInstrDiv {
+    margin-top: 10px;
+}
+
+#rwAvyFormComments {
+	width: 100%;
+	height: 450px;
+	resize: none;
+}
+
+#rwAvyFormImageDropZoneInstrDiv {
+    width: 100%;
+    padding: 10px 0px 5px 30px;
     text-align: left;
 }
 
-#rwAvyFormImageDropZoneMsgDiv li {
+#rwAvyFormImageDropZoneInstrDiv ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+#rwAvyFormImageDropZoneInstrDiv li {
     padding: 0px 0px 5px 0px;
     margin: 0px;
 }
 
-#rwAvyFormImageDropZoneMsgDiv li img {
+#rwAvyFormImageDropZoneInstrDiv li img {
     vertical-align: middle;
     width: 20px;
 }
 
 #rwAvyFormImageDropZone {
-	display: block;
-	margin: 0 auto;
-	padding: 0px;
-	background-color: transparent;
-	border: 3px dashed #7D7D7D;
-	color: white;
-	width: 650px;
-	height: 370px;
-	overflow-x: hidden;
-	overflow-y: auto;
+    background-image: url("/images/drag-and-drop-background.png");
+    background-repeat: no-repeat;
+    background-position: center;
+	border: 1px solid #7D7D7D;
+	width: 100%;
+	height: 430px;
+	overflow: hidden;
 }
 
 #rwAvyFormImageGrid {
     vertical-align: top;
-    width: 640px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .rwAvyFormImageCell {
@@ -283,99 +394,11 @@ img.rwAvyFormImageDeleteIcon {
 
 #rwAvyFormImageOldSchoolImgUpload {
 	width: 100%;
-	padding-top: 10px;
+	padding: 10px;
+
 }
 
 #rwAvyFormImageOldSchoolImgUpload > form {
 	display: inline;
     width: 200px;
-}
-
-#rwAvyFormDetailsMainTable > tbody > tr > td {
-    vertical-align: top;
-}
-
-#rwAvyFormDetailsLeftColumnTable {
-	padding: 0px;
-	margin: 0px;
-	border-spacing: 0px;
-}
-
-#rwAvyFormDetailsRightColumnTable {
-    padding: 0px 0px 0px 20px;
-    margin: 0px;
-    border-spacing: 0px;
-}
-
-.rwAvyFormSubTable {
-	margin: 0px 0px 10px 0px;
-}
-
-.rwAvyFormInputsSubTable {
-    padding: 5px;
-    margin: 0px;
-	border: 1px solid #7D7D7D;
-	border-radius: 10px;
-}
-
-#rwAvyFormSubmitterWrapperTable .rwAvyFormSubTable {
-    width: 100%;
-}
-
-#rwAvyFormSubmitterWrapperTable .rwAvyFormInputsSubTable {
-	width: 100%;
-}
-
-.rwAvyFormInputsSubTable > tbody > tr > td {
-    padding-top: 5px;
-    margin: 0px;
-    vertical-align: middle;
-}
-
-#rwAvyFormSubmitterWrapperTable {
-	width: 100%;
-}
-
-#rwAvyFormRequiredFieldsMsgTd {
-	text-align: right;
-}
-
-.rwAvyFormSectionHeader {
-	font-weight: bold;
-	padding: 0px;
-}
-
-#rwAvyFormViewableTd {
-	display: none;
-}
-
-.rwAvyFormElevation {
-    width: 40px;
-    height: 20px;
-    padding: 0px;
-    margin: 0px;
-    background: transparent;
-    color: white;
-    border: none;
-}
-
-#rwAvyFormElevation, #rwAvyFormElevationFt {
-    text-align: right;
-}
-
-.rwAvyFormUnitSuffix {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-.avyDirectionAutoComplete {
-    width: 35px;
-}
-
-.avyWindSpeedAutoComplete, .avyModeOfTravelAutoComplete {
-    width: 125px;
-}
-
-#rwAvyFormComments {
-	width: 100%;
 }

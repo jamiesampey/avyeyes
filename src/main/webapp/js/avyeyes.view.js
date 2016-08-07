@@ -37,8 +37,13 @@ function AvyEyesView() {
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvyMouseEventHandlers();
 
-    window.addEventListener("keypress", function(e) { $(".avyOverlay").hide(); }, false);
-    window.addEventListener("click", function(e) { $(".avyOverlay").hide(); }, false);
+    window.addEventListener("keydown", function(e) {
+        $("#helpOverlay").hide();
+        $(".avyResultsOverlay").hide();
+    }, false);
+    window.addEventListener("click", function(e) {
+        $(".avyResultsOverlay").hide();
+    }, false);
 
     this.form = new AvyForm();
     this.ui = new AvyEyesUI();
@@ -163,8 +168,8 @@ AvyEyesView.prototype.showModalDialog = function(title, msg) {
 }
 
 AvyEyesView.prototype.showHelp = function(tab) {
-	$("#helpDialog").tabs("option", "active", tab);
-	$("#helpDialog").dialog("open");
+	$("#helpOverlayText").tabs("option", "active", tab);
+	$("#helpOverlay").show();
 }
 
 AvyEyesView.prototype.doReport = function() {
@@ -176,7 +181,7 @@ AvyEyesView.prototype.doReport = function() {
 
 AvyEyesView.prototype.cancelReport = function() {
     $(".reportInstructions").hide();
-    this.form.closeReportDialogs();
+    this.form.closeReportForm();
     this.form.clearReportFields();
 	this.currentReport = null;
 }

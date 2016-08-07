@@ -80,7 +80,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     if (!Direction.isValidCode(aspect)) problemFields.append("rwAvyFormAspectAC")
     if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
 
-    if (problemFields.size == 0) {
+    if (problemFields.isEmpty) {
       saveReport()
     } else {
       var problemFieldJsonArray = Printer.compact(
@@ -145,47 +145,45 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     }
   }
 
-  private def createAvalancheFromValues = {
-    Avalanche(
-      createTime = DateTime.now,
-      updateTime = DateTime.now,
-      extId = extId,
-      viewable = viewable,
-      submitterEmail = submitterEmail,
-      submitterExp = ExperienceLevel.fromCode(submitterExp),
-      location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToDblOrZero(elevation)),
-      areaName = areaName,
-      date = strToDate(dateStr),
-      slope = Slope(
-        aspect = Direction.fromCode(aspect),
-        angle = strToIntOrNegOne(angle),
-        elevation = strToIntOrNegOne(elevation)
-      ),
-      weather = Weather(
-        recentSnow = strToIntOrNegOne(recentSnow),
-        recentWindSpeed = WindSpeed.fromCode(recentWindSpeed),
-        recentWindDirection = Direction.fromCode(recentWindDirection)
-      ),
-      classification = Classification(
-        avyType = AvalancheType.fromCode(avyType),
-        trigger = AvalancheTrigger.fromCode(avyTrigger),
-        triggerModifier = AvalancheTriggerModifier.fromCode(avyTriggerModifier),
-        interface = AvalancheInterface.fromCode(avyInterface),
-        rSize = strToDblOrZero(rSize),
-        dSize = strToDblOrZero(dSize)
-      ),
-      humanNumbers = HumanNumbers(
-        modeOfTravel = ModeOfTravel.fromCode(modeOfTravel),
-        caught = strToIntOrNegOne(caught),
-        partiallyBuried = strToIntOrNegOne(partiallyBuried),
-        fullyBuried = strToIntOrNegOne(fullyBuried),
-        injured = strToIntOrNegOne(injured),
-        killed = strToIntOrNegOne(killed)
-      ),
-      comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
-      perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toSeq.map(Coordinate.fromString) else Seq.empty
-    )
-  }
+  private def createAvalancheFromValues = Avalanche(
+    createTime = DateTime.now,
+    updateTime = DateTime.now,
+    extId = extId,
+    viewable = viewable,
+    submitterEmail = submitterEmail,
+    submitterExp = ExperienceLevel.fromCode(submitterExp),
+    location = Coordinate(strToDblOrZero(lng), strToDblOrZero(lat), strToDblOrZero(elevation)),
+    areaName = areaName,
+    date = strToDate(dateStr),
+    slope = Slope(
+      aspect = Direction.fromCode(aspect),
+      angle = strToIntOrNegOne(angle),
+      elevation = strToIntOrNegOne(elevation)
+    ),
+    weather = Weather(
+      recentSnow = strToIntOrNegOne(recentSnow),
+      recentWindSpeed = WindSpeed.fromCode(recentWindSpeed),
+      recentWindDirection = Direction.fromCode(recentWindDirection)
+    ),
+    classification = Classification(
+      avyType = AvalancheType.fromCode(avyType),
+      trigger = AvalancheTrigger.fromCode(avyTrigger),
+      triggerModifier = AvalancheTriggerModifier.fromCode(avyTriggerModifier),
+      interface = AvalancheInterface.fromCode(avyInterface),
+      rSize = strToDblOrZero(rSize),
+      dSize = strToDblOrZero(dSize)
+    ),
+    humanNumbers = HumanNumbers(
+      modeOfTravel = ModeOfTravel.fromCode(modeOfTravel),
+      caught = strToIntOrNegOne(caught),
+      partiallyBuried = strToIntOrNegOne(partiallyBuried),
+      fullyBuried = strToIntOrNegOne(fullyBuried),
+      injured = strToIntOrNegOne(injured),
+      killed = strToIntOrNegOne(killed)
+    ),
+    comments = if (!comments.isEmpty) Some(escapeJava(comments)) else None,
+    perimeter = if (!coordStr.isEmpty) coordStr.trim.split(" ").toSeq.map(Coordinate.fromString) else Seq.empty
+  )
 
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
@@ -218,13 +216,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     }
   }
 
-  devModeSend.default.set((m: MimeMessage) => {
-    val multipartContent = m.getContent.asInstanceOf[Multipart]
-    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
-    logger.info( s"""Dev mode report email:
-         From: ${m.getFrom()(0).toString}
-         To: ${m.getAllRecipients()(0).toString}
-         Subject: ${m.getSubject}
-         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
-  })
+//  devModeSend.default.set((m: MimeMessage) => {
+//    val multipartContent = m.getContent.asInstanceOf[Multipart]
+//    val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
+//    logger.info( s"""Dev mode report email:
+//         From: ${m.getFrom()(0).toString}
+//         To: ${m.getAllRecipients()(0).toString}
+//         Subject: ${m.getSubject}
+//         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+//  })
 }

@@ -1,5 +1,8 @@
 package com.avyeyes.snippet
 
+import java.text.NumberFormat
+import java.util.Locale
+
 import com.avyeyes.data._
 import com.avyeyes.model._
 import com.avyeyes.model.JsonSerializers._
@@ -45,27 +48,23 @@ class Search extends ModalDialogs with Loggable {
 		"#avySearchSubmitBinding" #> SHtml.hidden(doSearch)
 	}
 
-  def doSearch(): JsCmd = {
-    val camAltitude = strToDblOrZero(camAlt).toInt
-    if (camAltitude > CamAltitudeLimit) {
-      errorDialog("eyeTooHigh", CamAltitudeLimit)
-    } else if (Seq(latMax, latMin, lngMax, lngMin).exists(_.isEmpty)) {
-      errorDialog("horizonInView")
-    } else {
-      val avyList = matchingAvalanchesInRange
-      
-      logger.debug(s"Found ${avyList.size} avalanches matching criteria "
-          + s" [From: $fromDate | To: $toDate | Type: $avyType | Trigger: $avyTrigger"
-          + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
+  def doSearch(): JsCmd = if (strToDblOrZero(camAlt).toInt > CamAltitudeLimit) {
+    errorDialog("eyeTooHigh", NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit))
+  } else if (Seq(latMax, latMin, lngMax, lngMin).exists(_.isEmpty)) {
+    errorDialog("horizonInView")
+  } else {
+    val avyList = matchingAvalanchesInRange
 
-      if (avyList.size > 0) {
-        Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResultData))).cmd
-      } else {
-        infoDialog("avySearchZeroMatches")
-      } 
+    logger.debug(s"Found ${avyList.size} avalanches matching criteria "
+        + s" [From: $fromDate | To: $toDate | Type: $avyType | Trigger: $avyTrigger"
+        + s" | R size: $rSize | D size: $dSize | Caught: $numCaught | Killed: $numKilled]")
+
+    avyList match {
+      case Nil => infoDialog("avySearchZeroMatches")
+      case _ => Call("avyEyesView.addAvalanches", JArray(avyList.map(avalancheSearchResultData))).cmd
     }
   }
-    
+
   private def matchingAvalanchesInRange: List[Avalanche] = {
     val matchingAvalanches = dal.getAvalanches(
       AvalancheQuery(
@@ -86,11 +85,11 @@ class Search extends ModalDialogs with Loggable {
         order =  List((OrderField.Date, OrderDirection.desc))
     ))
 
-    if (strToDblOrZero(camPitch) > CamPitchCutoff)  {
-      val camLocation = Coordinate(strToDblOrZero(camLng), strToDblOrZero(camLat), 0)
-      matchingAvalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
-    } else {
-      matchingAvalanches
+    strToDblOrZero(camPitch) match {
+      case numericalCamPitch if numericalCamPitch > CamPitchCutoff =>
+        val camLocation = Coordinate(strToDblOrZero(camLng), strToDblOrZero(camLat), 0)
+        matchingAvalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
+      case _ => matchingAvalanches
     }
   }
 

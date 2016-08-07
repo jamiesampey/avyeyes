@@ -118,17 +118,16 @@ AvyForm.prototype.hideReadOnlyForm = function() {
 AvyForm.prototype.displayReadWriteForm = function(a) {
     if (!a) { // new report case
         this.resetReadWriteImageUpload($('#rwAvyFormExtId').val());
-        $('#rwAvyFormDialog').dialog('open');
+        $('#rwAvyFormOverlay').css('visibility', 'visible');
+        $('#rwAvyFormAreaName').focus();
         return;
-    } else { // admin view case
-        this.resetReadWriteImageUpload(a.extId);
     }
 
+    this.resetReadWriteImageUpload(a.extId);
     $('#rwAvyFormExtId').val(a.extId);
-    
-    $('#rwAvyFormViewableTd').children(':checkbox').attr('checked', a.viewable);
-    $('#rwAvyFormViewableTd').children(':checkbox').trigger('change');
-    
+
+    $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
+
     $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
     this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', a.submitterExp);
 
@@ -167,7 +166,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     }.bind(this));
 
     $('#rwAvyFormDeleteBinding').val(a.extId);
-    $('#rwAvyFormDialog').dialog('open');
+    $('#rwAvyFormOverlay').css('visibility', 'visible');
     $("#cesiumContainer").css("cursor", "default");
 }
 
@@ -325,29 +324,8 @@ function getFileBaseName(filename) {
 }
 
 AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
-    $('#rwAvyFormViewableTd').children(':checkbox').change(function(){
-        if ($(this).is(':checked')) {
-            $('#rwAvyFormViewableTd').css('background', 'rgba(0, 255, 0, 0.3)');
-        } else {
-            $('#rwAvyFormViewableTd').css('background', 'rgba(255, 0, 0, 0.3)');
-        }
-    });
-
-    var reportDialogButtons = $('#rwAvyFormDialog').dialog("option", "buttons");
-    if (reportDialogButtons.length > 3) return; // already wired admin fields
-
-    reportDialogButtons.push({
-        text: "Delete",
-        click: function(event, ui) {
-            if (confirm("Are you sure you want to delete report " + $('#rwAvyFormExtId').val())) {
-                $('#rwAvyFormDeleteBinding').click();
-                view.resetView();
-            }
-        }
-    });
-    $('#rwAvyFormDialog').dialog('option', 'buttons', reportDialogButtons);
-
-    $('#rwAvyFormViewableTd').css('display', 'table-cell');
+    $("#rwAvyFormDeleteButton").show();
+    $("#rwAvyFormAdminTd").show();
 }
 
 AvyForm.prototype.highlightReportErrorFields = function(errorFields) {
@@ -373,9 +351,9 @@ AvyForm.prototype.resetReportErrorFields = function() {
 AvyForm.prototype.clearReportFields = function() {
     this.resetReportErrorFields();
     this.setReportDrawingInputs('', '', '', '', '', '');
-	$('#rwAvyFormDialog').find('input:text, input:hidden, textarea').val('');
-	$('#rwAvyFormDialog').find('.avyRDSliderValue').val('0');
-	$('#rwAvyFormDialog').find('.avyRDSlider').slider('value', 0);
+	$('#rwAvyFormDiv').find('input:text, input:hidden, textarea').val('');
+	$('#rwAvyFormDiv').find('.avyRDSliderValue').val('0');
+	$('#rwAvyFormDiv').find('.avyRDSlider').slider('value', 0);
 	$('#rwAvyFormImageGrid').empty();
 }
 
@@ -390,9 +368,8 @@ AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, 
 	$('#rwAvyFormCoords').val(coordStr);
 }
 
-AvyForm.prototype.closeReportDialogs = function() {
-    $('.avyReportDrawDialog, .rwAvyFormDialog')
-        .children('.ui-dialog-content').dialog('close');
+AvyForm.prototype.closeReportForm = function() {
+    $('#rwAvyFormOverlay').css('visibility', 'hidden');
 }
 
 AvyForm.prototype.toggleWindDirectionFields = function(value) {

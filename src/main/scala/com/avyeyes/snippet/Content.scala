@@ -19,40 +19,30 @@ class Content {
     ".avyAdminLoggedInDiv" #> getAdminLoggedInDiv
   }
 
-  private def setupLabel(id: String, required: Boolean): NodeSeq = {
-    Utility.trim(
-      <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
-          {S.?(s"label.$id")}:{if (required) Unparsed("<span style='color: red;'>&nbsp;*</span>")}
-      </label>
-    )
-  }
+  private def setupLabel(id: String, required: Boolean) = Utility.trim(
+    <label for={id} data-help={Unparsed(S.?(s"help.$id"))} data-required={required.toString}>
+        {S.?(s"label.$id")}:{if (required) Unparsed("<span style='color: red;'>&nbsp;*</span>")}
+    </label>
+  )
 
-  private def setupHeader(id: String): NodeSeq = {
-    <span id={id} class="avyHeader">{S.?(s"header.$id")}</span>
-  }
+  private def setupHeader(id: String) = <span id={id} class="avyHeader">{S.?(s"header.$id")}</span>
 
-  private def setupMessage(id: String): NodeSeq = {
-    <span id={id} class="avyMsg">{R.localizedStringAsXml(s"msg.$id")}</span>
-  }
+  private def setupMessage(id: String) = <span id={id} class="avyMsg">{R.localizedStringAsXml(s"msg.$id")}</span>
 
-  private def setupLink(id: String): NodeSeq = {
-    <a id={id} class="avyLink">{S.?(s"link.$id")}</a>
-  }
+  private def setupLink(id: String) = <a id={id} class="avyLink">{S.?(s"link.$id")}</a>
 
   private def getButton(id: String) = S.?(s"button.$id")
 
-  private def getAdminLoggedInDiv = {
-    userSession.isAuthorizedSession match {
-      case false => NodeSeq.Empty
-      case true => {
-        <div class="avyAdminLoggedInDiv">
-          <form class="lift:Admin.logOut?form=post">
-            <label for="avyAdminLoggedInEmail">{S.?("label.avyAdminLoggedInEmail")}</label>
-            <span id="avyAdminLoggedInEmail">{userSession.getAuthorizedEmail}</span>
-            <input id="avyAdminLogoutButton" type="submit" value={S.?("button.avyAdminLogOutButton")} />
-          </form>
-        </div>
-      }
+  private def getAdminLoggedInDiv = userSession.isAuthorizedSession match {
+    case false => NodeSeq.Empty
+    case true => {
+      <div class="avyAdminLoggedInDiv">
+        <form class="lift:Admin.logOut?form=post">
+          <label for="avyAdminLoggedInEmail">{S.?("label.avyAdminLoggedInEmail")}</label>
+          <span id="avyAdminLoggedInEmail">{userSession.getAuthorizedEmail}</span>
+          <input id="avyAdminLogoutButton" type="submit" value={S.?("button.avyAdminLogOutButton")} />
+        </form>
+      </div>
     }
   }
 }
