@@ -134,6 +134,12 @@ li.ui-autocomplete-category {
     background: transparent;
 }
 
+.ui-slider-horizontal {
+    display: inline-block;
+    width: 80%;
+    border: 1px solid #7D7D7D
+}
+
 .ui-dialog {
     font: normal 1em times,serif !important;
 }
@@ -155,11 +161,12 @@ li.ui-autocomplete-category {
 }
 
 .avyRDSliderContainer {
-    width: 200px;
+    width: 100%;
     padding: 0px;
 }
 
 .avyRDSliderValue {
+    display: inline-block;
     width: 20px;
     height: 20px;
     color: white;
@@ -167,13 +174,6 @@ li.ui-autocomplete-category {
     border: none;
     font-size: 1em;
     padding: 0px 5px 0px 0px;
-}
-
-.avyRDSlider {
-    width: 170px;
-    float: right;
-    margin-top: 5px;
-    border: 1px solid #7D7D7D
 }
 
 .avyMsg p, li {
