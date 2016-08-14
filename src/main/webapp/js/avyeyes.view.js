@@ -177,6 +177,9 @@ AvyEyesView.prototype.doReport = function() {
 	this.cancelReport();
 	this.currentReport = new AvyReport(this);
 	this.currentReport.beginReport();
+    window.onbeforeunload = function(e) {
+        return "Report in progress!";
+    };
 }
 
 AvyEyesView.prototype.cancelReport = function() {
@@ -184,6 +187,7 @@ AvyEyesView.prototype.cancelReport = function() {
     this.form.closeReportForm();
     this.form.clearReportFields();
 	this.currentReport = null;
+	window.onbeforeunload = null;
 }
 
 AvyEyesView.prototype.resetView = function() {
