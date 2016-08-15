@@ -41,8 +41,7 @@ class Boot extends Loggable {
     
     val appMenus: List[Menu] = Menu(Loc("home", IndexPath :: Nil, "Home")) ::
       Menu(Loc("browserNotSupported", BrowserNotSupportedPath :: Nil, "Browser Not Supported")) :: 
-      Menu(Loc("logIn", LoginPath :: Nil, "Log In")) ::
-      Menu(Loc("domainValidation", "ot4spo9r" :: Nil, "Domain Validation")) :: Nil
+      Menu(Loc("logIn", LoginPath :: Nil, "Log In")) :: Nil
     val menus = appMenus ::: Omniauth.sitemap
     
     LiftRules.setSiteMap(SiteMap(menus:_*))
@@ -55,7 +54,7 @@ class Boot extends Loggable {
       }
     }
 
-    val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: "ot4spo9r" :: Nil
+    val contextPaths = IndexPath :: BrowserNotSupportedPath :: LoginPath :: Nil
 
     // external ID URL extraction
     LiftRules.statelessRewrite.prepend {
