@@ -156,20 +156,28 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("Starts a new report", function() {
             var removeAllEntitiesStub = sinon.stub(avyEyesView, "removeAllEntities");
             var cancelReportStub = sinon.stub(avyEyesView, "cancelReport");
+            window.onbeforeunload = null;
+
             avyEyesView.doReport();
+
             expect(removeAllEntitiesStub.callCount).toBe(1);
             expect(cancelReportStub.callCount).toBe(1);
             expect(reportStub.calledWithNew()).toBe(true);
             expect(avyEyesView.currentReport).toBeDefined();
             expect(beginReportStub.callCount).toBe(1);
+            expect(window.onbeforeunload).toBeDefined();
         });
 
         it("Cancels a report", function() {
+            window.onbeforeunload = function(e) {};
             avyEyesView.currentReport = {};
+
             avyEyesView.cancelReport();
+
             expect(closeReportFormStub.callCount).toBe(1);
             expect(clearReportFieldsStub.callCount).toBe(1);
             expect(avyEyesView.currentReport).toBeNull();
+            expect(window.onbeforeunload).toBeNull();
         });
     });
 
