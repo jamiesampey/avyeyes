@@ -11,29 +11,29 @@ trait CachedDAL {
 
   def getAvalanche(extId: String): Option[Avalanche]
 
-  def getAvalanchesFromDisk: Seq[Avalanche]
+  def getAvalanchesFromDisk: Future[Seq[Avalanche]]
 
-  def getAvalancheFromDisk(extId: String): Option[Avalanche]
+  def getAvalancheFromDisk(extId: String): Future[Option[Avalanche]]
 
   def getAvalanches(query: AvalancheQuery): List[Avalanche]
 
   def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int)
 
-  def insertAvalanche(avalanche: Avalanche): Unit
+  def insertAvalanche(avalanche: Avalanche): Future[Unit]
 
-  def updateAvalanche(avalanche: Avalanche): Unit
+  def updateAvalanche(avalanche: Avalanche): Future[Unit]
   
-  def deleteAvalanche(extId: String): Unit
+  def deleteAvalanche(extId: String): Future[Int]
   
   def insertAvalancheImage(img: AvalancheImage): Unit
   
-  def getAvalancheImage(avyExtId: String, baseFilename: String): Option[AvalancheImage]
+  def countAvalancheImages(extId: String): Future[Int]
 
-  def countAvalancheImages(extId: String): Int
+  def getAvalancheImage(avyExtId: String, baseFilename: String): Future[Option[AvalancheImage]]
 
-  def getAvalancheImages(avyExtId: String): List[AvalancheImage]
+  def getAvalancheImages(avyExtId: String): Future[List[AvalancheImage]]
 
-  def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]): Unit
+  def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]): Future[Int]
 
   def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]): Unit
 
