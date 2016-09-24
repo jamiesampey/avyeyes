@@ -12,8 +12,9 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
-import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Success}
 
 class Images extends RestHelper with Loggable {
   val dal = Injectors.dal.vend
@@ -70,21 +71,23 @@ class Images extends RestHelper with Loggable {
     }
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil Delete req => {
-      try {
-        dal.getAvalancheImage(avyExtId, baseFilename).map(_.filename) match {
-          case Some(filename) =>
-            s3.deleteImage(avyExtId, filename)
-            dal.deleteAvalancheImage(avyExtId, filename)
-          case _ => logger.error(s"Unable to retrieve image filename for delete. Base filename = $baseFilename")
-        }
+      val liftResponse: LiftResponse = Await.result(
+        dal.getAvalancheImage(avyExtId, baseFilename).flatMap(_.map { (image: AvalancheImage) =>
+          s3.deleteImage(avyExtId, image.filename)
+          dal.deleteAvalancheImage(avyExtId, image.filename)
+        }.getOrElse(Future.failed(new RuntimeException("Couldn't find image")))).map { _ =>
+          logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
+          OkResponse()
+        }.recover {
+          case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
+          case e: Exception => InternalServerErrorResponse()
+        }, Duration.Inf)
 
-        logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
-        OkResponse()
-      } catch {
-        case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
-        case e: Exception => InternalServerErrorResponse()
-      }
+      liftResponse
     }
-  }
+
+
+  } // end serve
+
 
 }
