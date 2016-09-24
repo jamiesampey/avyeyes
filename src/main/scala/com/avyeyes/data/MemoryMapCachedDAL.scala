@@ -4,7 +4,7 @@ import javax.sql.DataSource
 
 import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
-import com.avyeyes.service.{UnauthorizedException, Injectors, ExternalIdService}
+import com.avyeyes.service.{ExternalIdService, Injectors, UnauthorizedException}
 import com.avyeyes.util.Constants._
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
@@ -12,8 +12,7 @@ import slick.driver.JdbcProfile
 
 import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   avalancheMap: CMap[String, Avalanche]) extends CachedDAL
@@ -40,12 +39,9 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     user.isAuthorizedSession || reservationExists(avyExtId) || withinEditWindow
   }
 
-  def isUserAuthorized(email: String): Future[Boolean] = db.run {
+  def isUserAuthorized(email: String) = db.run(
     UserRoleRows.filter(_.email === email).result
-  }.flatMap { userRolesResult =>
-    val roles = userRolesResult.map(_.role)
-    Future { roles.contains(SiteOwnerRole) || roles.contains(AdminRole) }
-  }
+  ).map(_.map(_.role).exists(role => role.contains(SiteOwnerRole) || role.contains(AdminRole)))
 
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {
     case Some(viewable) => avalancheMap.count(_._2.viewable == viewable)
@@ -68,7 +64,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     (matches.sortWith(query.sortFunction).slice(query.offset, query.offset + query.limit), matches.size, avalancheMap.size)
   }
 
-  def getAvalanchesFromDisk: Future[Seq[Avalanche]] = {
+  def getAvalanchesFromDisk = {
     val query = for {
       avalanche <- AvalancheRows
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
@@ -79,7 +75,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     db.run(query.result).map(_.map(avalancheFromData))
   }
 
-  def getAvalancheFromDisk(extId: String): Future[Option[Avalanche]] = {
+  def getAvalancheFromDisk(extId: String) = {
     val query = for {
       avalanche <- AvalancheRows.filter(_.extId === extId)
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
@@ -87,8 +83,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       human <- AvalancheHumanRows if human.avalanche === avalanche.extId
     } yield (avalanche, weather, classification, human)
 
-    val avyOptionFuture: Future[Option[Avalanche]] = db.run(query.result.headOption).map(_.map(avalancheFromData))
-    avyOptionFuture.map(avalancheIfAllowed)
+    db.run(query.result.headOption).map(_.map(avalancheFromData)).map(avalancheIfAllowed)
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
@@ -96,17 +91,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
     val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
 
-    val insertAction = db.run {
+    db.run(
       UserRows.filter(_.email === avalanche.submitterEmail).exists.result
-    }.flatMap { userExists =>
-      db.run(if (!userExists) {
-        (UserRows += User(DateTime.now, avalanche.submitterEmail)) >> avalancheInserts
-      } else {
-        avalancheInserts
-      })
+    ).flatMap {
+      case false => db.run((UserRows += User(DateTime.now, avalanche.submitterEmail)) >> avalancheInserts)
+      case true => db.run(avalancheInserts)
     }
-
-    insertAction.map(_ => avalancheMap += (avalanche.extId -> avalanche.copy(comments = None)))
+    .map(_ => avalancheMap += (avalanche.extId -> avalanche.copy(comments = None)))
   }
 
   def updateAvalanche(update: Avalanche) = {
@@ -117,14 +108,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     val classificationUpdateQuery = AvalancheClassificationRows.filter(_.avalanche === update.extId).map(c => (c.avalancheType, c.trigger, c.triggerModifier, c.interface, c.rSize, c.dSize))
     val humanUpdateQuery = AvalancheHumanRows.filter(_.avalanche === update.extId).map(h => (h.modeOfTravel, h.caught, h.partiallyBuried, h.fullyBuried, h.injured, h.killed))
 
-    Await.result(db.run {
+    db.run {
       avalancheUpdateQuery.update((DateTime.now, update.viewable, update.submitterEmail, update.submitterExp, update.areaName, update.date, update.slope.aspect, update.slope.angle, update.comments)) >>
       sceneUpdateQuery.update((update.weather.recentSnow, update.weather.recentWindDirection, update.weather.recentWindSpeed)) >>
       classificationUpdateQuery.update((update.classification.avyType, update.classification.trigger, update.classification.triggerModifier, update.classification.interface, update.classification.rSize, update.classification.dSize)) >>
       humanUpdateQuery.update((update.humanNumbers.modeOfTravel, update.humanNumbers.caught, update.humanNumbers.partiallyBuried, update.humanNumbers.fullyBuried, update.humanNumbers.injured, update.humanNumbers.killed))
-    }, Duration.Inf)
-
-    getAvalancheFromDisk(update.extId).map(_ match {
+    }
+    .map(_ => getAvalancheFromDisk(update.extId).map {
       case Some(a) => avalancheMap += (a.extId -> a.copy(comments = None))
       case None => logger.error("Unable to pull updated avalanche back out of database")
     })
@@ -145,8 +135,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def insertAvalancheImage(img: AvalancheImage) = db.run(
-    (AvalancheImageRows += img) >>
-    setAvalancheUpdateTimeAction(img.avalanche)
+    (AvalancheImageRows += img) >> setAvalancheUpdateTimeAction(img.avalanche)
   )
 
   def countAvalancheImages(extId: String) = db.run(
@@ -178,17 +167,17 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
   def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]) = {
     if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image caption")
-    val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.caption))
+    val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.caption)
     db.run(imageUpdateQuery.update(caption))
   }
 
   def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
     if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image order")
 
-    filenameOrder.zipWithIndex.foreach { case (baseFilename, order) =>
-      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(i => (i.sortOrder))
+    Future.sequence(filenameOrder.zipWithIndex.map { case (baseFilename, order) =>
+      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.sortOrder)
       db.run(imageOrderUpdateQuery.update(order))
-    }
+    })
   }
 
   def deleteAvalancheImage(avyExtId: String, filename: String) = {
@@ -200,20 +189,13 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     ).map(_ => getAvalancheImages(avyExtId).map(images => updateAvalancheImageOrder(avyExtId, images.map(_.filename))))
   }
 
-  def deleteOrphanAvalancheImages: Seq[String] = {
-    val orphanImages = Await.result(db.run(
-      AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result),
-      Duration.Inf).filterNot(img => reservationExists(img.avalanche))
-
-    val unfinishedReports = orphanImages.map(_.avalanche).distinct
+  def deleteOrphanAvalancheImages = db.run(
+    AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
+  ).flatMap { orphanImages =>
+    val unfinishedReports = orphanImages.filterNot(img => reservationExists(img.avalanche)).map(_.avalanche).distinct
     logger.info(s"Pruning ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
-
-    Await.result(db.run(AvalancheImageRows.filter(img => img.avalanche inSetBind unfinishedReports).delete), Duration.Inf)
-
-    unfinishedReports
+    db.run(AvalancheImageRows.filter(img => img.avalanche inSetBind unfinishedReports).delete).map(_ => unfinishedReports)
   }
 
-  private def setAvalancheUpdateTimeAction(extId: String) = AvalancheRows.filter(
-    _.extId === extId).map(_.updateTime).update(DateTime.now)
-
+  private def setAvalancheUpdateTimeAction(extId: String) = AvalancheRows.filter(_.extId === extId).map(_.updateTime).update(DateTime.now)
 }

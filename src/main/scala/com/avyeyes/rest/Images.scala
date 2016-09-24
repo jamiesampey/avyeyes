@@ -12,47 +12,38 @@ import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
 
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration.Duration
+
 class Images extends RestHelper with Loggable {
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
   val R = Injectors.resources.vend
 
   serve {
-    case "rest" :: "images" :: avyExtId :: Nil Post req => {
-      val siblingImageCount = dal.countAvalancheImages(avyExtId)
+    case "rest" :: "images" :: avyExtId :: Nil Post req => Await.result(
+      dal.countAvalancheImages(avyExtId).flatMap {
+        case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche => Future { BadResponse() }
+        case siblingImageCount =>
+          val fph = req.uploadedFiles.head
+          val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
 
-      if (siblingImageCount >= MaxImagesPerAvalanche) {
-        BadResponse()
-      } else {
-        val fph = req.uploadedFiles(0)
-        val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
+          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
 
-        s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
-
-        dal.insertAvalancheImage(AvalancheImage(
-          createTime = DateTime.now,
-          avalanche = avyExtId,
-          filename = newFilename,
-          origFilename = fph.fileName,
-          mimeType = fph.mimeType,
-          size = fph.length.toInt,
-          sortOrder = siblingImageCount
-        ))
-
-        // if adding an image to an existing viewable avalanche, allow the image to be viewed
-        for (avalanche <- dal.getAvalanche(avyExtId) if avalanche.viewable) {
-          s3.allowPublicImageAccess(avyExtId)
-        }
-
-        logger.debug(s"Successfully inserted new image $avyExtId/$newFilename")
-        JsonResponse(
-          ("extId" -> avyExtId) ~
-          ("filename" -> newFilename) ~
-          ("origFilename" -> fph.fileName) ~
-          ("size" -> fph.length)
-        )
-      }
-    }
+          dal.insertAvalancheImage(AvalancheImage(
+            createTime = DateTime.now,
+            avalanche = avyExtId,
+            filename = newFilename,
+            origFilename = fph.fileName,
+            mimeType = fph.mimeType,
+            size = fph.length.toInt,
+            sortOrder = siblingImageCount
+          )).map { _ =>
+            dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
+            logger.debug(s"Successfully inserted new image $avyExtId/$newFilename")
+            JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length))
+          }
+      }, Duration.Inf)
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req => json \ "caption" match {
       case JString(caption) if caption.nonEmpty =>
@@ -95,4 +86,5 @@ class Images extends RestHelper with Loggable {
       }
     }
   }
+
 }

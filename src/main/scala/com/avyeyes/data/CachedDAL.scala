@@ -25,7 +25,7 @@ trait CachedDAL {
   
   def deleteAvalanche(extId: String): Future[Int]
   
-  def insertAvalancheImage(img: AvalancheImage): Unit
+  def insertAvalancheImage(img: AvalancheImage): Future[Int]
   
   def countAvalancheImages(extId: String): Future[Int]
 
@@ -35,9 +35,9 @@ trait CachedDAL {
 
   def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]): Future[Int]
 
-  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]): Unit
+  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]): Future[List[Int]]
 
-  def deleteAvalancheImage(avyExtId: String, filename: String): Unit
+  def deleteAvalancheImage(avyExtId: String, filename: String): Future[Unit]
 
-  def deleteOrphanAvalancheImages: Seq[String]
+  def deleteOrphanAvalancheImages: Future[Seq[String]]
 }
