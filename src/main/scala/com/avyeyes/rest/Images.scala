@@ -5,6 +5,7 @@ import java.util.UUID
 import com.avyeyes.model.AvalancheImage
 import com.avyeyes.service.{Injectors, UnauthorizedException}
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper

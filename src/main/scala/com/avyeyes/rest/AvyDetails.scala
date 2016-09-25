@@ -4,6 +4,7 @@ import com.avyeyes.model.Avalanche
 import com.avyeyes.model.JsonSerializers._
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Constants.AvalancheEditWindow
+import com.avyeyes.util.FutureOps._
 import net.liftweb.common.{Box, Full, Loggable}
 import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{JsonResponse, NotFoundResponse, S}
