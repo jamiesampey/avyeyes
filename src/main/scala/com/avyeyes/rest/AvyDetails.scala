@@ -10,7 +10,7 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{JsonResponse, NotFoundResponse, S}
 import org.joda.time.{DateTime, Seconds}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AvyDetails extends RestHelper with Loggable {
   lazy val dal = Injectors.dal.vend
@@ -19,13 +19,22 @@ class AvyDetails extends RestHelper with Loggable {
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   serve {
-    case "rest" :: "avydetails" :: extId :: Nil JsonGet req => dal.getAvalancheFromDisk(extId).flatMap {
-      case Some(a) if userSession.isAuthorizedSession || withinEditWindow(a, S.param("edit")) => dal.getAvalancheImages(a.extId).map(images => avalancheReadWriteData(a, images)).map(JsonResponse(_))
-      case Some(a) => dal.getAvalancheImages(a.extId).map(images => avalancheReadOnlyData(a, images)).map(JsonResponse(_))
-      case None =>
-        logger.warn(s"Avy details request failed. Could not serve details for avalanche $extId")
-        Future { NotFoundResponse("Avalanche not found") }
-    }.resolve
+    case "rest" :: "avydetails" :: extId :: Nil JsonGet req => {
+      val tupleFuture = for {
+        avalancheOption <- dal.getAvalancheFromDisk(extId)
+        images <- dal.getAvalancheImages(extId)
+      } yield (avalancheOption, images)
+
+      tupleFuture.resolve match {
+        case (Some(a), images) if userSession.isAuthorizedSession || withinEditWindow(a, S.param("edit")) =>
+          JsonResponse(avalancheReadWriteData(a, images))
+        case (Some(a), images) =>
+          JsonResponse(avalancheReadOnlyData(a, images))
+        case (None, _) =>
+          logger.warn(s"Avy details request failed. Could not serve details for avalanche $extId")
+          NotFoundResponse("Avalanche not found")
+      }
+    }
   }
 
   private def withinEditWindow(avalanche: Avalanche, editKeyBox: Box[String]): Boolean = editKeyBox match {
