@@ -1,13 +1,12 @@
 package com.avyeyes.model
 
 import com.avyeyes.model.enums._
-import com.avyeyes.model.JsonSerializers.formats
 import com.avyeyes.service.Injectors
 import com.avyeyes.util.Converters._
 import net.liftweb.http.S
 import net.liftweb.json.JsonAST.JString
-import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
+import net.liftweb.json._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
 
@@ -25,7 +24,7 @@ object JsonSerializers {
 
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-    ("extUrl" -> R.getAvalancheUrl(a.extId)) ~
+    ("extUrl" -> R.avalancheUrl(a.extId)) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
@@ -92,7 +91,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
     case ev: Enumeration#Value => {
       val tokens = ev.toString.split('.')
-      tokens.size match {
+      tokens.length match {
         case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
         case 3 =>
           ("category" -> S ? s"enum.${tokens(0)}.${tokens(1)}") ~

@@ -20,7 +20,7 @@ class Admin extends Loggable {
   
   private def processLogout() = {
     userSession.logout
-    S.redirectTo(R.getAdminLoginUrl)
+    S.redirectTo(R.adminLoginUrl)
   }
 
   def localLogIn = {

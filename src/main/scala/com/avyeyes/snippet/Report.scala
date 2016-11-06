@@ -113,7 +113,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
           logger.info(s"Avalanche $extId successfully inserted")
           s3.allowPublicImageAccess(newAvalanche.extId)
           sendSubmissionNotifications(newAvalanche, submitterEmail)
-          val avalancheUrl = R.getAvalancheUrl(newAvalanche.extId)
+          val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
           infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
         }
       }
@@ -188,12 +188,12 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
   private def sendSubmissionNotifications(a: Avalanche, submitterEmail: String) = {
     configureMailer()
 
-    val adminBody = R.localizedStringAsXml("msg.avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.title, R.getAvalancheUrl(a.extId))
+    val adminBody = R.localizedStringAsXml("msg.avyReportSubmitEmailAdminBody", submitterEmail, a.extId, a.title, R.avalancheUrl(a.extId))
 
     sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailAdminSubject", submitterEmail)),
       XHTMLMailBodyType(adminBody) :: To(adminEmailFrom.address) :: Nil : _*)
 
-    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.title, R.getAvalancheUrl(a.extId), R.getAvalancheEditUrl(a))
+    val submitterBody = R.localizedStringAsXml("msg.avyReportSubmitEmailSubmitterBody", a.title, R.avalancheUrl(a.extId), R.avalancheEditUrl(a))
     sendMail(adminEmailFrom, Subject(R.localizedString("msg.avyReportSubmitEmailSubmitterSubject", a.areaName)),
       XHTMLMailBodyType(submitterBody) :: To(submitterEmail) :: Nil : _*)
   }

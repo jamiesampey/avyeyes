@@ -205,7 +205,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       val extId = report.extId
 
       mockResources.localizedString(Matchers.eq("msg.avyReportInsertSuccess"), anyVararg()) returns successMsg
-      mockResources.getAvalancheUrl(anyString) returns s"https://avyeyes.com/$extId"
+      mockResources.avalancheUrl(anyString) returns s"https://avyeyes.com/$extId"
       mockResources.localizedStringAsXml(anyString, anyVararg()) returns Unparsed("test xml")
 
       mockAvalancheDal.getAvalanche(extId) returns None

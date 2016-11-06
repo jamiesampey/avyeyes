@@ -14,7 +14,7 @@ requirejs(["avyeyes.view",
         FB.init({
             appId: "541063359326610",
             xfbml: true,
-            version: "v2.3"
+            version: "v2.8"
         });
 
         avyEyesView = new AvyEyesView();

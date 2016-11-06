@@ -10,7 +10,6 @@ import net.liftweb.http.rest.RestHelper
 import net.liftweb.http.{JsonResponse, NotFoundResponse, S}
 import org.joda.time.{DateTime, Seconds}
 
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class AvyDetails extends RestHelper with Loggable {
@@ -34,5 +33,4 @@ class AvyDetails extends RestHelper with Loggable {
       Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
     case _ => false
   }
-
 }
