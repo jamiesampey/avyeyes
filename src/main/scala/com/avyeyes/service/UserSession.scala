@@ -17,15 +17,19 @@ class UserSession extends ExternalIdService with Loggable {
 
   def isAuthorizedToViewAvalanche(avalanche: Avalanche): Boolean = isAdminSession || avalanche.viewable
 
-  def isAuthorizedToEditAvalanche(avyExtId: String, editKeyBox: Box[String]): Boolean =
+  def isAuthorizedToEditAvalanche(avyExtId: String, editKeyBox: Box[String]): Boolean = {
+    logger.info(s"TEST 1 isAdminSession is ${isAdminSession}")
     reservationExists(avyExtId) || dal.getAvalanche(avyExtId).exists(isAuthorizedToEditAvalanche(_, editKeyBox))
+  }
 
-  def isAuthorizedToEditAvalanche(avalanche: Avalanche, editKeyBox: Box[String]): Boolean =
+  def isAuthorizedToEditAvalanche(avalanche: Avalanche, editKeyBox: Box[String]): Boolean = {
+    logger.info(s"TEST 2 isAdminSession is ${isAdminSession}")
     isAdminSession || reservationExists(avalanche.extId) || (editKeyBox match {
       case Full(editKey) if editKey.toLong == avalanche.editKey =>
         Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
       case _ => false
     })
+  }
 
   def authorizedEmail = adminEmail.get match {
     case Full(email) => email

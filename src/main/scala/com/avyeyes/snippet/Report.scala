@@ -137,12 +137,13 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     jsDialogCmd & Call("avyEyesView.resetView").cmd
   }
 
-  def deleteReport(extIdToDelete: String) = {
-    try {
+  def deleteReport(extIdToDelete: String) = user.isAdminSession match {
+    case false =>
+      logger.error(s"Unauthorized to delete avalanche $extId")
+      errorDialog("avyReportDeleteError")
+    case true => try {
       dal.deleteAvalanche(extIdToDelete)
-
       s3.deleteAllImages(extIdToDelete)
-
       logger.info(s"Avalanche $extIdToDelete deleted")
       infoDialog("avyReportDeleteSuccess")
     } catch {

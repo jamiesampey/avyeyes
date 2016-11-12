@@ -4,8 +4,7 @@ import javax.sql.DataSource
 
 import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
-import com.avyeyes.service.{ExternalIdService, Injectors, UnauthorizedException}
-import com.avyeyes.util.Constants._
+import com.avyeyes.service.ExternalIdService
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
 import slick.driver.JdbcProfile
@@ -22,7 +21,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
 
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
-  private val user = Injectors.user.vend
   private val db = Database.forDataSource(ds)
 
   def userRoles(email: String): Future[Seq[UserRole]] = db.run(UserRoleRows.filter(_.email === email).result)
@@ -40,10 +38,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
-    if (!user.isAdminSession) {
-      throw new UnauthorizedException("Not authorized to view avalanches")
-    }
-
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     (matches.sortWith(query.sortFunction).slice(query.offset, query.offset + query.limit), matches.size, avalancheMap.size)
   }
@@ -101,8 +95,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def deleteAvalanche(extId: String) = {
-    if (!user.isAdminSession) throw new UnauthorizedException("Not authorized to delete avalanches")
-
     avalancheMap -= extId
 
     db.run(

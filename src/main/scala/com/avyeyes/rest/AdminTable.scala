@@ -4,36 +4,33 @@ import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
 import com.avyeyes.model._
 import com.avyeyes.service.Injectors
 import net.liftweb.common.{Full, Loggable}
+import net.liftweb.http._
 import net.liftweb.http.rest.RestHelper
-import net.liftweb.http.{InternalServerErrorResponse, JsonResponse, Req, UnauthorizedResponse}
 import net.liftweb.json.JsonAST._
 import org.joda.time.format.DateTimeFormat
 
 import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
+
 
 class AdminTable extends RestHelper with Loggable {
   val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
-  val userSession = Injectors.user.vend
-
+  val user = Injectors.user.vend
 
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
   serve {
     case "rest" :: "admintable" :: Nil JsonGet req => {
-      userSession.isAdminSession match {
-        case false => UnauthorizedResponse("AvyEyes auth required")
-        case true => buildResponse(req)
+      user.isAdminSession match {
+        case false => UnauthorizedResponse("AvyEyes administrator authorization required")
+        case true => Try(dal.getAvalanchesAdmin(buildQuery(req))) match {
+          case Success(result) => JsonResponse(toDataTablesJson(result, req))
+          case Failure(ex) =>
+            logger.error("Failed to retrieve avalanche avalanches for admin table", ex)
+            InternalServerErrorResponse()
+        }
       }
-    }
-  }
-
-  private def buildResponse(req: Req) = {
-    try {
-      val queryResult = dal.getAvalanchesAdmin(buildQuery(req))
-      JsonResponse(toDataTablesJson(queryResult, req))
-    } catch {
-      case e: Exception => InternalServerErrorResponse()
     }
   }
 
