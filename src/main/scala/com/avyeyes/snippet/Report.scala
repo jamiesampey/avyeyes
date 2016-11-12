@@ -5,10 +5,11 @@ import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{ExternalIdService, Injectors}
+import com.avyeyes.util.Constants._
 import com.avyeyes.util.Converters._
 import com.avyeyes.util.Validators._
 import net.liftweb.common.{Full, Loggable}
-import net.liftweb.http.SHtml
+import net.liftweb.http.{S, SHtml}
 import net.liftweb.http.js.JE.{Call, JsRaw}
 import net.liftweb.http.js.JsCmd
 import net.liftweb.json.JsonAST._
@@ -26,7 +27,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
   val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
   val s3 = Injectors.s3.vend
-
+  val user = Injectors.user.vend
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
@@ -83,7 +84,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     if (problemFields.isEmpty) {
       saveReport()
     } else {
-      var problemFieldJsonArray = Printer.compact(
+      val problemFieldJsonArray = Printer.compact(
         JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
       JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd &
       errorDialog("rwAvyFormValidationError")
@@ -94,20 +95,24 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     val avalancheFromValues = createAvalancheFromValues
     val jsDialogCmd = try {
       dal.getAvalanche(extId) match {
-        case Some(existingAvalanche) => {
-          val updatedAvalanche = avalancheFromValues.copy(createTime = existingAvalanche.createTime)
-          dal.updateAvalanche(updatedAvalanche)
-          logger.info(s"Avalanche $extId successfully updated")
+        case Some(existingAvalanche) =>
+          if (user.isAuthorizedToEditAvalanche(existingAvalanche, S.param(EditParam))) {
+            val updatedAvalanche = avalancheFromValues.copy(createTime = existingAvalanche.createTime)
+            dal.updateAvalanche(updatedAvalanche)
+            logger.info(s"Avalanche $extId successfully updated")
 
-          if (updatedAvalanche.viewable) {
-            s3.allowPublicImageAccess(updatedAvalanche.extId)
+            if (updatedAvalanche.viewable) {
+              s3.allowPublicImageAccess(updatedAvalanche.extId)
+            } else {
+              s3.denyPublicImageAccess(updatedAvalanche.extId)
+            }
+
+            infoDialog("avyReportUpdateSuccess")
           } else {
-            s3.denyPublicImageAccess(updatedAvalanche.extId)
+            logger.error(s"User not authorized to update avalanche $extId")
+            errorDialog("avyReportSaveError")
           }
-
-          infoDialog("avyReportUpdateSuccess")
-        }
-        case None => {
+        case None =>
           val newAvalanche = avalancheFromValues.copy(viewable = true)
           dal.insertAvalanche(newAvalanche)
           logger.info(s"Avalanche $extId successfully inserted")
@@ -115,7 +120,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
           sendSubmissionNotifications(newAvalanche, submitterEmail)
           val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
           infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
-        }
+
       }
     } catch {
       case e: Exception => {

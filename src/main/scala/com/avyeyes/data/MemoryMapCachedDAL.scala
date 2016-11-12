@@ -16,8 +16,7 @@ import scala.concurrent.Future
 
 class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   avalancheMap: CMap[String, Avalanche]) extends CachedDAL
-  with DatabaseComponent with SlickColumnMappers with DriverComponent
-  with ExternalIdService with Loggable {
+  with DatabaseComponent with SlickColumnMappers with DriverComponent with ExternalIdService with Loggable {
 
   import driver.api._
 
@@ -26,29 +25,14 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   private val user = Injectors.user.vend
   private val db = Database.forDataSource(ds)
 
-  private def avalancheIfAllowed(opt: Option[Avalanche]): Option[Avalanche] = opt match {
-    case Some(avalanche) => if (avalanche.viewable || user.isAuthorizedSession()) Some(avalanche) else None
-    case None => None
-  }
-
-  private def avalancheEditAllowed(avyExtId: String): Boolean = {
-    lazy val withinEditWindow = getAvalanche(avyExtId) match {
-      case Some(a) => DateTime.now isBefore a.createTime.plus(AvalancheEditWindow.toMillis)
-      case _ => false
-    }
-    user.isAuthorizedSession || reservationExists(avyExtId) || withinEditWindow
-  }
-
-  def isUserAuthorized(email: String) = db.run(
-    UserRoleRows.filter(_.email === email).result
-  ).map(_.map(_.role).exists(role => role.contains(SiteOwnerRole) || role.contains(AdminRole)))
+  def userRoles(email: String): Future[Seq[UserRole]] = db.run(UserRoleRows.filter(_.email === email).result)
 
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {
     case Some(viewable) => avalancheMap.count(_._2.viewable == viewable)
     case None => avalancheMap.size
   }
 
-  def getAvalanche(extId: String): Option[Avalanche] = avalancheIfAllowed(avalancheMap.get(extId))
+  def getAvalanche(extId: String): Option[Avalanche] = avalancheMap.get(extId)
 
   def getAvalanches(query: AvalancheQuery): List[Avalanche] = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
@@ -56,7 +40,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
-    if (!user.isAuthorizedSession()) {
+    if (!user.isAdminSession) {
       throw new UnauthorizedException("Not authorized to view avalanches")
     }
 
@@ -83,7 +67,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
       human <- AvalancheHumanRows if human.avalanche === avalanche.extId
     } yield (avalanche, weather, classification, human)
 
-    db.run(query.result.headOption).map(_.map(avalancheFromData)).map(avalancheIfAllowed)
+    db.run(query.result.headOption).map(_.map(avalancheFromData))
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
@@ -101,8 +85,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def updateAvalanche(update: Avalanche) = {
-    if (!avalancheEditAllowed(update.extId)) throw new UnauthorizedException("Not authorized to update avalanche")
-
     val avalancheUpdateQuery = AvalancheRows.filter(_.extId === update.extId).map(a => (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp, a.areaName, a.date, a.aspect, a.angle, a.comments))
     val sceneUpdateQuery = AvalancheWeatherRows.filter(_.avalanche === update.extId).map(w => (w.recentSnow, w.recentWindDirection, w.recentWindSpeed))
     val classificationUpdateQuery = AvalancheClassificationRows.filter(_.avalanche === update.extId).map(c => (c.avalancheType, c.trigger, c.triggerModifier, c.interface, c.rSize, c.dSize))
@@ -121,7 +103,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def deleteAvalanche(extId: String) = {
-    if (!user.isAuthorizedSession) throw new UnauthorizedException("Not authorized to delete avalanches")
+    if (!user.isAdminSession) throw new UnauthorizedException("Not authorized to delete avalanches")
 
     avalancheMap -= extId
 
@@ -166,28 +148,19 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def updateAvalancheImageCaption(avyExtId: String, baseFilename: String, caption: Option[String]) = {
-    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image caption")
     val imageUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.caption)
     db.run(imageUpdateQuery.update(caption))
   }
 
-  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = {
-    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to update image order")
+  def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = Future.sequence(filenameOrder.zipWithIndex.map { case (baseFilename, order) =>
+    val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.sortOrder)
+    db.run(imageOrderUpdateQuery.update(order))
+  })
 
-    Future.sequence(filenameOrder.zipWithIndex.map { case (baseFilename, order) =>
-      val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.sortOrder)
-      db.run(imageOrderUpdateQuery.update(order))
-    })
-  }
-
-  def deleteAvalancheImage(avyExtId: String, filename: String) = {
-    if (!avalancheEditAllowed(avyExtId)) throw new UnauthorizedException("Not authorized to delete image")
-      
-    db.run(
-      AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
-      setAvalancheUpdateTimeAction(avyExtId)
-    ).map(_ => getAvalancheImages(avyExtId).map(images => updateAvalancheImageOrder(avyExtId, images.map(_.filename))))
-  }
+  def deleteAvalancheImage(avyExtId: String, filename: String) = db.run(
+    AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename === filename).delete >>
+    setAvalancheUpdateTimeAction(avyExtId)
+  ).map(_ => getAvalancheImages(avyExtId).map(images => updateAvalancheImageOrder(avyExtId, images.map(_.filename))))
 
   def deleteOrphanAvalancheImages = db.run(
     AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result

@@ -15,6 +15,7 @@ import net.liftweb.util.Helpers._
 class Init extends Loggable {
   val R = Injectors.resources.vend
   val dal = Injectors.dal.vend
+  val user = Injectors.user.vend
 
   val InitAvyMsgDelayMillis = 5000
 
@@ -26,21 +27,17 @@ class Init extends Loggable {
   private[snippet] def initialJsCmds(extIdBox: Box[String]) =
     autoCompleteSourcesCmd & s3ImageBucketCmd & initialFlyToCmd(extIdBox)
 
-  private def initialFlyToCmd(extIdBox: Box[String]): JsCmd = {
-    val initAvalanche = extIdBox match {
-      case Full(extId) if isValidExtId(extId) => dal.getAvalanche(extId)
-      case _ => None
-    }
-
-    initAvalanche match {
-      case Some(a) => {
-        logger.debug(s"Initial page view with init avalanche ${a.extId}")
-        Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitViewData(a)).cmd
-      }
-      case None => {
-        logger.debug("Initial page view without an init avalanche")
-        Call("avyEyesView.geolocateAndFlyTo").cmd
-      }
+  private def initialFlyToCmd(extIdBox: Box[String]): JsCmd = extIdBox match {
+      case Full(extId) if isValidExtId(extId) =>
+        dal.getAvalanche(extId).flatMap(a => if (user.isAuthorizedToViewAvalanche(a)) Some(a) else None) match {
+          case Some(a) =>
+            logger.debug(s"Initial page view with init avalanche ${a.extId}")
+            Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitViewData(a)).cmd
+          case None => {
+            logger.debug("Initial page view without an init avalanche")
+            Call("avyEyesView.geolocateAndFlyTo").cmd
+        }
+      case _ => Call("avyEyesView.geolocateAndFlyTo").cmd
     }
   }
 

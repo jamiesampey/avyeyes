@@ -40,7 +40,7 @@ class Admin extends Loggable {
           logger.warn(s"local authentication failure for $email")
         }
         
-        if (!userSession.isAuthorizedSession) {
+        if (!userSession.isAdminSession) {
           S.error("avyAdminLocalLoginMsg", AccessDenied)
         }
 
@@ -56,8 +56,8 @@ class Admin extends Loggable {
 
   def logOut = "#avyAdminLogoutButton" #> SHtml.onSubmitUnit(processLogout)
   
-  def loggedOutContent(html: NodeSeq) = if (!userSession.isAuthorizedSession) html else NodeSeq.Empty
-  def loggedInContent(html: NodeSeq) = if (userSession.isAuthorizedSession) html else NodeSeq.Empty
+  def loggedOutContent(html: NodeSeq) = if (!userSession.isAdminSession) html else NodeSeq.Empty
+  def loggedInContent(html: NodeSeq) = if (userSession.isAdminSession) html else NodeSeq.Empty
   
   def unviewableAvalancheCount() = <span>{dal.countAvalanches(Some(false)) }</span>
   def viewableAvalancheCount() = <span>{dal.countAvalanches(Some(true)) }</span>

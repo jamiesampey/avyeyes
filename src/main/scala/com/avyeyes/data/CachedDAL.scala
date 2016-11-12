@@ -1,11 +1,11 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.{Avalanche, AvalancheImage}
+import com.avyeyes.model.{UserRole, Avalanche, AvalancheImage}
 
 import scala.concurrent.Future
 
 trait CachedDAL {
-  def isUserAuthorized(email: String): Future[Boolean]
+  def userRoles(email: String): Future[Seq[UserRole]]
 
   def countAvalanches(viewable: Option[Boolean]): Int
 

@@ -33,13 +33,13 @@ class Content {
 
   private def getButton(id: String) = S.?(s"button.$id")
 
-  private def getAdminLoggedInDiv = userSession.isAuthorizedSession match {
+  private def getAdminLoggedInDiv = userSession.isAdminSession match {
     case false => NodeSeq.Empty
     case true => {
       <div class="avyAdminLoggedInDiv">
         <form class="lift:Admin.logOut?form=post">
           <label for="avyAdminLoggedInEmail">{S.?("label.avyAdminLoggedInEmail")}</label>
-          <span id="avyAdminLoggedInEmail">{userSession.getAuthorizedEmail}</span>
+          <span id="avyAdminLoggedInEmail">{userSession.authorizedEmail}</span>
           <input id="avyAdminLogoutButton" type="submit" value={S.?("button.avyAdminLogOutButton")} />
         </form>
       </div>

@@ -14,7 +14,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
 
   "Latitude/Longitude filtering in all four hemispheres" >> {
     "NE hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       insertAllAvalanches
       
       val neLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
@@ -22,12 +22,12 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       
       val resultList = dal.getAvalanches(neLatLngInBoundsCriteria)
       
-      resultList must have length(1)
+      resultList must haveLength(1)
       resultList.head.extId mustEqual neHemisphereAvalanche.extId
     }
   
     "SE hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       insertAllAvalanches
       
       val seLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
@@ -35,12 +35,12 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       
       val resultList = dal.getAvalanches(seLatLngInBoundsCriteria)
       
-      resultList must have length(1)
+      resultList must haveLength(1)
       resultList.head.extId mustEqual seHemisphereAvalanche.extId
     }
     
     "SW hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       insertAllAvalanches
       
       val swLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
@@ -48,12 +48,12 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       
       val resultList = dal.getAvalanches(swLatLngInBoundsCriteria)
       
-      resultList must have length(1)
+      resultList must haveLength(1)
       resultList.head.extId mustEqual swHemisphereAvalanche.extId
     }
     
     "NW hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       insertAllAvalanches
       
       val nwLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
@@ -61,7 +61,7 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       
       val resultList = dal.getAvalanches(nwLatLngInBoundsCriteria)
       
-      resultList must have length(1)
+      resultList must haveLength(1)
       resultList.head.extId mustEqual nwHemisphereAvalanche.extId
     }
   }

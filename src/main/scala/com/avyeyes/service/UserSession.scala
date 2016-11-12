@@ -1,44 +1,54 @@
 package com.avyeyes.service
 
+import com.avyeyes.model.Avalanche
+import com.avyeyes.util.Constants._
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
+import com.avyeyes.util.FutureOps._
+import org.joda.time.{DateTime, Seconds}
 
-private object authorizedEmail extends SessionVar[Box[String]](Empty)
+private object adminEmail extends SessionVar[Box[String]](Empty)
 
-class UserSession extends Loggable {
+class UserSession extends ExternalIdService with Loggable {
   lazy val dal = Injectors.dal.vend
 
-  def isAuthorizedSession() = authorizedEmail.get.isDefined
+  def isAdminSession = adminEmail.get.isDefined
 
-  def getAuthorizedEmail() = {
-    authorizedEmail.get match {
-      case Full(email) => email
-      case _ => ""
-    }
+  def isAuthorizedToViewAvalanche(avalanche: Avalanche) = isAdminSession || avalanche.viewable
+
+  def isAuthorizedToEditAvalanche(avyExtId: String, editKeyBox: Box[String]) = reservationExists(avyExtId) || dal.getAvalanche(avyExtId).exists(isAuthorizedToEditAvalanche(_, editKeyBox))
+
+  def isAuthorizedToEditAvalanche(avalanche: Avalanche, editKeyBox: Box[String]) = isAdminSession || reservationExists(avalanche.extId) || (editKeyBox match {
+    case Full(editKey) if editKey.toLong == avalanche.editKey =>
+      Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
+    case _ => false
+  })
+
+  def authorizedEmail = adminEmail.get match {
+    case Full(email) => email
+    case _ => ""
   }
 
   def attemptLogin(email: String) = {
-    Await.result(dal.isUserAuthorized(email), 30 seconds) match {
-      case true => {
-        logger.info (s"Authorization success for $email. Logging user in.")
-        authorizedEmail.set(Full(email))
-      }
-      case false => {
-        logger.warn(s"Authorization failure for $email.")
-        authorizedEmail.set(Empty)
-      }
+    val userRoles = dal.userRoles(email).resolve
+    logger.info(s"userRoles: $userRoles")
 
-      Omniauth.clearCurrentAuth
+    userRoles.exists(user => user.role == SiteOwnerRole || user.role == AdminRole) match {
+      case true =>
+        logger.info (s"Authorization success for $email. Logging user in.")
+        adminEmail.set(Full(email))
+      case false =>
+        logger.warn(s"Authorization failure for $email.")
+        adminEmail.set(Empty)
+        Omniauth.clearCurrentAuth
     }
   }
 
   def logout = {
-    logger.info(s"logging out authorized user ${getAuthorizedEmail}")
-    authorizedEmail.set(Empty)
+    logger.info(s"logging out authorized user $authorizedEmail")
+    adminEmail.set(Empty)
     Omniauth.clearCurrentAuth
   }
 }

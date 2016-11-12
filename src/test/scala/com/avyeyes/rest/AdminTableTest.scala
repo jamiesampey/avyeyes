@@ -30,7 +30,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
 
   "Admin table error handling" should {
     "Returns UnauthorizedResponse if session is not authorized" withSFor adminTableUrl in {
-      mockUserSession.isAuthorizedSession returns false
+      mockUserSession.isAdminSession returns false
       val adminTable = new AdminTable
 
       val req = openLiftReqBox(S.request)
@@ -39,7 +39,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
     }
 
     "Returns InternalServerErrorResponse if an error occurs" withSFor adminTableUrl in {
-      mockUserSession.isAuthorizedSession returns true
+      mockUserSession.isAdminSession returns true
       val adminTable = new AdminTable
 
       val req = openLiftReqBox(S.request) // req does not contain datatable query params
@@ -49,7 +49,7 @@ class AdminTableTest extends WebSpec2 with AroundExample with Mockito {
   }
 
   "Admin table query" should {
-    mockUserSession.isAuthorizedSession returns true
+    mockUserSession.isAdminSession returns true
 
     val a1 = avalancheForTest.copy(extId = "950503kf", areaName = "West side of berthoud", submitterEmail = "jeffery.lebowski@yahoo.com")
     val a2 = avalancheForTest.copy(extId = "jh984f9d", areaName = "New York mtn", submitterEmail = "walter_sobchak@gmail.com")

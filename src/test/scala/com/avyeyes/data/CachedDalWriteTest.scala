@@ -13,7 +13,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
 
   "Avalanche insert" >> {
     "Admin can insert at any time" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       val a1 = avalancheForTest.copy(createTime = DateTime.now.minus(moreThanEditWindow))
       dal.insertAvalanche(a1)
 
@@ -22,7 +22,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
     }
 
     "Submitter can insert a newly reserved ext id" >> {
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       val a1 = avalancheForTest.copy(extId = dal.reserveNewExtId(dal), viewable = true)
       dal.insertAvalanche(a1)
 
@@ -31,7 +31,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
     }
 
     "Otherwise user cannot insert" >> {
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       val a2 = avalancheForTest.copy(createTime = DateTime.now.minus(moreThanEditWindow))
       dal.insertAvalanche(a2) must throwA[UnauthorizedException]
     }
@@ -39,7 +39,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
     
   "Avalanche update" >> {
     "Admin can update at any time" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       val origAvalanche = avalancheForTest.copy(viewable = false, createTime = DateTime.now.minus(moreThanEditWindow))
       dal.insertAvalanche(origAvalanche)
 
@@ -50,28 +50,28 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
     }
 
     "Submitter can update within the edit window" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       val origAvalanche = avalancheForTest.copy(viewable = true, createTime = DateTime.now, areaName = "Joes Trees")
       dal.insertAvalanche(origAvalanche)
 
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       val updatedAvalanche = origAvalanche.copy(areaName = "Mikes Trees")
       dal.updateAvalanche(updatedAvalanche)
       dal.getAvalanche(origAvalanche.extId).get.areaName mustEqual updatedAvalanche.areaName
     }
     
     "Otherwise user cannot update" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       val origAvalanche = avalancheForTest.copy(createTime = DateTime.now.minus(moreThanEditWindow))
       dal.insertAvalanche(origAvalanche)
 
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       val updatedAvalanche = origAvalanche.copy(areaName = "Joes Trees")
       dal.updateAvalanche(updatedAvalanche) must throwA[UnauthorizedException]
     }
 
     "Update modifies all updatable avalanche fields" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
 
       val origAvalanche = avalancheForTest
       dal.insertAvalanche(origAvalanche)
@@ -100,16 +100,16 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
   
   "Avalanche delete" >> {
     "Non-admin user cannot delete" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       val a1 = avalancheForTest
       dal.insertAvalanche(a1)
 
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       dal.deleteAvalanche(a1.extId) must throwA[UnauthorizedException]
     }
     
     "Admin can always delete (and delete works as expected)" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
 
       val a1 = avalancheForTest
       val a2 = avalancheForTest

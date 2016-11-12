@@ -37,7 +37,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
     isolated
 
     "Return read-only avalanche details" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
-      mockUserSession.isAuthorizedSession returns false
+      mockUserSession.isAdminSession returns false
       mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
       mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
 
@@ -55,7 +55,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
     }
 
     "Return edit details for admin session" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
-      mockUserSession.isAuthorizedSession returns true
+      mockUserSession.isAdminSession returns true
       mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
       mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
 
@@ -72,7 +72,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
     }
 
     "Return edit details within edit window with valid edit key" withSFor s"http://avyeyes.com/rest/avydetails/${newAvalanche.extId}?edit=${newAvalanche.editKey}" in {
-      mockUserSession.isAuthorizedSession returns false
+      mockUserSession.isAdminSession returns false
 
       mockAvalancheDal.getAvalancheFromDisk(newAvalanche.extId) returns Some(newAvalanche)
       mockAvalancheDal.getAvalancheImages(newAvalanche.extId) returns Nil
@@ -90,7 +90,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
     }
 
     "Return JSON objects for enum (autocomplete) fields" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
-      mockUserSession.isAuthorizedSession returns false
+      mockUserSession.isAdminSession returns false
       mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
       mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
 

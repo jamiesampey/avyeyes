@@ -14,22 +14,22 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     val nonviewableAvalanche = avalancheForTest.copy(viewable = false)
 
     "Not allowed with unauthorized session" >> {
-      mockUserSession.isAuthorizedSession() returns true // must be admin to insert
+      mockUserSession.isAdminSession returns true // must be admin to insert
       dal.insertAvalanche(nonviewableAvalanche)
 
-      mockUserSession.isAuthorizedSession() returns false
+      mockUserSession.isAdminSession returns false
       dal.getAvalanche(nonviewableAvalanche.extId) must beNone
     }
     
     "Allowed with authorized session" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
       dal.insertAvalanche(nonviewableAvalanche)
       dal.getAvalanche(nonviewableAvalanche.extId) must beSome
     }
   }
     
   "Date filtering" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     val jan1Avalanche = avalancheForTest.copy(viewable = true, date = strToDate("01-01-2014"))
     val jan5Avalanche = avalancheForTest.copy(viewable = true, date = strToDate("01-05-2014"))
@@ -57,7 +57,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "Type/Trigger filtering" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     val hsAsAvalanche = avalancheForTest.copy(viewable = true, classification =
       genClassification.sample.get.copy(avyType = AvalancheType.HS, trigger = AvalancheTrigger.AS))
@@ -87,7 +87,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "R/D size filtering" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     val r4d15Avalanche = avalancheForTest.copy(viewable = true, classification =
       genClassification.sample.get.copy(rSize = 4.0, dSize = 1.5))
@@ -117,7 +117,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "Human numbers filtering" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     val c4k0Avalanche = avalancheForTest.copy(viewable = true,
       humanNumbers = genHumanNumbers.sample.get.copy(caught = 4, killed = 0))
@@ -148,7 +148,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   
   "Avalanche count" >> {
     "Counts avalanches by viewability" >> {
-      mockUserSession.isAuthorizedSession() returns true
+      mockUserSession.isAdminSession returns true
 
       val viewableAvalanche1 = avalancheForTest.copy(viewable = true)
       val viewableAvalanche2 = avalancheForTest.copy(viewable = true)
@@ -165,7 +165,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "Ordering" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     val now = DateTime.now
     val latest = avalancheForTest.copy(viewable = false, date = now)
@@ -200,7 +200,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "Pagination" >> {
-    mockUserSession.isAuthorizedSession() returns true
+    mockUserSession.isAdminSession returns true
 
     "Selects can be paginated" >> {
       dal.insertAvalanche(avalancheForTest)
