@@ -93,7 +93,10 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
-    val jsDialogCmd = try {
+    val jsDialogCmd = if (!user.isAuthorizedToEditAvalanche(extId, S.param(EditParam))) {
+      logger.error(s"Unauthorized to save avalanche $extId")
+      errorDialog("avyReportSaveError")
+    } else try {
       dal.getAvalanche(extId) match {
         case Some(existingAvalanche) =>
           if (user.isAuthorizedToEditAvalanche(existingAvalanche, S.param(EditParam))) {

@@ -15,8 +15,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
-  avalancheMap: CMap[String, Avalanche]) extends CachedDAL
-  with DatabaseComponent with SlickColumnMappers with DriverComponent with ExternalIdService with Loggable {
+  avalancheMap: CMap[String, Avalanche]) extends CachedDAL with DatabaseComponent
+  with SlickColumnMappers with DriverComponent with ExternalIdService with Loggable {
 
   import driver.api._
 
@@ -71,8 +71,6 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
-    if (!avalancheEditAllowed(avalanche.extId)) throw new UnauthorizedException("Not authorized to insert avalanche")
-
     val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
 
     db.run(
@@ -133,17 +131,11 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   )
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
-    val queryByExtId = avalancheEditAllowed(avyExtId) match {
-      case true => AvalancheImageRows.filter(_.avalanche === avyExtId)
-      case false => for {
-        img <- AvalancheImageRows if img.avalanche === avyExtId
-        a <- AvalancheRows if a.extId === img.avalanche && a.viewable === true
-      } yield img
-    }
+    val imageQuery = AvalancheImageRows.filter(_.avalanche === avyExtId)
 
     baseFilename match {
-      case Some(fn) => queryByExtId.filter(_.filename.startsWith(fn))
-      case None => queryByExtId
+      case Some(name) => imageQuery.filter(_.filename.startsWith(name))
+      case None => imageQuery
     }
   }
 

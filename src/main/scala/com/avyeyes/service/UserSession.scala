@@ -2,11 +2,10 @@ package com.avyeyes.service
 
 import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import net.liftweb.common._
 import net.liftweb.http.SessionVar
 import omniauth.Omniauth
-
-import com.avyeyes.util.FutureOps._
 import org.joda.time.{DateTime, Seconds}
 
 private object adminEmail extends SessionVar[Box[String]](Empty)
@@ -16,15 +15,17 @@ class UserSession extends ExternalIdService with Loggable {
 
   def isAdminSession = adminEmail.get.isDefined
 
-  def isAuthorizedToViewAvalanche(avalanche: Avalanche) = isAdminSession || avalanche.viewable
+  def isAuthorizedToViewAvalanche(avalanche: Avalanche): Boolean = isAdminSession || avalanche.viewable
 
-  def isAuthorizedToEditAvalanche(avyExtId: String, editKeyBox: Box[String]) = reservationExists(avyExtId) || dal.getAvalanche(avyExtId).exists(isAuthorizedToEditAvalanche(_, editKeyBox))
+  def isAuthorizedToEditAvalanche(avyExtId: String, editKeyBox: Box[String]): Boolean =
+    reservationExists(avyExtId) || dal.getAvalanche(avyExtId).exists(isAuthorizedToEditAvalanche(_, editKeyBox))
 
-  def isAuthorizedToEditAvalanche(avalanche: Avalanche, editKeyBox: Box[String]) = isAdminSession || reservationExists(avalanche.extId) || (editKeyBox match {
-    case Full(editKey) if editKey.toLong == avalanche.editKey =>
-      Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
-    case _ => false
-  })
+  def isAuthorizedToEditAvalanche(avalanche: Avalanche, editKeyBox: Box[String]): Boolean =
+    isAdminSession || reservationExists(avalanche.extId) || (editKeyBox match {
+      case Full(editKey) if editKey.toLong == avalanche.editKey =>
+        Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
+      case _ => false
+    })
 
   def authorizedEmail = adminEmail.get match {
     case Full(email) => email
