@@ -7,7 +7,7 @@ import net.liftweb.util.Helpers._
 import scala.xml._
 
 class Content {
-  val userSession = Injectors.user.vend
+  val user = Injectors.user.vend
   val R = Injectors.resources.vend
 
   def render = {
@@ -33,13 +33,13 @@ class Content {
 
   private def getButton(id: String) = S.?(s"button.$id")
 
-  private def getAdminLoggedInDiv = userSession.isAdminSession match {
+  private def getAdminLoggedInDiv = user.isAdminSession match {
     case false => NodeSeq.Empty
     case true => {
       <div class="avyAdminLoggedInDiv">
         <form class="lift:Admin.logOut?form=post">
           <label for="avyAdminLoggedInEmail">{S.?("label.avyAdminLoggedInEmail")}</label>
-          <span id="avyAdminLoggedInEmail">{userSession.authorizedEmail}</span>
+          <span id="avyAdminLoggedInEmail">{user.authorizedEmail}</span>
           <input id="avyAdminLogoutButton" type="submit" value={S.?("button.avyAdminLogOutButton")} />
         </form>
       </div>

@@ -24,13 +24,14 @@ class Images extends RestHelper with Loggable {
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   serve {
-    case "rest" :: "images" :: avyExtId :: Nil Post req => dal.countAvalancheImages(avyExtId).flatMap {
+    case "rest" :: "images" :: avyExtId :: Nil Post req => {
+      dal.countAvalancheImages(avyExtId).resolve match {
         case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
           logger.warn(s"Cannot add more images to avalanche $avyExtId")
-          Future { BadResponse() }
+          BadResponse()
         case _ if !user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam)) =>
           logger.warn(s"Not authorized to add images to avalanche $avyExtId")
-          Future { UnauthorizedResponse("Not authorized to add images to avalanche") }
+          UnauthorizedResponse("Not authorized to add images to avalanche")
         case siblingImageCount =>
           val fph = req.uploadedFiles.head
           val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
@@ -48,8 +49,9 @@ class Images extends RestHelper with Loggable {
           )).map { _ =>
             dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
             JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length))
-          }
-      }.resolve
+          }.resolve
+      }
+    }
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req =>
       if (!user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam))) {
