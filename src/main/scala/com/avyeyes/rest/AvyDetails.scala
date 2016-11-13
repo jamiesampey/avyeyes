@@ -25,10 +25,10 @@ class AvyDetails extends RestHelper with Loggable {
 
       tupleFuture.resolve match {
         case (Some(a), images) if user.isAuthorizedToEditAvalanche(a, S.param(EditParam)) =>
-          logger.info(s"Serving admin avy details for avalanche $extId")
+          logger.debug(s"Serving read-write avy details for avalanche $extId")
           JsonResponse(avalancheReadWriteData(a, images))
         case (Some(a), images) if user.isAuthorizedToViewAvalanche(a) =>
-          logger.info(s"Serving non-admin avy details for avalanche $extId")
+          logger.debug(s"Serving read-only avy details for avalanche $extId")
           JsonResponse(avalancheReadOnlyData(a, images))
         case _ =>
           logger.warn(s"Avy details request failed. Could not serve details for avalanche $extId")

@@ -45,7 +45,7 @@ function AvyEyesView() {
         $(".avyResultsOverlay").hide();
     }, false);
 
-    this.form = new AvyForm();
+    this.form = new AvyForm(this);
     this.ui = new AvyEyesUI();
     this.ui.wire(this, function() {
         var tryLiftCallback = function() {
@@ -109,7 +109,7 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
 
             var selectedAvalanche = pick.id;
             var avyDetailsUrl = "/rest/avydetails/" + selectedAvalanche.id;
-            var editKeyParam = getParameterByName("edit");
+            var editKeyParam = this.getRequestParam("edit");
             if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
 
             $.getJSON(avyDetailsUrl, function(data) {
@@ -388,6 +388,15 @@ AvyEyesView.prototype.getBoundingBox = function() {
     ];
 }
 
+AvyEyesView.prototype.getRequestParam = function(paramName) {
+  paramName = paramName.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]" + paramName + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(window.location.href);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function toHeadingPitchRange(heading, pitch, range) {
     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
 }
@@ -403,14 +412,7 @@ function flyToHeadingFromAspect(aspect) {
     else return 0.0;
 }
 
-function getParameterByName(name) {
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(window.location.href);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+
 
 function adminLogin() {
   var adminEmailSpan = $("#avyAdminLoggedInEmail");

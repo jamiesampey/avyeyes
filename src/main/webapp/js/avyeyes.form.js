@@ -4,7 +4,9 @@ define(['lib/jquery.fancybox',
         "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 
-function AvyForm() {}
+function AvyForm(avyEyesView) {
+    this.view = avyEyesView;
+}
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var title = a.date + ": " + a.areaName;
@@ -183,7 +185,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
             $.ajax({
                 type: "PUT",
                 contentType : 'application/json',
-                url: '/rest/images/' + extId,
+                url: this.getImageRestUrl(extId),
                 data: JSON.stringify({
                     "order": $('#rwAvyFormImageGrid').sortable('toArray')
                 }),
@@ -194,12 +196,12 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
                     alert("Failed to set image order. Error: " + textStatus + ", " + error);
                 }
             });
-        }
+        }.bind(this)
     });
 
     $("#rwAvyFormImageUploadForm").fileupload({
         dataType:'json',
-        url: "/rest/images/" + extId,
+        url: this.getImageRestUrl(extId),
         dropZone:$('#rwAvyFormImageDropZone'),
         add: function (e, data) {
             if ($("#rwAvyFormImageGrid").find(".rwAvyFormImageCell").length >= 20) {
@@ -252,7 +254,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
             $.ajax({
                 type: "PUT",
                 contentType : 'application/json',
-                url: getImageRestUrl(extId, image.filename),
+                url: this.getImageRestUrl(extId, image.filename),
                 data: JSON.stringify({
                     "caption": caption
                 }),
@@ -266,12 +268,12 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 }
             });
         }
-    });
+    }.bind(this));
 
     $('#' + imageDeleteIconId).click(function() {
         if (confirm('Are you sure you want to delete the image?')) {
             $.ajax({
-                url: getImageRestUrl(extId, image.filename),
+                url: this.getImageRestUrl(extId, image.filename),
                 type: 'DELETE',
                 success: function(result) {
                     $('#rwAvyFormImageGrid').find('#' + imageCellId).remove();
@@ -282,7 +284,7 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 }
             });
         }
-    });
+    }.bind(this));
 }
 
 function setImageFancyBox(selector) {
@@ -315,8 +317,14 @@ AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
         Bucket: s3Bucket, Key: extId + '/' + filename});
 }
 
-function getImageRestUrl(extId, filename) {
-    return '/rest/images/' + extId + '/' + getFileBaseName(filename);
+AvyForm.prototype.getImageRestUrl = function(extId, filename) {
+  var editKeyParam = this.view.getRequestParam("edit");
+  var imageUrl = '/rest/images/' + extId;
+
+  if (filename) imageUrl += '/' + getFileBaseName(filename);
+  if (editKeyParam) imageUrl += "?edit=" + editKeyParam;
+
+  return imageUrl;
 }
 
 function getFileBaseName(filename) {
