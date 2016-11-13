@@ -28,17 +28,16 @@ class Init extends Loggable {
     autoCompleteSourcesCmd & s3ImageBucketCmd & initialFlyToCmd(extIdBox)
 
   private def initialFlyToCmd(extIdBox: Box[String]): JsCmd = extIdBox match {
-      case Full(extId) if isValidExtId(extId) => dal.getAvalanche(extId).flatMap { avalanche =>
-        if (user.isAuthorizedToViewAvalanche(avalanche)) Some(avalanche) else None } match {
+    case Full(extId) if isValidExtId(extId) => dal.getAvalanche(extId).flatMap { avalanche =>
+      if (user.isAuthorizedToViewAvalanche(avalanche)) Some(avalanche) else None } match {
         case Some(a) =>
-          logger.debug(s"Initial page view with init avalanche ${a.extId}")
-          Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitViewData(a)).cmd
-        case None => {
-          logger.debug("Initial page view without an init avalanche")
-          Call("avyEyesView.geolocateAndFlyTo").cmd
+        logger.debug(s"Initial page view with init avalanche ${a.extId}")
+        Call("avyEyesView.addAvalancheAndFlyTo", avalancheInitViewData(a)).cmd
+      case None =>
+        logger.debug("Initial page view without an init avalanche")
+        Call("avyEyesView.geolocateAndFlyTo").cmd
       }
       case _ => Call("avyEyesView.geolocateAndFlyTo").cmd
-    }
   }
 
   private def autoCompleteSourcesCmd: JsCmd = {

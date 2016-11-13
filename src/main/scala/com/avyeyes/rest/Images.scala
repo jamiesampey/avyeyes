@@ -26,12 +26,12 @@ class Images extends RestHelper with Loggable {
   serve {
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       dal.countAvalancheImages(avyExtId).resolve match {
-        case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
-          logger.warn(s"Cannot add more images to avalanche $avyExtId")
-          BadResponse()
         case _ if !user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam)) =>
           logger.warn(s"Not authorized to add images to avalanche $avyExtId")
           UnauthorizedResponse("Not authorized to add images to avalanche")
+        case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
+          logger.warn(s"Cannot add more images to avalanche $avyExtId")
+          BadResponse()
         case siblingImageCount =>
           val fph = req.uploadedFiles.head
           val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"

@@ -33,11 +33,8 @@ class UserSession extends ExternalIdService with Loggable {
     case _ => ""
   }
 
-  def attemptLogin(email: String) = {
-    val userRoles = dal.userRoles(email).resolve
-    logger.info(s"userRoles: $userRoles")
-
-    userRoles.exists(user => user.role == SiteOwnerRole || user.role == AdminRole) match {
+  def attemptLogin(email: String) = dal.userRoles(email).resolve.exists(user =>
+    user.role == SiteOwnerRole || user.role == AdminRole) match {
       case true =>
         logger.info (s"Authorization success for $email. Logging user in.")
         adminEmail.set(Full(email))
@@ -46,7 +43,6 @@ class UserSession extends ExternalIdService with Loggable {
         adminEmail.set(Empty)
         Omniauth.clearCurrentAuth
     }
-  }
 
   def logout = {
     logger.info(s"logging out authorized user $authorizedEmail")
