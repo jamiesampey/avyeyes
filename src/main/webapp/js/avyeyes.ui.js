@@ -285,7 +285,6 @@ function wireButtons(view) {
 
     $("#rwAvyFormSubmitButton").click(function() {
         $('#rwAvyFormDiv').children("form").submit();
-        view.resetView();
     });
 
     $("#rwAvyFormCancelButton").click(function() {
