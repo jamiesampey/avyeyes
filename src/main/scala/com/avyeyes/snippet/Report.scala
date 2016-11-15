@@ -2,21 +2,21 @@ package com.avyeyes.snippet
 
 import javax.mail.internet.MimeMessage
 import javax.mail.{Authenticator, Multipart, PasswordAuthentication}
+
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import com.avyeyes.service.{ExternalIdService, Injectors}
-import com.avyeyes.util.Constants._
 import com.avyeyes.util.Converters._
 import com.avyeyes.util.Validators._
 import net.liftweb.common.{Full, Loggable}
-import net.liftweb.http.{S, SHtml}
+import net.liftweb.http.SHtml
 import net.liftweb.http.js.JE.{Call, JsRaw}
 import net.liftweb.http.js.JsCmd
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.{JsonAST, Printer}
 import net.liftweb.util.Helpers._
-import net.liftweb.util.Mailer._
 import net.liftweb.util.Mailer
+import net.liftweb.util.Mailer._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.apache.commons.lang3.StringUtils._
 import org.joda.time.DateTime
@@ -32,7 +32,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 
-  var extId = ""; var viewable = true; var submitterEmail = ""; var submitterExp = ""
+  var extId = ""; var viewable = true; var editKey = ""; var submitterEmail = ""; var submitterExp = ""
   var lat = ""; var lng = "";  var areaName = ""; var dateStr = ""
   var recentSnow = ""; var recentWindSpeed = ""; var recentWindDirection = ""
   var elevation = ""; var aspect = ""; var angle = ""    
@@ -42,6 +42,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   def render = {
     "#rwAvyFormExtId" #> SHtml.hidden(extId = _, extId) &
+    "#rwAvyFormEditKey" #> SHtml.hidden(editKey = _, editKey) &
     "#rwAvyFormLat" #> SHtml.hidden(lat = _, lat) &
     "#rwAvyFormLng" #> SHtml.hidden(lng = _, lng) &
     "#rwAvyFormViewable" #> SHtml.checkbox(viewable, (bool) => viewable = bool) &
@@ -82,21 +83,19 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     if (!Direction.isValidCode(aspect)) problemFields.append("rwAvyFormAspectAC")
     if (!isValidSlopeAngle(angle)) problemFields.append("rwAvyFormAngle")
 
-    if (problemFields.isEmpty) {
-      saveReport()
-    } else {
-      val problemFieldJsonArray = Printer.compact(
-        JsonAST.render(JArray(problemFields.toList map(field => JString(field)))))
-      JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd &
-      errorDialog("rwAvyFormValidationError")
+    problemFields.toList match {
+      case Nil => saveReport()
+      case fields =>
+        val problemFieldJsonArray = Printer.compact(JsonAST.render(JArray(fields.map(JString))))
+        JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd & errorDialog("rwAvyFormValidationError")
     }
   }
 
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
 
-    val jsDialogCmd = if (!user.isAuthorizedToEditAvalanche(extId, S.param(EditParam))) {
-      logger.error(s"Unauthorized to save avalanche $extId, edit param is ${S.param(EditParam)}")
+    val jsDialogCmd = if (!user.isAuthorizedToEditAvalanche(extId, Full(editKey))) {
+      logger.error(s"Unauthorized to save avalanche $extId")
       errorDialog("avyReportSaveError")
     } else Try(dal.getAvalanche(extId) match {
 
@@ -127,21 +126,19 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     jsDialogCmd & Call("avyEyesView.resetView").cmd
   }
 
-  def deleteReport(extIdToDelete: String) = user.isAdminSession match {
-    case false =>
-      logger.error(s"Unauthorized to delete avalanche $extId")
+  def deleteReport(extIdToDelete: String) = if (!user.isAdminSession) {
+    logger.error(s"Unauthorized to delete avalanche $extIdToDelete")
+    errorDialog("avyReportDeleteError")
+  } else Try {
+    dal.deleteAvalanche(extIdToDelete)
+    s3.deleteAllImages(extIdToDelete)
+    logger.info(s"Avalanche $extIdToDelete deleted")
+    infoDialog("avyReportDeleteSuccess")
+  } match {
+    case Success (resultJsCmd) => resultJsCmd
+    case Failure(ex) =>
+      logger.error(s"Error deleting avalanche $extIdToDelete", ex)
       errorDialog("avyReportDeleteError")
-    case true => try {
-      dal.deleteAvalanche(extIdToDelete)
-      s3.deleteAllImages(extIdToDelete)
-      logger.info(s"Avalanche $extIdToDelete deleted")
-      infoDialog("avyReportDeleteSuccess")
-    } catch {
-      case e: Exception => {
-        logger.error(s"Error deleting avalanche $extIdToDelete", e)
-        errorDialog("avyReportDeleteError")
-      }
-    }
   }
 
   private def createAvalancheFromValues = Avalanche(
@@ -219,9 +216,9 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     val multipartContent = m.getContent.asInstanceOf[Multipart]
     val firstBodyPartContent = multipartContent.getBodyPart(0).getDataHandler.getContent
     logger.info( s"""Dev mode report email:
-         From: ${m.getFrom()(0).toString}
-         To: ${m.getAllRecipients()(0).toString}
-         Subject: ${m.getSubject}
-         Content: ${firstBodyPartContent.asInstanceOf[String]}""")
+      From: ${m.getFrom()(0).toString}
+      To: ${m.getAllRecipients()(0).toString}
+      Subject: ${m.getSubject}
+      Content: ${firstBodyPartContent.asInstanceOf[String]}""")
   })
 }

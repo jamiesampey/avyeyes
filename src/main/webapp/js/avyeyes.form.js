@@ -127,6 +127,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
 
     this.resetReadWriteImageUpload(a.extId);
     $('#rwAvyFormExtId').val(a.extId);
+    $('#rwAvyFormEditKey').val(this.view.getRequestParam("edit"));
 
     $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
 
