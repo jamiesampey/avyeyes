@@ -343,6 +343,7 @@ function wireDialogs(view) {
         resizable: false,
         draggable: false,
         closeOnEscape: false,
+        dialogClass: "multiDialog",
         beforeclose: function (event, ui) {
             return false;
         },

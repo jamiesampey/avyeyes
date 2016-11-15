@@ -86,6 +86,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     problemFields.toList match {
       case Nil => saveReport()
       case fields =>
+        logger.warn(s"Input validation error while submitting avalanche $extId. Invalid fields were [${fields.mkString(", ")}]")
         val problemFieldJsonArray = Printer.compact(JsonAST.render(JArray(fields.map(JString))))
         JsRaw(s"avyEyesView.currentReport.highlightErrorFields($problemFieldJsonArray)").cmd & errorDialog("rwAvyFormValidationError")
     }

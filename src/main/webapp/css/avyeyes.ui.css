@@ -308,8 +308,8 @@ li.ui-autocomplete-category {
 	overflow-y: auto;
 }
 
-#multiDialog {
-	z-index: 1000;
+.multiDialog {
+	z-index: 1000 !important;
 }
 
 .dialogTipsTd :first-child {
