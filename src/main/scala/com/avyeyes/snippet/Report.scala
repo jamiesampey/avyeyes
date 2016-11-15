@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils._
 import org.joda.time.DateTime
 
 import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
 
 class Report extends ExternalIdService with ModalDialogs with Mailer with Loggable {
   val R = Injectors.resources.vend
@@ -93,47 +94,36 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
 
   def saveReport(): JsCmd = {
     val avalancheFromValues = createAvalancheFromValues
+
     val jsDialogCmd = if (!user.isAuthorizedToEditAvalanche(extId, S.param(EditParam))) {
       logger.error(s"Unauthorized to save avalanche $extId, edit param is ${S.param(EditParam)}")
       errorDialog("avyReportSaveError")
-    } else try {
-      dal.getAvalanche(extId) match {
-        case Some(existingAvalanche) =>
-          if (user.isAuthorizedToEditAvalanche(existingAvalanche, S.param(EditParam))) {
-            val updatedAvalanche = avalancheFromValues.copy(createTime = existingAvalanche.createTime)
-            dal.updateAvalanche(updatedAvalanche)
-            logger.info(s"Avalanche $extId successfully updated")
+    } else Try(dal.getAvalanche(extId) match {
 
-            if (updatedAvalanche.viewable) {
-              s3.allowPublicImageAccess(updatedAvalanche.extId)
-            } else {
-              s3.denyPublicImageAccess(updatedAvalanche.extId)
-            }
+      case Some(existingAvalanche) =>
+        val updatedAvalanche = avalancheFromValues.copy(createTime = existingAvalanche.createTime)
+        dal.updateAvalanche(updatedAvalanche)
+        if (updatedAvalanche.viewable) s3.allowPublicImageAccess(updatedAvalanche.extId) else s3.denyPublicImageAccess(updatedAvalanche.extId)
+        logger.info(s"Avalanche $extId successfully updated")
+        infoDialog("avyReportUpdateSuccess")
 
-            infoDialog("avyReportUpdateSuccess")
-          } else {
-            logger.error(s"User not authorized to update avalanche $extId")
-            errorDialog("avyReportSaveError")
-          }
-        case None =>
-          val newAvalanche = avalancheFromValues.copy(viewable = true)
-          dal.insertAvalanche(newAvalanche)
-          logger.info(s"Avalanche $extId successfully inserted")
-          s3.allowPublicImageAccess(newAvalanche.extId)
-          sendSubmissionNotifications(newAvalanche, submitterEmail)
-          val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
-          infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
+      case None =>
+        val newAvalanche = avalancheFromValues.copy(viewable = true)
+        dal.insertAvalanche(newAvalanche)
+        s3.allowPublicImageAccess(newAvalanche.extId)
+        sendSubmissionNotifications(newAvalanche, submitterEmail)
+        val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
+        logger.info(s"Avalanche $extId successfully inserted")
+        infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
 
-      }
-    } catch {
-      case e: Exception => {
-        logger.error(s"Error saving avalanche $extId", e)
+    }) match {
+      case Success(resultJsCmd) => resultJsCmd
+      case Failure(ex) =>
+        logger.error(s"Error saving avalanche $extId", ex)
         errorDialog("avyReportSaveError")
-      }
-    } finally {
-      unreserveExtId(extId)
     }
 
+    unreserveExtId(extId)
     jsDialogCmd & Call("avyEyesView.resetView").cmd
   }
 
