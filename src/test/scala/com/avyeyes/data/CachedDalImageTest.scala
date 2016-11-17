@@ -1,6 +1,7 @@
 package com.avyeyes.data
 
 import com.avyeyes.service.UnauthorizedException
+import com.avyeyes.util.FutureOps._
 import com.avyeyes.test.Generators._
 import org.specs2.mutable.Specification
 
@@ -21,7 +22,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
 
       dal.insertAvalanche(testAvalanche)
       dal.insertAvalancheImage(img1)
-      val returnedImage = dal.getAvalancheImage(testAvalanche.extId, img1.filename).get
+      val returnedImage = dal.getAvalancheImage(testAvalanche.extId, img1.filename).resolve.get
       
       returnedImage.avalanche mustEqual testAvalanche.extId
       returnedImage.filename mustEqual img1.filename
@@ -43,8 +44,8 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1)
       dal.insertAvalancheImage(img2)
       
-      val returnedImages = dal.getAvalancheImages(testAvalanche.extId)
-      returnedImages must have length(1)
+      val returnedImages = dal.getAvalancheImages(testAvalanche.extId).resolve
+      returnedImages must haveLength(1)
       returnedImages.head mustEqual img1
     }
 
@@ -56,7 +57,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
 
       val testCaption = "look at this image!"
       dal.updateAvalancheImageCaption(testAvalanche.extId, img1.filename, Some(testCaption))
-      val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename)
+      val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename).resolve
 
       imageOpt.get.caption mustEqual Some(testCaption)
     }
@@ -68,7 +69,7 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(img1.copy(caption = Some("some caption text")))
 
       dal.updateAvalancheImageCaption(testAvalanche.extId, img1.filename, None)
-      val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename)
+      val imageOpt = dal.getAvalancheImage(testAvalanche.extId, img1.filename).resolve
 
       imageOpt.get.caption must beNone
     }
@@ -89,9 +90,9 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalancheImage(order0)
       dal.insertAvalancheImage(order1)
 
-      val firstImageList = dal.getAvalancheImages(testAvalanche.extId).map(_.filename)
+      val firstImageList = dal.getAvalancheImages(testAvalanche.extId).resolve.map(_.filename)
       dal.updateAvalancheImageOrder(testAvalanche.extId, List(order1.filename, order2.filename, order0.filename))
-      val secondImageList = dal.getAvalancheImages(testAvalanche.extId).map(_.filename)
+      val secondImageList = dal.getAvalancheImages(testAvalanche.extId).resolve.map(_.filename)
 
       firstImageList mustEqual List(order0.filename, order1.filename, order2.filename)
       secondImageList mustEqual List(order1.filename, order2.filename, order0.filename)
@@ -108,9 +109,9 @@ class CachedDalImageTest extends Specification with InMemoryDB {
       dal.insertAvalanche(testAvalanche)
       dal.insertAvalancheImage(img1)
       
-      dal.getAvalancheImage(testAvalanche.extId, img1.filename) must beSome
+      dal.getAvalancheImage(testAvalanche.extId, img1.filename).resolve must beSome
       dal.deleteAvalancheImage(testAvalanche.extId, img1.filename)
-      dal.getAvalancheImage(testAvalanche.extId, img1.filename) must beNone
+      dal.getAvalancheImage(testAvalanche.extId, img1.filename).resolve must beNone
     }
     
     "Image delete does not work for unauthorized session" >> {

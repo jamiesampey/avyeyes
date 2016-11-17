@@ -7,6 +7,7 @@ import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import net.liftweb.http._
 import net.liftweb.json.JsonDSL._
 import net.liftweb.mocks.MockHttpServletRequest
@@ -43,8 +44,8 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   val noImage: Option[AvalancheImage] = None
 
   mockAvalancheDal.getAvalanche(extId) returns None
-  mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Some(avalancheImage)
-  mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns noImage
+  mockAvalancheDal.getAvalancheImage(extId, goodImgFileName).resolve returns Some(avalancheImage)
+  mockAvalancheDal.getAvalancheImage(extId, badImgFileName).resolve returns noImage
 
   "Image post request" >> {
     isolated
@@ -54,7 +55,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   
     "Insert a new image in the DB" withSFor mockPostRequest in {
       val images = new Images
-      mockAvalancheDal.countAvalancheImages(any[String]) returns 0
+      mockAvalancheDal.countAvalancheImages(any[String]).resolve returns 0
 
       val filename = "testImgABC.jpg"
       val fileBytes = Array[Byte](10, 20, 30, 40, 50)
@@ -74,7 +75,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
 
     "Don't insert an image above the max images count" withSFor mockPostRequest in {
       val images = new Images
-      mockAvalancheDal.countAvalancheImages(any[String]) returns MaxImagesPerAvalanche
+      mockAvalancheDal.countAvalancheImages(any[String]).resolve returns MaxImagesPerAvalanche
 
       val fileName = "testImgABC"
       val fileBytes = Array[Byte](10, 20, 30, 40, 50)

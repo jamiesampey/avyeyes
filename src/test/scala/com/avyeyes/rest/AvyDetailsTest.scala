@@ -8,6 +8,7 @@ import com.avyeyes.test.Generators._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.test._
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import net.liftweb.http._
 import net.liftweb.json.Extraction
 import org.joda.time.DateTime
@@ -38,8 +39,8 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
     "Return read-only avalanche details" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
       mockUserSession.isAdminSession returns false
-      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
-      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId).resolve returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId).resolve returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -56,8 +57,8 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
     "Return edit details for admin session" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
       mockUserSession.isAdminSession returns true
-      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
-      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId).resolve returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId).resolve returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -74,8 +75,8 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
     "Return edit details within edit window with valid edit key" withSFor s"http://avyeyes.com/rest/avydetails/${newAvalanche.extId}?edit=${newAvalanche.editKey}" in {
       mockUserSession.isAdminSession returns false
 
-      mockAvalancheDal.getAvalancheFromDisk(newAvalanche.extId) returns Some(newAvalanche)
-      mockAvalancheDal.getAvalancheImages(newAvalanche.extId) returns Nil
+      mockAvalancheDal.getAvalancheFromDisk(newAvalanche.extId).resolve returns Some(newAvalanche)
+      mockAvalancheDal.getAvalancheImages(newAvalanche.extId).resolve returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -91,8 +92,8 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
     "Return JSON objects for enum (autocomplete) fields" withSFor s"http://avyeyes.com/rest/avydetails/${oldAvalanche.extId}" in {
       mockUserSession.isAdminSession returns false
-      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId) returns Some(oldAvalanche)
-      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId) returns Nil
+      mockAvalancheDal.getAvalancheFromDisk(oldAvalanche.extId).resolve returns Some(oldAvalanche)
+      mockAvalancheDal.getAvalancheImages(oldAvalanche.extId).resolve returns Nil
 
       val avyDetails = new AvyDetails
 
@@ -114,7 +115,7 @@ class AvyDetailsTest extends WebSpec2 with AroundExample with Mockito {
 
     val badExtId = "59fke4k0"
     val noAvalanche: Option[Avalanche] = None
-    mockAvalancheDal.getAvalancheFromDisk(badExtId) returns noAvalanche
+    mockAvalancheDal.getAvalancheFromDisk(badExtId).resolve returns noAvalanche
 
     "Return NotFoundResponse (404)" withSFor s"http://avyeyes.com/rest/avydetails/$badExtId" in {
       val req = openLiftReqBox(S.request)

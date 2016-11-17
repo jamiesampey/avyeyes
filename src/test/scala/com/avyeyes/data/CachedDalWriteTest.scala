@@ -2,6 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.service.UnauthorizedException
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import com.avyeyes.test.Generators._
 import org.joda.time.DateTime
 import org.specs2.mutable.Specification
@@ -18,7 +19,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
       dal.insertAvalanche(a1)
 
       dal.getAvalanche(a1.extId).get mustEqual a1.copy(comments = None)
-      dal.getAvalancheFromDisk(a1.extId).get mustEqual a1
+      dal.getAvalancheFromDisk(a1.extId).resolve.get mustEqual a1
     }
 
     "Submitter can insert a newly reserved ext id" >> {
@@ -27,7 +28,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
       dal.insertAvalanche(a1)
 
       dal.getAvalanche(a1.extId).get mustEqual a1.copy(comments = None)
-      dal.getAvalancheFromDisk(a1.extId).get mustEqual a1
+      dal.getAvalancheFromDisk(a1.extId).resolve.get mustEqual a1
     }
 
     "Otherwise user cannot insert" >> {
@@ -79,7 +80,7 @@ class CachedDalWriteTest extends Specification with InMemoryDB {
       val updatedAvalanche = avalancheForTest.copy(extId = origAvalanche.extId)
       dal.updateAvalanche(updatedAvalanche)
 
-      val result = dal.getAvalancheFromDisk(origAvalanche.extId).get
+      val result = dal.getAvalancheFromDisk(origAvalanche.extId).resolve.get
       result.createTime mustEqual origAvalanche.createTime
       result.viewable mustEqual updatedAvalanche.viewable
       result.submitterExp mustEqual updatedAvalanche.submitterExp
