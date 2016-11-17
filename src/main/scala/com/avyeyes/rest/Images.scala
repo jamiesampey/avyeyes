@@ -89,16 +89,22 @@ class Images extends RestHelper with Loggable {
       if (!user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam))) {
         logger.warn(s"Not authorized to delete image for avalanche $avyExtId")
         UnauthorizedResponse("Not authorized to delete image")
-      } else dal.getAvalancheImage(avyExtId, baseFilename).flatMap(_.map { image =>
-        s3.deleteImage(avyExtId, image.filename)
-        dal.deleteAvalancheImage(avyExtId, image.filename)
-      }.getOrElse(Future.failed(new RuntimeException("Couldn't find image")))).map { _ =>
-        logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
-        OkResponse()
-      }.recover {
-        case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
-        case e: Exception => InternalServerErrorResponse()
-      }.resolve
+      } else {
+        dal.getAvalancheImage(avyExtId, baseFilename).flatMap {
+          case Some(image) =>
+            s3.deleteImage(avyExtId, image.filename)
+            dal.deleteAvalancheImage(avyExtId, image.filename)
+          case None => Future.failed(new RuntimeException("Couldn't find image"))
+        }.map { _ =>
+          logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")
+          OkResponse()
+        }.recover {
+          case ue: UnauthorizedException => UnauthorizedResponse("AvyEyes auth required")
+          case ex: Exception =>
+            logger.error(s"Error while attempting to delete image $avyExtId/$baseFilename", ex)
+            InternalServerErrorResponse()
+        }.resolve
+      }
 
   }
 }

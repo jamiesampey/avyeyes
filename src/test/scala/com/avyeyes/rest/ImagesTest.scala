@@ -2,22 +2,26 @@ package com.avyeyes.rest
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.AvalancheImage
-import com.avyeyes.service.{Injectors, AmazonS3ImageService, ResourceService}
+import com.avyeyes.service.{UserSession, Injectors, AmazonS3ImageService, ResourceService}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
-import com.avyeyes.util.FutureOps._
 import net.liftweb.http._
 import net.liftweb.json.JsonDSL._
 import net.liftweb.mocks.MockHttpServletRequest
+import net.liftweb.common.Box
+import org.mockito.Matchers
 import org.specs2.execute.{Result, AsResult}
 import org.specs2.mock.Mockito
 import org.specs2.specification.AroundExample
 
+import scala.concurrent.Future
+
 class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   sequential
 
+  val mockUser = mock[UserSession]
   val mockResources = mock[ResourceService]
   val mockAvalancheDal = mock[CachedDAL]
   val mockS3 = mock[AmazonS3ImageService]
@@ -27,10 +31,12 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   mockResources.getProperty("s3.fullaccess.secretAccessKey") returns "34ijgeij4"
 
   def around[T: AsResult](t: => T): Result =
-    Injectors.resources.doWith(mockResources) {
-      Injectors.dal.doWith(mockAvalancheDal) {
-        Injectors.s3.doWith(mockS3) {
-          AsResult(t)
+    Injectors.user.doWith(mockUser) {
+      Injectors.resources.doWith(mockResources) {
+        Injectors.dal.doWith(mockAvalancheDal) {
+          Injectors.s3.doWith(mockS3) {
+            AsResult(t)
+          }
         }
       }
     }
@@ -41,25 +47,27 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   val avalancheImage = avalancheImageForTest.copy(avalanche = extId, filename = goodImgFileName, mimeType = goodImgMimeType)
   
   val badImgFileName = "imgNotInDb"
-  val noImage: Option[AvalancheImage] = None
 
   mockAvalancheDal.getAvalanche(extId) returns None
-  mockAvalancheDal.getAvalancheImage(extId, goodImgFileName).resolve returns Some(avalancheImage)
-  mockAvalancheDal.getAvalancheImage(extId, badImgFileName).resolve returns noImage
+  mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Future.successful(Some(avalancheImage))
+  mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns Future.successful(None)
 
   "Image post request" >> {
     isolated
 
     val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
     mockPostRequest.method = "POST"
-  
+
+    val filename = "testImgABC.jpg"
+    val fileBytes = Array[Byte](10, 20, 30, 40, 50)
+    val fph = FileParamHolder("Test Image", "image/jpeg", filename, fileBytes)
+
     "Insert a new image in the DB" withSFor mockPostRequest in {
       val images = new Images
-      mockAvalancheDal.countAvalancheImages(any[String]).resolve returns 0
+      mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(0)
+      mockAvalancheDal.insertAvalancheImage(any[AvalancheImage]) returns Future.successful(1)
 
-      val filename = "testImgABC.jpg"
-      val fileBytes = Array[Byte](10, 20, 30, 40, 50)
-      val fph = FileParamHolder("Test Image", "image/jpeg", filename, fileBytes)
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
       val req = openLiftReqBox(S.request)
       val reqWithFPH = addFileUploadToReq(req, fph)
@@ -75,11 +83,8 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
 
     "Don't insert an image above the max images count" withSFor mockPostRequest in {
       val images = new Images
-      mockAvalancheDal.countAvalancheImages(any[String]).resolve returns MaxImagesPerAvalanche
-
-      val fileName = "testImgABC"
-      val fileBytes = Array[Byte](10, 20, 30, 40, 50)
-      val fph = FileParamHolder("Test Image", "image/jpeg", fileName, fileBytes)
+      mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(MaxImagesPerAvalanche)
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
       val req = openLiftReqBox(S.request)
       val reqWithFPH = addFileUploadToReq(req, fph)
@@ -87,6 +92,19 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
 
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
       resp must beAnInstanceOf[BadResponse]
+    }
+
+    "Don't insert an image if the user is not authorized" withSFor mockPostRequest in {
+      val images = new Images
+      mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(0)
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
+
+      val req = openLiftReqBox(S.request)
+      val reqWithFPH = addFileUploadToReq(req, fph)
+      val resp = openLiftRespBox(images(reqWithFPH)())
+
+      there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
+      resp must beAnInstanceOf[UnauthorizedResponse]
     }
   }
 
@@ -99,14 +117,15 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       val testCaption = "look at this crazy avalanche"
       mockCaptionPutRequest.body_=("caption" -> testCaption)
 
-      "do request" withSFor mockCaptionPutRequest in {
-        val images = new Images
-        val req = openLiftReqBox(S.request)
+      "if the user is authorized" withSFor mockCaptionPutRequest in {
+        mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
         val extIdArg = capture[String]
         val filenameArg = capture[String]
         val captionArg = capture[Option[String]]
 
+        val images = new Images
+        val req = openLiftReqBox(S.request)
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
@@ -115,19 +134,31 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
         filenameArg.value mustEqual goodImgFileName
         captionArg.value mustEqual Some(testCaption)
       }
+
+      "if the user is not authorized" withSFor mockCaptionPutRequest in {
+        mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
+
+        val images = new Images
+        val req = openLiftReqBox(S.request)
+        val resp = openLiftRespBox(images(req)())
+
+        there was no(mockAvalancheDal).updateAvalancheImageCaption(any, any, any)
+        resp must beAnInstanceOf[UnauthorizedResponse]
+      }
     }
 
     "Remove a caption from the DB" >> {
       mockCaptionPutRequest.body_=("caption" -> "")
 
       "do request" withSFor mockCaptionPutRequest in {
-        val images = new Images
-        val req = openLiftReqBox(S.request)
+        mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
         val extIdArg = capture[String]
         val filenameArg = capture[String]
         val captionArg = capture[Option[String]]
 
+        val images = new Images
+        val req = openLiftReqBox(S.request)
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
@@ -153,19 +184,31 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       )
       mockOrderPutRequest.body_=("order" -> testImageOrder)
 
-      "do request" withSFor mockOrderPutRequest in {
-        val images = new Images
-        val req = openLiftReqBox(S.request)
+      "if the user is authorized" withSFor mockOrderPutRequest in {
+        mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
         val extIdArg = capture[String]
         val orderArg = capture[List[String]]
 
+        val images = new Images
+        val req = openLiftReqBox(S.request)
         val resp = openLiftRespBox(images(req)())
 
         resp must beAnInstanceOf[OkResponse]
         there was one(mockAvalancheDal).updateAvalancheImageOrder(extIdArg, orderArg)
         extIdArg.value mustEqual extId
         orderArg.value mustEqual testImageOrder
+      }
+
+      "if the user is not authorized" withSFor mockOrderPutRequest in {
+        mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
+
+        val images = new Images
+        val req = openLiftReqBox(S.request)
+        val resp = openLiftRespBox(images(req)())
+
+        there was no(mockAvalancheDal).updateAvalancheImageOrder(any, any)
+        resp must beAnInstanceOf[UnauthorizedResponse]
       }
     }
   }
@@ -174,15 +217,17 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
     val mockDeleteRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/$goodImgFileName")
     mockDeleteRequest.method = "DELETE"
 
-    "Delete an image from the DB" withSFor mockDeleteRequest in {
-      val images = new Images
-      val req = openLiftReqBox(S.request)
+    "if the user is authorized" withSFor mockDeleteRequest in {
+      mockAvalancheDal.deleteAvalancheImage(extId, goodImgFileName) returns Future.successful({})
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
       val s3ExtIdArg = capture[String]
       val s3FilenameArg = capture[String]
       val dalExtIdArg = capture[String]
       val dalFilenameArg = capture[String]
 
+      val images = new Images
+      val req = openLiftReqBox(S.request)
       val resp = openLiftRespBox(images(req)())
 
       there was one(mockS3).deleteImage(s3ExtIdArg, s3FilenameArg)
@@ -192,6 +237,18 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       s3FilenameArg.value mustEqual goodImgFileName
       dalExtIdArg.value mustEqual extId
       dalFilenameArg.value mustEqual goodImgFileName
+    }
+
+    "if the user is not authorized" withSFor mockDeleteRequest in {
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
+
+      val images = new Images
+      val req = openLiftReqBox(S.request)
+      val resp = openLiftRespBox(images(req)())
+
+      there was no(mockS3).deleteImage(any, any)
+      there was no(mockAvalancheDal).deleteAvalancheImage(any, any)
+      resp must beAnInstanceOf[UnauthorizedResponse]
     }
   }
 }
