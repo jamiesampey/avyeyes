@@ -1,7 +1,9 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
     var viewStub = {
-        getRequestParam: function() { }
+        getRequestParam: function(param) {
+            return param;
+        }
     };
 
     var avalanche = {
@@ -235,12 +237,13 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             mock2.verify();
         });
 
-        it("set ext ID fixture", function() {
-            setFixtures("<input id='rwAvyFormExtId'/>");
+        it("set ext ID and edit key fixture", function() {
+            setFixtures("<input id='rwAvyFormExtId'/><input id='rwAvyFormEditKey'/>");
             sinon.stub(avyForm, "resetReadWriteImageUpload");
 
             avyForm.displayReadWriteForm(avalanche);
             expect($("#rwAvyFormExtId")).toHaveValue(avalanche.extId);
+            expect($("#rwAvyFormEditKey")).toHaveValue("edit");
         });
 
         it("set submitter info", function() {
