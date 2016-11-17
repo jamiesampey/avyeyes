@@ -1,5 +1,9 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
+    var viewStub = {
+        getRequestParam: function() { }
+    };
+
     var avalanche = {
       "extId":"pzlmnecq",
       "extUrl":"http://dev.avyeyes.com:8080/pzlmnecq",
@@ -102,7 +106,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 done();
             });
         });
@@ -213,7 +217,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 sinon.stub(avyForm, "setImageCellContent");
                 done();
             });
@@ -337,7 +341,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 done();
             });
         });
@@ -370,7 +374,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 sinon.stub(avyForm, "getSignedImageUrl");
                 done();
             });
@@ -405,7 +409,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 done();
             });
         });
@@ -430,7 +434,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes.form"], function(AvyForm) {
-                avyForm = new AvyForm();
+                avyForm = new AvyForm(viewStub);
                 done();
             });
         });
