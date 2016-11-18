@@ -1,7 +1,8 @@
 package com.avyeyes.data
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.service.UserSession
+import com.avyeyes.util.FutureOps._
+
 import org.h2.jdbcx.JdbcDataSource
 import org.specs2.execute._
 import org.specs2.mock.Mockito
@@ -9,11 +10,13 @@ import org.specs2.specification._
 import slick.driver.H2Driver
 
 import scala.collection.concurrent.TrieMap
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 
 
 trait InMemoryDB extends AroundExample with Mockito {
+
+  implicit val executionContext = scala.concurrent.ExecutionContext.global
 
   import H2Driver.api._
 
@@ -24,7 +27,6 @@ trait InMemoryDB extends AroundExample with Mockito {
     dataSource
   }
 
-  protected lazy val mockUserSession = mock[UserSession]
   protected lazy val cache = new TrieMap[String, Avalanche]()
   protected lazy val dal = new MemoryMapCachedDAL(H2Driver, h2DataSource, cache)
 
@@ -35,5 +37,7 @@ trait InMemoryDB extends AroundExample with Mockito {
 
      AsResult(t)
   }
+
+  protected def insertAvalanches(avalanches: Avalanche*) = Future.sequence(avalanches.toList.map(dal.insertAvalanche)).resolve
 }
 

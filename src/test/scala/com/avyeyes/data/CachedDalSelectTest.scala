@@ -1,15 +1,11 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.Avalanche
-import com.avyeyes.test.Generators._
 import com.avyeyes.model.enums._
+import com.avyeyes.test.Generators._
 import com.avyeyes.util.Converters._
-import com.avyeyes.util.FutureOps._
 import org.joda.time.DateTime
 import org.specs2.execute.Result
 import org.specs2.mutable.Specification
-
-import scala.concurrent.Future
 
 class CachedDalSelectTest extends Specification with InMemoryDB {
   sequential
@@ -19,19 +15,19 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     val jan5Avalanche = avalancheForTest.copy(viewable = true, date = strToDate("01-05-2014"))
 
     "From date filtering" >> {
-      insertAvalanches(List(jan1Avalanche, jan5Avalanche))
+      insertAvalanches(jan1Avalanche, jan5Avalanche)
       val fromDateQuery = AvalancheQuery(fromDate = Some(strToDate("01-03-2014")))
       verifySingleResult(dal, fromDateQuery, jan5Avalanche.extId)
     }
     
     "To date filtering" >> {
-      insertAvalanches(List(jan1Avalanche, jan5Avalanche))
+      insertAvalanches(jan1Avalanche, jan5Avalanche)
       val toDateQuery = AvalancheQuery(toDate = Some(strToDate("01-03-2014")))
       verifySingleResult(dal, toDateQuery, jan1Avalanche.extId)
     }
     
     "Date filtering spanning year boundary" >> {
-      insertAvalanches(List(jan1Avalanche, jan5Avalanche))
+      insertAvalanches(jan1Avalanche, jan5Avalanche)
       val dateQuery = AvalancheQuery(fromDate = Some(strToDate("12-25-2013")), toDate = Some(strToDate("01-04-2014")))
       verifySingleResult(dal, dateQuery, jan1Avalanche.extId)
     }
@@ -44,19 +40,19 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
       genClassification.sample.get.copy(avyType = AvalancheType.WS, trigger = AvalancheTrigger.NE))
 
     "Type filtering" >> {
-      insertAvalanches(List(hsAsAvalanche, wsNeAvalanche))
+      insertAvalanches(hsAsAvalanche, wsNeAvalanche)
       val wsTypeQuery = AvalancheQuery(avyType = Some(AvalancheType.WS))
       verifySingleResult(dal, wsTypeQuery, wsNeAvalanche.extId)
     }
     
     "Trigger filtering" >> {
-      insertAvalanches(List(hsAsAvalanche, wsNeAvalanche))
+      insertAvalanches(hsAsAvalanche, wsNeAvalanche)
       val asTriggerQuery = AvalancheQuery(trigger = Some(AvalancheTrigger.AS))
       verifySingleResult(dal, asTriggerQuery, hsAsAvalanche.extId)
     }
   
     "Type and trigger filtering" >> {
-      insertAvalanches(List(hsAsAvalanche, wsNeAvalanche))
+      insertAvalanches(hsAsAvalanche, wsNeAvalanche)
       val hsAsQuery = AvalancheQuery(avyType = Some(AvalancheType.HS), trigger = Some(AvalancheTrigger.AS))
       verifySingleResult(dal, hsAsQuery, hsAsAvalanche.extId)
     }
@@ -69,19 +65,19 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
       genClassification.sample.get.copy(rSize = 1.5, dSize = 3.0))
 
     "R size filtering" >> {
-      insertAvalanches(List(r4d15Avalanche, r15d3Avalanche))
+      insertAvalanches(r4d15Avalanche, r15d3Avalanche)
       val r4Query = AvalancheQuery(rSize = Some(4.0))
       verifySingleResult(dal, r4Query, r4d15Avalanche.extId)
     }
     
     "D size filtering" >> {
-      insertAvalanches(List(r4d15Avalanche, r15d3Avalanche))
+      insertAvalanches(r4d15Avalanche, r15d3Avalanche)
       val d25Query = AvalancheQuery(dSize = Some(2.5))
       verifySingleResult(dal, d25Query, r15d3Avalanche.extId)
     }
     
     "R and D size filtering" >> {
-      insertAvalanches(List(r4d15Avalanche, r15d3Avalanche))
+      insertAvalanches(r4d15Avalanche, r15d3Avalanche)
       val r3d1Query = AvalancheQuery(rSize = Some(3.0), dSize = Some(1.0))
       verifySingleResult(dal, r3d1Query, r4d15Avalanche.extId)
     }
@@ -94,19 +90,19 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
       humanNumbers = genHumanNumbers.sample.get.copy(caught = 3, killed = 2))
 
     "Number caught filtering" >> {
-      insertAvalanches(List(c4k0Avalanche, c3k2Avalanche))
+      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
       val c4Query = AvalancheQuery(numCaught = Some(4))
       verifySingleResult(dal, c4Query, c4k0Avalanche.extId)
     }
     
     "Number killed filtering" >> {
-      insertAvalanches(List(c4k0Avalanche, c3k2Avalanche))
+      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
       val k1Query = AvalancheQuery(numKilled = Some(1))
       verifySingleResult(dal, k1Query, c3k2Avalanche.extId)
     }
     
     "Number caught and killed filtering" >> {
-      insertAvalanches(List(c4k0Avalanche, c3k2Avalanche))
+      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
       val c2k2Query = AvalancheQuery(numCaught = Some(2), numKilled = Some(2))
       verifySingleResult(dal, c2k2Query, c3k2Avalanche.extId)
     }
@@ -118,7 +114,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
       val viewableAvalanche2 = avalancheForTest.copy(viewable = true)
       val unviewableAvalanche = avalancheForTest.copy(viewable = false)
 
-      insertAvalanches(List(viewableAvalanche1, viewableAvalanche2, unviewableAvalanche))
+      insertAvalanches(viewableAvalanche1, viewableAvalanche2, unviewableAvalanche)
 
       dal.countAvalanches(Some(true)) mustEqual 2
       dal.countAvalanches(Some(false)) mustEqual 1
@@ -133,7 +129,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     val middle = avalancheForTest.copy(viewable = false, date = now.minusDays(10))
 
     "Selects can be ordered by date ascending" >> {
-      insertAvalanches(List(latest, earliest, middle))
+      insertAvalanches(latest, earliest, middle)
 
       val dateAscOrderQuery = AvalancheQuery(order = List((OrderField.Date, OrderDirection.asc)))
       val avyDateAscArray = dal.getAvalanches(dateAscOrderQuery).toArray
@@ -144,7 +140,7 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     }
     
     "Selects can be ordered by date descending" >> {
-      insertAvalanches(List(latest, earliest, middle))
+      insertAvalanches(latest, earliest, middle)
 
       val dateDescOrderQuery = AvalancheQuery(order = List((OrderField.Date, OrderDirection.desc)))
       val avyDateDescArray = dal.getAvalanches(dateDescOrderQuery).toArray
@@ -156,9 +152,8 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
   }
   
   "Pagination" >> {
-
     "Selects can be paginated" >> {
-      insertAvalanches(List(avalancheForTest, avalancheForTest, avalancheForTest))
+      insertAvalanches(avalancheForTest, avalancheForTest, avalancheForTest)
 
       val firstPageQuery = AvalancheQuery(offset = 0, limit = 2)
       val secondPageQuery = AvalancheQuery(offset = 2, limit = 2)
@@ -168,11 +163,9 @@ class CachedDalSelectTest extends Specification with InMemoryDB {
     }
   }
 
-  private def insertAvalanches(avalanches: List[Avalanche]) = Future.sequence(avalanches.map(dal.insertAvalanche)).resolve
-
   private def verifySingleResult(dao: CachedDAL, query: AvalancheQuery, extId: String): Result = {
     val resultList = dao.getAvalanches(query)
-    resultList must have length(1)
+    resultList must haveLength(1)
     resultList.head.extId mustEqual extId    
   }
 }
