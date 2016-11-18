@@ -203,7 +203,15 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       passedAvalanche.comments.getOrElse("") mustEqual report.comments
       passedAvalanche.perimeter mustEqual report.coordStr.trim.split(" ").toList.map(Coordinate.fromString)
     }
-    
+
+    "Do not insert an avalanche if the user is unauthorized to edit" >> {
+      val report = newReportWithTestData()
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(report.extId), any[Box[String]]) returns false
+
+      report.saveReport()
+      there was no(mockAvalancheDal).insertAvalanche(any[Avalanche])
+    }
+
     "Handles an insertion success correctly" >> {
       val successMsg = "The report was saved"
       val report = spy(newReportWithTestData())
