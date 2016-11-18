@@ -3,10 +3,10 @@ package com.avyeyes.snippet
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.{Coordinate, Avalanche}
 import com.avyeyes.model.enums._
-import com.avyeyes.service.{AmazonS3ImageService, Injectors, ResourceService}
-import com.avyeyes.test.Generators._
+import com.avyeyes.service.{UserSession, AmazonS3ImageService, Injectors, ResourceService}
 import com.avyeyes.test._
 import com.avyeyes.util.Converters._
+import net.liftweb.common.Box
 import net.liftweb.util.Mailer._
 import org.mockito.Matchers
 import org.specs2.execute.{AsResult, Result}
@@ -18,6 +18,7 @@ import scala.xml.Unparsed
 
 class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateReader {
   val mockResources = mock[ResourceService]
+  val mockUser = mock[UserSession]
   val mockAvalancheDal = mock[CachedDAL]
   val mockS3 = mock[AmazonS3ImageService]
 
@@ -27,9 +28,11 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
 
   def around[T: AsResult](t: => T): Result =
     Injectors.resources.doWith(mockResources) {
-      Injectors.dal.doWith(mockAvalancheDal) {
-        Injectors.s3.doWith(mockS3) {
-          AsResult(t)
+      Injectors.user.doWith(mockUser) {
+        Injectors.dal.doWith(mockAvalancheDal) {
+          Injectors.s3.doWith(mockS3) {
+            AsResult(t)
+          }
         }
       }
     }
@@ -148,6 +151,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       report.avyInterface = ""
       report.modeOfTravel = ""
 
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(report.extId), any[Box[String]]) returns true
       mockAvalancheDal.getAvalanche(report.extId) returns None
       
       report.saveReport()
@@ -168,6 +172,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       val avalancheArg = capture[Avalanche]
 
       val report = newReportWithTestData()
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(report.extId), any[Box[String]]) returns true
       mockAvalancheDal.getAvalanche(report.extId) returns None
       
       report.saveReport()
@@ -207,7 +212,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       mockResources.localizedString(Matchers.eq("msg.avyReportInsertSuccess"), anyVararg()) returns successMsg
       mockResources.avalancheUrl(anyString) returns s"https://avyeyes.com/$extId"
       mockResources.localizedStringAsXml(anyString, anyVararg()) returns Unparsed("test xml")
-
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(report.extId), any[Box[String]]) returns true
       mockAvalancheDal.getAvalanche(extId) returns None
       
       val jsCmd = report.saveReport()
@@ -248,6 +253,8 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
       val fromArg = capture[From]
       val subjectArg = capture[Subject]
       val report = spy(newReportWithTestData())
+
+      mockUser.isAuthorizedToEditAvalanche(Matchers.eq(report.extId), any[Box[String]]) returns true
       mockAvalancheDal.getAvalanche(report.extId) returns None
 
       report.saveReport()
