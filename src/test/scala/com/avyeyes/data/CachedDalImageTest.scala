@@ -1,6 +1,5 @@
 package com.avyeyes.data
 
-import com.avyeyes.service.UnauthorizedException
 import com.avyeyes.util.FutureOps._
 import com.avyeyes.test.Generators._
 import org.specs2.mutable.Specification

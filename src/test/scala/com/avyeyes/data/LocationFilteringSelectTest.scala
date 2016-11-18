@@ -2,7 +2,11 @@ package com.avyeyes.data
 
 import com.avyeyes.model.Coordinate
 import com.avyeyes.test.Generators._
+import com.avyeyes.util.FutureOps._
+
 import org.specs2.mutable.Specification
+
+import scala.concurrent.Future
 
 class LocationFilteringSelectTest extends Specification with InMemoryDB {
   sequential
@@ -14,9 +18,8 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
 
   "Latitude/Longitude filtering in all four hemispheres" >> {
     "NE hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAdminSession returns true
       insertAllAvalanches
-      
+
       val neLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
         Some(createGeoBoundsToInclude(neHemisphereAvalanche.location)))
       
@@ -27,9 +30,8 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
     }
   
     "SE hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAdminSession returns true
       insertAllAvalanches
-      
+
       val seLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
         Some(createGeoBoundsToInclude(seHemisphereAvalanche.location)))
       
@@ -40,9 +42,8 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
     }
     
     "SW hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAdminSession returns true
       insertAllAvalanches
-      
+
       val swLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
         Some(createGeoBoundsToInclude(swHemisphereAvalanche.location)))
       
@@ -53,9 +54,8 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
     }
     
     "NW hemisphere lat/lng filtering works" >> {
-      mockUserSession.isAdminSession returns true
       insertAllAvalanches
-      
+
       val nwLatLngInBoundsCriteria = AvalancheQuery(geoBounds =
         Some(createGeoBoundsToInclude(nwHemisphereAvalanche.location)))
       
@@ -73,11 +73,11 @@ class LocationFilteringSelectTest extends Specification with InMemoryDB {
       latMax = c.latitude+.01,
       latMin = c.latitude-.01)
   }
-  
-  private def insertAllAvalanches() = {
-    dal.insertAvalanche(neHemisphereAvalanche)
-    dal.insertAvalanche(nwHemisphereAvalanche)
-    dal.insertAvalanche(swHemisphereAvalanche)
-    dal.insertAvalanche(seHemisphereAvalanche)
-  }
+
+  private def insertAllAvalanches = Future.sequence(List(
+    dal.insertAvalanche(neHemisphereAvalanche),
+    dal.insertAvalanche(nwHemisphereAvalanche),
+    dal.insertAvalanche(swHemisphereAvalanche),
+    dal.insertAvalanche(seHemisphereAvalanche))
+  ).resolve
 }
