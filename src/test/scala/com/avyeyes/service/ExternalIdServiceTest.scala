@@ -54,16 +54,4 @@ class ExternalIdServiceTest extends Specification with Mockito {
       }
     }
   }
-
-  "Bad word check" >> {
-    "Catch bad words in a string" in new Setup {
-      extIdTester.containsBadWord("what a fucking day!") must beTrue
-      extIdTester.containsBadWord("what a lovely day!") must beFalse
-    }
-
-    "Catch bad words in external IDs" in new Setup {
-      extIdTester.containsBadWord("193tit3k") must beTrue
-      extIdTester.containsBadWord("49fk9d3k") must beFalse
-    }
-  }
 }
