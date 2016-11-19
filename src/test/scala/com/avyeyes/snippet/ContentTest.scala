@@ -10,7 +10,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
   var renderedPage: NodeSeq = NodeSeq.Empty
   
   "Snippet rendering" should {
-    "Wire label fields" withSFor("/") in {
+    "Wire label fields" withSFor "/" in {
       renderedPage = (new Content).render(IndexHtmlElem)
       val labels = renderedPage \\ "label"
       
@@ -23,7 +23,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
       success
     }
     
-    "Wire header fields" withSFor("/") in {
+    "Wire header fields" withSFor "/" in {
       val headers = renderedPage \\ "span" filter (node => (node\"@class").text == "avyHeader")
       
       for (header <- headers) {
@@ -35,7 +35,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
       success
     }
     
-    "Wire message fields" withSFor("/") in {
+    "Wire message fields" withSFor "/" in {
       val R = Injectors.resources.vend
       val messages = renderedPage \\ "span" filter (node => (node\"@class").text == "avyMsg")
       
@@ -48,7 +48,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
       success
     }
   
-    "Wire link fields" withSFor("/") in {
+    "Wire link fields" withSFor "/" in {
       val links = renderedPage \\ "a" filter (node => (node\"@class").text == "avyLink")
       
       for (link <- links) {
@@ -60,7 +60,7 @@ class ContentTest extends WebSpec2 with TemplateReader {
       success
     }
     
-    "Wire button fields" withSFor("/") in {
+    "Wire button fields" withSFor "/" in {
       val buttons = renderedPage \\ "input" filter (node => (node\"@class").text == "avyButton")
       
       for (button <- buttons) {

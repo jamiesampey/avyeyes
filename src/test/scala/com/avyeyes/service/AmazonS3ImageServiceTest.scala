@@ -19,9 +19,7 @@ class AmazonS3ImageServiceTest extends Specification with AroundExample with Moc
   mockResources.getProperty("s3.fullaccess.accessKeyId") returns "3490griow"
   mockResources.getProperty("s3.fullaccess.secretAccessKey") returns "34ijgeij4"
 
-  def around[T: AsResult](t: => T): Result = Injectors.resources.doWith(mockResources) {
-    AsResult(t)
-  }
+  def around[T: AsResult](t: => T): Result = Injectors.resources.doWith(mockResources) { AsResult(t) }
 
   class AmazonS3ImageServiceForTest(client: AmazonS3Client) extends AmazonS3ImageService {
     override val s3Client = client

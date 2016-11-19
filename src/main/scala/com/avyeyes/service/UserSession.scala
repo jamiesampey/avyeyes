@@ -8,12 +8,12 @@ import net.liftweb.http.SessionVar
 import omniauth.Omniauth
 import org.joda.time.{DateTime, Seconds}
 
-private object adminEmail extends SessionVar[Box[String]](Empty)
+private object adminEmailSessionVar extends SessionVar[Box[String]](Empty)
 
 class UserSession extends ExternalIdService with Loggable {
   lazy val dal = Injectors.dal.vend
 
-  def isAdminSession = adminEmail.get.isDefined
+  def isAdminSession = adminEmailSessionVar.get.isDefined
 
   def isAuthorizedToViewAvalanche(avalanche: Avalanche): Boolean = isAdminSession || avalanche.viewable
 
@@ -28,25 +28,29 @@ class UserSession extends ExternalIdService with Loggable {
     })
   }
 
-  def authorizedEmail = adminEmail.get match {
+  def authorizedEmail = adminEmailSessionVar.get match {
     case Full(email) => email
     case _ => ""
   }
 
-  def attemptLogin(email: String) = dal.userRoles(email).resolve.exists(user =>
-    user.role == SiteOwnerRole || user.role == AdminRole) match {
+  def attemptLogin(email: String) = {
+    val userRoles = dal.userRoles(email).resolve
+    userRoles.exists(user => user.role == SiteOwnerRole || user.role == AdminRole) match {
       case true =>
-        logger.info (s"Authorization success for $email. Logging user in.")
-        adminEmail.set(Full(email))
+        logger.info(s"Authorization success for $email. Logging user in")
+        setSessionVar(Full(email))
       case false =>
         logger.warn(s"Authorization failure for $email.")
-        adminEmail.set(Empty)
+        setSessionVar(Empty)
         Omniauth.clearCurrentAuth
-    }
+      }
+  }
 
   def logout = {
     logger.info(s"logging out authorized user $authorizedEmail")
-    adminEmail.set(Empty)
+    setSessionVar(Empty)
     Omniauth.clearCurrentAuth
   }
+
+  private[service] def setSessionVar(emailBox: Box[String]) = adminEmailSessionVar.set(emailBox)
 }
