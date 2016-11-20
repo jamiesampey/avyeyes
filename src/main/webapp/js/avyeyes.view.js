@@ -44,6 +44,9 @@ function AvyEyesView() {
     window.addEventListener("click", function(e) {
         $(".avyResultsOverlay").hide();
     }, false);
+    this.overlayClearTimer = function(seconds) {
+        setTimeout(function() { $(".avyResultsOverlay").hide() }, seconds * 1000);
+    }
 
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI();
@@ -205,7 +208,8 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         $("#avySearchOverlayResults").text("Found " + avalancheArray.length
             + " avalanche(s) within the current view that match the search criteria");
         $("#avySearchOverlay").show();
-    });
+        this.overlayClearTimer(12);
+    }.bind(this));
 }
 
 AvyEyesView.prototype.addAvalanche = function(a) {
@@ -239,7 +243,8 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                     $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
                     $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
                     $("#avyTitleOverlay").show();
-                }
+                    this.overlayClearTimer(12);
+                }.bind(this)
         });}.bind(this)
     });
 }

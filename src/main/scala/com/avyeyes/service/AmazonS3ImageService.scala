@@ -50,13 +50,15 @@ class AmazonS3ImageService extends Loggable {
 
   def deleteAllImages(avyExtId: String) {
     try {
-      val imageKeyList = getAllAvalancheImageKeys(avyExtId)
+      getAllAvalancheImageKeys(avyExtId).toList match {
+        case Nil => logger.info(s"No images to delete for avalanche $avyExtId")
+        case imageKeys =>
+          val deleteObjectsRequest = new DeleteObjectsRequest(s3ImageBucket)
+          deleteObjectsRequest.withKeys(imageKeys:_*)
+          s3Client.deleteObjects(deleteObjectsRequest)
 
-      val deleteObjectsRequest = new DeleteObjectsRequest(s3ImageBucket)
-      deleteObjectsRequest.withKeys(imageKeyList:_*)
-      s3Client.deleteObjects(deleteObjectsRequest)
-
-      logger.info(s"Deleted all ${imageKeyList.size} images for avalanche $avyExtId from AWS S3")
+          logger.info(s"Deleted all ${imageKeys.size} images for avalanche $avyExtId from AWS S3")
+      }
     } catch {
       case ase: AmazonServiceException => logger.error(s"Unable to delete ALL images for avalanche $avyExtId from AWS S3", ase)
     }
