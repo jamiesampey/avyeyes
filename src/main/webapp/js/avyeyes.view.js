@@ -405,6 +405,39 @@ AvyEyesView.prototype.getRequestParam = function(paramName) {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+AvyEyesView.prototype.uploadCesiumScreenshot = function() {
+    var base64ImageContent = this.cesiumViewer.canvas.toDataURL().replace(/^data:image\/png;base64,/, "");
+    var sliceSize = 1024;
+    var byteChars = window.atob(base64ImageContent);
+    var byteArrays = [];
+
+    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+        var slice = byteChars.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    var formData = new FormData();
+    formData.append("blob", new Blob(byteArrays, {type: 'image/png'}), "screenshot.png");
+
+    $.ajax({
+        url: "/rest/images/" + $('#rwAvyFormExtId').val() + "/screenshot",
+        type: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData
+    }).fail(function(jqxhr, textStatus, error) {
+        var err = textStatus + ", " + error;
+        console.log("AvyEyes screenshot upload error: " + err);
+    });
+}
+
 function toHeadingPitchRange(heading, pitch, range) {
     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
 }

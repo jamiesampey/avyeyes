@@ -24,6 +24,12 @@ class Images extends RestHelper with Loggable {
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   serve {
+    case "rest" :: "images" :: avyExtId :: "screenshot" :: Nil Post req => {
+      logger.info(s"Received screenshot for new avalanche $avyExtId")
+      val fph = req.uploadedFiles.head
+      addNewAvalancheImage(avyExtId, fph.fileName, -1, fph).resolve
+    }
+
     case "rest" :: "images" :: avyExtId :: Nil Post req => {
       dal.countAvalancheImages(avyExtId).resolve match {
         case _ if !user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam)) =>
@@ -35,21 +41,7 @@ class Images extends RestHelper with Loggable {
         case siblingImageCount =>
           val fph = req.uploadedFiles.head
           val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
-
-          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
-
-          dal.insertAvalancheImage(AvalancheImage(
-            createTime = DateTime.now,
-            avalanche = avyExtId,
-            filename = newFilename,
-            origFilename = fph.fileName,
-            mimeType = fph.mimeType,
-            size = fph.length.toInt,
-            sortOrder = siblingImageCount
-          )).map { _ =>
-            dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
-            JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length))
-          }.resolve
+          addNewAvalancheImage(avyExtId, newFilename, siblingImageCount, fph).resolve
       }
     }
 
@@ -105,6 +97,23 @@ class Images extends RestHelper with Loggable {
             InternalServerErrorResponse()
         }.resolve
       }
+  }
 
+  private def addNewAvalancheImage(avyExtId: String, filename: String, sortOrder: Int, fph: FileParamHolder) = {
+    s3.uploadImage(avyExtId, filename, fph.mimeType, fph.file)
+    logger.info(s"Added new image '$filename' for avalanche $avyExtId in ${fph.length} bytes")
+
+    dal.insertAvalancheImage(AvalancheImage(
+      createTime = DateTime.now,
+      avalanche = avyExtId,
+      filename = filename,
+      origFilename = fph.fileName,
+      mimeType = fph.mimeType,
+      size = fph.length.toInt,
+      sortOrder = sortOrder
+    )).map { _ =>
+      dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
+      JsonResponse(("extId" -> avyExtId) ~ ("filename" -> filename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length))
+    }
   }
 }

@@ -270,8 +270,7 @@ function wireButtons(view) {
 
     $('#avyReportAcceptDrawingButton').click(function() {
         view.hideControls().then(function() {
-        var dataUrl = view.cesiumViewer.canvas.toDataURL();
-        window.open(dataUrl);
+            view.uploadCesiumScreenshot();
             view.form.toggleWindDirectionFields('');
             view.form.toggleTriggerCauseFields('');
             view.form.displayReadWriteForm();
