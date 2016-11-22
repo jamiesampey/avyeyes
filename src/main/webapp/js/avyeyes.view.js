@@ -17,6 +17,9 @@ function AvyEyesView() {
             url: "//assets.agi.com/stk-terrain/world",
             requestVertexNormals: true
         }),
+        contextOptions: {
+            webgl: { preserveDrawingBuffer: true }
+        },
         animation: false,
         baseLayerPicker: false,
         fullscreenButton: true,
