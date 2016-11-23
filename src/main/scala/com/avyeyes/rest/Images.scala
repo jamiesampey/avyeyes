@@ -27,7 +27,7 @@ class Images extends RestHelper with Loggable {
     case "rest" :: "images" :: avyExtId :: "screenshot" :: Nil Post req => {
       logger.info(s"Received screenshot for new avalanche $avyExtId")
       val fph = req.uploadedFiles.head
-      addNewAvalancheImage(avyExtId, fph.fileName, -1, fph).resolve
+      addNewAvalancheImage(avyExtId, ScreenshotFilename, -1, fph).resolve
     }
 
     case "rest" :: "images" :: avyExtId :: Nil Post req => {

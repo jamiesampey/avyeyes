@@ -5,6 +5,7 @@ import javax.sql.DataSource
 import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
 import com.avyeyes.service.ExternalIdService
+import com.avyeyes.util.Constants._
 import net.liftweb.common.Loggable
 import org.joda.time.DateTime
 import slick.driver.JdbcProfile
@@ -111,7 +112,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   )
 
   def countAvalancheImages(extId: String) = db.run(
-    AvalancheImageRows.filter(_.avalanche === extId).length.result
+    AvalancheImageRows.filter(img => img.avalanche === extId && img.filename =!= ScreenshotFilename).length.result
   )
 
   def getAvalancheImage(avyExtId: String, baseFilename: String) = db.run(
@@ -123,7 +124,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
   )
 
   private def imageQuery(avyExtId: String, baseFilename: Option[String]) = {
-    val imageQuery = AvalancheImageRows.filter(_.avalanche === avyExtId)
+    val imageQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename =!= ScreenshotFilename)
 
     baseFilename match {
       case Some(name) => imageQuery.filter(_.filename.startsWith(name))

@@ -7,6 +7,7 @@ object Constants {
   val BrowserNotSupportedPath = "whawha"
   val LoginPath = "whodat"
   val EditParam = "edit"
+  val ExtIdUrlParam = "extId"
 
   val ChromeMinVersion: Double = 35.0
   val FirefoxMinVersion: Double = 30.0
@@ -23,10 +24,11 @@ object Constants {
 
   val AvalancheEditWindow = 7 days
 
-	val ExtIdUrlParam = "extId"
 	val ExtIdLength = 8
 	val ExtIdChars = "0123456789abcdefghijklmnopqrstuvwxyz"
 
   val SiteOwnerRole = "site_owner"
   val AdminRole = "admin"
+
+  val ScreenshotFilename = "screenshot.png"
 }
