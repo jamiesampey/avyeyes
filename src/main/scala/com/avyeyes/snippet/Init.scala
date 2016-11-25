@@ -52,5 +52,5 @@ class Init extends Loggable {
       .cmd
   }
 
-  private def s3ImageBucketCmd: JsCmd = JsRaw(s"$$('#s3ImageBucket').val('${R.getProperty("s3.imageBucket")}');").cmd
+  private def s3ImageBucketCmd: JsCmd = JsRaw(s"$$('#s3FilesBucket').val('${R.getProperty("s3.filesBucket")}');").cmd
 }

@@ -3,7 +3,7 @@ package com.avyeyes.snippet
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.{Coordinate, Avalanche}
 import com.avyeyes.model.enums._
-import com.avyeyes.service.{UserSession, AmazonS3ImageService, Injectors, ResourceService}
+import com.avyeyes.service.{UserSession, AmazonS3Service, Injectors, ResourceService}
 import com.avyeyes.test._
 import com.avyeyes.util.Converters._
 import net.liftweb.common.Box
@@ -20,7 +20,7 @@ class ReportTest extends WebSpec2 with AroundExample with Mockito with TemplateR
   val mockResources = mock[ResourceService]
   val mockUser = mock[UserSession]
   val mockAvalancheDal = mock[CachedDAL]
-  val mockS3 = mock[AmazonS3ImageService]
+  val mockS3 = mock[AmazonS3Service]
 
   mockResources.getProperty("s3.imageBucket") returns "some-bucket"
   mockResources.getProperty("s3.fullaccess.accessKeyId") returns "3490griow"

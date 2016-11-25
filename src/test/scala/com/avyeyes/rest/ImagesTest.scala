@@ -2,7 +2,7 @@ package com.avyeyes.rest
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.AvalancheImage
-import com.avyeyes.service.{UserSession, Injectors, AmazonS3ImageService, ResourceService}
+import com.avyeyes.service.{UserSession, Injectors, AmazonS3Service, ResourceService}
 import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
@@ -24,7 +24,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   val mockUser = mock[UserSession]
   val mockResources = mock[ResourceService]
   val mockAvalancheDal = mock[CachedDAL]
-  val mockS3 = mock[AmazonS3ImageService]
+  val mockS3 = mock[AmazonS3Service]
 
   mockResources.getProperty("s3.imageBucket") returns "some-bucket"
   mockResources.getProperty("s3.fullaccess.accessKeyId") returns "3490griow"

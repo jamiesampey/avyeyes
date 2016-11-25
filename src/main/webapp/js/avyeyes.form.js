@@ -71,11 +71,11 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
 	if (showImages) {
 	    $("#roAvyFormImageList").empty();
-	    var s3Bucket = $("#s3ImageBucket").val();
+	    var s3Bucket = $("#s3FilesBucket").val();
 		$("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
-            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/" + a.extId + "/" + image.filename;
+            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/images/" + a.extId + "/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
 			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
@@ -312,10 +312,10 @@ AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
         });
     }
 
-    var s3Bucket = $("#s3ImageBucket").val();
+    var s3Bucket = $("#s3FilesBucket").val();
 
     return s3Client.getSignedUrl('getObject', {
-        Bucket: s3Bucket, Key: extId + '/' + filename});
+        Bucket: s3Bucket, Key: 'images/' + extId + '/' + filename});
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {

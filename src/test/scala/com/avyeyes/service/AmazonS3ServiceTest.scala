@@ -11,7 +11,7 @@ import org.specs2.specification.{AroundExample, Scope}
 
 import scala.collection.mutable.ListBuffer
 
-class AmazonS3ImageServiceTest extends Specification with AroundExample with Mockito {
+class AmazonS3ServiceTest extends Specification with AroundExample with Mockito {
 
   val mockResources = mock[ResourceService]
   val imageBucket = "my-images"
@@ -21,14 +21,14 @@ class AmazonS3ImageServiceTest extends Specification with AroundExample with Moc
 
   def around[T: AsResult](t: => T): Result = Injectors.resources.doWith(mockResources) { AsResult(t) }
 
-  class AmazonS3ImageServiceForTest(client: AmazonS3Client) extends AmazonS3ImageService {
+  class AmazonS3ServiceForTest(client: AmazonS3Client) extends AmazonS3Service {
     override val s3Client = client
     override def getAllAvalancheImageKeys(avyExtId: String) = ListBuffer(UUID.randomUUID().toString, UUID.randomUUID().toString)
   }
 
   class Setup extends Scope {
     val mockS3Client = mock[AmazonS3Client]
-    val s3ImageService = new AmazonS3ImageServiceForTest(mockS3Client)
+    val s3ImageService = new AmazonS3ServiceForTest(mockS3Client)
   }
 
   "Image upload" >> {
