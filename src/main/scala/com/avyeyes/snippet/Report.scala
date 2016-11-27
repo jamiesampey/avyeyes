@@ -133,7 +133,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
     errorDialog("avyReportDeleteError")
   } else Try {
     dal.deleteAvalanche(extIdToDelete)
-    s3.deleteAllImages(extIdToDelete)
+    s3.deleteAllFiles(extIdToDelete)
     logger.info(s"Avalanche $extIdToDelete deleted")
     infoDialog("avyReportDeleteSuccess")
   } match {
