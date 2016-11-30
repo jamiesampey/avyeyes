@@ -220,7 +220,7 @@ AvyEyesView.prototype.addAvalanche = function(a) {
 
 	this.addEntity({
 	    id: a.extId,
-	    name: a.date + ": " + a.areaName,
+	    name: a.title,
 	    polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
             hierarchy: coordArray,
@@ -243,7 +243,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 duration: 4.0,
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200),
                 complete: function() {
-                    $("#avyTitleOverlayName").text(a.date + ": " + a.areaName);
+                    $("#avyTitleOverlayName").text(a.title);
                     $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
                     $("#avyTitleOverlay").show();
                     this.overlayClearTimer(12);

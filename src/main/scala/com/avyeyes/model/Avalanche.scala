@@ -1,8 +1,8 @@
 package com.avyeyes.model
 
-import com.avyeyes.util.Converters._
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 
 case class Avalanche(
   createTime: DateTime,
@@ -21,7 +21,9 @@ case class Avalanche(
   perimeter: Seq[Coordinate],
   comments: Option[String]) {
 
-  lazy val title: String = s"${dateToStr(date)}: $areaName"
+  private val titleDTF = DateTimeFormat.forPattern("MMM dd, yyyy")
+
+  lazy val title: String = s"${date.toString(titleDTF)}: $areaName"
 
   lazy val editKey: Long = createTime.getMillis / 1000
 }

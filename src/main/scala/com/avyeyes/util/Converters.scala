@@ -1,15 +1,12 @@
 package com.avyeyes.util
 
-import com.avyeyes.service.Injectors
 import net.liftweb.util.Helpers.{asDouble, asInt}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
 
 object Converters {
-  val R = Injectors.resources.vend
-
-  val dtf = DateTimeFormat.forPattern("MM-dd-yyyy")
+  private val dtf = DateTimeFormat.forPattern("MM-dd-yyyy")
   
   def strToDate(str: String): DateTime = dtf.parseDateTime(str)
 	

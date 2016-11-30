@@ -25,6 +25,7 @@ object JsonSerializers {
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
     ("extUrl" -> R.avalancheUrl(a.extId)) ~
+    ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
@@ -44,8 +45,7 @@ object JsonSerializers {
 
   def avalancheSearchResultData(a: Avalanche) = {
     ("extId" -> a.extId) ~
-    ("date" -> Extraction.decompose(a.date)) ~
-    ("areaName" -> a.areaName) ~
+    ("title" -> a.title) ~
     ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 

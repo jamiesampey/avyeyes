@@ -70,10 +70,11 @@ class AmazonS3Service extends Loggable {
     val html =
       <html>
         <head>
+          <meta property="og:url" content={R.avalancheUrl(avalanche.extId)} />
           <meta property="og:type" content="article" />
           <meta property="og:title" content="AvyEyes" />
-          <meta property="og:description" content={s"${avalanche.areaName}"} />
-          <meta property="og:image" content={s"${s3Client.getResourceUrl(s3FilesBucket, s3ImageKey(avalanche.extId, Some(ScreenshotFilename)))}"} />
+          <meta property="og:description" content={avalanche.title} />
+          <meta property="og:image" content={s3Client.getResourceUrl(s3FilesBucket, s3ImageKey(avalanche.extId, Some(ScreenshotFilename)))} />
           <meta http-equiv="refresh" content={s"0; url=${R.avalancheUrl(avalanche.extId)}"} />
         </head>
       </html>

@@ -9,9 +9,9 @@ function AvyForm(avyEyesView) {
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var title = a.date + ": " + a.areaName;
+    var s3Bucket = $("#s3FilesBucket").val();
 
-	$("#roAvyFormTitle").text(title);
+	$("#roAvyFormTitle").text(a.title);
 	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
@@ -19,12 +19,13 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append("<div class='fb-share-button' data-layout='button' data-href='" + a.extUrl + "' />");
+    fbContainer.append("<div class='fb-share-button' data-layout='button' data-href='"
+        + "//" + s3Bucket + ".s3.amazonaws.com/facebook/" + a.extId + ".html' />");
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
-    twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + title
-      + "' href='http://twitter.com/share' data-count='horizontal' />");
+    twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
+      + "' href='//twitter.com/share' data-count='horizontal' />");
 
 	$("#roAvyFormElevation").text(a.slope.elevation + " m");
 	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
@@ -71,8 +72,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
 	if (showImages) {
 	    $("#roAvyFormImageList").empty();
-	    var s3Bucket = $("#s3FilesBucket").val();
-		$("#roAvyFormImageRow").show();
+	    $("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
             var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/images/" + a.extId + "/" + image.filename;
