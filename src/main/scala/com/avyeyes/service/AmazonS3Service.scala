@@ -14,7 +14,7 @@ import scala.util.{Failure, Success, Try}
 
 class AmazonS3Service extends Loggable {
   val R = Injectors.resources.vend
-  private val s3FilesBucket = R.getProperty("s3.filesBucket")
+  private val s3Bucket = R.getProperty("s3.bucket")
 
   private[service] val CacheControlMaxAge = "max-age=31536000" // 1 year in seconds
 
@@ -31,7 +31,7 @@ class AmazonS3Service extends Loggable {
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val putObjectRequest = new PutObjectRequest(s3FilesBucket, key, new ByteArrayInputStream(bytes), metadata)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytes), metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
       case Success(result) => logger.info(s"Uploaded image $key to AWS S3")
@@ -42,28 +42,18 @@ class AmazonS3Service extends Loggable {
   def deleteImage(avyExtId: String, filename: String) {
     val key = s3ImageKey(avyExtId, Some(filename))
 
-    Try(s3Client.deleteObject(s3FilesBucket, key)) match {
+    Try(s3Client.deleteObject(s3Bucket, key)) match {
       case Success(result) => logger.info(s"Deleted image $key from AWS S3")
       case Failure(ex) => logger.error(s"Unable to delete image $key from AWS S3", ex)
     }
   }
 
-  def deleteAllImages(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
-    val deleteObjectsRequest = new DeleteObjectsRequest(s3FilesBucket)
-    deleteObjectsRequest.withKeys(imageKeys:_*)
-
-    Try(s3Client.deleteObjects(deleteObjectsRequest)) match {
-      case Success(result) => logger.info(s"Deleted all ${imageKeys.size} images for avalanche $avyExtId from AWS S3")
-      case Failure(ex) => logger.error(s"Unable to delete ALL images for avalanche $avyExtId from AWS S3", ex)
-    }
-  }
-
   def allowPublicImageAccess(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
-    imageKeys.foreach(s3Client.setObjectAcl(s3FilesBucket, _, CannedAccessControlList.PublicRead))
+    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
   }
 
   def denyPublicImageAccess(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
-    imageKeys.foreach(s3Client.setObjectAcl(s3FilesBucket, _, CannedAccessControlList.Private))
+    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.Private))
   }
 
   def uploadFacebookSharePage(avalanche: Avalanche) = {
@@ -74,7 +64,7 @@ class AmazonS3Service extends Loggable {
           <meta property="og:type" content="article" />
           <meta property="og:title" content="AvyEyes" />
           <meta property="og:description" content={avalanche.title} />
-          <meta property="og:image" content={s3Client.getResourceUrl(s3FilesBucket, s3ImageKey(avalanche.extId, Some(ScreenshotFilename)))} />
+          <meta property="og:image" content={s3Client.getResourceUrl(s3Bucket, s3ImageKey(avalanche.extId, Some(ScreenshotFilename)))} />
           <meta http-equiv="refresh" content={s"0; url=${R.avalancheUrl(avalanche.extId)}"} />
         </head>
       </html>
@@ -87,32 +77,33 @@ class AmazonS3Service extends Loggable {
     metadata.setContentType("text/html")
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val putObjectRequest = new PutObjectRequest(s3FilesBucket, fbSharePageKey, new ByteArrayInputStream(bytes), metadata)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, fbSharePageKey, new ByteArrayInputStream(bytes), metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
       case Success(result) =>
-        s3Client.setObjectAcl(s3FilesBucket, fbSharePageKey, CannedAccessControlList.PublicRead)
+        s3Client.setObjectAcl(s3Bucket, fbSharePageKey, CannedAccessControlList.PublicRead)
         logger.info(s"Successfully uploaded facebook share page for avalanche ${avalanche.extId}")
       case Failure(ex) => logger.error(s"Failed to upload a facebook share page for avalanche ${avalanche.extId}")
     }
   }
 
   def deleteAllFiles(avyExtId: String) {
-    deleteAllImages(avyExtId)
-
-    val fbSharePageKey = s3FacebookSharePageKey(avyExtId)
-    Try(s3Client.deleteObject(s3FilesBucket, fbSharePageKey)) match {
-      case Success(result) => logger.info(s"Deleted image $fbSharePageKey from AWS S3")
-      case Failure(ex) => logger.error(s"Unable to delete image $fbSharePageKey from AWS S3", ex)
-    }
+    logger.info(s"Deleting all S3 files for avalanche $avyExtId")
+    Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { objectKey =>
+      Try(s3Client.deleteObject(s3Bucket, objectKey)) match {
+        case Success(result) => logger.debug(s"Deleted $objectKey from AWS S3")
+        case Failure(ex) => logger.error(s"Unable to delete $objectKey from AWS S3", ex)
+      }
+    })
   }
 
-  private def getAllAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3FilesBucket, s3ImageKey(avyExtId)).getObjectSummaries.map(_.getKey))
+  private def getAllAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s3ImageKey(avyExtId)).getObjectSummaries.map(_.getKey))
 
-  private def s3FacebookSharePageKey(avyExtId: String) = s"facebook/$avyExtId.html"
+  private def s3FacebookSharePageKey(avyExtId: String) = s"avalanches/$avyExtId/$FacebookSharePageFilename"
 
   private def s3ImageKey(avyExtId: String, filenameOpt: Option[String] = None) = filenameOpt match {
-    case Some(filename) => s"images/$avyExtId/$filename"
-    case None => s"images/$avyExtId"
+    case Some(filename) if filename == ScreenshotFilename => s"avalanches/$avyExtId/$ScreenshotFilename"
+    case Some(filename) => s"avalanches/$avyExtId/images/$filename"
+    case None => s"avalanches/$avyExtId/images"
   }
 }

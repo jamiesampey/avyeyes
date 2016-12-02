@@ -9,7 +9,7 @@ function AvyForm(avyEyesView) {
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var s3Bucket = $("#s3FilesBucket").val();
+    var s3Bucket = $("#s3Bucket").val();
 
 	$("#roAvyFormTitle").text(a.title);
 	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
@@ -20,7 +20,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
     fbContainer.append("<div class='fb-share-button' data-layout='button' data-href='"
-        + "//" + s3Bucket + ".s3.amazonaws.com/facebook/" + a.extId + ".html' />");
+        + "//" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/facebook-share.html' />");
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
@@ -75,7 +75,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	    $("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
-            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/images/" + a.extId + "/" + image.filename;
+            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
 			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
@@ -312,10 +312,10 @@ AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
         });
     }
 
-    var s3Bucket = $("#s3FilesBucket").val();
+    var s3Bucket = $("#s3Bucket").val();
 
     return s3Client.getSignedUrl('getObject', {
-        Bucket: s3Bucket, Key: 'images/' + extId + '/' + filename});
+        Bucket: s3Bucket, Key: 'avalanches/' + extId + '/images/' + filename});
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {

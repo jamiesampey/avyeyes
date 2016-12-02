@@ -31,4 +31,5 @@ object Constants {
   val AdminRole = "admin"
 
   val ScreenshotFilename = "screenshot.png"
+  val FacebookSharePageFilename = "facebook-share.html"
 }

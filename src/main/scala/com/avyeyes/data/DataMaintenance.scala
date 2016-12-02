@@ -23,7 +23,7 @@ class DataMaintenance extends Actor with Loggable {
       }
 
       dal.deleteOrphanAvalancheImages.map { unfinishedReports =>
-        unfinishedReports.foreach(s3.deleteAllImages)
+        unfinishedReports.foreach(s3.deleteAllFiles)
         logger.info(s"Pruned orphan images from database and S3 for ${unfinishedReports.size} unfinished reports")
       }
 
