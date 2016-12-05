@@ -48,6 +48,10 @@ class AmazonS3Service extends Loggable {
     }
   }
 
+  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
+    s3Client.setObjectAcl(s3Bucket, fileKey, CannedAccessControlList.PublicRead)
+  })
+
   def allowPublicImageAccess(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
     imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
   }

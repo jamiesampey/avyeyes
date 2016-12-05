@@ -111,7 +111,7 @@ class Report extends ExternalIdService with ModalDialogs with Mailer with Loggab
         val newAvalanche = avalancheFromValues.copy(viewable = true)
         dal.insertAvalanche(newAvalanche)
         s3.uploadFacebookSharePage(newAvalanche)
-        s3.allowPublicImageAccess(newAvalanche.extId)
+        s3.allowPublicFileAccess(newAvalanche.extId)
         sendSubmissionNotifications(newAvalanche, submitterEmail)
         val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
         logger.info(s"Avalanche $extId successfully inserted")
