@@ -406,7 +406,7 @@ AvyEyesView.prototype.getRequestParam = function(paramName) {
 }
 
 AvyEyesView.prototype.uploadCesiumScreenshot = function() {
-    var base64ImageContent = this.cesiumViewer.canvas.toDataURL().replace(/^data:image\/png;base64,/, "");
+    var base64ImageContent = this.cesiumViewer.canvas.toDataURL("image/jpeg", 0.8).replace(/^data:image\/jpeg;base64,/, "");
     var sliceSize = 1024;
     var byteChars = window.atob(base64ImageContent);
     var byteArrays = [];
@@ -423,7 +423,7 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
     }
 
     var formData = new FormData();
-    formData.append("blob", new Blob(byteArrays, {type: 'image/png'}), "screenshot.png");
+    formData.append("blob", new Blob(byteArrays, {type: 'image/jpeg'}), "screenshot.jpg");
 
     $.ajax({
         url: "/rest/images/" + $('#rwAvyFormExtId').val() + "/screenshot",

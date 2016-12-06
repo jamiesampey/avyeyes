@@ -50,7 +50,7 @@ AvyReport.prototype.startDrawing = function() {
                     },
                     perPositionHeight: true,
                     material: drawingPolygonColor,
-                    outline: true
+                    outline: false
                 }
             });
             this.view.removeEntity(drawingPolyline);

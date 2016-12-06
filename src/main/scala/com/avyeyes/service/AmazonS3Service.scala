@@ -34,7 +34,7 @@ class AmazonS3Service extends Loggable {
     val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytes), metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) => logger.info(s"Uploaded image $key to AWS S3")
+      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytes.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
   }
