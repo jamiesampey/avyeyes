@@ -81,7 +81,7 @@ class AmazonS3Service extends Loggable {
 
   def deleteAllFiles(avyExtId: String) {
     logger.info(s"Deleting all S3 files for avalanche $avyExtId")
-    Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { objectKey =>
+    Try(s3Client.listObjects(s3Bucket, avalancheBaseKey(avyExtId))).map( _.getObjectSummaries.map(_.getKey).foreach { objectKey =>
       Try(s3Client.deleteObject(s3Bucket, objectKey)) match {
         case Success(result) => logger.debug(s"Deleted $objectKey from AWS S3")
         case Failure(ex) => logger.error(s"Unable to delete $objectKey from AWS S3", ex)
@@ -89,7 +89,7 @@ class AmazonS3Service extends Loggable {
     })
   }
 
-  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
+  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, avalancheBaseKey(avyExtId))).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
     s3Client.setObjectAcl(s3Bucket, fileKey, CannedAccessControlList.PublicRead)
   })
 
@@ -101,11 +101,13 @@ class AmazonS3Service extends Loggable {
     imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.Private))
   }
 
-  private def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId/images").getObjectSummaries.map(_.getKey))
+  private def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"${avalancheBaseKey(avyExtId)}/images").getObjectSummaries.map(_.getKey))
 
-  private def avalancheImageKey(avyExtId: String, filename: String) = s"avalanches/$avyExtId/images/$filename"
+  private def avalancheImageKey(avyExtId: String, filename: String) = s"${avalancheBaseKey(avyExtId)}/images/$filename"
 
-  private def screenshotKey(avyExtId: String) = s"avalanches/$avyExtId/$ScreenshotFilename"
+  private def screenshotKey(avyExtId: String) = s"${avalancheBaseKey(avyExtId)}/$ScreenshotFilename"
 
-  private def facebookSharePageKey(avyExtId: String) = s"avalanches/$avyExtId/$FacebookSharePageFilename"
+  private def facebookSharePageKey(avyExtId: String) = s"${avalancheBaseKey(avyExtId)}/$FacebookSharePageFilename"
+
+  private def avalancheBaseKey(avyExtId: String) = s"avalanches/$avyExtId"
 }
