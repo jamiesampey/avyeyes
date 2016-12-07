@@ -24,7 +24,7 @@ class AmazonS3Service extends Loggable {
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
-    val key = s3ImageKey(avyExtId, Some(filename))
+    val key = avalancheImageKey(avyExtId, filename)
 
     val metadata = new ObjectMetadata()
     metadata.setContentLength(bytes.length)
@@ -39,27 +39,6 @@ class AmazonS3Service extends Loggable {
     }
   }
 
-  def deleteImage(avyExtId: String, filename: String) {
-    val key = s3ImageKey(avyExtId, Some(filename))
-
-    Try(s3Client.deleteObject(s3Bucket, key)) match {
-      case Success(result) => logger.info(s"Deleted image $key from AWS S3")
-      case Failure(ex) => logger.error(s"Unable to delete image $key from AWS S3", ex)
-    }
-  }
-
-  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
-    s3Client.setObjectAcl(s3Bucket, fileKey, CannedAccessControlList.PublicRead)
-  })
-
-  def allowPublicImageAccess(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
-    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
-  }
-
-  def denyPublicImageAccess(avyExtId: String) = getAllAvalancheImageKeys(avyExtId).map { imageKeys =>
-    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.Private))
-  }
-
   def uploadFacebookSharePage(avalanche: Avalanche) = {
     val html =
       <html>
@@ -68,13 +47,13 @@ class AmazonS3Service extends Loggable {
           <meta property="og:type" content="article" />
           <meta property="og:title" content="AvyEyes" />
           <meta property="og:description" content={avalanche.title} />
-          <meta property="og:image" content={s3Client.getResourceUrl(s3Bucket, s3ImageKey(avalanche.extId, Some(ScreenshotFilename)))} />
+          <meta property="og:image" content={s3Client.getResourceUrl(s3Bucket, screenshotKey(avalanche.extId))} />
           <meta http-equiv="refresh" content={s"0; url=${R.avalancheUrl(avalanche.extId)}"} />
         </head>
       </html>
 
     val bytes = html.toString.getBytes("UTF-8")
-    val fbSharePageKey = s3FacebookSharePageKey(avalanche.extId)
+    val fbSharePageKey = facebookSharePageKey(avalanche.extId)
 
     val metadata = new ObjectMetadata()
     metadata.setContentLength(bytes.length)
@@ -91,6 +70,15 @@ class AmazonS3Service extends Loggable {
     }
   }
 
+  def deleteImage(avyExtId: String, filename: String) {
+    val key = avalancheImageKey(avyExtId, filename)
+
+    Try(s3Client.deleteObject(s3Bucket, key)) match {
+      case Success(result) => logger.info(s"Deleted image $key from AWS S3")
+      case Failure(ex) => logger.error(s"Unable to delete image $key from AWS S3", ex)
+    }
+  }
+
   def deleteAllFiles(avyExtId: String) {
     logger.info(s"Deleting all S3 files for avalanche $avyExtId")
     Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { objectKey =>
@@ -101,13 +89,23 @@ class AmazonS3Service extends Loggable {
     })
   }
 
-  private def getAllAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s3ImageKey(avyExtId)).getObjectSummaries.map(_.getKey))
+  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId")).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
+    s3Client.setObjectAcl(s3Bucket, fileKey, CannedAccessControlList.PublicRead)
+  })
 
-  private def s3FacebookSharePageKey(avyExtId: String) = s"avalanches/$avyExtId/$FacebookSharePageFilename"
-
-  private def s3ImageKey(avyExtId: String, filenameOpt: Option[String] = None) = filenameOpt match {
-    case Some(filename) if filename == ScreenshotFilename => s"avalanches/$avyExtId/$ScreenshotFilename"
-    case Some(filename) => s"avalanches/$avyExtId/images/$filename"
-    case None => s"avalanches/$avyExtId/images"
+  def allowPublicImageAccess(avyExtId: String) = allAvalancheImageKeys(avyExtId).map { imageKeys =>
+    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
   }
+
+  def denyPublicImageAccess(avyExtId: String) = allAvalancheImageKeys(avyExtId).map { imageKeys =>
+    imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.Private))
+  }
+
+  private def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"avalanches/$avyExtId/images").getObjectSummaries.map(_.getKey))
+
+  private def avalancheImageKey(avyExtId: String, filename: String) = s"avalanches/$avyExtId/images/$filename"
+
+  private def screenshotKey(avyExtId: String) = s"avalanches/$avyExtId/$ScreenshotFilename"
+
+  private def facebookSharePageKey(avyExtId: String) = s"avalanches/$avyExtId/$FacebookSharePageFilename"
 }
