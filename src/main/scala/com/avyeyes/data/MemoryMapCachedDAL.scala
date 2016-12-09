@@ -151,7 +151,7 @@ class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
     AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
   ).flatMap { orphanImages =>
     val unfinishedReports = orphanImages.filterNot(img => reservationExists(img.avalanche)).map(_.avalanche).distinct
-    logger.info(s"Pruning ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
+    logger.info(s"Deleting ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
     db.run(AvalancheImageRows.filter(img => img.avalanche inSetBind unfinishedReports).delete).map(_ => unfinishedReports)
   }
 

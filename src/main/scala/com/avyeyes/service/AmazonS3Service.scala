@@ -101,6 +101,11 @@ class AmazonS3Service extends Loggable {
     imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.Private))
   }
 
+  def allAvalancheKeys = {
+    val listObjectsRequest = new ListObjectsRequest().withBucketName(s3Bucket).withPrefix("avalanches/").withDelimiter("/")
+    Try(s3Client.listObjects(listObjectsRequest).getCommonPrefixes)
+  }
+
   private def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"${avalancheBaseKey(avyExtId)}/images").getObjectSummaries.map(_.getKey))
 
   private def avalancheImageKey(avyExtId: String, filename: String) = s"${avalancheBaseKey(avyExtId)}/images/$filename"
