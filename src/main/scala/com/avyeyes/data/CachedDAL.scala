@@ -39,5 +39,5 @@ trait CachedDAL {
 
   def deleteAvalancheImage(avyExtId: String, filename: String): Future[Unit]
 
-  def deleteOrphanAvalancheImages: Future[Seq[String]]
+  def deleteOrphanAvalancheImages: Future[Int]
 }

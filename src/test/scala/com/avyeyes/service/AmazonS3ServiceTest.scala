@@ -10,6 +10,7 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.{AroundExample, Scope}
 
 import scala.collection.mutable.ListBuffer
+import scala.util.Success
 
 class AmazonS3ServiceTest extends Specification with AroundExample with Mockito {
 
@@ -23,7 +24,7 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
 
   class AmazonS3ServiceForTest(client: AmazonS3Client) extends AmazonS3Service {
     override val s3Client = client
-    override def getAllAvalancheImageKeys(avyExtId: String) = ListBuffer(UUID.randomUUID().toString, UUID.randomUUID().toString)
+    override def allAvalancheImageKeys(avyExtId: String) = Success(ListBuffer(UUID.randomUUID().toString, UUID.randomUUID().toString))
   }
 
   class Setup extends Scope {
@@ -50,7 +51,7 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
     }
   }
 
-  "Image delete" >> {
+  "File delete" >> {
     "Makes the correct call to S3 for single image delete" in new Setup {
       val extId = "49d03kd2"
       val filename = UUID.randomUUID().toString
@@ -61,11 +62,11 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
       there was one(mockS3Client).deleteObject(imageBucket, s"$extId/$filename")
     }
 
-    "Makes the correct call to S3 to delete ALL images of an avalanche" in new Setup {
+    "Makes the correct call to S3 to delete all files associated with an avalanche" in new Setup {
       val extId = "49d03kd2"
 
       val deleteObjectsRequestCapture = capture[DeleteObjectsRequest]
-      s3ImageService.deleteAllImages(extId)
+      s3ImageService.deleteAllFiles(extId)
       there was one(mockS3Client).deleteObjects(deleteObjectsRequestCapture)
 
       deleteObjectsRequestCapture.value.getKeys.size() mustEqual 2

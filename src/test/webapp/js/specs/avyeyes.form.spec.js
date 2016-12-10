@@ -9,6 +9,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     var avalanche = {
       "extId":"pzlmnecq",
       "extUrl":"http://dev.avyeyes.com:8080/pzlmnecq",
+      "title":"July 4, 2015: north side of jones",
       "areaName":"north side of jones",
       "date":"07-04-2015",
       "submitterEmail": "joe.bob@here.com",
@@ -122,7 +123,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
-            expect($("#roAvyFormTitle")).toHaveText(avalanche.date + ": " + avalanche.areaName);
+            expect($("#roAvyFormTitle")).toHaveText(avalanche.title);
             expect($("#roAvyFormSubmitterExp")).toHaveText(avalanche.submitterExp.label);
             expect($("#roAvyFormExtLink")).toHaveAttr("href", avalanche.extUrl);
             expect($("#roAvyFormExtLink")).toHaveText(avalanche.extUrl);
