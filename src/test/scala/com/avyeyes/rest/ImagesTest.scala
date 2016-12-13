@@ -52,17 +52,45 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
   mockAvalancheDal.getAvalancheImage(extId, goodImgFileName) returns Future.successful(Some(avalancheImage))
   mockAvalancheDal.getAvalancheImage(extId, badImgFileName) returns Future.successful(None)
 
+  "Screenshot post request" >> {
+    val mockScreenshotPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId/screenshot")
+    mockScreenshotPostRequest.method = "POST"
+
+    "Upload a new screenshot" withSFor mockScreenshotPostRequest in {
+      val images = new Images
+
+      val filename = "blah.jpg"
+      val fileBytes = Array[Byte](10, 20, 30, 40, 50)
+      val fph = FileParamHolder("Test Screenshot", "image/jpeg", filename, fileBytes)
+
+      val req = openLiftReqBox(S.request)
+      val reqWithFPH = addFileUploadToReq(req, fph)
+      val resp = openLiftRespBox(images(reqWithFPH)())
+
+      val extIdCapture = capture[String]
+      val filenameCapture = capture[String]
+      val mimeTypeCapture = capture[String]
+
+      there was one(mockS3).uploadImage(extIdCapture, filenameCapture, mimeTypeCapture, any)
+
+      resp must beAnInstanceOf[OkResponse]
+      extIdCapture.value mustEqual extId
+      filenameCapture.value mustEqual ScreenshotFilename
+      mimeTypeCapture.value mustEqual "image/jpeg"
+    }
+  }
+
   "Image post request" >> {
     isolated
 
-    val mockPostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
-    mockPostRequest.method = "POST"
+    val mockImagePostRequest = new MockHttpServletRequest(s"http://avyeyes.com/rest/images/$extId")
+    mockImagePostRequest.method = "POST"
 
     val filename = "testImgABC.jpg"
     val fileBytes = Array[Byte](10, 20, 30, 40, 50)
     val fph = FileParamHolder("Test Image", "image/jpeg", filename, fileBytes)
 
-    "Insert a new image in the DB" withSFor mockPostRequest in {
+    "Insert a new image in the DB" withSFor mockImagePostRequest in {
       val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(0)
       mockAvalancheDal.insertAvalancheImage(any[AvalancheImage]) returns Future.successful(1)
@@ -72,8 +100,10 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       val req = openLiftReqBox(S.request)
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
-        
+
+      there was one(mockS3).uploadImage(Matchers.eq(extId), any, Matchers.eq("image/jpeg"), any)
       there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
+
       resp must beAnInstanceOf[JsonResponse]
       extractJsonStringField(resp, "extId") mustEqual extId
       extractJsonStringField(resp, "filename").length must beGreaterThan(0)
@@ -81,7 +111,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       extractJsonLongField(resp, "size") mustEqual fileBytes.length
     }
 
-    "Don't insert an image above the max images count" withSFor mockPostRequest in {
+    "Don't insert an image above the max images count" withSFor mockImagePostRequest in {
       val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(MaxImagesPerAvalanche)
       mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
@@ -90,11 +120,13 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
 
+      there was no(mockS3).uploadImage(any, any, any, any)
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
+
       resp must beAnInstanceOf[BadResponse]
     }
 
-    "Don't insert an image if the user is not authorized" withSFor mockPostRequest in {
+    "Don't insert an image if the user is not authorized" withSFor mockImagePostRequest in {
       val images = new Images
       mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(0)
       mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
@@ -103,7 +135,9 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       val reqWithFPH = addFileUploadToReq(req, fph)
       val resp = openLiftRespBox(images(reqWithFPH)())
 
+      there was no(mockS3).uploadImage(any, any, any, any)
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
+
       resp must beAnInstanceOf[UnauthorizedResponse]
     }
   }
