@@ -63,9 +63,7 @@ class AmazonS3Service extends Loggable {
     val putObjectRequest = new PutObjectRequest(s3Bucket, fbSharePageKey, new ByteArrayInputStream(bytes), metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) =>
-        s3Client.setObjectAcl(s3Bucket, fbSharePageKey, CannedAccessControlList.PublicRead)
-        logger.info(s"Successfully uploaded facebook share page for avalanche ${avalanche.extId}")
+      case Success(result) => logger.info(s"Successfully uploaded facebook share page for avalanche ${avalanche.extId}")
       case Failure(ex) => logger.error(s"Failed to upload a facebook share page for avalanche ${avalanche.extId}")
     }
   }
@@ -81,17 +79,18 @@ class AmazonS3Service extends Loggable {
 
   def deleteAllFiles(avyExtId: String) {
     logger.info(s"Deleting all S3 files for avalanche $avyExtId")
-    Try(s3Client.listObjects(s3Bucket, avalancheBaseKey(avyExtId))).map( _.getObjectSummaries.map(_.getKey).foreach { objectKey =>
-      Try(s3Client.deleteObject(s3Bucket, objectKey)) match {
-        case Success(result) => logger.debug(s"Deleted $objectKey from AWS S3")
-        case Failure(ex) => logger.error(s"Unable to delete $objectKey from AWS S3", ex)
+    allAvalancheFileKeys(avyExtId).map { fileKeys =>
+      val deleteObjectsRequest = new DeleteObjectsRequest(s3Bucket).withKeys(fileKeys:_*)
+      Try(s3Client.deleteObjects(deleteObjectsRequest)) match {
+        case Success(_) => logger.debug(s"Deleted ${fileKeys.size} files from AWS S3 for avalanche $avyExtId")
+        case Failure(ex) => logger.error(s"Unable to delete files from AWS S3 for avalanche $avyExtId", ex)
       }
-    })
+    }
   }
 
-  def allowPublicFileAccess(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, avalancheBaseKey(avyExtId))).map( _.getObjectSummaries.map(_.getKey).foreach { fileKey =>
-    s3Client.setObjectAcl(s3Bucket, fileKey, CannedAccessControlList.PublicRead)
-  })
+  def allowPublicFileAccess(avyExtId: String) = allAvalancheFileKeys(avyExtId).map { fileKeys =>
+    fileKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
+  }
 
   def allowPublicImageAccess(avyExtId: String) = allAvalancheImageKeys(avyExtId).map { imageKeys =>
     imageKeys.foreach(s3Client.setObjectAcl(s3Bucket, _, CannedAccessControlList.PublicRead))
@@ -106,7 +105,9 @@ class AmazonS3Service extends Loggable {
     Try(s3Client.listObjects(listObjectsRequest).getCommonPrefixes)
   }
 
-  private[service] def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"${avalancheBaseKey(avyExtId)}/images").getObjectSummaries.map(_.getKey))
+  private[service] def allAvalancheImageKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, s"${avalancheBaseKey(avyExtId)}/images").getObjectSummaries.map(_.getKey).toList)
+
+  private[service] def allAvalancheFileKeys(avyExtId: String) = Try(s3Client.listObjects(s3Bucket, avalancheBaseKey(avyExtId))).map( _.getObjectSummaries.map(_.getKey).toList)
 
   private def avalancheImageKey(avyExtId: String, filename: String) = s"${avalancheBaseKey(avyExtId)}/images/$filename"
 
