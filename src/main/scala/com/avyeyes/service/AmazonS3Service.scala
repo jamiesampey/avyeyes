@@ -24,7 +24,10 @@ class AmazonS3Service extends Loggable {
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
-    val key = avalancheImageKey(avyExtId, filename)
+    val key = filename match {
+      case ScreenshotFilename => screenshotKey(avyExtId)
+      case _ => avalancheImageKey (avyExtId, filename)
+    }
 
     val metadata = new ObjectMetadata()
     metadata.setContentLength(bytes.length)
