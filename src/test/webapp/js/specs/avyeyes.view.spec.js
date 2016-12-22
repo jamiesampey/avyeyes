@@ -43,6 +43,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     };
     window.Cesium = cesiumSpy;
 
+    var fbSpy = {
+        init: function(params) {}
+    };
+    window.FB = fbSpy;
+
     var avyEyesUiStub = sinon.stub();
     var uiWireStub = sinon.stub();
     avyEyesUiStub.returns({

@@ -89,12 +89,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         var avyForm;
 
         var mousePos = {x: 523, y: 527};
-        var fbParseStub = sinon.stub();
-        window.FB = {
-            XFBML: {
-                parse: fbParseStub
-            }
-        };
         var twttrLoadStub = sinon.stub();
         window.twttr = {
             widgets: {
@@ -103,7 +97,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         };
 
         beforeEach(function(done) {
-            fbParseStub.reset();
             twttrLoadStub.reset();
 
             new Squire()
@@ -207,8 +200,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         it("sets up social buttons", function() {
             avyForm.displayReadOnlyForm(mousePos, avalanche);
-
-            expect(fbParseStub.callCount).toBe(1);
             expect(twttrLoadStub.callCount).toBe(1);
         });
     });
