@@ -5,6 +5,7 @@ define(["avyeyes.ui",
 
 function AvyEyesView() {
     this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";
+    this.facebookAppId = "541063359326610";
 
     this.cesiumViewer = new Cesium.Viewer("cesiumContainer", {
         sceneMode: Cesium.SceneMode.SCENE3D,
@@ -70,6 +71,12 @@ function AvyEyesView() {
                 if (tryLiftCallback()) clearInterval(liftCheckInterval);
             }, 500);
         }
+    });
+
+    FB.init({
+        appId: this.facebookAppId,
+        xfbml: true,
+        version: "v2.8"
     });
 }
 

@@ -75,30 +75,6 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
     }
   }
 
-  "Facebook share content" >> {
-    "Share page upload" in new Setup {
-      val avalanche = avalancheForTest
-      val screenshotUrl = s"http://avyeyes.s3.amazonaws.com/avalanches/${avalanche.extId}/$ScreenshotFilename"
-      mockS3Client.getResourceUrl(Matchers.eq(s3Bucket), any) returns screenshotUrl
-
-      val putObjectRequestCapture = capture[PutObjectRequest]
-      s3ImageService.uploadFacebookSharePage(avalanche)
-      there was one(mockS3Client).putObject(putObjectRequestCapture)
-
-      val putObjectRequest = putObjectRequestCapture.value
-      val faceBookSharePage = Source.fromInputStream(putObjectRequest.getInputStream).mkString
-
-      putObjectRequest.getBucketName mustEqual s3Bucket
-      putObjectRequest.getKey mustEqual s"avalanches/${avalanche.extId}/$FacebookSharePageFilename"
-      putObjectRequest.getMetadata.getContentType mustEqual "text/html"
-      putObjectRequest.getMetadata.getCacheControl mustEqual s3ImageService.CacheControlMaxAge
-      faceBookSharePage must startWith("<html>")
-      faceBookSharePage must contain(avalanche.title)
-      faceBookSharePage must contain(screenshotUrl)
-      faceBookSharePage must endWith("</html>")
-    }
-  }
-
   "File access" >> {
     "Allow public access to all files" in new Setup {
       val extId = "ir9319fk"

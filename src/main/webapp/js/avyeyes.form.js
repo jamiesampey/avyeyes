@@ -19,8 +19,16 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     var fbContainer = $("#roAvyFormSocialFacebookContainer");
     fbContainer.empty();
-    fbContainer.append("<div class='fb-share-button' data-layout='button' data-href='"
-        + "//" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/facebook-share.html' />");
+    fbContainer.append("<a>Facebook Share</a>").click(function() {
+        FB.ui({
+            method: 'feed',
+            name: 'AvyEyes',
+            link: a.extUrl,
+            caption: a.comments,
+            picture: "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+            description: a.title
+        }, function(response) {});
+    });
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
@@ -104,7 +112,6 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         collision: "fit"
     });
 
-    FB.XFBML.parse(fbContainer[0]);
     twttr.widgets.load();
 }
 

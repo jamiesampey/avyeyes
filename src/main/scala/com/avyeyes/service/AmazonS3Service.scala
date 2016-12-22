@@ -42,35 +42,6 @@ class AmazonS3Service extends Loggable {
     }
   }
 
-  def uploadFacebookSharePage(avalanche: Avalanche) = {
-    val html =
-      <html>
-        <head>
-          <meta property="og:url" content={R.avalancheUrl(avalanche.extId)} />
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content="AvyEyes" />
-          <meta property="og:description" content={avalanche.title} />
-          <meta property="og:image" content={s3Client.getResourceUrl(s3Bucket, screenshotKey(avalanche.extId))} />
-          <meta http-equiv="refresh" content={s"0; url=${R.avalancheUrl(avalanche.extId)}"} />
-        </head>
-      </html>
-
-    val bytes = html.toString.getBytes("UTF-8")
-    val fbSharePageKey = facebookSharePageKey(avalanche.extId)
-
-    val metadata = new ObjectMetadata()
-    metadata.setContentLength(bytes.length)
-    metadata.setContentType("text/html")
-    metadata.setCacheControl(CacheControlMaxAge)
-
-    val putObjectRequest = new PutObjectRequest(s3Bucket, fbSharePageKey, new ByteArrayInputStream(bytes), metadata)
-
-    Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) => logger.info(s"Successfully uploaded facebook share page for avalanche ${avalanche.extId}")
-      case Failure(ex) => logger.error(s"Failed to upload a facebook share page for avalanche ${avalanche.extId}")
-    }
-  }
-
   def deleteImage(avyExtId: String, filename: String) {
     val key = avalancheImageKey(avyExtId, filename)
 
