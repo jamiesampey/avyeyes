@@ -17,9 +17,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
 
-    var fbContainer = $("#roAvyFormSocialFacebookContainer");
-    fbContainer.empty();
-    fbContainer.append("<a>Facebook Share</a>").click(function() {
+    $("#roAvyFormFacebookButton").click(function() {
         FB.ui({
             method: 'feed',
             name: 'AvyEyes',
