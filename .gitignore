@@ -1,4 +1,5 @@
 .gitignore
+*.props
 *.class
 *.log
 *.DS_Store
