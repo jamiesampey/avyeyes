@@ -8,7 +8,7 @@ The typical AvyEyes workflow is as follows:
 2. I come home and go to https://avyeyes.com to create an avalanche report to share with fellow skiers/riders
 3. I create an AvyEyes report by drawing the avalanche path perimeter on the 3D map view and entering the avalanche details (standard [SWAG](http://www.americanavalancheassociation.org/swag/) fields and free form comments), including any pictures I took of the slide
 4. I submit the report and receive a confirmation email with the unique eight character report identifier
-5. I then email/link/post/message/tweet/share the report with anyone on the internet using the report URL (https<nolink>://avyeyes.com/[8charUID]) so that everyone can see the avalanche online in an interactive 3D view
+5. I then email/link/post/message/tweet/share the report with anyone on the internet using the report URL (https<nolink>://avyeyes.com/8charUID) so that everyone can see the avalanche online in an interactive 3D view
 
 <br/>AvyEyes is online at https://avyeyes.com
 
