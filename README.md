@@ -1,4 +1,4 @@
-!(src/main/webapp/images/avyeyes.jpg =800x)
+![AvyEyes screenshot](/src/main/webapp/images/avyeyes.jpg?raw=true =800x)
 
 AvyEyes is a client-server web application for reporting and sharing avalanches in a 3D, Google Earth-like interactive view. 
 
