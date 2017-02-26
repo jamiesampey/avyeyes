@@ -1,5 +1,6 @@
 .gitignore
-*.props
+ssl/
+props/
 *.class
 *.log
 *.DS_Store
