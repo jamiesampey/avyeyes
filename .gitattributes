@@ -1,0 +1,2 @@
+*.scala linguist-language=Scala
+*.js linguist-language=JavaScript
