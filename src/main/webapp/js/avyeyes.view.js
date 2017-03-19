@@ -56,10 +56,13 @@ function AvyEyesView() {
     this.ui = new AvyEyesUI();
     this.ui.wire(this, function() {
         var tryLiftCallback = function() {
-             if (typeof window.liftAjax != "undefined") {
+            console.log("AvyEyes Load 2: Attempting server callback");
+             if (window.liftAjax) {
+                 console.log("AvyEyes Load 3: liftAjax is defined, making Lift server callback");
                  $("#avyInitLiftCallback").submit();
                  return true;
              } else {
+                 console.warn("liftAjax is undefined. Trying again...");
                  return false;
              }
         }
@@ -67,7 +70,6 @@ function AvyEyesView() {
         if (!tryLiftCallback()) {
             var liftCheckInterval;
             liftCheckInterval = setInterval(function() {
-                console.log("liftAjax is undefined. Trying again...");
                 if (tryLiftCallback()) clearInterval(liftCheckInterval);
             }, 500);
         }

@@ -13,9 +13,9 @@ import net.liftweb.json.Serialization.write
 import net.liftweb.util.Helpers._
 
 class Init extends Loggable {
-  val R = Injectors.resources.vend
-  val dal = Injectors.dal.vend
-  val user = Injectors.user.vend
+  private val R = Injectors.resources.vend
+  private val dal = Injectors.dal.vend
+  private val user = Injectors.user.vend
 
   val InitAvyMsgDelayMillis = 5000
 

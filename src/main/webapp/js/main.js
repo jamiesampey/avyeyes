@@ -9,5 +9,13 @@ var avyEyesView;
 requirejs(["avyeyes.view",
            "//connect.facebook.net/en_US/all.js",
            "//platform.twitter.com/widgets.js"], function(AvyEyesView) {
-    avyEyesView = new AvyEyesView();
+    console.log("AvyEyes Load 0: Waiting for window onload to begin AvyEyes");
+    window.onload = function() {
+        if (!avyEyesView) {
+            console.log("AvyEyes Load 1: Instantiating AvyEyes view");
+            avyEyesView = new AvyEyesView();
+        } else {
+            log.error("AvyEyes view already instantiated");
+        }
+    };
 });
