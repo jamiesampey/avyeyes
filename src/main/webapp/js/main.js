@@ -15,7 +15,7 @@ requirejs(["avyeyes.view",
             console.log("AvyEyes Load 1: Instantiating AvyEyes view");
             avyEyesView = new AvyEyesView();
         } else {
-            log.error("AvyEyes view already instantiated");
+            console.error("AvyEyes view already instantiated");
         }
     };
 });
