@@ -5,7 +5,7 @@ import net.liftweb.util.Helpers._
 import com.avyeyes.util.Constants._
 
 class NotSupported {
-  val R = Injectors.resources.vend
+  private val R = Injectors.resources.vend
 
   def render = {
     "#browserNotSupportedMsg" #> <span id="browserNotSupportedMsg">

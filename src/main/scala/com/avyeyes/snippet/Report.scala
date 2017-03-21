@@ -25,10 +25,10 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 class Report extends ExternalIdService with ModalDialogs with Mailer with Loggable {
-  val R = Injectors.resources.vend
-  val dal = Injectors.dal.vend
-  val s3 = Injectors.s3.vend
-  val user = Injectors.user.vend
+  protected val R = Injectors.resources.vend
+  private val dal = Injectors.dal.vend
+  private val s3 = Injectors.s3.vend
+  private val user = Injectors.user.vend
 
   val adminEmailFrom = From(R.getProperty("mail.admin.address"), Full("AvyEyes"))
 

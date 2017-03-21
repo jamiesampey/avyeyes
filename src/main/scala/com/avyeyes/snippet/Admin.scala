@@ -10,9 +10,9 @@ import org.apache.commons.lang3.StringUtils._
 import scala.xml.NodeSeq
 
 class Admin extends Loggable {
-  val dal = Injectors.dal.vend
-  val user = Injectors.user.vend
-  val R = Injectors.resources.vend
+  private val dal = Injectors.dal.vend
+  private val user = Injectors.user.vend
+  private val R = Injectors.resources.vend
 
   private val AccessDenied = R.localizedString("msg.avyAdminLocalLoginAccessDenied")
   private val LocalAuthEmailHash = R.getProperty("localauth.email")

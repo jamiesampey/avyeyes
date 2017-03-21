@@ -7,8 +7,8 @@ import net.liftweb.util.Helpers._
 import scala.xml._
 
 class Content {
-  val user = Injectors.user.vend
-  val R = Injectors.resources.vend
+  private val user = Injectors.user.vend
+  private val R = Injectors.resources.vend
 
   def render = {
     "label" #> ((ns:NodeSeq) => setupLabel((ns\"@for").text, asBoolean((ns\"@data-required").text) openOr false)) &

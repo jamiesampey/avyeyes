@@ -5,7 +5,7 @@ import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JsCmd
 
 trait ModalDialogs {
-  val R: ResourceService
+  protected val R: ResourceService
   
 	def infoDialog(msgId: String, params: Any*) = getDialogJsCmd("title.infoDialog", msgId, params:_*)
 	def errorDialog(msgId: String, params: Any*) = getDialogJsCmd("title.errorDialog", msgId, params:_*)

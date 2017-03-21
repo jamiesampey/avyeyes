@@ -19,8 +19,8 @@ import net.liftweb.util.Helpers._
 import org.apache.commons.lang3.StringUtils._
 
 class Search extends ModalDialogs with Loggable {
-  val R = Injectors.resources.vend
-  val dal = Injectors.dal.vend
+  protected val R = Injectors.resources.vend
+  private val dal = Injectors.dal.vend
 
   var latMax = ""; var latMin = ""; var lngMax = ""; var lngMin = ""
   var camAlt = ""; var camPitch = ""; var camLat = ""; var camLng = ""
