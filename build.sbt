@@ -24,7 +24,7 @@ resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases
 libraryDependencies ++= {
   Seq(
     filters,
-    "com.typesafe.play" %% "play-slick" % "2.0.0",
+    "com.typesafe.play" %% "play-slick" % "2.1.0",
     "com.typesafe.play" %% "play-mailer" % "5.0.0",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "org.json4s" %% "json4s-jackson" % "3.5.1",

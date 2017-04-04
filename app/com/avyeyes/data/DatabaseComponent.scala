@@ -10,7 +10,7 @@ import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
 private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
 private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
@@ -18,8 +18,8 @@ private[data] case class AvalancheClassificationTableRow(avalanche: String, aval
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers =>
-  protected val driver: JdbcProfile
-  import driver.api._
+  protected val jdbcProfile: JdbcProfile
+  import jdbcProfile.api._
 
   protected val AvalancheRows = TableQuery[AvalancheTable]
   protected val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]

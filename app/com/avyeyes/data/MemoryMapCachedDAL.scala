@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
 import play.db.NamedDatabase
-import slick.driver.JdbcProfile
+import slick.jdbc.JdbcProfile
 
 import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -20,8 +20,8 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
 
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   private val db = dbConfig.db
-  protected val driver: JdbcProfile = dbConfig.driver
-  import driver.api._
+  protected val jdbcProfile: JdbcProfile = dbConfig.profile
+  import jdbcProfile.api._
 
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
