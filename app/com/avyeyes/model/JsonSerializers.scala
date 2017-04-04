@@ -10,10 +10,9 @@ import org.json4s.JsonDSL._
 import org.json4s._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 
-
-class JsonSerializers @Inject()(urlHelper: ConfigurationService) {
+class JsonSerializers @Inject()(urlHelper: ConfigurationService, val messagesApi: MessagesApi) extends I18nSupport {
 
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +

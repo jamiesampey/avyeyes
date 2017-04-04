@@ -1,5 +1,216 @@
 @()
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
-}
+<html>
+  <head>
+    <title>AvyEyes</title>
+
+    <meta name="description" content="AvyEyes is a graphical, searchable database of avalanches built on the Cesium 3D javascript library" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="AvyEyes" />
+    <meta property="og:description" content="View avalanches in 3D" />
+    <meta property="og:image" content="https://avyeyes.com/images/avyeyes.jpg?v=1.1.5" />
+
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/lib/Cesium/Cesium.js")" defer></script>
+    <script type="text/javascript" data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.Assets.versioned("javascripts/lib/require.js")" defer></script>
+
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.css")"/>
+    <link rel="shortcut icon" href="@routes.Assets.versioned("images/favicon.ico")?v=1.6"/>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45548947-3', 'auto');
+        ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <div id="cesiumContainer"></div>
+    <div id="fb-root"></div>
+
+    <div id="loadingDiv">
+        <div id="loadingSplash"><img id="loadingSplashTitle" src="/images/title.png"/></div>
+    </div>
+
+    <div class="avyAdminLoggedInDiv"></div>
+    <div id="eyeAltContainer"></div>
+    <input type="button" id="northButton" class="cesium-button cesium-toolbar-button" title="Reset view to north"/>
+    <input id="s3Bucket" type="hidden"/>
+    <div id="avyMouseHoverTitle"></div>
+    <div id="multiDialog"></div>
+
+    <div id="avyTitleOverlay" class="avyOverlay avyResultsOverlay">
+        <div class="avyOverlayContent">
+            <div id="avyTitleOverlayName"></div>
+            <div id="avyTitleOverlaySubmitter"></div>
+            <div class="avyOverlayClickInstructions"><span id="avyTitleOverlayClick" class="avyMsg"></span></div>
+            <span id="avyTitleOverlayTips" class="avyMsg"></span>
+        </div>
+    </div>
+
+    <div id="avySearchOverlay" class="avyOverlay avyResultsOverlay">
+        <div class="avyOverlayContent">
+            <div id="avySearchOverlayResults"></div>
+            <div class="avyOverlayClickInstructions"><span id="avySearchResultsOverlayClick" class="avyMsg"></span></div>
+            <span id="avySearchOverlayTips" class="avyMsg"></span>
+        </div>
+    </div>
+
+    <div id="helpOverlay" class="avyOverlay">
+        <div id="helpOverlayText" class="avyOverlayContent">
+            <div id="anyKeyToCloseWrapper"><span id="anyKeyToClose" class="avyMsg"></span></div>
+            <ul>
+                <li><a id="searchHelpTab" class="avyLink" href="#searchHelpDiv"></a></li>
+                <li><a id="reportHelpTab" class="avyLink" href="#reportHelpDiv"></a></li>
+                <li><a id="aboutHelpTab" class="avyLink" href="#aboutHelpDiv"></a></li>
+            </ul>
+            <div id="searchHelpDiv" class="helpContent"><span id="searchHelpContent" class="avyMsg"></span></div>
+            <div id="reportHelpDiv" class="helpContent"><span id="reportHelpContent" class="avyMsg"></span></div>
+            <div id="aboutHelpDiv" class="helpContent"><span id="aboutHelpContent" class="avyMsg"></span></div>
+        </div>
+    </div>
+
+    <div id="aeControls">
+        <div id="aeControlsTitle">
+            <img src="/images/title.png"/>
+            <div id="aeControlsMenuButtonContainer">
+                <a id="aeControlsMenuButton" href="#"><img src="/images/menu.png"/></a>
+            </div>
+            <ul id="aeControlsMenu">
+                <li><a id="searchMenuItem" class="avyLink" href="#"></a></li>
+                <li><a id="reportMenuItem" class="avyLink" href="#"></a></li>
+                <li><a id="aboutMenuItem" class="avyLink" href="#"></a></li>
+            </ul>
+        </div>
+
+        <div id="aeControlsSearchForm" class="aeControlsContent">
+            <hr/>
+            <form class="lift:form.ajax">
+                <div class="lift:Search?form.post">
+
+                    <div class="avySearchHeaderContainer">
+                        <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
+                        <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#"></a></div>
+                    </div>
+
+                    <table id="avySearchDetailsTable">
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchLocation"></label></td>
+                            <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation avyRawTextInput" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchFromDate"></label></td>
+                            <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchToDate"></label></td>
+                            <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchSubHeader" colspan="2"><span id="avySearchAdditionalCriteria" class="avyHeader"></span></td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchType"></label></td>
+                            <td class="avySearchTableInput">
+                                <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
+                                <input id="avySearchType" type="hidden"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchTrigger"></label></td>
+                            <td class="avySearchTableInput">
+                                <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                                <input id="avySearchTrigger" type="hidden"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchRsizeValue"></label></td>
+                            <td class="avySearchTableInput">
+                                <div class="avyRDSliderContainer">
+                                    <input id="avySearchRsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
+                                    <div id="avyRSearchRsizeSlider" class="avyRDSlider avyRSlider"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchTableLabel"><label for="avySearchDsizeValue"></label></td>
+                            <td class="avySearchTableInput">
+                                <div class="avyRDSliderContainer">
+                                    <input id="avySearchDsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
+                                    <div id="avySearchDsizeSlider" class="avyRDSlider avyDSlider"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="avySearchSubHeader" colspan="2"><span id="avySearchHumanNumbersHeader" class="avyHeader"></span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table id="avySearchHumanNumbersTable">
+                                    <tr>
+                                        <td><label for="avySearchNumCaught"></label></td>
+                                        <td><input id="avySearchNumCaught" class="avyHumanNumber" readonly="readonly"/></td>
+                                        <td><label for="avySearchNumKilled"></label></td>
+                                        <td><input id="avySearchNumKilled" class="avyHumanNumber" readonly="readonly"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <div>
+                        <input id="avySearchLatMax" type="hidden"/>
+                        <input id="avySearchLatMin" type="hidden"/>
+                        <input id="avySearchLngMax" type="hidden"/>
+                        <input id="avySearchLngMin" type="hidden"/>
+
+                        <input id="avySearchCameraAlt" type="hidden"/>
+                        <input id="avySearchCameraPitch" type="hidden"/>
+                        <input id="avySearchCameraLat" type="hidden"/>
+                        <input id="avySearchCameraLng" type="hidden"/>
+                    </div>
+                    <div id="avySearchButtonsContainer">
+                        <input id="avySearchButton" type="button" class="avyButton"/>
+                        <input id="avySearchSubmitBinding" type="hidden"/>
+                        <input id="avySearchResetButton" type="button" class="avyButton"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="aeControlsReportInstructions" class="aeControlsContent">
+            <hr/>
+
+            <div id="avyReportStep1" class="reportInstructions">
+                <div class="avyReportInstructionsHeader"><span id="avyReportStep1Header" class="avyHeader"></span></div>
+                <span id="avyReportInstructions1" class="avyMsg"></span>
+                <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text" placeholder="Location"/>
+                <input id="avyReportInitLocationButton" type="button" class="avyButton"/>
+            </div>
+
+            <div id="avyReportStep2" class="reportInstructions">
+                <div class="avyReportInstructionsHeader"><span id="avyReportStep2Header" class="avyHeader avyReportHeader"></span></div>
+                <span id="avyReportInstructions2" class="avyMsg"></span>
+                <div class="avyReportInstructionsButtonWrapper">
+                    <input id="avyReportStartDrawingButton" type="button" class="avyButton"/>
+                </div>
+            </div>
+
+            <div id="avyReportStep3" class="reportInstructions">
+                <div class="avyReportInstructionsHeader"><span id="avyReportStep3Header" class="avyHeader avyReportHeader"></span></div>
+                <span id="avyReportInstructions3" class="avyMsg"></span>
+            </div>
+
+            <div id="avyReportStep4" class="reportInstructions">
+                <span id="avyReportInstructions4" class="avyMsg"></span>
+                <div class="avyReportInstructionsButtonWrapper">
+                    <input id="avyReportAcceptDrawingButton" type="button" class="avyButton"/>
+                    <input id="avyReportRedrawButton" type="button" class="avyButton"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+  </body>
+</html>

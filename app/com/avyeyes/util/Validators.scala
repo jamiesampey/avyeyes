@@ -1,7 +1,6 @@
 package com.avyeyes.util
 
 import javax.mail.internet.InternetAddress
-
 import com.avyeyes.util.Converters._
 import com.avyeyes.util.Constants._
 import org.apache.commons.lang3.Validate

@@ -1,9 +1,9 @@
 package com.avyeyes.util
 
-import net.liftweb.util.Helpers.{asDouble, asInt}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
+import scala.util.{Failure, Success, Try}
 
 object Converters {
   private val dtf = DateTimeFormat.forPattern("MM-dd-yyyy")
@@ -12,7 +12,13 @@ object Converters {
 	
   def dateToStr(dt: DateTime): String = dt.toString(dtf)
 
-	def strToDblOrZero(str: String): Double = asDouble(str) openOr 0
+	def strToDblOrZero(str: String): Double = Try(str.toDouble) match {
+    case Success(double) => double
+    case Failure(_) => 0
+  }
 
-	def strToIntOrNegOne(str: String): Int = asInt(str) openOr -1
+	def strToIntOrNegOne(str: String): Int = Try(str.toInt) match {
+    case Success(int) => int
+    case Failure(_) => -1
+  }
 }
