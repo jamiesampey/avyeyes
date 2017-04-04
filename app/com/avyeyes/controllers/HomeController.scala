@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import javax.inject._
 
-import com.avyeyes.service.ResourceService
+import com.avyeyes.service.ConfigurationService
 import play.api._
 import play.api.mvc._
 
@@ -11,7 +11,7 @@ import play.api.mvc._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(R: ResourceService) extends Controller {
+class HomeController @Inject()(R: ConfigurationService) extends Controller {
 
   /**
    * Create an Action to render an HTML page.

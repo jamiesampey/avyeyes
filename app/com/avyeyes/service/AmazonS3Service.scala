@@ -1,26 +1,25 @@
 package com.avyeyes.service
 
 import java.io.ByteArrayInputStream
+import javax.inject.Inject
 
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
-import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Constants._
-import net.liftweb.common.Loggable
+import play.api.Logger
 
 import scala.collection.JavaConversions._
 import scala.util.{Failure, Success, Try}
 
-class AmazonS3Service extends Loggable {
-  val R = Injectors.resources.vend
-  private val s3Bucket = R.getProperty("s3.bucket")
+class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Logger) {
+  private val s3Bucket = configService.getProperty("s3.bucket")
 
   private[service] val CacheControlMaxAge = "max-age=31536000" // 1 year in seconds
 
   protected val s3Client = new AmazonS3Client(new BasicAWSCredentials(
-    R.getProperty("s3.fullaccess.accessKeyId"),
-    R.getProperty("s3.fullaccess.secretAccessKey")
+    configService.getProperty("s3.fullaccess.accessKeyId"),
+    configService.getProperty("s3.fullaccess.secretAccessKey")
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {

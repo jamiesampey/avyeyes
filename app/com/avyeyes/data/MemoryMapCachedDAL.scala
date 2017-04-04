@@ -1,27 +1,29 @@
 package com.avyeyes.data
 
-import javax.sql.DataSource
+import javax.inject._
 
 import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
 import com.avyeyes.service.ExternalIdService
-import net.liftweb.common.Loggable
 import org.joda.time.DateTime
+import play.api.Logger
+import play.api.db.slick.DatabaseConfigProvider
+import play.db.NamedDatabase
 import slick.driver.JdbcProfile
 
 import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL(val driver: JdbcProfile, ds: DataSource,
-  avalancheMap: CMap[String, Avalanche]) extends CachedDAL with DatabaseComponent
-  with SlickColumnMappers with DriverComponent with ExternalIdService with Loggable {
+class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, logger: Logger)(avalancheMap: CMap[String, Avalanche])
+  extends CachedDAL with DatabaseComponent with SlickColumnMappers with ExternalIdService {
 
+  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+  private val db = dbConfig.db
+  protected val driver: JdbcProfile = dbConfig.driver
   import driver.api._
 
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
-
-  private val db = Database.forDataSource(ds)
 
   def userRoles(email: String): Future[Seq[UserRole]] = db.run(UserRoleRows.filter(_.email === email).result)
 

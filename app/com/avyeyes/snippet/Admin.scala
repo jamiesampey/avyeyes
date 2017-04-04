@@ -1,7 +1,7 @@
 package com.avyeyes.snippet
 
 import com.avyeyes.data.CachedDAL
-import com.avyeyes.service.{Injectors, ResourceService, UserSession}
+import com.avyeyes.service.{Injectors, ConfigurationService, UserSession}
 import com.google.inject.Inject
 import net.liftweb.common._
 import net.liftweb.http._
@@ -12,7 +12,7 @@ import play.Logger
 
 import scala.xml.NodeSeq
 
-class Admin @Inject()(dal: CachedDAL, user: UserSession, R: ResourceService) {
+class Admin @Inject()(dal: CachedDAL, user: UserSession, R: ConfigurationService) {
   private val logger = Logger.of(Admin.class)
 //  private val dal = Injectors.dal.vend
 //  private val user = Injectors.user.vend

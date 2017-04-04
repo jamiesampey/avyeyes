@@ -1,12 +1,14 @@
 package com.avyeyes.data
 
 import java.sql.Timestamp
+
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
+import slick.driver.JdbcProfile
 
-private[data] trait SlickColumnMappers { this: DriverComponent =>
-
+private[data] trait SlickColumnMappers {
+  val driver: JdbcProfile
   import driver.api._
 
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](

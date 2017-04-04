@@ -26,7 +26,7 @@ Client side code is Javascript (vanilla JS along with [jQuery](https://jquery.co
 
 ##Compile, Test, Run:
 
-*Pre-step:* create `src/main/resources/props/default.props` with all the necessary config info. The `.props` files are excluded from the git repo to protect sensitive deployment keys/URLs/passwords
+*Pre-step:* create `src/main/resources/props/application.conf` with all the necessary config info. The `.props` files are excluded from the git repo to protect sensitive deployment keys/URLs/passwords
 
 *Pre-step:* create a `misc/ssl/localKeystore.jks` and update `build.sbt` with the local keystore path/password to access the locally running web server via https
 

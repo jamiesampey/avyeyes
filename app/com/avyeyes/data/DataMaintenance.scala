@@ -1,18 +1,16 @@
 package com.avyeyes.data
 
+import javax.inject._
+
 import akka.actor._
-import com.avyeyes.service.{ExternalIdService, Injectors}
-import net.liftweb.common.Loggable
+import com.avyeyes.service.{AmazonS3Service, ExternalIdService}
+import play.api.Logger
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
-import scala.util.Success
-import scala.util.Failure
-
-class DataMaintenance extends Actor with ExternalIdService with Loggable {
-  val dal = Injectors.dal.vend
-  val s3 = Injectors.s3.vend
+class DataMaintenance @Inject()(logger: Logger, dal: CachedDAL, s3: AmazonS3Service) extends Actor with ExternalIdService  {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 

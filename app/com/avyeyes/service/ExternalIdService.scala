@@ -5,14 +5,16 @@ import java.util.concurrent.TimeUnit
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.util.Constants._
 import com.google.common.cache._
-import net.liftweb.common.Loggable
 import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
+import play.api.Logger
 
-trait ExternalIdService extends Loggable {
+trait ExternalIdService {
+  val logger: Logger
+
   val NewExternalIdAttemptLimit = 100
 
-  def reserveNewExtId(implicit dal: CachedDAL) = {
+  def reserveNewExtId(implicit dal: CachedDAL): String = {
     var extIdAttempt = ""
     var attemptCount = 0
     

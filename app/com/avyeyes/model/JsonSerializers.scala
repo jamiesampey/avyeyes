@@ -1,18 +1,19 @@
 package com.avyeyes.model
 
+import javax.inject.Inject
+
 import com.avyeyes.model.enums._
-import com.avyeyes.service.Injectors
+import com.avyeyes.service.ConfigurationService
 import com.avyeyes.util.Converters._
-import net.liftweb.http.S
-import net.liftweb.json.JsonAST.JString
-import net.liftweb.json.JsonDSL._
-import net.liftweb.json._
+import org.json4s.JsonAST.JString
+import org.json4s.JsonDSL._
+import org.json4s._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
+import play.api.i18n.Messages
 
 
-object JsonSerializers {
-  val R = Injectors.resources.vend
+class JsonSerializers @Inject()(urlHelper: ConfigurationService) {
 
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
@@ -24,7 +25,7 @@ object JsonSerializers {
 
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-    ("extUrl" -> R.avalancheUrl(a.extId)) ~
+    ("extUrl" -> urlHelper.avalancheUrl(a.extId)) ~
     ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
@@ -94,7 +95,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
       tokens.length match {
         case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
         case 3 =>
-          ("category" -> S ? s"enum.${tokens(0)}.${tokens(1)}") ~
+          ("category" -> Messages(s"enum.${tokens(0)}.${tokens(1)}")) ~
           ("label" -> getLocalizedLabel(tokens)) ~
           ("value" -> tokens(2))
       }
@@ -103,7 +104,7 @@ class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#
   }
 
   private def getLocalizedLabel(tokens: Array[String]): String = {
-    val label = if (tokens.last == "empty") "" else S ? s"enum.${tokens.mkString(".")}"
+    val label = if (tokens.last == "empty") "" else Messages(s"enum.${tokens.mkString(".")}")
 
     compositeLabelEnums.contains(tokens.head) match {
       case true => s"${tokens.last} - $label"

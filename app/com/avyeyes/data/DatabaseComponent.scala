@@ -10,27 +10,28 @@ import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
+import slick.driver.JdbcProfile
 
 private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
 private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
 private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
-private[data] trait DatabaseComponent {this: SlickColumnMappers with DriverComponent =>
-
+private[data] trait DatabaseComponent {this: SlickColumnMappers =>
+  val driver: JdbcProfile
   import driver.api._
 
-  val AvalancheRows = TableQuery[AvalancheTable]
-  val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
-  val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
-  val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
+  protected val AvalancheRows = TableQuery[AvalancheTable]
+  protected val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
+  protected val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
+  protected val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
 
-  val AvalancheImageRows = TableQuery[AvalancheImageTable]
+  protected val AvalancheImageRows = TableQuery[AvalancheImageTable]
 
-  val UserRows = TableQuery[UsersTable]
-  val UserRoleRows = TableQuery[UserRoleAssignmentTable]
+  protected val UserRows = TableQuery[UsersTable]
+  protected val UserRoleRows = TableQuery[UserRoleAssignmentTable]
 
-  def createSchema = (
+  private[data] def createSchema = (
     AvalancheRows.schema ++
     AvalancheWeatherRows.schema ++
     AvalancheClassificationRows.schema ++

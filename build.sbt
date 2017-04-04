@@ -23,11 +23,12 @@ resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases
 
 libraryDependencies ++= {
   Seq(
-    jdbc,
+    "com.typesafe.play" %% "play-slick" % "2.0.0",
+    "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "org.json4s" %% "json4s-jackson" % "3.5.1",
     "com.typesafe.akka" %% "akka-actor" % "2.3.13",
-    "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
+    "joda-time" % "joda-time" % "2.9.9",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
 

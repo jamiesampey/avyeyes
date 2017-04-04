@@ -1,11 +1,11 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.service.ResourceService
+import com.avyeyes.service.ConfigurationService
 import net.liftweb.http.js.JE.Call
 import net.liftweb.http.js.JsCmd
 
 trait ModalDialogs {
-  protected val R: ResourceService
+  protected val R: ConfigurationService
   
 	def infoDialog(msgId: String, params: Any*) = getDialogJsCmd("title.infoDialog", msgId, params:_*)
 	def errorDialog(msgId: String, params: Any*) = getDialogJsCmd("title.errorDialog", msgId, params:_*)
