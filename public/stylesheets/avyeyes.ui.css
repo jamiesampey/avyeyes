@@ -204,7 +204,7 @@ li.ui-autocomplete-category {
     height: 200px;
     top: -100px; left: 0; bottom: 0; right: 0;
     text-align: center;
-    background-image: url("/images/spinner-init-loading.gif");
+    background-image: url("../images/spinner-init-loading.gif");
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -338,7 +338,7 @@ li.ui-autocomplete-category {
 	top: 5px;
     right: 43px;
     z-index: 100;
-    background-image: url("/images/north-button.png");
+    background-image: url("../images/north-button.png");
 }
 
 #avyMouseHoverTitle {

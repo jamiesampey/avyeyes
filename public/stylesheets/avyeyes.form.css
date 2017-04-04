@@ -345,7 +345,7 @@
 }
 
 #rwAvyFormImageDropZone {
-    background-image: url("/images/drag-and-drop-background.png");
+    background-image: url("../images/drag-and-drop-background.png");
     background-repeat: no-repeat;
     background-position: center;
 	border: 1px solid #7D7D7D;
