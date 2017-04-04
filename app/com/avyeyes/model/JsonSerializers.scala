@@ -5,14 +5,14 @@ import javax.inject.Inject
 import com.avyeyes.model.enums._
 import com.avyeyes.service.ConfigurationService
 import com.avyeyes.util.Converters._
+import org.apache.commons.lang3.StringEscapeUtils._
+import org.joda.time.DateTime
 import org.json4s.JsonAST.JString
 import org.json4s.JsonDSL._
 import org.json4s._
-import org.apache.commons.lang3.StringEscapeUtils._
-import org.joda.time.DateTime
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.Messages
 
-class JsonSerializers @Inject()(urlHelper: ConfigurationService, val messagesApi: MessagesApi) extends I18nSupport {
+class JsonSerializers @Inject()(urlHelper: ConfigurationService)(implicit val messages: Messages) {
 
   implicit val formats: Formats = DefaultFormats +
     DateTimeSerializer +
@@ -85,7 +85,7 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
   }
 ))
 
-class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
+class ChainedEnumSerializer(enums: Enumeration*)(implicit val messages: Messages) extends Serializer[Enumeration#Value] {
   def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {

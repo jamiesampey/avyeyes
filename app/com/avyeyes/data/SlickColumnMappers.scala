@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 import slick.driver.JdbcProfile
 
 private[data] trait SlickColumnMappers {
-  val driver: JdbcProfile
+  protected val driver: JdbcProfile
   import driver.api._
 
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](

@@ -18,7 +18,7 @@ private[data] case class AvalancheClassificationTableRow(avalanche: String, aval
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers =>
-  val driver: JdbcProfile
+  protected val driver: JdbcProfile
   import driver.api._
 
   protected val AvalancheRows = TableQuery[AvalancheTable]

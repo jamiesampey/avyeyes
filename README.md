@@ -1,4 +1,4 @@
-![AvyEyes screenshot](/src/main/webapp/images/avyeyes.jpg?raw=true =800x)
+![AvyEyes screenshot](/public/images/avyeyes.jpg?raw=true =800x)
 
 **AvyEyes** is a web application for reporting and sharing avalanches in a 3D, Google Earth-like interactive view. 
 
@@ -20,7 +20,7 @@ A few example reports:
 
 ##Code:
 
-Server side code is 100% Scala running in the [Lift web framework](https://liftweb.net/) and deployed in [Apache Tomcat](http://tomcat.apache.org/). AvyEyes runs as an [AWS](https://aws.amazon.com/) Elastic Beanstalk app with a Postgres RDS instance providing persistence and S3 for image storage. Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking.
+Server side code is 100% Scala running in the [Play Framework](https://www.playframework.com/) and deployed in [Apache Tomcat](http://tomcat.apache.org/). AvyEyes runs as an [AWS](https://aws.amazon.com/) Elastic Beanstalk app with a Postgres RDS instance providing persistence and S3 for image storage. Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking.
 
 Client side code is Javascript (vanilla JS along with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few jQuery plugins) organized via AMD and compiled/injected with [RequireJS](http://requirejs.org/) . The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
 
