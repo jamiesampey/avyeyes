@@ -1,18 +1,22 @@
 package com.avyeyes.snippet
 
-import com.avyeyes.service.Injectors
+import com.avyeyes.data.CachedDAL
+import com.avyeyes.service.{Injectors, ResourceService, UserSession}
+import com.google.inject.Inject
 import net.liftweb.common._
 import net.liftweb.http._
 import net.liftweb.util.Helpers._
 import net.liftweb.util._
 import org.apache.commons.lang3.StringUtils._
+import play.Logger
 
 import scala.xml.NodeSeq
 
-class Admin extends Loggable {
-  private val dal = Injectors.dal.vend
-  private val user = Injectors.user.vend
-  private val R = Injectors.resources.vend
+class Admin @Inject()(dal: CachedDAL, user: UserSession, R: ResourceService) {
+  private val logger = Logger.of(Admin.class)
+//  private val dal = Injectors.dal.vend
+//  private val user = Injectors.user.vend
+//  private val R = Injectors.resources.vend
 
   private val AccessDenied = R.localizedString("msg.avyAdminLocalLoginAccessDenied")
   private val LocalAuthEmailHash = R.getProperty("localauth.email")

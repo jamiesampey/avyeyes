@@ -30,6 +30,7 @@ libraryDependencies ++= {
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
+
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.4.188" % "test",
@@ -71,17 +72,17 @@ javaOptions in Tomcat ++= Seq(
 
 
 // sbt-jasmine-plugin config
-seq(jasmineSettings : _*)
+Seq(jasmineSettings : _*)
 
-appJsDir <+= sourceDirectory { src => src / "main" / "public" / "javascripts" }
+appJsDir <+= { sourceDirectory { src => src / "public" / "javascripts" } }
 
-appJsLibDir <+= sourceDirectory { src => src / "main" / "public" / "javascripts" / "lib" }
+appJsLibDir <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" }
 
 jasmineTestDir <+= sourceDirectory { src => src / "test" / "public" / "javascripts" }
 
 jasmineConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "test.dependencies.js" }
 
-jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "public" / "javascripts" / "lib" / "require.js" }
+jasmineRequireJsFile <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" / "require.js" }
 
 jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "require.conf.js" }
 

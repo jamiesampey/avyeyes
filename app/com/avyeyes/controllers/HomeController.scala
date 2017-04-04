@@ -1,6 +1,8 @@
-package controllers
+package com.avyeyes.controllers
 
 import javax.inject._
+
+import com.avyeyes.service.ResourceService
 import play.api._
 import play.api.mvc._
 
@@ -9,7 +11,7 @@ import play.api.mvc._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject() extends Controller {
+class HomeController @Inject()(R: ResourceService) extends Controller {
 
   /**
    * Create an Action to render an HTML page.
@@ -19,6 +21,6 @@ class HomeController @Inject() extends Controller {
    * a path of `/`.
    */
   def index = Action { implicit request =>
-    Ok(views.html.index())
+    Ok(com.avyeyes.views.html.index())
   }
 }

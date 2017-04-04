@@ -1,18 +1,4 @@
 <configuration>
-	<appender name="LIFT-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	    <file>${log.dir:-logs}/lift.log</file>
-	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-		    <fileNamePattern>${log.dir:-logs}/lift.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-		    <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-    		    <maxFileSize>25MB</maxFileSize>
-		    </timeBasedFileNamingAndTriggeringPolicy>
-		    <maxHistory>10</maxHistory>
-	    </rollingPolicy>
-	    <encoder>
-            <pattern>%date - [%level] - %logger [%thread]: %message%n%xException</pattern>
-        </encoder>
-	</appender>
-
     <appender name="AVYEYES-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.dir:-logs}/avyeyes.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -27,13 +13,7 @@
         </encoder>
     </appender>
     
-  <logger name="net.liftweb" level="WARN" additivity="false">
-    <appender-ref ref="LIFT-DAILY-ROLLING-FILE" />
-  </logger>
-  
   <logger name="com.avyeyes" level="DEBUG" />
-  
-  <logger name="bootstrap" level="INFO"/>
   
   <root level="WARN">
     <appender-ref ref="AVYEYES-DAILY-ROLLING-FILE" />
