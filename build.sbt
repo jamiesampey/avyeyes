@@ -1,10 +1,16 @@
+import com.github.play2war.plugin._
+
+enablePlugins(PlayScala)
+
+enablePlugins(TomcatPlugin)
+
 organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "1.2.3"
+version := "2.0.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
@@ -16,16 +22,12 @@ scalacOptions ++= Seq(
 resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
 
 libraryDependencies ++= {
-  val liftVersion = "2.6.2"
   Seq(
-    "net.liftweb" %% "lift-webkit" % liftVersion,
-    "net.liftweb" %% "lift-testkit" % liftVersion,
-    "net.liftmodules" %% "omniauth_2.6" % "0.17",
+    jdbc,
+    "org.json4s" %% "json4s-jackson" % "3.5.1",
     "com.typesafe.akka" %% "akka-actor" % "2.3.13",
-    "com.typesafe.slick" %% "slick" % "3.0.3",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
-    "ch.qos.logback" % "logback-classic" % "1.1.3",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
     "org.specs2" %% "specs2" % "2.4.1" % "test",
@@ -34,6 +36,10 @@ libraryDependencies ++= {
     "javax.servlet" % "servlet-api" % "2.5" % "test"
   )
 }
+
+Play2WarKeys.servletVersion := "3.0"
+
+Play2WarKeys.explodedJar := true
 
 lazy val mode = taskKey[String]("Build mode (dev or prod)")
 
@@ -52,8 +58,6 @@ webappPostProcess := { origWebapp =>
 }
 
 // xsbt-web-plugin config
-enablePlugins(TomcatPlugin)
-
 containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
 
 containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
@@ -69,17 +73,17 @@ javaOptions in Tomcat ++= Seq(
 // sbt-jasmine-plugin config
 seq(jasmineSettings : _*)
 
-appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "js" }
+appJsDir <+= sourceDirectory { src => src / "main" / "public" / "javascripts" }
 
-appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" }
+appJsLibDir <+= sourceDirectory { src => src / "main" / "public" / "javascripts" / "lib" }
 
-jasmineTestDir <+= sourceDirectory { src => src / "test" / "webapp" / "js" }
+jasmineTestDir <+= sourceDirectory { src => src / "test" / "public" / "javascripts" }
 
-jasmineConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "test.dependencies.js" }
+jasmineConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "test.dependencies.js" }
 
-jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" / "require.js" }
+jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "public" / "javascripts" / "lib" / "require.js" }
 
-jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
+jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "require.conf.js" }
 
 jasmineEdition := 2
 
