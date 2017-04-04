@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class DataMaintenance @Inject()(logger: Logger, dal: CachedDAL, s3: AmazonS3Service) extends Actor with ExternalIdService  {
+class DataMaintenance @Inject()(val logger: Logger, dal: CachedDAL, s3: AmazonS3Service) extends Actor with ExternalIdService  {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 

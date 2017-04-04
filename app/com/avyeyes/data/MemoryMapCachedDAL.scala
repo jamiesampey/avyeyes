@@ -15,7 +15,7 @@ import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, logger: Logger)(avalancheMap: CMap[String, Avalanche])
+class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, val logger: Logger)(avalancheMap: CMap[String, Avalanche])
   extends CachedDAL with DatabaseComponent with SlickColumnMappers with ExternalIdService {
 
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
