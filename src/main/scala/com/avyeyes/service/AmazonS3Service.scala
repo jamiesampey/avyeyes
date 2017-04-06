@@ -1,5 +1,6 @@
 package com.avyeyes.service
 
+import java.awt.geom.AffineTransform
 import java.io.ByteArrayInputStream
 
 import com.amazonaws.auth.BasicAWSCredentials
@@ -7,6 +8,9 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Constants._
+import com.drew.imaging.ImageMetadataReader
+import com.drew.metadata.Metadata
+import com.drew.metadata.exif.{ExifDirectoryBase, ExifIFD0Directory}
 import net.liftweb.common.Loggable
 
 import scala.collection.JavaConversions._
@@ -24,6 +28,8 @@ class AmazonS3Service extends Loggable {
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
+    getExifTransformation(bytes)
+
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
       case _ => avalancheImageKey (avyExtId, filename)
@@ -90,4 +96,45 @@ class AmazonS3Service extends Loggable {
   private def facebookSharePageKey(avyExtId: String) = s"${avalancheBaseKey(avyExtId)}/$FacebookSharePageFilename"
 
   private def avalancheBaseKey(avyExtId: String) = s"avalanches/$avyExtId"
+
+  private def getExifTransformation(imageBytes: Array[Byte]): Unit = {
+    val bais = new ByteArrayInputStream(imageBytes)
+    val metadata: Metadata = ImageMetadataReader.readMetadata(bais)
+
+    val orientationOption = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).map { exifIFO0Dir =>
+      exifIFO0Dir.getInt(ExifDirectoryBase.TAG_ORIENTATION)
+    }
+
+    logger.debug(s"Orientation is: $orientationOption")
+
+  }
+
+  private def rotationTransform(orientation: Int) = {
+    val transform = new AffineTransform
+    orientation match {
+      case 2 => // Flip X
+        transform.scale(-1.0, 1.0)
+        transform.translate(info.width, 0)
+      case 3 => // PI rotation
+        transform.translate(info.width, info.height)
+        transform.rotate(Math.PI)
+      case 4 => // Flip Y
+        transform.scale(1.0, -1.0)
+        transform.translate(0, -info.height)
+      case 5 => // - PI/2 and Flip X
+        transform.rotate(-Math.PI / 2)
+        transform.scale(-1.0, 1.0)
+      case 6 => // -PI/2 and -width
+        transform.translate(info.height, 0)
+        transform.rotate(Math.PI / 2)
+      case 7 => // PI/2 and Flip
+        transform.scale(-1.0, 1.0)
+        transform.translate(-info.height, 0)
+        transform.translate(0, info.width)
+        transform.rotate(3 * Math.PI / 2)
+      case 8 => // PI / 2
+        transform.translate(0, info.width)
+        transform.rotate(3 * Math.PI / 2)
+    }
+  }
 }
