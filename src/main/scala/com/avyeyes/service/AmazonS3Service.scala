@@ -1,12 +1,13 @@
 package com.avyeyes.service
 
 import java.awt.geom.AffineTransform
-import java.io.ByteArrayInputStream
+import java.awt.image.{AffineTransformOp, BufferedImage}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import javax.imageio.ImageIO
 
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
-import com.avyeyes.model.Avalanche
 import com.avyeyes.util.Constants._
 import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.Metadata
@@ -27,8 +28,8 @@ class AmazonS3Service extends Loggable {
     R.getProperty("s3.fullaccess.secretAccessKey")
   ))
 
-  def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
-    getExifTransformation(bytes)
+  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]) {
+    val bytesForUpload = exifBasedTransform(filename, mimeType, origBytes)
 
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
@@ -36,14 +37,14 @@ class AmazonS3Service extends Loggable {
     }
 
     val metadata = new ObjectMetadata()
-    metadata.setContentLength(bytes.length)
+    metadata.setContentLength(bytesForUpload.length)
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytes), metadata)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytesForUpload), metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytes.length} bytes")
+      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
   }
@@ -97,44 +98,72 @@ class AmazonS3Service extends Loggable {
 
   private def avalancheBaseKey(avyExtId: String) = s"avalanches/$avyExtId"
 
-  private def getExifTransformation(imageBytes: Array[Byte]): Unit = {
+  private def exifBasedTransform(filename: String, mimeType: String, imageBytes: Array[Byte]): Array[Byte] = {
+    def exifTagValueOption(exifDir: ExifIFD0Directory, tag: Int) = Try(exifDir.getInt(tag)) match {
+      case Success(tagValue) => Some(tagValue)
+      case Failure(_) => None
+    }
+
     val bais = new ByteArrayInputStream(imageBytes)
     val metadata: Metadata = ImageMetadataReader.readMetadata(bais)
 
-    val orientationOption = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).map { exifIFO0Dir =>
-      exifIFO0Dir.getInt(ExifDirectoryBase.TAG_ORIENTATION)
+    val OWH = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).map { exifIFO0Dir => (
+      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_ORIENTATION),
+      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_IMAGE_WIDTH),
+      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_IMAGE_HEIGHT)
+    )}
+
+    logger.debug(s"OWH for $filename is $OWH")
+
+    OWH match {
+      case Some((Some(orientation), Some(width), Some(height))) =>
+        logger.debug(s"Transforming image $filename based on orientation($orientation), width($width), height($height)")
+
+        val transform = rotationTransform(orientation, width, height)
+        val transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC)
+
+        val origImage = ImageIO.read(bais)
+        val destImage = transformOp.createCompatibleDestImage(origImage, if (origImage.getType == BufferedImage.TYPE_BYTE_GRAY) origImage.getColorModel else null)
+        val baos = new ByteArrayOutputStream()
+        ImageIO.write(destImage, mimeType, baos)
+        val transformedBytes = baos.toByteArray
+        bais.close
+        baos.close
+        transformedBytes
+
+      case _ => imageBytes
     }
-
-    logger.debug(s"Orientation is: $orientationOption")
-
   }
 
-  private def rotationTransform(orientation: Int) = {
+  private def rotationTransform(orientation: Int, width: Int, height: Int): AffineTransform = {
     val transform = new AffineTransform
+
     orientation match {
       case 2 => // Flip X
         transform.scale(-1.0, 1.0)
-        transform.translate(info.width, 0)
+        transform.translate(width, 0)
       case 3 => // PI rotation
-        transform.translate(info.width, info.height)
+        transform.translate(width, height)
         transform.rotate(Math.PI)
       case 4 => // Flip Y
         transform.scale(1.0, -1.0)
-        transform.translate(0, -info.height)
+        transform.translate(0, -height)
       case 5 => // - PI/2 and Flip X
         transform.rotate(-Math.PI / 2)
         transform.scale(-1.0, 1.0)
       case 6 => // -PI/2 and -width
-        transform.translate(info.height, 0)
+        transform.translate(height, 0)
         transform.rotate(Math.PI / 2)
       case 7 => // PI/2 and Flip
         transform.scale(-1.0, 1.0)
-        transform.translate(-info.height, 0)
-        transform.translate(0, info.width)
+        transform.translate(-height, 0)
+        transform.translate(0, width)
         transform.rotate(3 * Math.PI / 2)
       case 8 => // PI / 2
-        transform.translate(0, info.width)
+        transform.translate(0, width)
         transform.rotate(3 * Math.PI / 2)
     }
+
+    transform
   }
 }
