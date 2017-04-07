@@ -10,8 +10,9 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
 import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.Metadata
+import com.drew.metadata.{Directory, Metadata}
 import com.drew.metadata.exif.{ExifDirectoryBase, ExifIFD0Directory}
+import com.drew.metadata.jpeg.JpegDirectory
 import net.liftweb.common.Loggable
 
 import scala.collection.JavaConversions._
@@ -41,12 +42,15 @@ class AmazonS3Service extends Loggable {
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytesForUpload), metadata)
+    val bais = new ByteArrayInputStream(bytesForUpload)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, bais, metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
       case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
+
+    bais.close
   }
 
   def deleteImage(avyExtId: String, filename: String) {
@@ -98,41 +102,44 @@ class AmazonS3Service extends Loggable {
 
   private def avalancheBaseKey(avyExtId: String) = s"avalanches/$avyExtId"
 
-  private def exifBasedTransform(filename: String, mimeType: String, imageBytes: Array[Byte]): Array[Byte] = {
-    def exifTagValueOption(exifDir: ExifIFD0Directory, tag: Int) = Try(exifDir.getInt(tag)) match {
+  private def exifBasedTransform(filename: String, mimeType: String, origImageBytes: Array[Byte]): Array[Byte] = {
+    def exifTagValueOption(exifDir: Directory, tag: Int) = Try(exifDir.getInt(tag)) match {
       case Success(tagValue) => Some(tagValue)
       case Failure(_) => None
     }
 
-    val bais = new ByteArrayInputStream(imageBytes)
-    val metadata: Metadata = ImageMetadataReader.readMetadata(bais)
+    val origBais = new ByteArrayInputStream(origImageBytes)
+    val metadata: Metadata = ImageMetadataReader.readMetadata(origBais)
 
-    val OWH = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).map { exifIFO0Dir => (
-      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_ORIENTATION),
-      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_IMAGE_WIDTH),
-      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_IMAGE_HEIGHT)
-    )}
+    val transformedBytes: Option[Array[Byte]] = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).flatMap { exifIFO0Dir =>
+      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_ORIENTATION)
+    }.flatMap { orientation =>
+      val jpegDirectoryOpt = Option(metadata.getFirstDirectoryOfType(classOf[JpegDirectory]))
+      val widthOpt = jpegDirectoryOpt.flatMap(jpegDirectory => exifTagValueOption(jpegDirectory, JpegDirectory.TAG_IMAGE_WIDTH))
+      val heightOpt = jpegDirectoryOpt.flatMap(jpegDirectory => exifTagValueOption(jpegDirectory, JpegDirectory.TAG_IMAGE_HEIGHT))
 
-    logger.debug(s"OWH for $filename is $OWH")
+      (widthOpt, heightOpt) match {
+        case (Some(width), Some(height)) =>
+          logger.debug(s"Transforming image $filename based on orientation($orientation), width($width), height($height)")
 
-    OWH match {
-      case Some((Some(orientation), Some(width), Some(height))) =>
-        logger.debug(s"Transforming image $filename based on orientation($orientation), width($width), height($height)")
+          val transform = rotationTransform(orientation, width, height)
+          val transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC)
 
-        val transform = rotationTransform(orientation, width, height)
-        val transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC)
-
-        val origImage = ImageIO.read(bais)
-        val destImage = transformOp.createCompatibleDestImage(origImage, if (origImage.getType == BufferedImage.TYPE_BYTE_GRAY) origImage.getColorModel else null)
-        val baos = new ByteArrayOutputStream()
-        ImageIO.write(destImage, mimeType, baos)
-        val transformedBytes = baos.toByteArray
-        bais.close
-        baos.close
-        transformedBytes
-
-      case _ => imageBytes
+          val origImage = ImageIO.read(origBais)
+          val destImage = transformOp.createCompatibleDestImage(origImage, if (origImage.getType == BufferedImage.TYPE_BYTE_GRAY) origImage.getColorModel else null)
+          val baos = new ByteArrayOutputStream()
+          ImageIO.write(destImage, mimeType, baos)
+          val transformedBytes = baos.toByteArray
+          baos.close
+          Some(transformedBytes)
+        case _ =>
+          logger.warn(s"Tried to transform image $filename but a necessary tag could not be retrieved: orientation($orientation), width($widthOpt), height($heightOpt)")
+          None
+      }
     }
+
+    origBais.close
+    transformedBytes.getOrElse(origImageBytes)
   }
 
   private def rotationTransform(orientation: Int, width: Int, height: Int): AffineTransform = {
