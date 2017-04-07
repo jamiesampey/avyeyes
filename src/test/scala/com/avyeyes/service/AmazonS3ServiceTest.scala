@@ -1,6 +1,8 @@
 package com.avyeyes.service
 
+import java.io.{ByteArrayOutputStream, File, FileInputStream}
 import java.util.UUID
+import javax.imageio.ImageIO
 
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.{CannedAccessControlList, DeleteObjectsRequest, PutObjectRequest}
@@ -47,10 +49,14 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
 
   "Single image" >> {
     "Upload single image to S3" in new Setup {
+      val baos = new ByteArrayOutputStream()
+      ImageIO.write(ImageIO.read(new File("src/main/webapp/images/avyeyes.jpg")), "jpg", baos)
+
       val extId = "49d03kd2"
       val filename = UUID.randomUUID().toString
       val mimeType = "image/jpg"
-      val imgBytes = Array[Byte](1, 2, 3, 4)
+      val imgBytes = baos.toByteArray
+      baos.close
 
       val putRequestCapture = capture[PutObjectRequest]
       s3ImageService.uploadImage(extId, filename, mimeType, imgBytes)
@@ -60,7 +66,6 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
       putObjectRequest.getBucketName mustEqual s3Bucket
       putObjectRequest.getKey mustEqual s"avalanches/$extId/images/$filename"
       putObjectRequest.getMetadata.getContentType mustEqual mimeType
-      putObjectRequest.getMetadata.getContentLength mustEqual imgBytes.length
       putObjectRequest.getMetadata.getCacheControl mustEqual s3ImageService.CacheControlMaxAge
     }
 
