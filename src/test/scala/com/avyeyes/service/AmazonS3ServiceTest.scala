@@ -1,13 +1,13 @@
 package com.avyeyes.service
 
-import java.io.{ByteArrayOutputStream, File, FileInputStream}
+import java.io.{ByteArrayOutputStream, File}
 import java.util.UUID
 import javax.imageio.ImageIO
 
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.{CannedAccessControlList, DeleteObjectsRequest, PutObjectRequest}
 import com.avyeyes.util.Constants._
-import com.avyeyes.test.Generators._
+import com.avyeyes.util.FutureOps._
 import org.mockito.Matchers
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mock.Mockito
@@ -15,7 +15,6 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.{AroundExample, Scope}
 
 import scala.collection.JavaConversions._
-import scala.io.Source
 import scala.util.Success
 
 class AmazonS3ServiceTest extends Specification with AroundExample with Mockito {
@@ -59,7 +58,7 @@ class AmazonS3ServiceTest extends Specification with AroundExample with Mockito 
       baos.close
 
       val putRequestCapture = capture[PutObjectRequest]
-      s3ImageService.uploadImage(extId, filename, mimeType, imgBytes)
+      s3ImageService.uploadImage(extId, filename, mimeType, imgBytes).resolve
       there was one(mockS3Client).putObject(putRequestCapture)
 
       val putObjectRequest = putRequestCapture.value

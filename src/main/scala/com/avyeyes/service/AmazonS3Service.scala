@@ -12,6 +12,7 @@ import net.liftweb.common.Loggable
 
 import scala.collection.JavaConversions._
 import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AmazonS3Service extends Loggable {
   val R = Injectors.resources.vend
@@ -24,7 +25,12 @@ class AmazonS3Service extends Loggable {
     R.getProperty("s3.fullaccess.secretAccessKey")
   ))
 
-  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]) {
+  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  /**
+    * Upload images asynchronously
+    */
+  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]) = Future {
     implicit val writer = FormatDetector.detect(origBytes) match {
       case Some(Format.PNG) => PngWriter()
       case Some(Format.GIF) => GifWriter()
