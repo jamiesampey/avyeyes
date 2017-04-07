@@ -1,18 +1,13 @@
 package com.avyeyes.service
 
-import java.awt.geom.AffineTransform
-import java.awt.image.{AffineTransformOp, BufferedImage}
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
-import javax.imageio.ImageIO
+import java.io.ByteArrayInputStream
 
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
-import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.{Directory, Metadata}
-import com.drew.metadata.exif.{ExifDirectoryBase, ExifIFD0Directory}
-import com.drew.metadata.jpeg.JpegDirectory
+import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
+import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import net.liftweb.common.Loggable
 
 import scala.collection.JavaConversions._
@@ -30,7 +25,14 @@ class AmazonS3Service extends Loggable {
   ))
 
   def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]) {
-    val bytesForUpload = exifBasedTransform(filename, mimeType, origBytes)
+    implicit val writer = FormatDetector.detect(origBytes) match {
+      case Some(Format.PNG) => PngWriter()
+      case Some(Format.GIF) => GifWriter()
+      case _ => JpegWriter()
+    }
+
+    val origBais = new ByteArrayInputStream(origBytes)
+    val bytesForUpload = Image.fromStream(origBais).bytes
 
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
@@ -42,15 +44,16 @@ class AmazonS3Service extends Loggable {
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val bais = new ByteArrayInputStream(bytesForUpload)
-    val putObjectRequest = new PutObjectRequest(s3Bucket, key, bais, metadata)
+    val uploadBais = new ByteArrayInputStream(bytesForUpload)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, uploadBais, metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
       case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
 
-    bais.close
+    origBais.close
+    uploadBais.close
   }
 
   def deleteImage(avyExtId: String, filename: String) {
@@ -101,76 +104,4 @@ class AmazonS3Service extends Loggable {
   private def facebookSharePageKey(avyExtId: String) = s"${avalancheBaseKey(avyExtId)}/$FacebookSharePageFilename"
 
   private def avalancheBaseKey(avyExtId: String) = s"avalanches/$avyExtId"
-
-  private def exifBasedTransform(filename: String, mimeType: String, origImageBytes: Array[Byte]): Array[Byte] = {
-    def exifTagValueOption(exifDir: Directory, tag: Int) = Try(exifDir.getInt(tag)) match {
-      case Success(tagValue) => Some(tagValue)
-      case Failure(_) => None
-    }
-
-    val origBais = new ByteArrayInputStream(origImageBytes)
-    val metadata: Metadata = ImageMetadataReader.readMetadata(origBais)
-
-    val transformedBytes: Option[Array[Byte]] = Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).flatMap { exifIFO0Dir =>
-      exifTagValueOption(exifIFO0Dir, ExifDirectoryBase.TAG_ORIENTATION)
-    }.flatMap { orientation =>
-      val jpegDirectoryOpt = Option(metadata.getFirstDirectoryOfType(classOf[JpegDirectory]))
-      val widthOpt = jpegDirectoryOpt.flatMap(jpegDirectory => exifTagValueOption(jpegDirectory, JpegDirectory.TAG_IMAGE_WIDTH))
-      val heightOpt = jpegDirectoryOpt.flatMap(jpegDirectory => exifTagValueOption(jpegDirectory, JpegDirectory.TAG_IMAGE_HEIGHT))
-
-      (widthOpt, heightOpt) match {
-        case (Some(width), Some(height)) =>
-          logger.debug(s"Transforming image $filename based on orientation($orientation), width($width), height($height)")
-
-          val transform = rotationTransform(orientation, width, height)
-          val transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC)
-
-          val origImage = ImageIO.read(origBais)
-          val destImage = transformOp.createCompatibleDestImage(origImage, if (origImage.getType == BufferedImage.TYPE_BYTE_GRAY) origImage.getColorModel else null)
-          val baos = new ByteArrayOutputStream()
-          ImageIO.write(destImage, mimeType, baos)
-          val transformedBytes = baos.toByteArray
-          baos.close
-          Some(transformedBytes)
-        case _ =>
-          logger.warn(s"Tried to transform image $filename but a necessary tag could not be retrieved: orientation($orientation), width($widthOpt), height($heightOpt)")
-          None
-      }
-    }
-
-    origBais.close
-    transformedBytes.getOrElse(origImageBytes)
-  }
-
-  private def rotationTransform(orientation: Int, width: Int, height: Int): AffineTransform = {
-    val transform = new AffineTransform
-
-    orientation match {
-      case 2 => // Flip X
-        transform.scale(-1.0, 1.0)
-        transform.translate(width, 0)
-      case 3 => // PI rotation
-        transform.translate(width, height)
-        transform.rotate(Math.PI)
-      case 4 => // Flip Y
-        transform.scale(1.0, -1.0)
-        transform.translate(0, -height)
-      case 5 => // - PI/2 and Flip X
-        transform.rotate(-Math.PI / 2)
-        transform.scale(-1.0, 1.0)
-      case 6 => // -PI/2 and -width
-        transform.translate(height, 0)
-        transform.rotate(Math.PI / 2)
-      case 7 => // PI/2 and Flip
-        transform.scale(-1.0, 1.0)
-        transform.translate(-height, 0)
-        transform.translate(0, width)
-        transform.rotate(3 * Math.PI / 2)
-      case 8 => // PI / 2
-        transform.translate(0, width)
-        transform.rotate(3 * Math.PI / 2)
-    }
-
-    transform
-  }
 }
