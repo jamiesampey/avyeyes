@@ -2,7 +2,7 @@ define(['lib/jquery-ui'], function() {
 
 function AvyEyesUI() {};
 
-AvyEyesUI.prototype.wire = function(view, callback) {
+AvyEyesUI.prototype.wire = function(view) {
     wireMainMenu(view);
     wireTooltips();
     wireAutoCompletes(view);
@@ -12,7 +12,7 @@ AvyEyesUI.prototype.wire = function(view, callback) {
     wireButtons(view);
     wireLocationInputs(view);
     wireDialogs(view);
-    callback();
+    raiseTheCurtain();
 }
 
 function wireMainMenu(view) {

@@ -1,4 +1,4 @@
-@()
+@()(implicit messages: Messages)
 
 <html>
   <head>
@@ -11,7 +11,7 @@
     <meta property="og:image" content="https://avyeyes.com/images/avyeyes.jpg?v=1.1.5" />
 
     <script type="text/javascript" src="@routes.Assets.versioned("javascripts/lib/Cesium/Cesium.js")" defer></script>
-    <script type="text/javascript" data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.Assets.versioned("javascripts/lib/require.js")" defer></script>
+    @helper.requireJs(core = routes.Assets.versioned("javascripts/lib/require.js").url, module = routes.Assets.versioned("javascripts/main").url)
 
     <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.css")"/>
     <link rel="shortcut icon" href="@routes.Assets.versioned("images/favicon.ico")?v=1.6"/>
@@ -30,9 +30,9 @@
     <div id="cesiumContainer"></div>
     <div id="fb-root"></div>
 
-    <div id="loadingDiv">
-        <div id="loadingSplash"><img id="loadingSplashTitle" src="@routes.Assets.versioned("images/title.png")"/></div>
-    </div>
+    <!--<div id="loadingDiv">-->
+        <!--<div id="loadingSplash"><img id="loadingSplashTitle" src="@routes.Assets.versioned("images/title.png")"/></div>-->
+    <!--</div>-->
 
     <div class="avyAdminLoggedInDiv"></div>
     <div id="eyeAltContainer"></div>
@@ -45,30 +45,30 @@
         <div class="avyOverlayContent">
             <div id="avyTitleOverlayName"></div>
             <div id="avyTitleOverlaySubmitter"></div>
-            <div class="avyOverlayClickInstructions"><span id="avyTitleOverlayClick" class="avyMsg"></span></div>
-            <span id="avyTitleOverlayTips" class="avyMsg"></span>
+            <div class="avyOverlayClickInstructions"><span class="avyMsg">@messages("msg.avyTitleOverlayClick")</span></div>
+            <span class="avyMsg">@Html(Messages("msg.avyTitleOverlayTips"))</span>
         </div>
     </div>
 
     <div id="avySearchOverlay" class="avyOverlay avyResultsOverlay">
         <div class="avyOverlayContent">
             <div id="avySearchOverlayResults"></div>
-            <div class="avyOverlayClickInstructions"><span id="avySearchResultsOverlayClick" class="avyMsg"></span></div>
-            <span id="avySearchOverlayTips" class="avyMsg"></span>
+            <div class="avyOverlayClickInstructions"><span class="avyMsg">@messages("msg.avySearchResultsOverlayClick")</span></div>
+            <span class="avyMsg">@Html(Messages("msg.avySearchOverlayTips"))</span>
         </div>
     </div>
 
     <div id="helpOverlay" class="avyOverlay">
         <div id="helpOverlayText" class="avyOverlayContent">
-            <div id="anyKeyToCloseWrapper"><span id="anyKeyToClose" class="avyMsg"></span></div>
+            <div id="anyKeyToCloseWrapper"><span id="anyKeyToClose" class="avyMsg">@messages("msg.anyKeyToClose")</span></div>
             <ul>
                 <li><a id="searchHelpTab" class="avyLink" href="#searchHelpDiv"></a></li>
                 <li><a id="reportHelpTab" class="avyLink" href="#reportHelpDiv"></a></li>
                 <li><a id="aboutHelpTab" class="avyLink" href="#aboutHelpDiv"></a></li>
             </ul>
-            <div id="searchHelpDiv" class="helpContent"><span id="searchHelpContent" class="avyMsg"></span></div>
-            <div id="reportHelpDiv" class="helpContent"><span id="reportHelpContent" class="avyMsg"></span></div>
-            <div id="aboutHelpDiv" class="helpContent"><span id="aboutHelpContent" class="avyMsg"></span></div>
+            <div id="searchHelpDiv" class="helpContent"><span class="avyMsg">@Html(Messages("msg.searchHelpContent"))</span></div>
+            <div id="reportHelpDiv" class="helpContent"><span class="avyMsg">@Html(Messages("msg.reportHelpContent"))</span></div>
+            <div id="aboutHelpDiv" class="helpContent"><span class="avyMsg">@Html(Messages("msg.aboutHelpContent"))</span></div>
         </div>
     </div>
 
@@ -79,9 +79,9 @@
                 <a id="aeControlsMenuButton" href="#"><img src="@routes.Assets.versioned("images/menu.png")"/></a>
             </div>
             <ul id="aeControlsMenu">
-                <li><a id="searchMenuItem" class="avyLink" href="#"></a></li>
-                <li><a id="reportMenuItem" class="avyLink" href="#"></a></li>
-                <li><a id="aboutMenuItem" class="avyLink" href="#"></a></li>
+                <li><a id="searchMenuItem" class="avyLink" href="#">@messages("link.searchMenuItem")</a></li>
+                <li><a id="reportMenuItem" class="avyLink" href="#">@messages("link.reportMenuItem")</a></li>
+                <li><a id="aboutMenuItem" class="avyLink" href="#">@messages("link.aboutMenuItem")</a></li>
             </ul>
         </div>
 
@@ -91,42 +91,42 @@
                 <div class="lift:Search?form.post">
 
                     <div class="avySearchHeaderContainer">
-                        <div class="avySearchHeader"><span id="avySearchTitle" class="avyHeader"></span></div>
-                        <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#"></a></div>
+                        <div class="avySearchHeader"><span class="avyHeader">@messages("header.avySearchTitle")</span></div>
+                        <div id="avySearchHowItWorksDiv"><a class="avyLink" href="#">@messages("link.howItWorks")</a></div>
                     </div>
 
                     <table id="avySearchDetailsTable">
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchLocation"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchLocation" data-help="@Html(Messages("help.avySearchLocation"))">@messages("label.avySearchLocation")</label></td>
                             <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation avyRawTextInput" type="text"/></td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchFromDate"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchFromDate" data-help="@Html(Messages("help.avySearchFromDate"))">@messages("label.avySearchFromDate")</label></td>
                             <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate" type="text" /></td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchToDate"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchToDate" data-help="@Html(Messages("help.avySearchToDate"))">@messages("label.avySearchToDate")</label></td>
                             <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate" type="text" /></td>
                         </tr>
                         <tr>
-                            <td class="avySearchSubHeader" colspan="2"><span id="avySearchAdditionalCriteria" class="avyHeader"></span></td>
+                            <td class="avySearchSubHeader" colspan="2"><span class="avyHeader">@messages("header.avySearchAdditionalCriteria")</span></td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchType"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchType" data-help="@Html(Messages("help.avySearchType"))">@messages("label.avySearchType")</label></td>
                             <td class="avySearchTableInput">
                                 <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
                                 <input id="avySearchType" type="hidden"/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchTrigger"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchTrigger" data-help="@Html(Messages("help.avySearchTrigger"))">@messages("label.avySearchTrigger")</label></td>
                             <td class="avySearchTableInput">
                                 <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
                                 <input id="avySearchTrigger" type="hidden"/>
                             </td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchRsizeValue"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchRsizeValue" data-help="@Html(Messages("help.avySearchRsizeValue"))">@messages("label.avySearchRsizeValue")</label></td>
                             <td class="avySearchTableInput">
                                 <div class="avyRDSliderContainer">
                                     <input id="avySearchRsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
@@ -135,7 +135,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="avySearchTableLabel"><label for="avySearchDsizeValue"></label></td>
+                            <td class="avySearchTableLabel"><label for="avySearchDsizeValue" data-help="@Html(Messages("help.avySearchDsizeValue"))">@messages("label.avySearchDsizeValue")</label></td>
                             <td class="avySearchTableInput">
                                 <div class="avyRDSliderContainer">
                                     <input id="avySearchDsizeValue" class="avyRDSliderValue" type="text" readonly="readonly"/>
@@ -144,15 +144,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="avySearchSubHeader" colspan="2"><span id="avySearchHumanNumbersHeader" class="avyHeader"></span></td>
+                            <td class="avySearchSubHeader" colspan="2"><span class="avyHeader">@messages("header.avySearchHumanNumbersHeader")</span></td>
                         </tr>
                         <tr>
                             <td colspan="2">
                                 <table id="avySearchHumanNumbersTable">
                                     <tr>
-                                        <td><label for="avySearchNumCaught"></label></td>
+                                        <td><label for="avySearchNumCaught" data-help="@Html(Messages("help.avySearchNumCaught"))">@messages("label.avySearchNumCaught")</label></td>
                                         <td><input id="avySearchNumCaught" class="avyHumanNumber" readonly="readonly"/></td>
-                                        <td><label for="avySearchNumKilled"></label></td>
+                                        <td><label for="avySearchNumKilled" data-help="@Html(Messages("help.avySearchNumKilled"))">@messages("label.avySearchNumKilled")</label></td>
                                         <td><input id="avySearchNumKilled" class="avyHumanNumber" readonly="readonly"/></td>
                                     </tr>
                                 </table>
@@ -171,9 +171,9 @@
                         <input id="avySearchCameraLng" type="hidden"/>
                     </div>
                     <div id="avySearchButtonsContainer">
-                        <input id="avySearchButton" type="button" class="avyButton"/>
+                        <input id="avySearchButton" type="button" class="avyButton" value="@messages("button.avySearchButton")"/>
                         <input id="avySearchSubmitBinding" type="hidden"/>
-                        <input id="avySearchResetButton" type="button" class="avyButton"/>
+                        <input id="avySearchResetButton" type="button" class="avyButton" value="@messages("button.avySearchResetButton")"/>
                     </div>
                 </div>
             </form>
@@ -183,33 +183,213 @@
             <hr/>
 
             <div id="avyReportStep1" class="reportInstructions">
-                <div class="avyReportInstructionsHeader"><span id="avyReportStep1Header" class="avyHeader"></span></div>
-                <span id="avyReportInstructions1" class="avyMsg"></span>
-                <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text" placeholder="Location"/>
-                <input id="avyReportInitLocationButton" type="button" class="avyButton"/>
+                <div class="avyReportInstructionsHeader"><span class="avyHeader">@messages("header.avyReportStep1Header")</span></div>
+                <span class="avyMsg">@Html(Messages("msg.avyReportInstructions1"))</span>
+                <input id="avyReportInitLocation" class="avyLocation avyRawTextInput" type="text" placeholder="@messages("msg.avyReportInitLocationPlaceholder")"/>
+                <input id="avyReportInitLocationButton" type="button" class="avyButton" value="@messages("button.avyReportInitLocationButton")"/>
             </div>
 
             <div id="avyReportStep2" class="reportInstructions">
-                <div class="avyReportInstructionsHeader"><span id="avyReportStep2Header" class="avyHeader avyReportHeader"></span></div>
-                <span id="avyReportInstructions2" class="avyMsg"></span>
+                <div class="avyReportInstructionsHeader"><span class="avyHeader avyReportHeader">@messages("header.avyReportStep2Header")</span></div>
+                <span class="avyMsg">@Html(Messages("msg.avyReportInstructions2"))</span>
                 <div class="avyReportInstructionsButtonWrapper">
-                    <input id="avyReportStartDrawingButton" type="button" class="avyButton"/>
+                    <input id="avyReportStartDrawingButton" type="button" class="avyButton" value="@messages("button.avyReportStartDrawingButton")"/>
                 </div>
             </div>
 
             <div id="avyReportStep3" class="reportInstructions">
-                <div class="avyReportInstructionsHeader"><span id="avyReportStep3Header" class="avyHeader avyReportHeader"></span></div>
-                <span id="avyReportInstructions3" class="avyMsg"></span>
+                <div class="avyReportInstructionsHeader"><span class="avyHeader avyReportHeader">@messages("header.avyReportStep3Header")</span></div>
+                <span class="avyMsg">@Html(Messages("msg.avyReportInstructions3"))</span>
             </div>
 
             <div id="avyReportStep4" class="reportInstructions">
-                <span id="avyReportInstructions4" class="avyMsg"></span>
+                <span class="avyMsg">@Html(Messages("msg.avyReportInstructions4"))</span>
                 <div class="avyReportInstructionsButtonWrapper">
-                    <input id="avyReportAcceptDrawingButton" type="button" class="avyButton"/>
-                    <input id="avyReportRedrawButton" type="button" class="avyButton"/>
+                    <input id="avyReportAcceptDrawingButton" type="button" class="avyButton" value="@messages("button.avyReportAcceptDrawingButton")"/>
+                    <input id="avyReportRedrawButton" type="button" class="avyButton" value="@messages("button.avyReportRedrawButton")"/>
                 </div>
             </div>
         </div>
+
+
+        <div id="roAvyFormDialog">
+            <table id="roAvyFormTable">
+                <tr><td colspan="3">
+                    <div id="roAvyFormTitleContainer">
+                        <table id="roAvyFormTitleAndSubmitterTable">
+                            <tr><td><span id="roAvyFormTitle"></span></td></tr>
+                            <tr><td id="roAvyFormSubmitterExpTd"><label for="roAvyFormSubmitterExp"></label> <span id="roAvyFormSubmitterExp"></span></td></tr>
+                        </table>
+                        <table id="roAvyFormShareTable">
+                            <tr><td><a id="roAvyFormExtLink"/></td></tr>
+                            <tr><td>
+                                <table id="roAvyFormSocialButtonsTable"><tr>
+                                    <td id="roAvyFormSocialFacebookContainer"><img id="roAvyFormFacebookButton" src="/images/fb-share.png" /></td>
+                                    <td id="roAvyFormSocialTwitterContainer"></td>
+                                </tr></table>
+                            </td></tr>
+                        </table>
+                    </div>
+                </td></tr>
+
+                <tr><td colspan="3"><hr/></td></tr>
+
+                <tr><td>
+                    <table><tr><td>
+                        <table class="roAvyFormSubTable">
+                            <tr><td class="roAvyFormSectionHeader">
+                                <span id="roAvyFormSlopeCharacter" class="avyHeader"></span>
+                            </td></tr>
+                            <tr><td>
+                                <table class="roAvyFormFieldsSubTable">
+                                    <tr>
+                                        <td><label for="roAvyFormElevation"></label></td>
+                                        <td>
+                                            <span id="roAvyFormElevation"></span>
+                                            <span>/</span>
+                                            <span id="roAvyFormElevationFt"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="roAvyFormAspect"></label></td>
+                                        <td><span id="roAvyFormAspect"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="roAvyFormAngle"></label></td>
+                                        <td><span id="roAvyFormAngle"></span></td>
+                                    </tr>
+                                </table>
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormSubTable">
+                                <tr><td class="roAvyFormSectionHeader">
+                                    <span id="roAvyFormWeather" class="avyHeader"></span>
+                                </td></tr>
+                                <tr><td>
+                                    <table class="roAvyFormFieldsSubTable">
+                                        <tr>
+                                            <td><label for="roAvyFormRecentSnow"></label></td>
+                                            <td><span id="roAvyFormRecentSnow"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label for="roAvyFormRecentWindSpeed"></label></td>
+                                            <td>
+                                                <span id="roAvyFormRecentWindSpeed"></span>
+                                                <span id="roAvyFormRecentWindDirectionText" class="avyMsg"></span>
+                                                <span id="roAvyFormRecentWindDirection"></span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td></tr>
+                            </table>
+                        </td></tr>
+                    </table>
+                </td><td>
+                    <table class="roAvyFormSubTable">
+                        <tr><td class="roAvyFormSectionHeader">
+                            <span id="roAvyFormAvyCharacter" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormFieldsSubTable">
+                                <tr>
+                                    <td><label for="roAvyFormType"></label></td>
+                                    <td><span id="roAvyFormType"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormTrigger"></label></td>
+                                    <td><span id="roAvyFormTrigger"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormTriggerModifier"></label></td>
+                                    <td><span id="roAvyFormTriggerModifier"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormInterface"></label></td>
+                                    <td><span id="roAvyFormInterface"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormRSize"></label></td>
+                                    <td><span id="roAvyFormRSize"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormDSize"></label></td>
+                                    <td><span id="roAvyFormDSize"></span></td>
+                                </tr>
+                            </table>
+                        </td></tr>
+                    </table>
+                </td><td>
+                    <table class="roAvyFormSubTable">
+                        <tr><td class="roAvyFormSectionHeader">
+                            <span id="roAvyFormHumanNumbers" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormFieldsSubTable">
+                                <tr>
+                                    <td><label for="roAvyFormNumCaught"></label></td>
+                                    <td><span id="roAvyFormNumCaught"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormNumPartiallyBuried"></label></td>
+                                    <td><span id="roAvyFormNumPartiallyBuried"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormNumFullyBuried"></label></td>
+                                    <td><span id="roAvyFormNumFullyBuried"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormNumInjured"></label></td>
+                                    <td><span id="roAvyFormNumInjured"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormNumKilled"></label></td>
+                                    <td><span id="roAvyFormNumKilled"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormModeOfTravel"></label></td>
+                                    <td><span id="roAvyFormModeOfTravel"></span></td>
+                                </tr>
+                            </table>
+                        </td></tr>
+                    </table>
+
+                </td></tr>
+
+                <tr id="roAvyFormImageRow"><td colspan="3">
+                    <table class="roAvyFormSubTable">
+                        <tr><td class="roAvyFormSectionHeader">
+                            <span id="roAvyFormImagesHeader" class="avyHeader"></span>
+                        </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormFieldsSubTable">
+                                <tr><td><div id="roAvyFormImageDiv"><ul id="roAvyFormImageList"></ul></div></td></tr>
+                            </table>
+                        </td></tr>
+                    </table>
+                </td></tr>
+
+                <tr id="roAvyFormCommentsRow"><td colspan="3">
+                    <table id="roAvyFormCommentsTable" class="roAvyFormSubTable">
+                        <tr><td class="roAvyFormSectionHeader">
+                            <div id="roAvyFormCommentsHeaderWrapper"><span id="roAvyFormCommentsHeader" class="avyHeader">
+                       </span><a class="commentsFancybox" href="#roAvyFormCommentsLightboxDiv"><img src="/images/plus-icon.gif"/></a></div>
+                        </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormFieldsSubTable">
+                                <tr><td>
+                                    <textarea id="roAvyFormComments" rows="8" readonly="readonly"></textarea>
+                                    <div id="roAvyFormCommentsLightboxDiv"><textarea readonly="readonly"></textarea></div>
+                                </td></tr>
+                            </table>
+                        </td></tr>
+                    </table>
+                </td></tr>
+
+            </table>
+        </div>
+
 
     </div>
   </body>

@@ -54,26 +54,7 @@ function AvyEyesView() {
 
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI();
-    this.ui.wire(this, function() {
-        var tryLiftCallback = function() {
-            console.log("AvyEyes Load 2: Attempting server callback");
-             if (window.liftAjax) {
-                 console.log("AvyEyes Load 3: liftAjax is defined, making Lift server callback");
-                 $("#avyInitLiftCallback").submit();
-                 return true;
-             } else {
-                 console.warn("liftAjax is undefined. Trying again...");
-                 return false;
-             }
-        }
-
-        if (!tryLiftCallback()) {
-            var liftCheckInterval;
-            liftCheckInterval = setInterval(function() {
-                if (tryLiftCallback()) clearInterval(liftCheckInterval);
-            }, 500);
-        }
-    });
+    this.ui.wire(this);
 
     FB.init({
         appId: this.facebookAppId,

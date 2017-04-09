@@ -1,9 +1,5 @@
 "use strict";
 
-require.config({
-  baseUrl: "/javascripts"
-});
-
 var avyEyesView;
 
 requirejs(["lib/jquery",
