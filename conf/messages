@@ -63,3 +63,54 @@ button.avyReportInitLocationButton=Begin Report
 button.avyReportStartDrawingButton=Start Avalanche Drawing
 button.avyReportAcceptDrawingButton=Accept Drawing
 button.avyReportRedrawButton=Redraw
+
+
+####### Read-only Form #######
+
+header.roAvyFormSlopeCharacter=Slope Characteristics
+header.roAvyFormWeather=Weather (preceding week)
+header.roAvyFormAvyCharacter=Avalanche Characteristics
+header.roAvyFormHumanNumbers=Human Numbers
+header.roAvyFormImagesHeader=Images
+header.roAvyFormCommentsHeader=Comments
+
+label.roAvyFormSubmitterExp=Submitter
+label.roAvyFormElevation=Elevation
+label.roAvyFormAspect=Aspect
+label.roAvyFormAngle=Angle
+label.roAvyFormRecentSnow=Snowfall
+label.roAvyFormRecentWindSpeed=Wind
+label.roAvyFormType=Type
+label.roAvyFormTrigger=Trigger
+label.roAvyFormTriggerModifier=Modifier
+label.roAvyFormInterface=Interface
+label.roAvyFormRSize=R Size
+label.roAvyFormDSize=D Size
+label.roAvyFormNumCaught=Caught
+label.roAvyFormNumPartiallyBuried=Partially Buried
+label.roAvyFormNumFullyBuried=Fully Buried
+label.roAvyFormNumInjured=Injured
+label.roAvyFormNumKilled=Killed
+label.roAvyFormModeOfTravel=Mode of Travel
+
+help.roAvyFormSubmitterExp=The avalanche report submitter's self-described experience level
+help.roAvyFormElevation=The elevation at the top of the avalanche path.
+help.roAvyFormAspect=The aspect of the avalanche path.
+help.roAvyFormAngle=The slope angle of the avalanche path.
+help.roAvyFormRecentSnow=The amount of snow that fell at the avalanche location during the week preceding the slide.
+help.roAvyFormRecentWindSpeed=<p>The <i>predominant</i> wind speed and direction at the avalanche location during the week preceding the slide. If the predominant wind changed significantly during the week prior to the avalanche, these fields note the wind closer to the day of the avalanche.</p><p>Wind speed is measured on the Beaufort scale.</p>
+help.roAvyFormType=The type classification of the avalanche.
+help.roAvyFormTrigger=The trigger classification of the avalanche. I.e. the mechanism that caused the avalanche to release. Triggers are either natural (N* codes) or artificial (A* codes).
+help.roAvyFormTriggerModifier=An extra data field to further explain the avalanche trigger.
+help.roAvyFormInterface=The interface classification of the avalanche. I.e. the bed surface on which the avalanche slid.
+help.roAvyFormRSize=The relative (R) size of the avalanche. A R1 avalanche is very small relative to its path. A R5 avalanche encompasses all or nearly all of its path.
+help.roAvyFormDSize=The destructive (D) size of the avalanche. A D1 avalanche is relatively harmless to people. A D4 avalanche could destroy a railway car and a D5 avalanche can substantially gouge landscape.
+help.roAvyFormNumCaught=The number of humans caught <i>to any degree</i> in the avalanche.
+help.roAvyFormNumPartiallyBuried=The number of humans partially (not fully) buried in the avalanche.
+help.roAvyFormNumFullyBuried=The number of humans fully (not partially) buried in the avalanche.
+help.roAvyFormNumInjured=The number of humans injured (not killed) in the avalanche.
+help.roAvyFormNumKilled=The number of humans killed in the avalanche.
+help.roAvyFormModeOfTravel=The primary mode of travel used by the group that triggered the avalanche, if applicable.
+
+msg.roAvyFormRecentWindDirectionText=from the
+
