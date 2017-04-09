@@ -163,4 +163,26 @@ label.rwAvyFormNumInjured=Injured
 label.rwAvyFormNumKilled=Killed
 label.rwAvyFormModeOfTravel=Mode of travel
 
+help.rwAvyFormSubmitterEmail=<p>Your email address in case AvyEyes needs to get in touch regarding this avalanche report.</p><i>Your email address will not be viewable with this avalanche report or otherwise distributed in any way.</i>
+help.rwAvyFormSubmitterExp=Your backcountry/avalanche education and experience level. Please select the value that best describes you.
+help.rwAvyFormAreaName=<p>The common or well-known name of the location where the avalanche occurred.</p>For example: "West side of Jones Pass" or "NE face of Mt. Wilson"
+help.rwAvyFormDate=<p>The date of the avalanche.</p>Provide an approximate date if the exact date is not known.
+help.rwAvyFormType=The type classification of the avalanche. Leave blank if you are not sure of the avalanche type.
+help.rwAvyFormTrigger=The mechanism that caused the avalanche to release. Leave blank if you are not sure of the avalanche trigger.
+help.rwAvyFormTriggerModifier=An extra data field to further explain the avalanche trigger. The possible values for this field depend on the value specified for the avalanche trigger. Leave blank if you are not sure of the trigger modifier.
+help.rwAvyFormInterface=The interface or bed surface on which the avalanche slid. Leave blank if you are not sure of the avalanche interface.
+help.rwAvyFormRsizeValue=The relative (R) size of the avalanche. Leave the value at 0 (zero) if you are not sure of the R size.
+help.rwAvyFormDsizeValue=The destructive (D) size of the avalanche. Leave the value at 0 (zero) if you are not sure of the D size.
+help.rwAvyFormViewable=Whether or not this avalanche report is approved and viewable by the public
+help.rwAvyFormElevation=<p>The elevation at the top of the avalanche path.</p>This value is pre-populated from the avalanche drawing and is not modifiable.
+help.rwAvyFormAspect=<p>The aspect of the avalanche path.</p>This value is pre-populated from the avalanche drawing, but it is modifiable if you disagree with the pre-populated value.
+help.rwAvyFormAngle=<p>The slope angle of the avalanche path.</p>This value is pre-populated from the avalanche drawing, but it is modifiable if you disagree with the pre-populated value.
+help.rwAvyFormRecentSnow=The amount of snow that fell (in centimeters) at the avalanche location during the week preceding the slide.
+help.rwAvyFormRecentWindSpeed=<p>The <i>predominant</i> wind speed and direction at the avalanche location during the week preceding the slide. If the predominant wind changed significantly during the week prior to the avalanche, note the wind characteristics closer to the day of the avalanche. Wind speed is measured on the Beaufort scale:</p><ul><li>Calm - less than 1 km/hour or .7 mph. Smoke rises vertically</li><li>Light breeze - 5-12 km/hour or 3-7 mph. Leaves rustle, wind vanes begin to move</li><li>Moderate breeze - 20-29 km/hour or 12-18 mph. Small branches begin to move</li><li>Strong breeze - 39-50 km/hour or 24-31 mph. Large branches in motion</li><li>Gale - 62-75 km/hour or 38-46 mph. Twigs broken from trees, progress on foot becomes difficult</li><li>Storm - 88-102 km/hour or 55-64 mph. Trees are broken off or uprooted, structural damage likely</li></ul><p>Wind direction is always the direction that the wind came <i>from</i>. For example, a NW wind blew from the northwest toward the southeast.</p>
+help.rwAvyFormNumCaught=<p>The number of humans caught <i>to any degree</i> in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were caught. An empty value means you don't know.
+help.rwAvyFormNumPartiallyBuried=<p>The number of humans partially (not fully) buried in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were partially buried. An empty value means you don't know.
+help.rwAvyFormNumFullyBuried=<p>The number of humans fully (not partially) buried in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were fully buried. An empty value means you don't know.
+help.rwAvyFormNumInjured=<p>The number of humans injured (not killed) in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were injured. An empty value means you don't know.
+help.rwAvyFormNumKilled=<p>The number of humans killed in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were killed. An empty value means you don't know.
+help.rwAvyFormModeOfTravel=The primary mode of travel used by the group that triggered the avalanche, if applicable. Leave blank if you are not sure of the primary mode of travel.
 
