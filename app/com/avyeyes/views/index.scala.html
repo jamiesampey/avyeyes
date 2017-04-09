@@ -210,189 +210,187 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <div id="roAvyFormDialog">
+        <table id="roAvyFormTable">
+            <tr><td colspan="3">
+                <div id="roAvyFormTitleContainer">
+                    <table id="roAvyFormTitleAndSubmitterTable">
+                        <tr><td><span id="roAvyFormTitle"></span></td></tr>
+                        <tr><td id="roAvyFormSubmitterExpTd"><label for="roAvyFormSubmitterExp" data-help="@messages("help.roAvyFormSubmitterExp")">@messages("label.roAvyFormSubmitterExp")</label><span id="roAvyFormSubmitterExp"></span></td></tr>
+                    </table>
+                    <table id="roAvyFormShareTable">
+                        <tr><td><a id="roAvyFormExtLink"/></td></tr>
+                        <tr><td>
+                            <table id="roAvyFormSocialButtonsTable"><tr>
+                                <td id="roAvyFormSocialFacebookContainer"><img id="roAvyFormFacebookButton" src="@routes.Assets.versioned("images/fb-share.png")" /></td>
+                                <td id="roAvyFormSocialTwitterContainer"></td>
+                            </tr></table>
+                        </td></tr>
+                    </table>
+                </div>
+            </td></tr>
 
-        <div id="roAvyFormDialog">
-            <table id="roAvyFormTable">
-                <tr><td colspan="3">
-                    <div id="roAvyFormTitleContainer">
-                        <table id="roAvyFormTitleAndSubmitterTable">
-                            <tr><td><span id="roAvyFormTitle"></span></td></tr>
-                            <tr><td id="roAvyFormSubmitterExpTd"><label for="roAvyFormSubmitterExp" data-help="@messages("help.roAvyFormSubmitterExp")">@messages("label.roAvyFormSubmitterExp")</label><span id="roAvyFormSubmitterExp"></span></td></tr>
-                        </table>
-                        <table id="roAvyFormShareTable">
-                            <tr><td><a id="roAvyFormExtLink"/></td></tr>
-                            <tr><td>
-                                <table id="roAvyFormSocialButtonsTable"><tr>
-                                    <td id="roAvyFormSocialFacebookContainer"><img id="roAvyFormFacebookButton" src="@routes.Assets.versioned("images/fb-share.png")" /></td>
-                                    <td id="roAvyFormSocialTwitterContainer"></td>
-                                </tr></table>
-                            </td></tr>
-                        </table>
-                    </div>
+            <tr><td colspan="3"><hr/></td></tr>
+
+            <tr><td>
+                <table><tr><td>
+                    <table class="roAvyFormSubTable">
+                        <tr><td class="roAvyFormSectionHeader">
+                            <span class="avyHeader">@messages("header.roAvyFormSlopeCharacter")</span>
+                        </td></tr>
+                        <tr><td>
+                            <table class="roAvyFormFieldsSubTable">
+                                <tr>
+                                    <td><label for="roAvyFormElevation" data-help="@messages("help.roAvyFormElevation")">@messages("label.roAvyFormElevation")</label></td>
+                                    <td>
+                                        <span id="roAvyFormElevation"></span>
+                                        <span>/</span>
+                                        <span id="roAvyFormElevationFt"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormAspect" data-help="@messages("help.roAvyFormAspect")">@messages("label.roAvyFormAspect")</label></td>
+                                    <td><span id="roAvyFormAspect"></span></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="roAvyFormAngle" data-help="@messages("help.roAvyFormAngle")">@messages("label.roAvyFormAngle")</label></td>
+                                    <td><span id="roAvyFormAngle"></span></td>
+                                </tr>
+                            </table>
+                        </td></tr>
+                    </table>
                 </td></tr>
-
-                <tr><td colspan="3"><hr/></td></tr>
-
-                <tr><td>
-                    <table><tr><td>
+                    <tr><td>
                         <table class="roAvyFormSubTable">
                             <tr><td class="roAvyFormSectionHeader">
-                                <span class="avyHeader">@messages("header.roAvyFormSlopeCharacter")</span>
+                                <span id="roAvyFormWeather" class="avyHeader">@messages("header.roAvyFormWeather")</span>
                             </td></tr>
                             <tr><td>
                                 <table class="roAvyFormFieldsSubTable">
                                     <tr>
-                                        <td><label for="roAvyFormElevation" data-help="@messages("help.roAvyFormElevation")">@messages("label.roAvyFormElevation")</label></td>
+                                        <td><label for="roAvyFormRecentSnow" data-help="@messages("help.roAvyFormRecentSnow")">@messages("label.roAvyFormRecentSnow")</label></td>
+                                        <td><span id="roAvyFormRecentSnow"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="roAvyFormRecentWindSpeed" data-help="@Html(Messages("help.roAvyFormRecentWindSpeed"))">@messages("label.roAvyFormRecentWindSpeed")</label></td>
                                         <td>
-                                            <span id="roAvyFormElevation"></span>
-                                            <span>/</span>
-                                            <span id="roAvyFormElevationFt"></span>
+                                            <span id="roAvyFormRecentWindSpeed"></span>
+                                            <span id="roAvyFormRecentWindDirectionText" class="avyMsg">@messages("msg.roAvyFormRecentWindDirectionText")</span>
+                                            <span id="roAvyFormRecentWindDirection"></span>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="roAvyFormAspect" data-help="@messages("help.roAvyFormAspect")">@messages("label.roAvyFormAspect")</label></td>
-                                        <td><span id="roAvyFormAspect"></span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><label for="roAvyFormAngle" data-help="@messages("help.roAvyFormAngle")">@messages("label.roAvyFormAngle")</label></td>
-                                        <td><span id="roAvyFormAngle"></span></td>
                                     </tr>
                                 </table>
                             </td></tr>
                         </table>
                     </td></tr>
-                        <tr><td>
-                            <table class="roAvyFormSubTable">
-                                <tr><td class="roAvyFormSectionHeader">
-                                    <span id="roAvyFormWeather" class="avyHeader">@messages("header.roAvyFormWeather")</span>
-                                </td></tr>
-                                <tr><td>
-                                    <table class="roAvyFormFieldsSubTable">
-                                        <tr>
-                                            <td><label for="roAvyFormRecentSnow" data-help="@messages("help.roAvyFormRecentSnow")">@messages("label.roAvyFormRecentSnow")</label></td>
-                                            <td><span id="roAvyFormRecentSnow"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td><label for="roAvyFormRecentWindSpeed" data-help="@Html(Messages("help.roAvyFormRecentWindSpeed"))">@messages("label.roAvyFormRecentWindSpeed")</label></td>
-                                            <td>
-                                                <span id="roAvyFormRecentWindSpeed"></span>
-                                                <span id="roAvyFormRecentWindDirectionText" class="avyMsg">@messages("msg.roAvyFormRecentWindDirectionText")</span>
-                                                <span id="roAvyFormRecentWindDirection"></span>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td></tr>
-                            </table>
-                        </td></tr>
-                    </table>
-                </td><td>
-                    <table class="roAvyFormSubTable">
-                        <tr><td class="roAvyFormSectionHeader">
-                            <span id="roAvyFormAvyCharacter" class="avyHeader">@messages("header.roAvyFormAvyCharacter")</span>
-                        </td></tr>
-                        <tr><td>
-                            <table class="roAvyFormFieldsSubTable">
-                                <tr>
-                                    <td><label for="roAvyFormType" data-help="@messages("help.roAvyFormType")">@messages("label.roAvyFormType")</label></td>
-                                    <td><span id="roAvyFormType"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormTrigger" data-help="@messages("help.roAvyFormTrigger")">@messages("label.roAvyFormTrigger")</label></td>
-                                    <td><span id="roAvyFormTrigger"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormTriggerModifier" data-help="@messages("help.roAvyFormTriggerModifier")">@messages("label.roAvyFormTriggerModifier")</label></td>
-                                    <td><span id="roAvyFormTriggerModifier"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormInterface" data-help="@messages("help.roAvyFormInterface")">@messages("label.roAvyFormInterface")</label></td>
-                                    <td><span id="roAvyFormInterface"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormRSize" data-help="@messages("help.roAvyFormRSize")"><@messages("label.roAvyFormRSize")</label></td>
-                                    <td><span id="roAvyFormRSize"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormDSize" data-help="@messages("help.roAvyFormDSize")">@messages("label.roAvyFormDSize")</label></td>
-                                    <td><span id="roAvyFormDSize"></span></td>
-                                </tr>
-                            </table>
-                        </td></tr>
-                    </table>
-                </td><td>
-                    <table class="roAvyFormSubTable">
-                        <tr><td class="roAvyFormSectionHeader">
-                            <span class="avyHeader">@messages("header.roAvyFormHumanNumbers")</span>
-                        </td></tr>
-                        <tr><td>
-                            <table class="roAvyFormFieldsSubTable">
-                                <tr>
-                                    <td><label for="roAvyFormNumCaught" data-help="@Html(Messages("help.roAvyFormNumCaught"))">@messages("label.roAvyFormNumCaught")</label></td>
-                                    <td><span id="roAvyFormNumCaught"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormNumPartiallyBuried" data-help="@messages("help.roAvyFormNumPartiallyBuried")">@messages("label.roAvyFormNumPartiallyBuried")</label></td>
-                                    <td><span id="roAvyFormNumPartiallyBuried"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormNumFullyBuried" data-help="@messages("help.roAvyFormNumFullyBuried")">@messages("label.roAvyFormNumFullyBuried")</label></td>
-                                    <td><span id="roAvyFormNumFullyBuried"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormNumInjured" data-help="@messages("help.roAvyFormNumInjured")">@messages("label.roAvyFormNumInjured")</label></td>
-                                    <td><span id="roAvyFormNumInjured"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormNumKilled" data-help="@messages("help.roAvyFormNumKilled")">@messages("label.roAvyFormNumKilled")</label></td>
-                                    <td><span id="roAvyFormNumKilled"></span></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="roAvyFormModeOfTravel" data-help="@messages("help.roAvyFormModeOfTravel")">@messages("label.roAvyFormModeOfTravel")</label></td>
-                                    <td><span id="roAvyFormModeOfTravel"></span></td>
-                                </tr>
-                            </table>
-                        </td></tr>
-                    </table>
+                </table>
+            </td><td>
+                <table class="roAvyFormSubTable">
+                    <tr><td class="roAvyFormSectionHeader">
+                        <span id="roAvyFormAvyCharacter" class="avyHeader">@messages("header.roAvyFormAvyCharacter")</span>
+                    </td></tr>
+                    <tr><td>
+                        <table class="roAvyFormFieldsSubTable">
+                            <tr>
+                                <td><label for="roAvyFormType" data-help="@messages("help.roAvyFormType")">@messages("label.roAvyFormType")</label></td>
+                                <td><span id="roAvyFormType"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormTrigger" data-help="@messages("help.roAvyFormTrigger")">@messages("label.roAvyFormTrigger")</label></td>
+                                <td><span id="roAvyFormTrigger"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormTriggerModifier" data-help="@messages("help.roAvyFormTriggerModifier")">@messages("label.roAvyFormTriggerModifier")</label></td>
+                                <td><span id="roAvyFormTriggerModifier"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormInterface" data-help="@messages("help.roAvyFormInterface")">@messages("label.roAvyFormInterface")</label></td>
+                                <td><span id="roAvyFormInterface"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormRSize" data-help="@messages("help.roAvyFormRSize")"><@messages("label.roAvyFormRSize")</label></td>
+                                <td><span id="roAvyFormRSize"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormDSize" data-help="@messages("help.roAvyFormDSize")">@messages("label.roAvyFormDSize")</label></td>
+                                <td><span id="roAvyFormDSize"></span></td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td><td>
+                <table class="roAvyFormSubTable">
+                    <tr><td class="roAvyFormSectionHeader">
+                        <span class="avyHeader">@messages("header.roAvyFormHumanNumbers")</span>
+                    </td></tr>
+                    <tr><td>
+                        <table class="roAvyFormFieldsSubTable">
+                            <tr>
+                                <td><label for="roAvyFormNumCaught" data-help="@Html(Messages("help.roAvyFormNumCaught"))">@messages("label.roAvyFormNumCaught")</label></td>
+                                <td><span id="roAvyFormNumCaught"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormNumPartiallyBuried" data-help="@messages("help.roAvyFormNumPartiallyBuried")">@messages("label.roAvyFormNumPartiallyBuried")</label></td>
+                                <td><span id="roAvyFormNumPartiallyBuried"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormNumFullyBuried" data-help="@messages("help.roAvyFormNumFullyBuried")">@messages("label.roAvyFormNumFullyBuried")</label></td>
+                                <td><span id="roAvyFormNumFullyBuried"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormNumInjured" data-help="@messages("help.roAvyFormNumInjured")">@messages("label.roAvyFormNumInjured")</label></td>
+                                <td><span id="roAvyFormNumInjured"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormNumKilled" data-help="@messages("help.roAvyFormNumKilled")">@messages("label.roAvyFormNumKilled")</label></td>
+                                <td><span id="roAvyFormNumKilled"></span></td>
+                            </tr>
+                            <tr>
+                                <td><label for="roAvyFormModeOfTravel" data-help="@messages("help.roAvyFormModeOfTravel")">@messages("label.roAvyFormModeOfTravel")</label></td>
+                                <td><span id="roAvyFormModeOfTravel"></span></td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                </table>
 
-                </td></tr>
+            </td></tr>
 
-                <tr id="roAvyFormImageRow"><td colspan="3">
-                    <table class="roAvyFormSubTable">
-                        <tr><td class="roAvyFormSectionHeader">
-                            <span class="avyHeader">@messages("header.roAvyFormImagesHeader")</span>
-                        </td></tr>
-                        <tr><td>
-                            <table class="roAvyFormFieldsSubTable">
-                                <tr><td><div id="roAvyFormImageDiv"><ul id="roAvyFormImageList"></ul></div></td></tr>
-                            </table>
-                        </td></tr>
-                    </table>
-                </td></tr>
+            <tr id="roAvyFormImageRow"><td colspan="3">
+                <table class="roAvyFormSubTable">
+                    <tr><td class="roAvyFormSectionHeader">
+                        <span class="avyHeader">@messages("header.roAvyFormImagesHeader")</span>
+                    </td></tr>
+                    <tr><td>
+                        <table class="roAvyFormFieldsSubTable">
+                            <tr><td><div id="roAvyFormImageDiv"><ul id="roAvyFormImageList"></ul></div></td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
 
-                <tr id="roAvyFormCommentsRow"><td colspan="3">
-                    <table id="roAvyFormCommentsTable" class="roAvyFormSubTable">
-                        <tr><td class="roAvyFormSectionHeader">
-                            <div id="roAvyFormCommentsHeaderWrapper">
-                                <span class="avyHeader">@messages("header.roAvyFormCommentsHeader")</span>
-                                <a class="commentsFancybox" href="#roAvyFormCommentsLightboxDiv"><img src="@routes.Assets.versioned("images/plus-icon.gif")"/></a>
-                            </div>
-                        </td></tr>
-                        <tr><td>
-                            <table class="roAvyFormFieldsSubTable">
-                                <tr><td>
-                                    <textarea id="roAvyFormComments" rows="8" readonly="readonly"></textarea>
-                                    <div id="roAvyFormCommentsLightboxDiv"><textarea readonly="readonly"></textarea></div>
-                                </td></tr>
-                            </table>
-                        </td></tr>
-                    </table>
-                </td></tr>
+            <tr id="roAvyFormCommentsRow"><td colspan="3">
+                <table id="roAvyFormCommentsTable" class="roAvyFormSubTable">
+                    <tr><td class="roAvyFormSectionHeader">
+                        <div id="roAvyFormCommentsHeaderWrapper">
+                            <span class="avyHeader">@messages("header.roAvyFormCommentsHeader")</span>
+                            <a class="commentsFancybox" href="#roAvyFormCommentsLightboxDiv"><img src="@routes.Assets.versioned("images/plus-icon.gif")"/></a>
+                        </div>
+                    </td></tr>
+                    <tr><td>
+                        <table class="roAvyFormFieldsSubTable">
+                            <tr><td>
+                                <textarea id="roAvyFormComments" rows="8" readonly="readonly"></textarea>
+                                <div id="roAvyFormCommentsLightboxDiv"><textarea readonly="readonly"></textarea></div>
+                            </td></tr>
+                        </table>
+                    </td></tr>
+                </table>
+            </td></tr>
 
-            </table>
-        </div>
-
-
+        </table>
     </div>
+
   </body>
 </html>
