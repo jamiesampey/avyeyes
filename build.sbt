@@ -33,6 +33,7 @@ libraryDependencies ++= {
     "joda-time" % "joda-time" % "2.9.9",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
+    "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
 
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",

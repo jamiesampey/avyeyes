@@ -7,10 +7,13 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
+import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
+import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import play.api.Logger
 
 import scala.collection.JavaConversions._
 import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Logger) {
   private val s3Bucket = configService.getProperty("s3.bucket")
@@ -22,23 +25,41 @@ class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Log
     configService.getProperty("s3.fullaccess.secretAccessKey")
   ))
 
-  def uploadImage(avyExtId: String, filename: String, mimeType: String, bytes: Array[Byte]) {
+  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  /**
+    * Upload images asynchronously
+    */
+  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]): Future[Unit] = Future {
+    val writer = FormatDetector.detect(origBytes) match {
+      case Some(Format.PNG) => PngWriter()
+      case Some(Format.GIF) => GifWriter()
+      case _ => JpegWriter()
+    }
+
+    val origBais = new ByteArrayInputStream(origBytes)
+    val bytesForUpload = Image.fromStream(origBais).forWriter(writer).bytes
+
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
       case _ => avalancheImageKey (avyExtId, filename)
     }
 
     val metadata = new ObjectMetadata()
-    metadata.setContentLength(bytes.length)
+    metadata.setContentLength(bytesForUpload.length)
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val putObjectRequest = new PutObjectRequest(s3Bucket, key, new ByteArrayInputStream(bytes), metadata)
+    val uploadBais = new ByteArrayInputStream(bytesForUpload)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, uploadBais, metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytes.length} bytes")
+      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
+
+    origBais.close
+    uploadBais.close
   }
 
   def deleteImage(avyExtId: String, filename: String) {
