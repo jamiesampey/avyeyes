@@ -120,3 +120,47 @@ msg.roAvyFormRecentWindDirectionText=from the
 
 ####### Read-write Form #######
 
+msg.rwAvyFormRequiredFields=required field
+msg.rwAvyFormRecentWindDirectionText=from the
+msg.rwAvyFormCommentsInstr=Write as much or as little as you want. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
+msg.rwAvyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/images/img-edit-icon.png' /> to add a caption and the red <img src='/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
+
+button.rwAvyFormDeleteButton=Delete
+button.rwAvyFormSubmitButton=Submit
+button.rwAvyFormCancelButton=Cancel
+
+header.rwAvyFormGeneralInfo=General Info
+header.rwAvyFormSubmitterInfo=Submitter Information
+header.rwAvyFormAreaDateDesc=Location and Date
+header.rwAvyFormAvalancheClass=Avalanche Classification
+header.rwAvyFormAdminFields=Admin
+header.rwAvyFormSlopeDesc=Slope Description
+header.rwAvyFormWeatherDesc=Weather Description (preceding week)
+header.rwAvyFormHumanNumbers=Human Numbers
+header.rwAvyFormCommentsHeader=Comments
+header.rwAvyFormImages=Images
+
+label.rwAvyFormSubmitterEmail=Email
+label.rwAvyFormSubmitterExp=Experience level
+label.rwAvyFormAreaName=Area name
+label.rwAvyFormDate=Date
+label.rwAvyFormType=Type
+label.rwAvyFormTrigger=Trigger
+label.rwAvyFormTriggerModifier=Modifier
+label.rwAvyFormInterface=Interface
+label.rwAvyFormRsizeValue=R size
+label.rwAvyFormDsizeValue=D size
+label.rwAvyFormViewable=Viewable
+label.rwAvyFormElevation=Elevation
+label.rwAvyFormAspect=Aspect
+label.rwAvyFormAngle=Angle
+label.rwAvyFormRecentSnow=Snowfall
+label.rwAvyFormRecentWindSpeed=Wind
+label.rwAvyFormNumCaught=Caught
+label.rwAvyFormNumPartiallyBuried=Partially Buried
+label.rwAvyFormNumFullyBuried=Fully Buried
+label.rwAvyFormNumInjured=Injured
+label.rwAvyFormNumKilled=Killed
+label.rwAvyFormModeOfTravel=Mode of travel
+
+

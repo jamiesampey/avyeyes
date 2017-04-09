@@ -47,50 +47,12 @@ msg.avyReportUpdateSuccess=Avalanche report successfully updated
 msg.avyReportDeleteSuccess=Avalanche report deleted
 msg.avyReportDeleteError=An error occurred while deleting the avalanche
 
-msg.rwAvyFormRecentWindDirectionText=from the
-msg.rwAvyFormRequiredFields=required field
+
+
 msg.rwAvyFormValidationError=Input validation error. The fields outlined in red need attention.
-msg.rwAvyFormCommentsInstr=Write as much or as little as you want. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
-msg.rwAvyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/images/img-edit-icon.png' /> to add a caption and the red <img src='/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
-
-button.rwAvyFormSubmitButton=Submit
-button.rwAvyFormCancelButton=Cancel
-button.rwAvyFormDeleteButton=Delete
-
-header.rwAvyFormGeneralInfo=General Info
-header.rwAvyFormCommentsHeader=Comments
-header.rwAvyFormImages=Images
-header.rwAvyFormSubmitterInfo=Submitter Information
-header.rwAvyFormAreaDateDesc=Location and Date
-header.rwAvyFormWeatherDesc=Weather Description (preceding week)
-header.rwAvyFormAvalancheClass=Avalanche Classification
-header.rwAvyFormAdminFields=Admin
-header.rwAvyFormSlopeDesc=Slope Description
-header.rwAvyFormHumanNumbers=Human Numbers
 
 
-label.rwAvyFormViewable=Viewable
-label.rwAvyFormAreaName=Area name
-label.rwAvyFormDate=Date
-label.rwAvyFormRecentSnow=Snowfall
-label.rwAvyFormRecentWindSpeed=Wind
-label.rwAvyFormType=Type
-label.rwAvyFormTrigger=Trigger
-label.rwAvyFormTriggerModifier=Modifier
-label.rwAvyFormInterface=Interface
-label.rwAvyFormRsizeValue=R size
-label.rwAvyFormDsizeValue=D size
-label.rwAvyFormElevation=Elevation
-label.rwAvyFormAspect=Aspect
-label.rwAvyFormAngle=Angle
-label.rwAvyFormNumCaught=Caught
-label.rwAvyFormNumPartiallyBuried=Partially Buried
-label.rwAvyFormNumFullyBuried=Fully Buried
-label.rwAvyFormNumInjured=Injured
-label.rwAvyFormNumKilled=Killed
-label.rwAvyFormModeOfTravel=Mode of travel
-label.rwAvyFormSubmitterEmail=Email
-label.rwAvyFormSubmitterExp=Experience level
+
 
 
 // search
@@ -98,6 +60,7 @@ label.rwAvyFormSubmitterExp=Experience level
 // detail
 
 // report
+
 help.rwAvyFormViewable=Whether or not this avalanche report is approved and viewable by the public
 help.rwAvyFormAreaName=<p>The common or well-known name of the location where the avalanche occurred.</p>For example: "West side of Jones Pass" or "NE face of Mt. Wilson"
 help.rwAvyFormDate=<p>The date of the avalanche.</p>Provide an approximate date if the exact date is not known.
