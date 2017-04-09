@@ -32,49 +32,36 @@ class AmazonS3Service extends Loggable {
   /**
     * Upload images asynchronously
     */
-  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]): Future[Unit] = {
+  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]): Future[Unit] = Future {
+    val writer = FormatDetector.detect(origBytes) match {
+      case Some(Format.PNG) => PngWriter()
+      case Some(Format.GIF) => GifWriter()
+      case _ => JpegWriter()
+    }
+
     val origBais = new ByteArrayInputStream(origBytes)
+    val bytesForUpload = Image.fromStream(origBais).forWriter(writer).bytes
 
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
       case _ => avalancheImageKey (avyExtId, filename)
     }
 
-    def extractExifOrientation: Option[Int] = Try(ImageMetadataReader.readMetadata(origBais)) match {
-      case Success(metadata) => Option(metadata.getFirstDirectoryOfType(classOf[ExifIFD0Directory])).map(_.getInt(ExifDirectoryBase.TAG_ORIENTATION))
-      case Failure(_) => None
+    val metadata = new ObjectMetadata()
+    metadata.setContentLength(bytesForUpload.length)
+    metadata.setContentType(mimeType)
+    metadata.setCacheControl(CacheControlMaxAge)
+
+    val uploadBais = new ByteArrayInputStream(bytesForUpload)
+    val putObjectRequest = new PutObjectRequest(s3Bucket, key, uploadBais, metadata)
+
+    Try(s3Client.putObject(putObjectRequest)) match {
+      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
+      case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
 
-    Future {
-      logger.info(s"Uploading image $key to AWS S3")
-      val bytesForUpload = extractExifOrientation match {
-        case Some(orientation) if orientation != 1 =>
-          logger.info(s"Rewriting image $filename based on an extracted EXIF orientation value of $orientation")
-          val writer = FormatDetector.detect(origBytes) match {
-            case Some(Format.PNG) => PngWriter()
-            case Some(Format.GIF) => GifWriter()
-            case _ => JpegWriter()
-          }
-          Image.fromStream(origBais).forWriter(writer).bytes
-        case _ => origBytes
-      }
-
-      val awsMetadata = new ObjectMetadata()
-      awsMetadata.setContentLength(bytesForUpload.length)
-      awsMetadata.setContentType(mimeType)
-      awsMetadata.setCacheControl(CacheControlMaxAge)
-
-      val uploadBais = new ByteArrayInputStream(bytesForUpload)
-      val putObjectRequest = new PutObjectRequest(s3Bucket, key, uploadBais, awsMetadata)
-
-      Try(s3Client.putObject(putObjectRequest)) match {
-        case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
-        case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
-      }
-
-      //origBais.close
-      //uploadBais.close
-    }
+    origBais.close
+    uploadBais.close
   }
 
   def deleteImage(avyExtId: String, filename: String) {
