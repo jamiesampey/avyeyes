@@ -7,6 +7,7 @@ import com.avyeyes.test.Generators._
 import com.avyeyes.test._
 import com.avyeyes.test.LiftHelpers._
 import com.avyeyes.util.Constants._
+import com.avyeyes.util.FutureOps._
 import net.liftweb.http._
 import net.liftweb.json.JsonDSL._
 import net.liftweb.mocks.MockHttpServletRequest
@@ -97,9 +98,9 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
 
       mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
-      val req = openLiftReqBox(S.request)
-      val reqWithFPH = addFileUploadToReq(req, fph)
-      val resp = openLiftRespBox(images(reqWithFPH)())
+      mockS3.uploadImage(anyString, anyString, anyString, any[Array[Byte]]) returns Future { }
+
+      val resp = images.tryImageUpload(extId, fph).resolve
 
       there was one(mockS3).uploadImage(Matchers.eq(extId), any, Matchers.eq("image/jpeg"), any)
       there was one(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
@@ -116,9 +117,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(MaxImagesPerAvalanche)
       mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns true
 
-      val req = openLiftReqBox(S.request)
-      val reqWithFPH = addFileUploadToReq(req, fph)
-      val resp = openLiftRespBox(images(reqWithFPH)())
+      val resp = images.tryImageUpload(extId, fph).resolve
 
       there was no(mockS3).uploadImage(any, any, any, any)
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
@@ -131,9 +130,7 @@ class ImagesTest extends WebSpec2 with AroundExample with Mockito {
       mockAvalancheDal.countAvalancheImages(any[String]) returns Future.successful(0)
       mockUser.isAuthorizedToEditAvalanche(Matchers.eq(extId), any[Box[String]]) returns false
 
-      val req = openLiftReqBox(S.request)
-      val reqWithFPH = addFileUploadToReq(req, fph)
-      val resp = openLiftRespBox(images(reqWithFPH)())
+      val resp = images.tryImageUpload(extId, fph).resolve
 
       there was no(mockS3).uploadImage(any, any, any, any)
       there was no(mockAvalancheDal).insertAvalancheImage(any[AvalancheImage])
