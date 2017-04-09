@@ -28,6 +28,7 @@ libraryDependencies ++= {
     "ch.qos.logback" % "logback-classic" % "1.1.3",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
+    "com.drewnoakes" % "metadata-extractor" % "2.10.1",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",

@@ -8,7 +8,7 @@ import com.avyeyes.util.Constants._
 import com.avyeyes.util.FutureOps._
 import net.liftweb.common.Loggable
 import net.liftweb.http._
-import net.liftweb.http.rest.RestHelper
+import net.liftweb.http.rest.{RestContinuation, RestHelper}
 import net.liftweb.json.JsonAST._
 import net.liftweb.json.JsonDSL._
 import org.joda.time.DateTime
@@ -31,33 +31,33 @@ class Images extends RestHelper with Loggable {
       OkResponse()
     }
 
-    case "rest" :: "images" :: avyExtId :: Nil Post req => {
+    case "rest" :: "images" :: avyExtId :: Nil Post req => RestContinuation.async { reply => {
       dal.countAvalancheImages(avyExtId).resolve match {
         case _ if !user.isAuthorizedToEditAvalanche(avyExtId, S.param(EditParam)) =>
           logger.warn(s"Not authorized to add images to avalanche $avyExtId")
-          UnauthorizedResponse("Not authorized to add images to avalanche")
+          reply(UnauthorizedResponse("Not authorized to add images to avalanche"))
         case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
           logger.warn(s"Cannot add more images to avalanche $avyExtId")
-          BadResponse()
+          reply(BadResponse())
         case siblingImageCount =>
           val fph = req.uploadedFiles.head
           val newFilename = s"${UUID.randomUUID().toString}.${fph.fileName.split('.').last.toLowerCase}"
 
-          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file)
-
-          dal.insertAvalancheImage(AvalancheImage(
-            createTime = DateTime.now,
-            avalanche = avyExtId,
-            filename = newFilename,
-            origFilename = fph.fileName,
-            mimeType = fph.mimeType,
-            size = fph.length.toInt,
-            sortOrder = siblingImageCount
-          )).map { _ =>
-            dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
-            JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length))
-          }.resolve
-      }
+          s3.uploadImage(avyExtId, newFilename, fph.mimeType, fph.file).map { _ =>
+            dal.insertAvalancheImage(AvalancheImage(
+              createTime = DateTime.now,
+              avalanche = avyExtId,
+              filename = newFilename,
+              origFilename = fph.fileName,
+              mimeType = fph.mimeType,
+              size = fph.length.toInt,
+              sortOrder = siblingImageCount
+            )).map { _ =>
+              dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
+              reply(JsonResponse(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> fph.fileName) ~ ("size" -> fph.length)))
+            }
+          }
+      }}
     }
 
     case "rest" :: "images" :: avyExtId :: baseFilename :: Nil JsonPut json->req =>
