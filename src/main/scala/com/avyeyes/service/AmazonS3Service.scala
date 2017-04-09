@@ -6,8 +6,6 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
-import com.drew.imaging.ImageMetadataReader
-import com.drew.metadata.exif.{ExifDirectoryBase, ExifIFD0Directory}
 import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
 import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import net.liftweb.common.Loggable
