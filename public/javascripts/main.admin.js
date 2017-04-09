@@ -1,11 +1,6 @@
 'use strict';
 
-require.config({
-  baseUrl: '/js'
-});
-    
-//Start the main app logic.
-requirejs(['lib/jquery.dataTables'], function() {
+requirejs(['lib/jquery', 'lib/jquery.dataTables'], function($) {
   if (adminLoggedIn()) {
     wireDataTable();
   }
