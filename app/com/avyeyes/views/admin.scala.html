@@ -14,27 +14,25 @@
               <table><tr>
                   <td id="avyAdminOmniLoginTd">
                       <table>
-                          <tr><td><a href="/auth/google/signin"><img src="/images/login-google.png"/></a></td></tr>
-                          <tr><td><a href="/auth/facebook/signin"><img src="/images/login-facebook.png"/></a></td></tr>
+                          <tr><td><a href="/auth/google/signin"><img src="@routes.Assets.versioned("images/login-google.png")"/></a></td></tr>
+                          <tr><td><a href="/auth/facebook/signin"><img src="@routes.Assets.versioned("images/login-facebook.png")"/></a></td></tr>
                       </table>
                   </td>
                   <td id="avyAdminLocalLoginTd">
-                      <form class="lift:Admin.localLogIn?form=post">
-                          <table>
-                              <tr>
-                                  <td><label for="avyAdminLocalLoginEmail"></label></td>
-                                  <td><input id="avyAdminLocalLoginEmail" type="text" /></td>
-                              </tr>
-                              <tr>
-                                  <td><label for="avyAdminLocalLoginPw"></label></td>
-                                  <td><input id="avyAdminLocalLoginPw" type="password" /></td>
-                              </tr>
-                              <tr>
-                                  <td><input id="avyAdminLocalLoginButton" type="submit" class="avyButton" /></td>
-                                  <td><span class="lift:Msg?id=avyAdminLocalLoginMsg;errorClass=error"></span></td>
-                              <tr>
-                          </table>
-                      </form>
+                      <table>
+                          <tr>
+                              <td><label for="avyAdminLocalLoginEmail">@messages("label.avyAdminLocalLoginEmail")</label></td>
+                              <td><input id="avyAdminLocalLoginEmail" type="text" /></td>
+                          </tr>
+                          <tr>
+                              <td><label for="avyAdminLocalLoginPw">@messages("label.avyAdminLocalLoginPw")</label></td>
+                              <td><input id="avyAdminLocalLoginPw" type="password" /></td>
+                          </tr>
+                          <tr>
+                              <td><input type="submit" class="avyButton" value="@messages("button.avyAdminLocalLoginButton")"/></td>
+                              <td><span class="lift:Msg?id=avyAdminLocalLoginMsg;errorClass=error"></span></td>
+                          <tr>
+                      </table>
                   </td>
               </tr></table>
           </div>
@@ -47,11 +45,11 @@
                   <td id="avyAdminHeaderStatsTd">
                       <table id="avyAdminStatsTable">
                           <tr>
-                              <td id="avyAdminViewableCountTd"><label for="avyAdminViewableCount"/></td>
+                              <td id="avyAdminViewableCountTd"><label for="avyAdminViewableCount">@messages("label.avyAdminViewableCount")</label></td>
                               <td><span id="avyAdminViewableCount" class="lift:Admin.viewableAvalancheCount"></span></td>
                           </tr>
                           <tr>
-                              <td id="avyAdminUnviewableCountTd"><label for="avyAdminUnviewableCount"/></td>
+                              <td id="avyAdminUnviewableCountTd"><label for="avyAdminUnviewableCount">@messages("label.avyAdminUnviewableCount")</label></td>
                               <td><span id="avyAdminUnviewableCount" class="lift:Admin.unviewableAvalancheCount"></span></td>
                           </tr>
                       </table>
@@ -60,12 +58,12 @@
               <tr><td id="avyAdminTableRow" colspan="2">
                   <table id="avyAdminDataTable" class="display" width="100%">
                       <thead>
-                      <th><span id="avyAdminCreatedDateColumn" class="avyHeader"></span></th>
-                      <th><span id="avyAdminUpdatedDateColumn" class="avyHeader"></span></th>
-                      <th><span id="avyAdminExtIdColumn" class="avyHeader"></span></th>
-                      <th><span id="avyAdminViewableColumn" class="avyHeader"></span></th>
-                      <th><span id="avyAdminTitleColumn" class="avyHeader"></span></th>
-                      <th><span id="avyAdminSubmitterEmailColumn" class="avyHeader"></span></th>
+                      <th><span id="avyAdminCreatedDateColumn" class="avyHeader">@messages("header.avyAdminCreatedDateColumn")</span></th>
+                      <th><span id="avyAdminUpdatedDateColumn" class="avyHeader">@messages("header.avyAdminUpdatedDateColumn")</span></th>
+                      <th><span id="avyAdminExtIdColumn" class="avyHeader">@messages("header.avyAdminExtIdColumn")</span></th>
+                      <th><span id="avyAdminViewableColumn" class="avyHeader">@messages("header.avyAdminViewableColumn")</span></th>
+                      <th><span id="avyAdminTitleColumn" class="avyHeader">@messages("header.avyAdminTitleColumn")</span></th>
+                      <th><span id="avyAdminSubmitterEmailColumn" class="avyHeader">@messages("header.avyAdminSubmitterEmailColumn")</span></th>
                       </thead>
                   </table>
               </td></tr>

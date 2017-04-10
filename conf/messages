@@ -186,3 +186,22 @@ help.rwAvyFormNumInjured=<p>The number of humans injured (not killed) in the ava
 help.rwAvyFormNumKilled=<p>The number of humans killed in the avalanche.</p>Leave empty if unknown. A 0 (zero) value means no people were killed. An empty value means you don't know.
 help.rwAvyFormModeOfTravel=The primary mode of travel used by the group that triggered the avalanche, if applicable. Leave blank if you are not sure of the primary mode of travel.
 
+
+####### Admin #######
+
+button.avyAdminLocalLoginButton=Log in
+
+label.avyAdminLocalLoginEmail=Email
+label.avyAdminLocalLoginPw=Password
+label.avyAdminViewableCount=Viewable avalanches
+label.avyAdminUnviewableCount=Unviewable avalanches
+
+header.avyAdminConsoleTitle=Avalanche Reports
+
+header.avyAdminCreatedDateColumn=Created
+header.avyAdminUpdatedDateColumn=Last Updated
+header.avyAdminExtIdColumn=External ID
+header.avyAdminViewableColumn=Viewable
+header.avyAdminTitleColumn=Avalanche Title
+header.avyAdminSubmitterEmailColumn=Submitter
+

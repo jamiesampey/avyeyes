@@ -9,22 +9,9 @@ title.errorDialog=Oops
 // admin
 msg.avyAdminLocalLoginAccessDenied=Access Denied
 
-label.avyAdminLocalLoginEmail=Email
-label.avyAdminLocalLoginPw=Password
 label.avyAdminLoggedInEmail=Logged in as
-label.avyAdminViewableCount=Viewable avalanches
-label.avyAdminUnviewableCount=Unviewable avalanches
 
-button.avyAdminLocalLoginButton=Log in
 button.avyAdminLogOutButton=Log out
-
-header.avyAdminConsoleTitle=Avalanche Reports
-header.avyAdminCreatedDateColumn=Created
-header.avyAdminUpdatedDateColumn=Last Updated
-header.avyAdminExtIdColumn=External ID
-header.avyAdminViewableColumn=Viewable
-header.avyAdminTitleColumn=Avalanche Title
-header.avyAdminSubmitterEmailColumn=Submitter
 
 // search
 
