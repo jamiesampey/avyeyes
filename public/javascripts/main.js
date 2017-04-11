@@ -2,7 +2,16 @@
 
 var avyEyesView;
 
-requirejs(["lib/jquery",
+requirejs.config({
+    paths: {
+        'jquery': ['../lib/jquery/jquery'],
+        'jquery-ui': ['../lib/jquery-ui/jquery-ui'],
+        'file-upload': ['../lib/jquery-file-upload/js/jquery.fileupload'],
+        'fancybox': ['../lib/jquery.fancybox.pack/jquery.fancybox.pack']
+    }
+});
+
+requirejs(["jquery",
            "avyeyes.view",
            "//connect.facebook.net/en_US/all.js",
            "//platform.twitter.com/widgets.js"], function($, AvyEyesView) {

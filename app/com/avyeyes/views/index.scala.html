@@ -10,8 +10,8 @@
     <meta property="og:description" content="View avalanches in 3D" />
     <meta property="og:image" content="https://avyeyes.com/images/avyeyes.jpg?v=1.1.5" />
 
-    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/lib/Cesium/Cesium.js")" defer></script>
-    @helper.requireJs(core = routes.Assets.versioned("javascripts/lib/require.js").url, module = routes.Assets.versioned("javascripts/main").url)
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/Cesium/Cesium.js")" defer></script>
+    @helper.requireJs(core = routes.Assets.versioned("lib/requirejs/require.js").url, module = routes.Assets.versioned("javascripts/main").url)
 
     <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.css")"/>
     <link rel="shortcut icon" href="@routes.Assets.versioned("images/favicon.ico")?v=1.6"/>

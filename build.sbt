@@ -1,8 +1,6 @@
-import com.github.play2war.plugin._
-
 enablePlugins(PlayScala)
 
-enablePlugins(TomcatPlugin)
+enablePlugins(SbtWeb)
 
 organization := "com.avyeyes"
 
@@ -23,7 +21,7 @@ resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases
 
 libraryDependencies ++= {
   Seq(
-    filters,
+//    filters, add filters back in down the line sometime
     "com.typesafe.play" %% "play-slick" % "2.1.0",
     "com.typesafe.play" %% "play-mailer" % "5.0.0",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
@@ -35,6 +33,13 @@ libraryDependencies ++= {
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
 
+    "org.webjars" % "requirejs" % "2.3.3",
+    "org.webjars" % "jquery" % "3.2.0",
+    "org.webjars" % "jquery-ui" % "1.12.1",
+    "org.webjars" % "jquery-file-upload" % "9.5.7",
+    "org.webjars" % "fancybox" % "2.1.5",
+    "org.webjars" % "datatables" % "1.10.13",
+
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.4.188" % "test",
@@ -42,37 +47,35 @@ libraryDependencies ++= {
   )
 }
 
-Play2WarKeys.servletVersion := "3.0"
+pipelineStages := Seq(rjs)
 
-Play2WarKeys.explodedJar := true
-
-lazy val mode = taskKey[String]("Build mode (dev or prod)")
-
-mode := sys.props.getOrElse("mode", default = "dev")
-
-webappPostProcess := { origWebapp =>
-  if (mode.value == "prod") {
-    import sbt.IO._
-    println("r.js -o build.js".!!)
-    val optimizedWebapp = new File("target/webapp-rjs")
-    assertDirectory(optimizedWebapp)
-    delete(origWebapp)
-    delete(optimizedWebapp / "build.txt")
-    copyDirectory(source = optimizedWebapp, target = origWebapp)
-  }
-}
-
-// xsbt-web-plugin config
-containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
-
-containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
-
-javaOptions in Tomcat ++= Seq(
-  "-Xdebug",
-  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
-  "-Djavax.net.ssl.keyStore=misc/ssl/localKeystore.jks",
-  "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
-)
+//lazy val mode = taskKey[String]("Build mode (dev or prod)")
+//
+//mode := sys.props.getOrElse("mode", default = "dev")
+//
+//webappPostProcess := { origWebapp =>
+//  if (mode.value == "prod") {
+//    import sbt.IO._
+//    println("r.js -o build.js".!!)
+//    val optimizedWebapp = new File("target/webapp-rjs")
+//    assertDirectory(optimizedWebapp)
+//    delete(origWebapp)
+//    delete(optimizedWebapp / "build.txt")
+//    copyDirectory(source = optimizedWebapp, target = origWebapp)
+//  }
+//}
+//
+//// xsbt-web-plugin config
+//containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
+//
+//containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
+//
+//javaOptions in Tomcat ++= Seq(
+//  "-Xdebug",
+//  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
+//  "-Djavax.net.ssl.keyStore=misc/ssl/localKeystore.jks",
+//  "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
+//)
 
 
 // sbt-jasmine-plugin config

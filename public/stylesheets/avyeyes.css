@@ -2,8 +2,8 @@
 @import url("jquery.fancybox.css");
 
 /* Cesium css imports */
-@import url("../javascripts/lib/Cesium/Widgets/widgets.css");
-@import url("../javascripts/lib/Cesium/Widgets/lighter.css");
+@import url("../javascripts/Cesium/Widgets/widgets.css");
+@import url("../javascripts/Cesium/Widgets/lighter.css");
 
 @import url("avyeyes.ui.css");
 @import url("avyeyes.form.css");

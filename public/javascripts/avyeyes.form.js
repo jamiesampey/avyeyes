@@ -1,6 +1,5 @@
-define(['lib/jquery.fancybox',
-        "lib/jquery.fileupload",
-        "lib/jquery.iframe-transport",
+define(['fancybox',
+        "file-upload",
         "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 

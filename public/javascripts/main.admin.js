@@ -1,6 +1,13 @@
 'use strict';
 
-requirejs(['lib/jquery', 'lib/jquery.dataTables'], function($) {
+requirejs.config({
+    paths:{
+        'jquery': ['../lib/jquery/jquery'],
+        'datatables': ['../lib/datatables/datatables']
+    }
+});
+
+requirejs(['jquery', 'datatables'], function($) {
   if (adminLoggedIn()) {
     wireDataTable();
   }
