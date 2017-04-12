@@ -33,6 +33,7 @@ libraryDependencies ++= {
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
 
+    "org.webjars" %% "webjars-play" % "2.5.0",
     "org.webjars" % "requirejs" % "2.3.3",
     "org.webjars" % "jquery" % "3.2.0",
     "org.webjars" % "jquery-ui" % "1.12.1",

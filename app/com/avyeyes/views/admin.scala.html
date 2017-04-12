@@ -1,9 +1,9 @@
-@()(implicit messages: Messages)
+@(requireJS: org.webjars.play.RequireJS)(implicit messages: Messages)
 
 <html>
   <head>
     <title>AvyEyes Admin</title>
-    @helper.requireJs(core = routes.Assets.versioned("javascripts/lib/require.js").url, module = routes.Assets.versioned("javascripts/main.admin").url)
+      @Html(requireJS.setup(routes.Assets.versioned("javascripts/main.admin")))
     <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
   </head>
   <body>

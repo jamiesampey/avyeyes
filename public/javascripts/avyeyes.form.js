@@ -1,5 +1,5 @@
 define(['fancybox',
-        "file-upload",
+        "jquery-file-upload",
         "//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js"
         ], function() {
 
