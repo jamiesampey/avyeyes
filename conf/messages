@@ -123,7 +123,7 @@ msg.roAvyFormRecentWindDirectionText=from the
 msg.rwAvyFormRequiredFields=required field
 msg.rwAvyFormRecentWindDirectionText=from the
 msg.rwAvyFormCommentsInstr=Write as much or as little as you want. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
-msg.rwAvyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/assets/images/img-edit-icon.png' /> to add a caption and the red <img src='/assets/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
+msg.rwAvyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/assets/images/img-edit-icon.png' /> to add a caption and the red <img src='/assets/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/assets/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
 
 button.rwAvyFormDeleteButton=Delete
 button.rwAvyFormSubmitButton=Submit

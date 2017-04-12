@@ -2,6 +2,12 @@ define(['jquery-ui'], function() {
 
 function AvyEyesUI() {};
 
+AvyEyesUI.prototype.raiseTheCurtain = function() {
+    if ($('#loadingDiv').is(':visible')) {
+        $('#loadingDiv').fadeOut(500);
+    }
+}
+
 AvyEyesUI.prototype.wire = function(view) {
     wireMainMenu(view);
     wireTooltips();
@@ -12,7 +18,7 @@ AvyEyesUI.prototype.wire = function(view) {
     wireButtons(view);
     wireLocationInputs(view);
     wireDialogs(view);
-    raiseTheCurtain();
+    this.raiseTheCurtain();
 }
 
 function wireMainMenu(view) {
@@ -367,12 +373,6 @@ function wireDialogs(view) {
         closeOnEscape: true,
         dialogClass: "roAvyFormDialog"
 	});
-}
-
-AvyEyesUI.prototype.raiseTheCurtain = function() {
-    if ($('#loadingDiv').is(':visible')) {
-        $('#loadingDiv').fadeOut(500);
-    }
 }
 
 return AvyEyesUI;
