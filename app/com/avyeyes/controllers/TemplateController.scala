@@ -8,17 +8,16 @@ import org.json4s.JsonDSL._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Controller
 import play.api.mvc.Action
-import org.webjars.play.RequireJS
 
 @Singleton
-class TemplateController @Inject()(requireJS: RequireJS, val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class TemplateController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
   def index(extId: String) = Action { implicit request =>
-    Ok(com.avyeyes.views.html.index(requireJS, autocompleteSources))
+    Ok(com.avyeyes.views.html.index(autocompleteSources))
   }
 
   def admin = Action { implicit request =>
-    Ok(com.avyeyes.views.html.admin(requireJS))
+    Ok(com.avyeyes.views.html.admin())
   }
 
   private val autocompleteSources = Map(

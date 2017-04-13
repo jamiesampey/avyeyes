@@ -1,10 +1,10 @@
-@(requireJS: org.webjars.play.RequireJS)(implicit messages: Messages)
+@()(implicit messages: Messages)
 
 <html>
   <head>
     <title>AvyEyes Admin</title>
-      @Html(requireJS.setup(routes.Assets.versioned("javascripts/main.admin")))
-    <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
+      <script type="text/javascript" src="@routes.Assets.versioned("javascripts/lib/require.js")" data-main="@routes.Assets.versioned("javascripts/main.admin.js")" defer></script>
+      <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
   </head>
   <body>
       <div class="avyAdminLoggedInDiv"></div>

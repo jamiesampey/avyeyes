@@ -1,9 +1,9 @@
-@import url("/assets/stylesheets/jquery-ui.css");
-@import url("/assets/stylesheets/jquery.fancybox.css");
+@import url("jquery-ui.css");
+@import url("jquery.fancybox.css");
 
 /* Cesium css imports */
-@import url("/assets/javascripts/Cesium/Widgets/widgets.css");
-@import url("/assets/javascripts/Cesium/Widgets/lighter.css");
+@import url("../javascripts/lib/Cesium/Widgets/widgets.css");
+@import url("../javascripts/lib/Cesium/Widgets/lighter.css");
 
-@import url("/assets/stylesheets/avyeyes.ui.css");
-@import url("/assets/stylesheets/avyeyes.form.css");
+@import url("avyeyes.ui.css");
+@import url("avyeyes.form.css");

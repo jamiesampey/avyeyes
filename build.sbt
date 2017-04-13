@@ -32,15 +32,6 @@ libraryDependencies ++= {
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
-
-    "org.webjars" %% "webjars-play" % "2.5.0",
-    "org.webjars" % "requirejs" % "2.3.3",
-    "org.webjars" % "jquery" % "3.2.0",
-    "org.webjars" % "jquery-ui" % "1.12.1",
-    "org.webjars" % "jquery-file-upload" % "9.5.7",
-    "org.webjars" % "fancybox" % "2.1.5",
-    "org.webjars" % "datatables" % "1.10.13",
-
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.4.188" % "test",

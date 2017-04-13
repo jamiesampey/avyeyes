@@ -2,6 +2,16 @@
 
 var avyEyesView;
 
+require.config({
+  baseUrl: "/assets/javascripts",
+  paths: {
+    'jquery': './lib/jquery',
+    'jquery-ui': './lib/jquery-ui',
+    'file-upload': './lib/jquery.fileupload',
+    'fancybox': './lib/jquery.fancybox'
+  }
+});
+
 requirejs(["jquery",
            "avyeyes.view",
            "//connect.facebook.net/en_US/all.js",

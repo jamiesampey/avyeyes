@@ -64,6 +64,7 @@ function AvyEyesView() {
 //                console.log( "failed to get avalanche. Error: " + textStatus + ", " + error);
 //                this.geolocateAndFlyTo();
 //            }.bind(this));
+            this.geolocateAndFlyTo();
         } else {
             this.geolocateAndFlyTo();
         }
