@@ -54,7 +54,20 @@ function AvyEyesView() {
 
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI();
-    this.ui.wire(this);
+    this.ui.wire(this, function() {
+        var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+        if (possibleExtId) {
+            console.log("searching for avalanche id: " + possibleExtId);
+//            $.getJSON("/avalanche/" + possibleExtId).done(function(json) {
+//                console.log("received json response: " + json);
+//            }).fail(function(jqxhr, textStatus, error) {
+//                console.log( "failed to get avalanche. Error: " + textStatus + ", " + error);
+//                this.geolocateAndFlyTo();
+//            }.bind(this));
+        } else {
+            this.geolocateAndFlyTo();
+        }
+    }.bind(this));
 
     FB.init({
         appId: this.facebookAppId,
@@ -333,7 +346,7 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     if (showPin) {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            billboard: {image: "/images/flyto-pin.png"}
+            billboard: {image: "/assets/images/flyto-pin.png"}
         });
     } else {
         return this.addEntity({

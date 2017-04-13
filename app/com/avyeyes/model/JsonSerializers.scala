@@ -61,7 +61,7 @@ object DateTimeSerializer extends CustomSerializer[DateTime](format => (
 
 object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
   {
-    case json: JValue => ???
+    case _: JValue => ???
   },
   {
     case c: Coordinate => ("latitude" -> c.latitude) ~ ("longitude" -> c.longitude) ~ ("altitude" -> c.altitude)
@@ -70,7 +70,7 @@ object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
 
 object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format => (
   {
-    case json: JValue => ???
+    case _: JValue => ???
   },
   {
     case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size, order, caption) =>

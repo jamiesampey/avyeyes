@@ -232,7 +232,7 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
 AvyForm.prototype.appendImageCellToReadWriteForm = function(filenameBase) {
     $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
         + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
-        + "<img src='/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
+        + "<img src='/assets/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
     $('#rwAvyFormImageGrid').sortable('refresh');
 }
 
@@ -247,8 +247,8 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
         + "<a id='" + imageAnchorId + "' href='" + imageUrl + "' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
         + "<div class='captionContainer' style='display: none;'>" + existingCaption + "</div>"
-        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/images/img-edit-icon.png' />"
-        + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/images/img-delete-icon.png' />"
+        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/assets/images/img-edit-icon.png' />"
+        + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/assets/images/img-delete-icon.png' />"
         + "</div>");
 
     setImageFancyBox('#' + imageAnchorId);

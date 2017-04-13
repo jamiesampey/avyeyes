@@ -8,7 +8,7 @@ AvyEyesUI.prototype.raiseTheCurtain = function() {
     }
 }
 
-AvyEyesUI.prototype.wire = function(view) {
+AvyEyesUI.prototype.wire = function(view, callback) {
     wireMainMenu(view);
     wireTooltips();
     wireAutoCompletes(view);
@@ -18,7 +18,7 @@ AvyEyesUI.prototype.wire = function(view) {
     wireButtons(view);
     wireLocationInputs(view);
     wireDialogs(view);
-    this.raiseTheCurtain();
+    callback();
 }
 
 function wireMainMenu(view) {

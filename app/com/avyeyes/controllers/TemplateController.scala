@@ -13,7 +13,7 @@ import org.webjars.play.RequireJS
 @Singleton
 class TemplateController @Inject()(requireJS: RequireJS, val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
-  def index = Action { implicit request =>
+  def index(extId: String) = Action { implicit request =>
     Ok(com.avyeyes.views.html.index(requireJS, autocompleteSources))
   }
 
