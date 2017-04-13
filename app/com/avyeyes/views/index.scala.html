@@ -1,4 +1,4 @@
-@(requireJS: org.webjars.play.RequireJS)(implicit messages: Messages)
+@(requireJS: org.webjars.play.RequireJS, acSources: Map[String, String])(implicit messages: Messages)
 
 <html>
   <head>
@@ -30,9 +30,9 @@
     <div id="cesiumContainer"></div>
     <div id="fb-root"></div>
 
-    <!--<div id="loadingDiv">-->
-        <!--<div id="loadingSplash"><img id="loadingSplashTitle" src="@routes.Assets.versioned("images/title.png")"/></div>-->
-    <!--</div>-->
+    <div id="loadingDiv">
+        <div id="loadingSplash"><img id="loadingSplashTitle" src="@routes.Assets.versioned("images/title.png")"/></div>
+    </div>
 
     <div class="avyAdminLoggedInDiv"></div>
     <div id="eyeAltContainer"></div>
@@ -114,14 +114,14 @@
                         <tr>
                             <td class="avySearchTableLabel"><label for="avySearchType" data-help="@Html(Messages("help.avySearchType"))">@messages("label.avySearchType")</label></td>
                             <td class="avySearchTableInput">
-                                <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
+                                <input class="avyAutoComplete" data-source="AvalancheType" type="text"/>
                                 <input id="avySearchType" type="hidden"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="avySearchTableLabel"><label for="avySearchTrigger" data-help="@Html(Messages("help.avySearchTrigger"))">@messages("label.avySearchTrigger")</label></td>
                             <td class="avySearchTableInput">
-                                <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                                <input class="avyAutoComplete" data-source="AvalancheTrigger" type="text"/>
                                 <input id="avySearchTrigger" type="hidden"/>
                             </td>
                         </tr>
@@ -418,7 +418,7 @@
                                                     <tr>
                                                         <td><label for="rwAvyFormSubmitterExp" data-help="@messages("help.rwAvyFormSubmitterExp")">@messages("label.rwAvyFormSubmitterExp")<span style='color: red;'>&nbsp;*</span></label></td>
                                                         <td>
-                                                            <input id="rwAvyFormSubmitterExpAC" class="avyAutoComplete avyExperienceLevelAutoComplete" type="text"/>
+                                                            <input id="rwAvyFormSubmitterExpAC" class="avyAutoComplete" data-source="ExperienceLevel" type="text"/>
                                                             <input id="rwAvyFormSubmitterExp" type="hidden"/>
                                                         </td>
                                                     </tr>
@@ -454,28 +454,28 @@
                                                 <tr>
                                                     <td><label for="rwAvyFormType" data-help="@messages("help.rwAvyFormType")">@messages("label.rwAvyFormType")</label></td>
                                                     <td>
-                                                        <input class="avyAutoComplete avyTypeAutoComplete" type="text"/>
+                                                        <input class="avyAutoComplete" data-source="AvalancheType" type="text"/>
                                                         <input id="rwAvyFormType" type="hidden"/>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><label for="rwAvyFormTrigger" data-help="@messages("help.rwAvyFormTrigger")">@messages("label.rwAvyFormTrigger")</label></td>
                                                     <td>
-                                                        <input class="avyAutoComplete avyTriggerAutoComplete" type="text"/>
+                                                        <input class="avyAutoComplete" data-source="AvalancheTrigger" type="text"/>
                                                         <input id="rwAvyFormTrigger" type="hidden" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><label for="rwAvyFormTriggerModifier" data-help="@messages("help.rwAvyFormTriggerModifier")">@messages("label.rwAvyFormTriggerModifier")</label></td>
                                                     <td>
-                                                        <input class="avyAutoComplete avyTriggerModifierAutoComplete" type="text"/>
+                                                        <input class="avyAutoComplete" data-source="AvalancheTriggerModifier" type="text"/>
                                                         <input id="rwAvyFormTriggerModifier" type="hidden" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td><label for="rwAvyFormInterface" data-help="@messages("help.rwAvyFormInterface")">@messages("label.rwAvyFormInterface")</label></td>
                                                     <td>
-                                                        <input class="avyAutoComplete avyInterfaceAutoComplete" type="text"/>
+                                                        <input class="avyAutoComplete" data-source="AvalancheInterface" type="text"/>
                                                         <input id="rwAvyFormInterface" type="hidden"/>
                                                     </td>
                                                 </tr>
@@ -539,7 +539,7 @@
                                             <tr>
                                                 <td><label for="rwAvyFormAspect" data-help="@Html(Messages("help.rwAvyFormAspect"))">@messages("label.rwAvyFormAspect")<span style='color: red;'>&nbsp;*</span></label></td>
                                                 <td>
-                                                    <input id='rwAvyFormAspectAC' class="avyAutoComplete avyDirectionAutoComplete" type="text" />
+                                                    <input id='rwAvyFormAspectAC' class="avyAutoComplete" data-source="Direction" type="text" />
                                                     <input id="rwAvyFormAspect" type="hidden"/>
                                                 </td>
                                             </tr>
@@ -565,12 +565,12 @@
                                                     <tr>
                                                         <td><label for="rwAvyFormRecentWindSpeed" data-help="@Html(Messages("help.rwAvyFormRecentWindSpeed"))">@messages("label.rwAvyFormRecentWindSpeed")</label></td>
                                                         <td>
-                                                            <input class="avyAutoComplete avyWindSpeedAutoComplete" type="text"/>
+                                                            <input class="avyAutoComplete" data-source="WindSpeed" type="text"/>
                                                             <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
                                                         </td>
                                                         <td>
                                                             <span id="rwAvyFormRecentWindDirectionText" class="avyMsg">@messages("msg.rwAvyFormRecentWindDirectionText")</span>
-                                                            <input class="avyAutoComplete avyDirectionAutoComplete" type="text"/>
+                                                            <input class="avyAutoComplete" data-source="Direction" type="text"/>
                                                             <input id="rwAvyFormRecentWindDirection" type="hidden"/>
                                                         </td>
                                                     </tr>
@@ -606,7 +606,7 @@
                                             <tr>
                                                 <td><label for="rwAvyFormModeOfTravel" data-help="@messages("help.rwAvyFormModeOfTravel")">@messages("label.rwAvyFormModeOfTravel")</label></td>
                                                 <td>
-                                                    <input class="avyAutoComplete avyModeOfTravelAutoComplete" type="text"/>
+                                                    <input class="avyAutoComplete" data-source="ModeOfTravel" type="text"/>
                                                     <input id="rwAvyFormModeOfTravel" type="hidden"/>
                                                 </td>
                                             </tr>
@@ -654,5 +654,12 @@
         <form id="rwAvyFormImageUploadForm" action="/rest/images" method="POST" enctype="multipart/form-data"></form>
     </div>
 
+    <script>
+        var AutoCompleteSources = {
+            @for((enum, sources) <- acSources) {
+              @enum: @Html(sources),
+            }
+        };
+    </script>
   </body>
 </html>

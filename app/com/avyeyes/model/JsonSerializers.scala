@@ -2,7 +2,6 @@ package com.avyeyes.model
 
 import javax.inject.Inject
 
-import com.avyeyes.model.enums._
 import com.avyeyes.service.ConfigurationService
 import com.avyeyes.util.Converters._
 import org.apache.commons.lang3.StringEscapeUtils._
@@ -14,13 +13,7 @@ import play.api.i18n.Messages
 
 class JsonSerializers @Inject()(urlHelper: ConfigurationService)(implicit val messages: Messages) {
 
-  implicit val formats: Formats = DefaultFormats +
-    DateTimeSerializer +
-    CoordinateSerializer +
-    AvalancheImageSerializer +
-    new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheTriggerModifier,
-      AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
-
+  implicit val formats: Formats = DefaultFormats + DateTimeSerializer + CoordinateSerializer + AvalancheImageSerializer
 
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
@@ -84,41 +77,3 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
       ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size) ~ ("caption" -> caption)
   }
 ))
-
-class ChainedEnumSerializer(enums: Enumeration*)(implicit val messages: Messages) extends Serializer[Enumeration#Value] {
-  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
-
-  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case ev: Enumeration#Value => {
-      val tokens = ev.toString.split('.')
-      tokens.length match {
-        case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
-        case 3 =>
-          ("category" -> Messages(s"enum.${tokens(0)}.${tokens(1)}")) ~
-          ("label" -> getLocalizedLabel(tokens)) ~
-          ("value" -> tokens(2))
-      }
-
-    }
-  }
-
-  private def getLocalizedLabel(tokens: Array[String]): String = {
-    val label = if (tokens.last == "empty") "" else Messages(s"enum.${tokens.mkString(".")}")
-
-    compositeLabelEnums.contains(tokens.head) match {
-      case true => s"${tokens.last} - $label"
-      case false => label
-    }
-  }
-
-  private val compositeLabelEnums = {
-    def getSimpleEnumName(enum: AutocompleteEnum) = enum.getClass.getSimpleName.replace("$", "")
-
-    Seq(
-      getSimpleEnumName(AvalancheInterface),
-      getSimpleEnumName(AvalancheTrigger),
-      getSimpleEnumName(AvalancheTriggerModifier),
-      getSimpleEnumName(AvalancheType)
-    )
-  }
-}

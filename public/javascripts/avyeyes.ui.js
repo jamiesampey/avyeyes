@@ -126,16 +126,24 @@ function wireAutoCompletes(view) {
       }
   });
 
-	$('.avyAutoComplete').avycomplete({
-		minLength: 0,
-		delay: 0,
-		select: function(event, ui) {
-			$(this).siblings(':hidden').val(ui.item.value);
-			$(this).val(ui.item.label);
-			if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields(ui.item.value);
-			if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields(ui.item.category)
-			return false;
-		}
+	$('.avyAutoComplete').each(function(i, el) {
+	    var el = $(el);
+        el.avycomplete({
+            minLength: 0,
+            delay: 0,
+            source: function(event, ui) {
+                var sourceArray = window.AutoCompleteSources[el.attr('data-source')];
+                console.log("sourceArray is " + sourceArray);
+                return sourceArray;
+            },
+            select: function(event, ui) {
+                $(this).siblings(':hidden').val(ui.item.value);
+                $(this).val(ui.item.label);
+                if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields(ui.item.value);
+                if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields(ui.item.category)
+                return false;
+            }
+		});
 	});
 
 	$('#rwAvyFormDiv .avyAutoComplete').avycomplete('option', 'appendTo', '#rwAvyFormDiv');
