@@ -9,5 +9,5 @@ abstract class AutocompleteEnum extends Enumeration {
   
   def isValidCode(code: String): Boolean = !code.isEmpty && values.exists(_.toString.endsWith(code))
 
-  def selectableValues = this.values.filter(toCode(_) != "empty")
+  def selectableValues = this.values.filter(toCode(_) != "empty").toSeq.sortBy(_.id)
 }

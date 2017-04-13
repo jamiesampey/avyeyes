@@ -131,11 +131,7 @@ function wireAutoCompletes(view) {
         el.avycomplete({
             minLength: 0,
             delay: 0,
-            source: function(event, ui) {
-                var sourceArray = window.AutoCompleteSources[el.attr('data-source')];
-                console.log("sourceArray is " + sourceArray);
-                return sourceArray;
-            },
+            source: window.AutoCompleteSources[el.attr('data-source')],
             select: function(event, ui) {
                 $(this).siblings(':hidden').val(ui.item.value);
                 $(this).val(ui.item.label);
