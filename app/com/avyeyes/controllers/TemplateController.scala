@@ -38,14 +38,14 @@ class TemplateController @Inject()(requireJS: RequireJS, val messagesApi: Messag
       if (CompositeLabelEnums.contains(tokens.head)) s"${tokens.last} - $label" else label
     }
 
-    val jvalues: Seq[org.json4s.JValue] = acEnum.selectableValues.map { enumValue =>
+    val jValues = acEnum.selectableValues.map { enumValue =>
       val tokens = enumValue.toString.split('.')
       tokens.length match {
         case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
         case 3 => ("category" -> Messages(s"enum.${tokens(0)}.${tokens(1)}")) ~ ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(2))
       }
-    }.toSeq
+    }
 
-    json4sCompact(json4sRender(jvalues))
+    json4sCompact(json4sRender(jValues))
   }
 }
