@@ -58,13 +58,12 @@ function AvyEyesView() {
         var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
         if (possibleExtId) {
             console.log("searching for avalanche id: " + possibleExtId);
-//            $.getJSON("/avalanche/" + possibleExtId).done(function(json) {
-//                console.log("received json response: " + json);
-//            }).fail(function(jqxhr, textStatus, error) {
-//                console.log( "failed to get avalanche. Error: " + textStatus + ", " + error);
-//                this.geolocateAndFlyTo();
-//            }.bind(this));
-            this.geolocateAndFlyTo();
+            $.getJSON("/avalanche/" + possibleExtId).done(function(json) {
+                console.log("received json response: " + json);
+            }).fail(function(jqxhr, textStatus, error) {
+                console.log( "failed to get avalanche. Error: " + textStatus + ", " + error);
+                this.geolocateAndFlyTo();
+            }.bind(this));
         } else {
             this.geolocateAndFlyTo();
         }

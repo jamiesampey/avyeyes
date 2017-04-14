@@ -31,7 +31,7 @@
       <appender-ref ref="PLAY-DAILY-ROLLING-FILE" />
   </logger>
 
-  <logger name="application" level="DEBUG" />
+  <logger name="avyeyes" level="DEBUG" />
 
   <root level="WARN">
     <appender-ref ref="AVYEYES-DAILY-ROLLING-FILE" />

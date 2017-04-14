@@ -5,17 +5,17 @@ import javax.inject._
 import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
 import com.avyeyes.service.ExternalIdService
+import com.google.inject.assistedinject.Assisted
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
 import play.db.NamedDatabase
 import slick.jdbc.JdbcProfile
 
-import scala.collection.concurrent.{Map => CMap}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, val logger: Logger)(avalancheMap: CMap[String, Avalanche])
+class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, val logger: Logger)(@Assisted avalancheMap: AvalancheMap)
   extends CachedDAL with DatabaseComponent with SlickColumnMappers with ExternalIdService {
 
   private val dbConfig = dbConfigProvider.get[JdbcProfile]

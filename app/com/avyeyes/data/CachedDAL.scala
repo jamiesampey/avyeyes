@@ -1,6 +1,6 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.{UserRole, Avalanche, AvalancheImage}
+import com.avyeyes.model.{Avalanche, AvalancheImage, UserRole}
 
 import scala.concurrent.Future
 
@@ -40,4 +40,8 @@ trait CachedDAL {
   def deleteAvalancheImage(avyExtId: String, filename: String): Future[Unit]
 
   def deleteOrphanAvalancheImages: Future[Int]
+}
+
+trait CachedDALFactory {
+  def create(avalancheMap: AvalancheMap): CachedDAL
 }

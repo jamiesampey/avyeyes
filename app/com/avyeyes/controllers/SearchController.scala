@@ -1,13 +1,13 @@
 package com.avyeyes.controllers
 
-import javax.inject.Inject
-
-import com.avyeyes.data.{CachedDAL, MemoryMapCachedDAL}
-import com.avyeyes.model.{Avalanche, JsonSerializers}
-import org.json4s.Formats
-import play.api.Logger
-import play.api.mvc.{Action, Controller, Result}
-import org.json4s.jackson.Serialization._
+//import javax.inject.Inject
+//
+//import com.avyeyes.data.{CachedDAL, MemoryMapCachedDAL}
+//import com.avyeyes.model.{Avalanche, JsonSerializers}
+//import org.json4s.Formats
+//import play.api.Logger
+//import play.api.mvc.{Action, Controller, Result}
+//import org.json4s.jackson.Serialization._
 //import java.text.NumberFormat
 //import java.util.Locale
 //
@@ -26,20 +26,7 @@ import org.json4s.jackson.Serialization._
 //import net.liftweb.util.Helpers._
 //import org.apache.commons.lang3.StringUtils._
 
-class SearchController @Inject()(dal: MemoryMapCachedDAL, jsonSerializers: JsonSerializers, logger: Logger) extends Controller {
-
-  implicit val formats: Formats = jsonSerializers.formats
-
-  def find(extId: String) = Action { implicit request =>
-    logger.debug(s"finding avalanche $extId")
-//    val avalancheOpt = dal.getAvalanche(extId)
-//
-//    render {
-//      case _ if avalancheOpt.isDefined => Status(200)(write(jsonSerializers.avalancheInitViewData(avalancheOpt.get)))
-//      case _ => Status(400)
-//    }
-    BadRequest
-  }
+//class SearchController @Inject()(dal: MemoryMapCachedDAL, jsonSerializers: JsonSerializers, logger: Logger) extends Controller {
 //  protected val R = Injectors.resources.vend
 //  private val dal = Injectors.dal.vend
 //
@@ -123,4 +110,4 @@ class SearchController @Inject()(dal: MemoryMapCachedDAL, jsonSerializers: JsonS
 //  private def getHumanNumberQueryVal(numStr: String): Option[Int] = {
 //    if (strToIntOrNegOne(numStr) >= 0) Some(strToIntOrNegOne(numStr)) else None
 //  }
-}
+//}
