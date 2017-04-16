@@ -57,11 +57,11 @@ function AvyEyesView() {
     this.ui.wire(this, function() {
         var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
         if (possibleExtId) {
-            console.log("searching for avalanche id: " + possibleExtId);
-            $.getJSON("/avalanche/" + possibleExtId).done(function(json) {
-                console.log("received json response: " + json);
+            $.getJSON("/avalanche/" + possibleExtId).done(function(avalancheJSON) {
+                console.log("received json response: " + avalancheJSON);
+                this.addAvalancheAndFlyTo(avalancheJSON);
             }).fail(function(jqxhr, textStatus, error) {
-                console.log( "failed to get avalanche. Error: " + textStatus + ", " + error);
+                console.warn( "Could not find avalanche " + possibleExtId);
                 this.geolocateAndFlyTo();
             }.bind(this));
         } else {
