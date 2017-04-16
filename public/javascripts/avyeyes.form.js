@@ -11,7 +11,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var s3Bucket = $("#s3Bucket").val();
 
 	$("#roAvyFormTitle").text(a.title);
-	$("#roAvyFormSubmitterExp").text(autoCompleteLabel("ExperienceLevel", a.submitterExp));
+	$("#roAvyFormSubmitterExp").text(expLevelFromCode(a.submitterExp).label);
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
@@ -34,24 +34,25 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
 	$("#roAvyFormElevation").text(a.slope.elevation + " m");
 	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
-	$("#roAvyFormAspect").text(a.slope.aspect.label);
+	$("#roAvyFormAspect").text(directionFromCode(a.slope.aspect).label);
 	$("#roAvyFormAngle").text(a.slope.angle);
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
    	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", a.weather.recentWindSpeed);
-    if (a.weather.recentWindSpeed.value == 'empty' || a.weather.recentWindDirection.value == 'empty') {
+   	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection)
+    if (a.weather.recentWindSpeed.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
         $("#roAvyFormRecentWindDirectionText").hide();
         $("#roAvyFormRecentWindDirection").hide();
     } else {
-        $("#roAvyFormRecentWindDirection").text(a.weather.recentWindDirection.label);
+        $("#roAvyFormRecentWindDirection").text(recentWindDirectionEnumObj.label);
         $("#roAvyFormRecentWindDirectionText").show();
         $("#roAvyFormRecentWindDirection").show();
     }
 
-	setReadOnlyAutoCompleteVal("#roAvyFormType", a.classification.avyType);
-	setReadOnlyAutoCompleteVal("#roAvyFormTrigger", a.classification.trigger);
-	setReadOnlyAutoCompleteVal("#roAvyFormTriggerModifier", a.classification.triggerModifier);
-	setReadOnlyAutoCompleteVal("#roAvyFormInterface", a.classification.interface);
+	setReadOnlyAutoCompleteVal("#roAvyFormType", avyTypeFromCode(a.classification.avyType));
+	setReadOnlyAutoCompleteVal("#roAvyFormTrigger", avyTriggerFromCode(a.classification.trigger));
+	setReadOnlyAutoCompleteVal("#roAvyFormTriggerModifier", avyTriggerModifierFromCode(a.classification.triggerModifier));
+	setReadOnlyAutoCompleteVal("#roAvyFormInterface", avyInterfaceFromCode(a.classification.interface));
 	setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
 	setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
 
@@ -61,7 +62,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
 	setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
 
-	setReadOnlyAutoCompleteVal("#roAvyFormModeOfTravel", a.humanNumbers.modeOfTravel);
+	setReadOnlyAutoCompleteVal("#roAvyFormModeOfTravel", modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
 
     var showComments = a.comments.length > 0;
     var showImages = a.images.length > 0;
@@ -136,24 +137,24 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
 
     $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
-    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', a.submitterExp);
+    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', expLevelFromCode(a.submitterExp));
 
     $('#rwAvyFormAreaName').val(a.areaName);
     $('#rwAvyFormDate').val(a.date);
 
     $('#rwAvyFormElevation').val(a.slope.elevation);
     $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
-    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', a.slope.aspect);
+    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', directionFromCode(a.slope.aspect));
     $('#rwAvyFormAngle').val(a.slope.angle);
 
     this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', a.weather.recentWindSpeed);
-    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', a.weather.recentWindDirection);
+    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', directionFromCode(a.weather.recentWindDirection));
 
-    this.setReadWriteAutocompleteVal('#rwAvyFormType', a.classification.avyType);
-    this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', a.classification.trigger);
-    this.setReadWriteAutocompleteVal('#rwAvyFormTriggerModifier', a.classification.triggerModifier);
-    this.setReadWriteAutocompleteVal('#rwAvyFormInterface', a.classification.interface);
+    this.setReadWriteAutocompleteVal('#rwAvyFormType', avyTypeFromCode(a.classification.avyType));
+    this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', avyTriggerFromCode(a.classification.trigger));
+    this.setReadWriteAutocompleteVal('#rwAvyFormTriggerModifier', avyTriggerModifierFromCode(a.classification.triggerModifier));
+    this.setReadWriteAutocompleteVal('#rwAvyFormInterface', avyInterfaceFromCode(a.classification.interface));
     this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
     this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
 
@@ -162,7 +163,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     this.setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
     this.setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
     this.setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
-    this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', a.humanNumbers.modeOfTravel);
+    this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
     
     $('#rwAvyFormComments').val(a.comments);
     
@@ -477,12 +478,40 @@ AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
   }
 }
 
-function autoCompleteLabel(acEnum, code) {
-    var matchingEnums = $(window.AutoCompleteSources[acEnum]).filter(function() {
+function expLevelFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["ExperienceLevel"], code);
+}
+
+function directionFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["Direction"], code);
+}
+
+function avyTypeFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["AvalancheType"], code);
+}
+
+function avyTriggerFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["AvalancheTrigger"], code);
+}
+
+function avyTriggerModifierFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["AvalancheTriggerModifier"], code);
+}
+
+function avyInterfaceFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["AvalancheInterface"], code);
+}
+
+function modeOfTravelFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["ModeOfTravel"], code);
+}
+
+function enumObjFromCode(enumObjArray, code) {
+    var matches = $(enumObjArray).filter(function() {
         return this.value == code;
     });
 
-    return matchingEnums[0].label;
+    return matches.length > 0 ? matches[0] : { label: "", value: "empty" };
 }
 
 function metersToFeet(meters) {
