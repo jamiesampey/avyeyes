@@ -3,6 +3,7 @@ package com.avyeyes.model
 import javax.inject.Inject
 
 import com.avyeyes.service.ConfigurationService
+import com.avyeyes.model.enums._
 import com.avyeyes.util.Converters._
 import org.apache.commons.lang3.StringEscapeUtils._
 import org.joda.time.DateTime
@@ -12,7 +13,12 @@ import org.json4s._
 
 class JsonSerializers @Inject()(configService: ConfigurationService)() {
 
-  implicit val formats: Formats = DefaultFormats + DateTimeSerializer + CoordinateSerializer + AvalancheImageSerializer
+  implicit val formats: Formats = DefaultFormats +
+    DateTimeSerializer +
+    CoordinateSerializer +
+    AvalancheImageSerializer +
+    new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheTriggerModifier,
+      AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
 
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
@@ -76,3 +82,12 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
       ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size) ~ ("caption" -> caption)
   }
 ))
+
+
+class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
+  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
+
+  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
+    case ev: Enumeration#Value => ev.toString.split('.').last
+  }
+}

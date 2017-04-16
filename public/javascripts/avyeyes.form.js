@@ -11,7 +11,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var s3Bucket = $("#s3Bucket").val();
 
 	$("#roAvyFormTitle").text(a.title);
-	$("#roAvyFormSubmitterExp").text(a.submitterExp.label);
+	$("#roAvyFormSubmitterExp").text(autoCompleteLabel("ExperienceLevel", a.submitterExp));
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
@@ -475,6 +475,14 @@ AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
   } else {
     $(inputElem).val(value);
   }
+}
+
+function autoCompleteLabel(acEnum, code) {
+    var matchingEnums = $(window.AutoCompleteSources[acEnum]).filter(function() {
+        return this.value == code;
+    });
+
+    return matchingEnums[0].label;
 }
 
 function metersToFeet(meters) {
