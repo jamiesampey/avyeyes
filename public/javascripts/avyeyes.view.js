@@ -58,9 +58,8 @@ function AvyEyesView() {
         var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
         if (possibleExtId) {
             $.getJSON("/avalanche/" + possibleExtId).done(function(avalancheJSON) {
-                console.log("received json response: " + avalancheJSON);
                 this.addAvalancheAndFlyTo(avalancheJSON);
-            }).fail(function(jqxhr, textStatus, error) {
+            }.bind(this)).fail(function(jqxhr, textStatus, error) {
                 console.warn( "Could not find avalanche " + possibleExtId);
                 this.geolocateAndFlyTo();
             }.bind(this));

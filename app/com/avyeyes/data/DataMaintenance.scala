@@ -16,7 +16,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
 
   def receive = {
     case DataMaintenance.run =>
-      logger.info("RUNNING DATA MAINTENANCE")
+      logger.info("Running data maintenance")
 
       dal.getAvalanchesFromDisk onComplete {
         case Success(avalanchesFromDisk) if avalanchesFromDisk.nonEmpty =>
