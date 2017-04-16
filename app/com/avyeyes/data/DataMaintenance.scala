@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class DataMaintenance @Inject()(val logger: Logger, dal: CachedDAL, s3: AmazonS3Service) extends Actor with ExternalIdService  {
+class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCache: AvalancheCache, val logger: Logger) extends Actor with ExternalIdService  {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 
@@ -20,14 +20,14 @@ class DataMaintenance @Inject()(val logger: Logger, dal: CachedDAL, s3: AmazonS3
 
       dal.getAvalanchesFromDisk onComplete {
         case Success(avalanchesFromDisk) if avalanchesFromDisk.nonEmpty =>
-          AllAvalanchesMap.clear
-          AllAvalanchesMap ++= avalanchesFromDisk.map(a => a.extId -> a.copy(comments = None)).toMap
-          logger.info(s"Refreshed in-memory cache with ${AllAvalanchesMap.size} avalanches from the DB")
+          avalancheCache.avalancheMap.clear
+          avalancheCache.avalancheMap ++= avalanchesFromDisk.map(a => a.extId -> a.copy(comments = None)).toMap
+          logger.info(s"Refreshed in-memory cache with ${avalancheCache.avalancheMap.size} avalanches from the DB")
 
           s3.allAvalancheKeys.map { _.foreach { s3AvalancheKey =>
             val extId = s3AvalancheKey.split("/").last
             logger.debug(s"Checking if S3 avalanche $extId exists in the DB")
-            if (!AllAvalanchesMap.contains(extId) && !reservationExists(extId)) {
+            if (!avalancheCache.avalancheMap.contains(extId) && !reservationExists(extId)) {
               logger.info(s"Avalanche $extId is not in the DB. Deleting S3 content for that avalanche")
               s3.deleteAllFiles(extId)
             }

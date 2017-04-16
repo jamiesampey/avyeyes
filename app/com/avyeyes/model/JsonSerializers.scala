@@ -9,15 +9,14 @@ import org.joda.time.DateTime
 import org.json4s.JsonAST.JString
 import org.json4s.JsonDSL._
 import org.json4s._
-import play.api.i18n.Messages
 
-class JsonSerializers @Inject()(urlHelper: ConfigurationService)(implicit val messages: Messages) {
+class JsonSerializers @Inject()(configService: ConfigurationService)() {
 
   implicit val formats: Formats = DefaultFormats + DateTimeSerializer + CoordinateSerializer + AvalancheImageSerializer
 
   def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-    ("extUrl" -> urlHelper.avalancheUrl(a.extId)) ~
+    ("extUrl" -> configService.avalancheUrl(a.extId)) ~
     ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~

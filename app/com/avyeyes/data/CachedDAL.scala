@@ -1,9 +1,11 @@
 package com.avyeyes.data
 
 import com.avyeyes.model.{Avalanche, AvalancheImage, UserRole}
+import com.google.inject.ImplementedBy
 
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[MemoryMapCachedDAL])
 trait CachedDAL {
   def userRoles(email: String): Future[Seq[UserRole]]
 
@@ -40,8 +42,4 @@ trait CachedDAL {
   def deleteAvalancheImage(avyExtId: String, filename: String): Future[Unit]
 
   def deleteOrphanAvalancheImages: Future[Int]
-}
-
-trait CachedDALFactory {
-  def create(avalancheMap: AvalancheMap): CachedDAL
 }

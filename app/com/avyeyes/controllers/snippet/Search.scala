@@ -26,7 +26,7 @@ package com.avyeyes.controllers
 //import net.liftweb.util.Helpers._
 //import org.apache.commons.lang3.StringUtils._
 
-//class SearchController @Inject()(dal: MemoryMapCachedDAL, jsonSerializers: JsonSerializers, logger: Logger) extends Controller {
+//class Search @Inject()(dal: MemoryMapCachedDAL, jsonSerializers: JsonSerializers, logger: Logger) extends Controller {
 //  protected val R = Injectors.resources.vend
 //  private val dal = Injectors.dal.vend
 //
