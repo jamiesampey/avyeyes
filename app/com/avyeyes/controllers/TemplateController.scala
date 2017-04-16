@@ -5,15 +5,17 @@ import javax.inject._
 import com.avyeyes.model.enums._
 import org.json4s.jackson.JsonMethods.{compact => json4sCompact, render => json4sRender}
 import org.json4s.JsonDSL._
+import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Controller
 import play.api.mvc.Action
 
 @Singleton
-class TemplateController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport {
+class TemplateController @Inject()(val messagesApi: MessagesApi, config: Configuration) extends Controller with I18nSupport {
+  private val s3Bucket = config.getString("s3.bucket").getOrElse("")
 
   def index(extId: String) = Action { implicit request =>
-    Ok(com.avyeyes.views.html.index(autocompleteSources))
+    Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket))
   }
 
   def admin = Action { implicit request =>

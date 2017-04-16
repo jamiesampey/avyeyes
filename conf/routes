@@ -11,5 +11,6 @@ GET     /whodat                 com.avyeyes.controllers.TemplateController.admin
 # Public assets
 GET     /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
 
-# Search
-GET   /avalanche/:extId       com.avyeyes.controllers.AvalancheController.find(extId)
+# Avalanches
+GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
+GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])

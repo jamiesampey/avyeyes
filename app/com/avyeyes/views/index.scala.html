@@ -1,4 +1,4 @@
-@(acSources: Map[String, String])(implicit messages: Messages)
+@(acSources: Map[String, String], s3Bucket: String)(implicit messages: Messages)
 <!DOCTYPE html>
 <html>
   <head>
@@ -37,7 +37,7 @@
     <div class="avyAdminLoggedInDiv"></div>
     <div id="eyeAltContainer"></div>
     <input type="button" id="northButton" class="cesium-button cesium-toolbar-button" title="Reset view to north"/>
-    <input id="s3Bucket" type="hidden"/>
+    <input id="s3Bucket" type="hidden" value="@s3Bucket"/>
     <div id="avyMouseHoverTitle"></div>
     <div id="multiDialog"></div>
 

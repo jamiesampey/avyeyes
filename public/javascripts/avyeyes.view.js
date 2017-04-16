@@ -116,7 +116,7 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             $("#cesiumContainer").css("cursor", "wait");
 
             var selectedAvalanche = pick.id;
-            var avyDetailsUrl = "/rest/avydetails/" + selectedAvalanche.id;
+            var avyDetailsUrl = "/avalanche/details/" + selectedAvalanche.id;
             var editKeyParam = this.getRequestParam("edit");
             if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
 
