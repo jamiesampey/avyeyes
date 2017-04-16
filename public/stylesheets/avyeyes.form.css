@@ -232,11 +232,11 @@
     font: normal .9em times,serif !important;
 }
 
-#rwAvyFormAccordian .ui-accordion-header {
+#rwAvyFormAccordion .ui-accordion-header {
     padding: 5px 5px 5px 30px;
 }
 
-#rwAvyFormAccordian .ui-accordion-content {
+#rwAvyFormAccordion .ui-accordion-content {
     padding: 5px 10px 5px 10px;
 }
 

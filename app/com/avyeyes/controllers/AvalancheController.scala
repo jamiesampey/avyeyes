@@ -15,6 +15,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class AvalancheController @Inject()(dal: CachedDAL, jsonSerializers: JsonSerializers, logger: Logger) extends Controller {
+  import jsonSerializers._
 
   implicit val formats: Formats = jsonSerializers.formats
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
@@ -22,7 +23,7 @@ class AvalancheController @Inject()(dal: CachedDAL, jsonSerializers: JsonSeriali
   def find(extId: String) = Action { implicit request =>
     logger.debug(s"finding avalanche $extId")
     dal.getAvalanche(extId) match {
-      case Some(avalanche) => Ok(write(jsonSerializers.avalancheInitViewData(avalanche)))
+      case Some(avalanche) => Ok(write(avalancheInitViewData(avalanche)))
       case _ => NotFound
     }
   }
@@ -35,8 +36,8 @@ class AvalancheController @Inject()(dal: CachedDAL, jsonSerializers: JsonSeriali
       images <- dal.getAvalancheImages(extId)
     } yield {
       avalancheOption match {
-        case Some(avalanche) if editAllowed(avalanche, editKeyOpt) => Ok(write(jsonSerializers.avalancheReadWriteData(avalanche, images)))
-        case Some(avalanche) => Ok(write(jsonSerializers.avalancheReadOnlyData(avalanche, images)))
+        case Some(avalanche) if editAllowed(avalanche, editKeyOpt) => Ok(write(avalancheReadWriteData(avalanche, images)))
+        case Some(avalanche) => Ok(write(avalancheReadOnlyData(avalanche, images)))
         case _ => NotFound
       }
     }

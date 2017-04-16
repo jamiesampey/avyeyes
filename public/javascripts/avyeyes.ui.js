@@ -75,8 +75,8 @@ function wireMainMenu(view) {
 
     $('#helpOverlayText').tabs();
 
-    $("#rwAvyFormAccordian").accordion({heightStyle: "fill"});
-    $("#rwAvyFormAccordian .ui-accordion-content").css("overflow", "hidden");
+    $("#rwAvyFormAccordion").accordion({heightStyle: "fill"});
+    $("#rwAvyFormAccordion .ui-accordion-content").css("overflow", "hidden");
 }
 
 function wireTooltips() {
