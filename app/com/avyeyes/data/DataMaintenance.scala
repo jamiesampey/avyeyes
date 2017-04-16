@@ -44,4 +44,5 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
 
 object DataMaintenance {
   val run = "run"
+  def props = Props[DataMaintenance]
 }
