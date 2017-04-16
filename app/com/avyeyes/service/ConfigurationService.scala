@@ -19,11 +19,13 @@ class ConfigurationService @Inject()(config: Configuration, logger: Logger)() {
   }
 
   def httpsBaseUrl: String = {
-    val portSuffix = config.getInt("httpsPort") match {
-      case Some(443) => ""
-      case p => s":$p"
+    val host = config.getString("hostname").getOrElse("avyeyes.com")
+    val portSuffix = config.getInt("httpsPort").getOrElse(443) match {
+      case 443 => ""
+      case port => s":$port"
     }
-    s"https://${config.getString("hostname")}$portSuffix"
+
+    s"https://$host$portSuffix"
   }
 
   def adminLoginUrl = s"$httpsBaseUrl/$LoginPath"
