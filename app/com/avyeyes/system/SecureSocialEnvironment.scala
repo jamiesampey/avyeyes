@@ -5,13 +5,23 @@ import javax.inject.{Inject, Singleton}
 import com.avyeyes.service.AvyEyesUserService
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import securesocial.core.providers._
 import securesocial.core.{BasicProfile, RuntimeEnvironment}
+
+import scala.collection.immutable.ListMap
 
 
 @Singleton
-class SecureSocialEnvironment @Inject() (val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: SecureSocialEventListener) extends RuntimeEnvironment.Default {
+class SecureSocialEnvironment @Inject() (val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: SecureSocialEventListener)
+  extends RuntimeEnvironment.Default {
+
   type U = BasicProfile
+
   override implicit val executionContext = play.api.libs.concurrent.Execution.defaultContext
   override lazy val userService = avyEyesUserService
   override lazy val eventListeners = List(eventListener)
+  override lazy val providers = ListMap(
+    include(new FacebookProvider(routes, cacheService, oauth2ClientFor(FacebookProvider.Facebook))),
+    include(new GoogleProvider(routes, cacheService, oauth2ClientFor(GoogleProvider.Google)))
+  )
 }
