@@ -7,8 +7,6 @@ import scala.concurrent.Future
 
 @ImplementedBy(classOf[MemoryMapCachedDAL])
 trait CachedDAL {
-  def userRoles(email: String): Future[Seq[UserRole]]
-
   def countAvalanches(viewable: Option[Boolean]): Int
 
   def getAvalanche(extId: String): Option[Avalanche]

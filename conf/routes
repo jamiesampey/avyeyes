@@ -3,10 +3,16 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
+# SecureSocial
+GET     /whodat                     com.avyeyes.controllers.TemplateController.admin
+GET     /login                      securesocial.controllers.LoginPage.login
+GET     /logout                     securesocial.controllers.LoginPage.logout
+GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
+POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
+
 # Templates
 GET     /                       com.avyeyes.controllers.TemplateController.index(extId = "")
 GET     /:extId                 com.avyeyes.controllers.TemplateController.index(extId)
-GET     /whodat                 com.avyeyes.controllers.TemplateController.admin
 
 # Public assets
 GET     /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
@@ -14,3 +20,4 @@ GET     /assets/*file           controllers.Assets.versioned(path="/public", fil
 # Avalanches
 GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
 GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
+

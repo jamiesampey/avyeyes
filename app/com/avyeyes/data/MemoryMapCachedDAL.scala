@@ -26,8 +26,6 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
 
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
-  def userRoles(email: String): Future[Seq[UserRole]] = db.run(UserRoleRows.filter(_.email === email).result)
-
   def countAvalanches(viewableOpt: Option[Boolean]): Int = viewableOpt match {
     case Some(viewable) => avalancheMap.count(_._2.viewable == viewable)
     case None => avalancheMap.size

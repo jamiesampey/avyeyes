@@ -6,7 +6,7 @@ organization := "com.avyeyes"
 
 name := "AvyEyes"
 
-version := "2.0.0"
+version := "1.3.0"
 
 scalaVersion := "2.11.8"
 
@@ -24,14 +24,15 @@ libraryDependencies ++= {
 //    filters, add filters back in down the line sometime
     "com.typesafe.play" %% "play-slick" % "2.1.0",
     "com.typesafe.play" %% "play-mailer" % "5.0.0",
+    "ws.securesocial" %% "securesocial" % "3.0-M8",   // TODO upgrade to 3.0 when released
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
     "org.json4s" %% "json4s-jackson" % "3.5.1",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.13",
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
     "joda-time" % "joda-time" % "2.9.9",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
+
     "org.specs2" %% "specs2" % "2.4.1" % "test",
     "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
     "com.h2database" % "h2" % "1.4.188" % "test",

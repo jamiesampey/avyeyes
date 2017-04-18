@@ -4,11 +4,13 @@ import com.avyeyes.data.DataMaintenance
 import com.google.inject.AbstractModule
 import play.api.Logger
 import play.libs.akka.AkkaGuiceSupport
+import securesocial.core.RuntimeEnvironment
 
-class Module extends AbstractModule with AkkaGuiceSupport {
+class AvyEyesModule extends AbstractModule with AkkaGuiceSupport {
   def configure = {
       bind(classOf[Logger]).toInstance(Logger("avyeyes"))
       bindActor(classOf[DataMaintenance], "data-maintenance")
       bind(classOf[AvyEyesBootstrap]).asEagerSingleton()
+      bind(classOf[RuntimeEnvironment]).to(classOf[SecureSocialEnvironment]).asEagerSingleton()
   }
 }
