@@ -7,7 +7,7 @@ case class AvyEyesUser(
   createTime: DateTime,
   lastActivityTime: DateTime,
   email: String,
-  password: Option[String] = None,
+  passwordHash: Option[String] = None,
   profiles: List[BasicProfile] = List.empty,
   roles: List[AvyEyesUserRole] = List.empty
 )

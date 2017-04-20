@@ -16,7 +16,7 @@ private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: Dat
 private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
 private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
-private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, password_hash: Option[String])
+private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String])
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers =>
   protected val jdbcProfile: JdbcProfile
@@ -128,9 +128,9 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     def createTime = column[DateTime]("create_time")
     def lastActivityTime = column[DateTime]("last_activity_time")
     def email = column[String]("email", O.PrimaryKey)
-    def password = column[Option[String]]("password_hash")
+    def passwordHash = column[Option[String]]("password_hash")
 
-    def * = (createTime, lastActivityTime, email, password) <> (AppUserTableRow.tupled, AppUserTableRow.unapply)
+    def * = (createTime, lastActivityTime, email, passwordHash) <> (AppUserTableRow.tupled, AppUserTableRow.unapply)
   }
 
   class AppUserRoleAssignmentTable(tag: Tag) extends Table[AvyEyesUserRole](tag, "app_user_role_assignment") {

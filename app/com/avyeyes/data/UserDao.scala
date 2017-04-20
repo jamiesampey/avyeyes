@@ -20,7 +20,7 @@ class UserDao @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseCon
 
   def findUser(email: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(_.email === email).result.headOption).flatMap { appUserRowOpt =>
     db.run(AppUserRoleRows.filter(_.email === email).result).map { appUserRoleRows => appUserRowOpt.map { appUserRow =>
-      AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.password_hash, roles = appUserRoleRows.toList)
+      AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.passwordHash, roles = appUserRoleRows.toList)
     }}
   }
 
@@ -30,5 +30,13 @@ class UserDao @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseCon
     db.run(AppUserRows += AppUserTableRow(now, now, newUser.email, passwordHash))
   }
 
+  def changePassword(email: String, newPasswordHash: String): Future[Int] = {
+    val pwUpdateQuery = AppUserRows.filter(_.email === email).map(userTable => (userTable.lastActivityTime, userTable.passwordHash))
+    db.run(pwUpdateQuery.update((DateTime.now, Some(newPasswordHash))))
+  }
 
+  def logActivityTime(email: String): Future[Int] = {
+    val lastActivityUpdateQuery = AppUserRows.filter(_.email === email).map(userTable => userTable.lastActivityTime)
+    db.run(lastActivityUpdateQuery.update(DateTime.now))
+  }
 }

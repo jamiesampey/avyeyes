@@ -6,109 +6,99 @@ import com.avyeyes.data.UserDao
 import com.avyeyes.model.AvyEyesUser
 import org.joda.time.DateTime
 import play.api.Logger
-import securesocial.core.{BasicProfile, PasswordInfo}
-import securesocial.core.providers.MailToken
+import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
+import securesocial.core.providers.{FacebookProvider, GoogleProvider, MailToken}
 import securesocial.core.services.{SaveMode, UserService}
 
+import scala.collection.concurrent.TrieMap
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserService[AvyEyesUser] {
 
-  private var tokens = Map[String, MailToken]()
+  private val tokens = TrieMap[String, MailToken]()
 
-  def find(providerId: String, userId: String): Future[Option[BasicProfile]] = ???
-//  {
-//    if (logger.isDebugEnabled) {
-//      logger.debug("users = %s".format(users))
-//    }
-//    val result = for (
-//      user <- users.values;
-//      basicProfile <- user.identities.find(su => su.providerId == providerId && su.userId == userId)
-//    ) yield {
-//      basicProfile
-//    }
-//    Future.successful(result.headOption)
-//  }
+  override def find(providerId: String, userId: String): Future[Option[BasicProfile]] = {
+    logger.debug(s"Finding user by providerId/userId: $providerId/$userId")
+    findUser(userId, providerId)
+  }
 
-  def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = ???
-  //  {
-//    if (logger.isDebugEnabled) {
-//      logger.debug("users = %s".format(users))
-//    }
-//    val someEmail = Some(email)
-//    val result = for (
-//      user <- users.values;
-//      basicProfile <- user.identities.find(su => su.providerId == providerId && su.email == someEmail)
-//    ) yield {
-//      basicProfile
-//    }
-//    Future.successful(result.headOption)
-//  }
+  override def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
+    logger.debug(s"Finding user by providerId/email: $providerId/$email")
+    findUser(email, providerId)
+  }
 
-//  private def findProfile(p: BasicProfile) = {
-//    users.find {
-//      case (key, value) if value.identities.exists(su => su.providerId == p.providerId && su.userId == p.userId) => true
-//      case _ => false
-//    }
-//  }
+  private def findUser(email: String, providerId: String): Future[Option[BasicProfile]] = {
+    val authMethod = providerId match {
+      case FacebookProvider.Facebook => AuthenticationMethod.OAuth2
+      case GoogleProvider.Google => AuthenticationMethod.OAuth2
+      case _ => AuthenticationMethod.UserPassword
+    }
 
-//  private def updateProfile(user: BasicProfile, entry: ((String, String), DemoUser)): Future[DemoUser] = {
-//    val identities = entry._2.identities
-//    val updatedList = identities.patch(identities.indexWhere(i => i.providerId == user.providerId && i.userId == user.userId), Seq(user), 1)
-//    val updatedUser = entry._2.copy(identities = updatedList)
-//    users = users + (entry._1 -> updatedUser)
-//    Future.successful(updatedUser)
-//  }
+    dao.findUser(email).map( _.map { avyEyesUser =>
+      BasicProfile(
+        providerId = providerId,
+        userId = email,
+        firstName = None,
+        lastName = None,
+        fullName = None,
+        email = Some(email),
+        avatarUrl = None,
+        authMethod = authMethod
+      )
+    })
+  }
 
-  def save(profile: BasicProfile, mode: SaveMode): Future[AvyEyesUser] = ???
-//  mode match {
-//    case SaveMode.SignUp =>
-//      val now = DateTime.now
-//      val newUser = AvyEyesUser(now, now, profile.userId, None, List(profile))
-//      dao.insertUser(newUser)
-//      Future.successful(newUser)
-//    case SaveMode.LoggedIn =>
-//      // first see if there is a user with this BasicProfile already.
-//      findProfile(profile) match {
-//        case Some(existingUser) =>
-//          updateProfile(profile, existingUser)
-//
-//        case None =>
-//          val newUser = DemoUser(profile, List(profile))
-//          users = users + ((profile.providerId, profile.userId) -> newUser)
-//          Future.successful(newUser)
-//      }
-//
-//    case SaveMode.PasswordChange =>
-//      findProfile(profile).map { entry => updateProfile(profile, entry) }.getOrElse(
-//        // this should not happen as the profile will be there
-//        throw new Exception("missing profile)")
-//      )
-//    }
-//  }
+  override def save(profile: BasicProfile, mode: SaveMode): Future[AvyEyesUser] = {
+    val now = DateTime.now
+    val userFromProfile = AvyEyesUser(now, now, profile.userId, None, List(profile))
 
-  override def link(current: AvyEyesUser, to: BasicProfile): Future[AvyEyesUser] = ???
-//  {
-//    if (current.identities.exists(i => i.providerId == to.providerId && i.userId == to.userId)) {
-//      Future.successful(current)
-//    } else {
-//      val added = to :: current.identities
-//      val updatedUser = current.copy(identities = added)
-//      users = users + ((current.main.providerId, current.main.userId) -> updatedUser)
-//      Future.successful(updatedUser)
-//    }
-//  }
-
-  def saveToken(token: MailToken): Future[MailToken] = {
-    Future.successful {
-      tokens += (token.uuid -> token)
-      token
+    mode match {
+      case SaveMode.SignUp =>
+        logger.info(s"New user signup event for userId ${profile.userId}")
+        Future.successful(userFromProfile)
+      case SaveMode.LoggedIn =>
+        logger.info(s"User login event for userId ${profile.userId}")
+        dao.logActivityTime(profile.userId)
+        dao.findUser(profile.userId).map(_.getOrElse(userFromProfile))
+      case SaveMode.PasswordChange =>
+        logger.info(s"User password change event for userId ${profile.userId}")
+        profile.passwordInfo.map(_.password).foreach(passwordHash => dao.changePassword(profile.userId, passwordHash))
+        Future.successful(userFromProfile)
     }
   }
 
-  def findToken(token: String): Future[Option[MailToken]] = {
-    Future.successful { tokens.get(token) }
+  override def link(current: AvyEyesUser, to: BasicProfile): Future[AvyEyesUser] = {
+    logger.info(s"User link event for user ${current.email}")
+    Future.successful(current.copy(profiles = to :: current.profiles))
   }
+
+  override def passwordInfoFor(user: AvyEyesUser): Future[Option[PasswordInfo]] = Future.successful {
+    logger.info(s"Password info for ${user.email}")
+    user.passwordHash.map(passwordHash => PasswordInfo("", passwordHash))
+  }
+
+  override def updatePasswordInfo(user: AvyEyesUser, info: PasswordInfo): Future[Option[BasicProfile]] = Future.successful {
+    logger.info(s"updatePasswordInfo for user ${user.email}")
+    Some(BasicProfile(
+      providerId = "idontknow",
+      userId = user.email,
+      firstName = None,
+      lastName = None,
+      fullName = None,
+      email = Some(user.email),
+      avatarUrl = None,
+      authMethod = AuthenticationMethod.UserPassword
+    ))
+  }
+
+  def saveToken(token: MailToken): Future[MailToken] = Future.successful {
+    tokens += (token.uuid -> token)
+    token
+  }
+
+  def findToken(token: String): Future[Option[MailToken]] = Future.successful { tokens.get(token) }
 
   def deleteToken(uuid: String): Future[Option[MailToken]] = {
     Future.successful {
@@ -121,40 +111,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     }
   }
 
-  //  def deleteTokens(): Future {
-  //    tokens = Map()
-  //  }
-
-  def deleteExpiredTokens() {
-    tokens = tokens.filter(!_._2.isExpired)
+  def deleteExpiredTokens: Unit = {
+    tokens --= tokens.filter(_._2.isExpired).keys
   }
-
-  override def updatePasswordInfo(user: AvyEyesUser, info: PasswordInfo): Future[Option[BasicProfile]] = ???
-//  {
-//    Future.successful {
-//      for (
-//        found <- users.values.find(_ == user);
-//        identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
-//      ) yield {
-//        val idx = found.identities.indexOf(identityWithPasswordInfo)
-//        val updated = identityWithPasswordInfo.copy(passwordInfo = Some(info))
-//        val updatedIdentities = found.identities.patch(idx, Seq(updated), 1)
-//        val updatedEntry = found.copy(identities = updatedIdentities)
-//        users = users + ((updatedEntry.main.providerId, updatedEntry.main.userId) -> updatedEntry)
-//        updated
-//      }
-//    }
-//  }
-
-  override def passwordInfoFor(user: AvyEyesUser): Future[Option[PasswordInfo]] = ???
-//  {
-//    Future.successful {
-//      for (
-//        found <- users.values.find(u => u.main.providerId == user.main.providerId && u.main.userId == user.main.userId);
-//        identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
-//      ) yield {
-//        identityWithPasswordInfo.passwordInfo.get
-//      }
-//    }
-//  }
 }
