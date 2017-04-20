@@ -1,6 +1,6 @@
 package com.avyeyes.data
 
-import com.avyeyes.model.{Avalanche, AvalancheImage, UserRole}
+import com.avyeyes.model.{Avalanche, AvalancheImage}
 import com.google.inject.ImplementedBy
 
 import scala.concurrent.Future

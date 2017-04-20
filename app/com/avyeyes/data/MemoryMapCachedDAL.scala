@@ -69,9 +69,11 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
     val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
 
     db.run(
-      UserRows.filter(_.email === avalanche.submitterEmail).exists.result
+      AppUserRows.filter(_.email === avalanche.submitterEmail).exists.result
     ).flatMap {
-      case false => db.run((UserRows += User(DateTime.now, avalanche.submitterEmail)) >> avalancheInserts)
+      case false =>
+        val now = DateTime.now
+        db.run((AppUserRows += AppUserTableRow(now, now, avalanche.submitterEmail, None)) >> avalancheInserts)
       case true => db.run(avalancheInserts)
     }
     .map(_ => avalancheMap += (avalanche.extId -> avalanche.copy(comments = None)))

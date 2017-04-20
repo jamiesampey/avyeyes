@@ -10,7 +10,7 @@ class AvyEyesModule extends AbstractModule with AkkaGuiceSupport {
   def configure = {
       bind(classOf[Logger]).toInstance(Logger("avyeyes"))
       bindActor(classOf[DataMaintenance], "data-maintenance")
+      bind(classOf[RuntimeEnvironment]).to(classOf[SecureSocialEnvironment])
       bind(classOf[AvyEyesBootstrap]).asEagerSingleton()
-      bind(classOf[RuntimeEnvironment]).to(classOf[SecureSocialEnvironment]).asEagerSingleton()
   }
 }

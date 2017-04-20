@@ -61,7 +61,9 @@ create table "avalanche_image" (
 
 create table "app_user" (
     "create_time" timestamp not null,
-    "email" text primary key
+    "last_activity_time" timestamp not null,
+    "email" text primary key,
+    "password_hash" text
 );
 
 create table "app_role" (

@@ -3,6 +3,8 @@ package com.avyeyes.service
 import javax.inject.Inject
 
 import com.avyeyes.data.UserDao
+import com.avyeyes.model.AvyEyesUser
+import org.joda.time.DateTime
 import play.api.Logger
 import securesocial.core.{BasicProfile, PasswordInfo}
 import securesocial.core.providers.MailToken
@@ -10,10 +12,8 @@ import securesocial.core.services.{SaveMode, UserService}
 
 import scala.concurrent.Future
 
-class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserService[BasicProfile] {
+class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserService[AvyEyesUser] {
 
-  var users = Map[(String, String), BasicProfile]()
-  //private var identities = Map[String, BasicProfile]()
   private var tokens = Map[String, MailToken]()
 
   def find(providerId: String, userId: String): Future[Option[BasicProfile]] = ???
@@ -31,7 +31,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
 //  }
 
   def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = ???
-//  {
+  //  {
 //    if (logger.isDebugEnabled) {
 //      logger.debug("users = %s".format(users))
 //    }
@@ -60,34 +60,34 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
 //    Future.successful(updatedUser)
 //  }
 
-  def save(user: BasicProfile, mode: SaveMode): Future[BasicProfile] = ???
-//  {
-//    mode match {
-//      case SaveMode.SignUp =>
-//        val newUser = DemoUser(user, List(user))
-//        users = users + ((user.providerId, user.userId) -> newUser)
-//        Future.successful(newUser)
-//      case SaveMode.LoggedIn =>
-//        // first see if there is a user with this BasicProfile already.
-//        findProfile(user) match {
-//          case Some(existingUser) =>
-//            updateProfile(user, existingUser)
+  def save(profile: BasicProfile, mode: SaveMode): Future[AvyEyesUser] = ???
+//  mode match {
+//    case SaveMode.SignUp =>
+//      val now = DateTime.now
+//      val newUser = AvyEyesUser(now, now, profile.userId, None, List(profile))
+//      dao.insertUser(newUser)
+//      Future.successful(newUser)
+//    case SaveMode.LoggedIn =>
+//      // first see if there is a user with this BasicProfile already.
+//      findProfile(profile) match {
+//        case Some(existingUser) =>
+//          updateProfile(profile, existingUser)
 //
-//          case None =>
-//            val newUser = DemoUser(user, List(user))
-//            users = users + ((user.providerId, user.userId) -> newUser)
-//            Future.successful(newUser)
-//        }
+//        case None =>
+//          val newUser = DemoUser(profile, List(profile))
+//          users = users + ((profile.providerId, profile.userId) -> newUser)
+//          Future.successful(newUser)
+//      }
 //
-//      case SaveMode.PasswordChange =>
-//        findProfile(user).map { entry => updateProfile(user, entry) }.getOrElse(
-//          // this should not happen as the profile will be there
-//          throw new Exception("missing profile)")
-//        )
+//    case SaveMode.PasswordChange =>
+//      findProfile(profile).map { entry => updateProfile(profile, entry) }.getOrElse(
+//        // this should not happen as the profile will be there
+//        throw new Exception("missing profile)")
+//      )
 //    }
 //  }
 
-  def link(current: BasicProfile, to: BasicProfile): Future[BasicProfile] = ???
+  override def link(current: AvyEyesUser, to: BasicProfile): Future[AvyEyesUser] = ???
 //  {
 //    if (current.identities.exists(i => i.providerId == to.providerId && i.userId == to.userId)) {
 //      Future.successful(current)
@@ -129,7 +129,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     tokens = tokens.filter(!_._2.isExpired)
   }
 
-  override def updatePasswordInfo(user: BasicProfile, info: PasswordInfo): Future[Option[BasicProfile]] = ???
+  override def updatePasswordInfo(user: AvyEyesUser, info: PasswordInfo): Future[Option[BasicProfile]] = ???
 //  {
 //    Future.successful {
 //      for (
@@ -146,7 +146,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
 //    }
 //  }
 
-  override def passwordInfoFor(user: BasicProfile): Future[Option[PasswordInfo]] = ???
+  override def passwordInfoFor(user: AvyEyesUser): Future[Option[PasswordInfo]] = ???
 //  {
 //    Future.successful {
 //      for (
