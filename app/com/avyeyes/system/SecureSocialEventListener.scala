@@ -1,7 +1,8 @@
 package com.avyeyes.system
 
+import com.avyeyes.model.AvyEyesUser
 import securesocial.core._
-import play.api.mvc.{ Session, RequestHeader }
+import play.api.mvc.{RequestHeader, Session}
 import play.api.Logger
 
 /**
@@ -17,7 +18,7 @@ class SecureSocialEventListener extends EventListener {
     }
 
     event match {
-      case Event(u: BasicProfile) => Logger.info(s"$eventName event for user ${u.userId}")
+      case Event(u: AvyEyesUser) => Logger.info(s"$eventName event for user ${u.email}")
     }
 
     // Not changing the session so just return None

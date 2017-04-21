@@ -8,16 +8,7 @@ require.config({
   }
 });
 
-requirejs(['jquery', 'datatables'], function($) {
-  if (adminLoggedIn()) {
-    wireDataTable();
-  }
-});
-
-function adminLoggedIn() {
-  var adminEmailSpan = $('#avyAdminLoggedInEmail');
-  return adminEmailSpan.length > 0 && adminEmailSpan.text().length > 0;
-}
+requirejs(['jquery', 'datatables'], function($) { wireDataTable(); });
 
 function wireDataTable() {
   var dataTableObj = $('#avyAdminDataTable');

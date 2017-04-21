@@ -21,7 +21,7 @@ resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases
 
 libraryDependencies ++= {
   Seq(
-//    filters, add filters back in down the line sometime
+    filters,
     "com.typesafe.play" %% "play-slick" % "2.1.0",
     "com.typesafe.play" %% "play-mailer" % "5.0.0",
     "ws.securesocial" %% "securesocial" % "3.0-M8",   // TODO upgrade to 3.0 when released

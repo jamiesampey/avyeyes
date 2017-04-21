@@ -4,7 +4,7 @@
 # ~~~~
 
 # SecureSocial
-GET     /whodat                     com.avyeyes.controllers.TemplateController.admin
+GET     /admin                      com.avyeyes.controllers.TemplateController.admin
 GET     /login                      securesocial.controllers.LoginPage.login
 GET     /logout                     securesocial.controllers.LoginPage.logout
 GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)

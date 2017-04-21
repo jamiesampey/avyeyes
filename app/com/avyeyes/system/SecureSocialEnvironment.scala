@@ -22,6 +22,7 @@ class SecureSocialEnvironment @Inject() (val configuration: Configuration, val m
   override lazy val userService = avyEyesUserService
   override lazy val eventListeners = List(eventListener)
   override lazy val providers = ListMap(
+    include(new UsernamePasswordProvider[U](userService, avatarService, viewTemplates, passwordHashers)),
     include(new FacebookProvider(routes, cacheService, oauth2ClientFor(FacebookProvider.Facebook))),
     include(new GoogleProvider(routes, cacheService, oauth2ClientFor(GoogleProvider.Google)))
   )

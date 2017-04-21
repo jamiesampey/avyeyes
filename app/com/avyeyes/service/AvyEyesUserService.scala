@@ -37,6 +37,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     }
 
     dao.findUser(email).map( _.map { avyEyesUser =>
+      val passwordInfoOpt = avyEyesUser.passwordHash.map (pwHash => PasswordInfo("bcrypt", pwHash))
       BasicProfile(
         providerId = providerId,
         userId = email,
@@ -45,7 +46,8 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
         fullName = None,
         email = Some(email),
         avatarUrl = None,
-        authMethod = authMethod
+        authMethod = authMethod,
+        passwordInfo = passwordInfoOpt
       )
     })
   }
