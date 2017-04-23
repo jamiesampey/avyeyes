@@ -3,10 +3,12 @@ package com.avyeyes.controllers
 import javax.inject.Inject
 
 import com.avyeyes.data.CachedDAL
-import com.avyeyes.model.{Avalanche, AvyEyesUser}
+import com.avyeyes.model.{Avalanche, AvyEyesUser, AvyEyesUserRole}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.util.Constants.AvalancheEditWindow
 import org.joda.time.{DateTime, Seconds}
+import play.api.mvc.RequestHeader
+import securesocial.core.Authorization
 
 class Authorizations @Inject()(dal: CachedDAL) {
 
@@ -21,4 +23,8 @@ class Authorizations @Inject()(dal: CachedDAL) {
       Seconds.secondsBetween(avalanche.createTime, DateTime.now).getSeconds < AvalancheEditWindow.toSeconds
     case _ => false
   }
+}
+
+case class WithRole(authorizedRoles: List[AvyEyesUserRole]) extends Authorization[AvyEyesUser] {
+  def isAuthorized(user: AvyEyesUser, request: RequestHeader) = user.roles.exists(authorizedRoles.contains)
 }

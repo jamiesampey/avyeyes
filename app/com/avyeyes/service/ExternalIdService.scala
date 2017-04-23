@@ -38,7 +38,7 @@ trait ExternalIdService {
     logger.info(s"Unreserved extId $extId")
   }
 
-  def reservationExists(extId: String) = ExternalIdService.cache.getIfPresent(extId) != null
+  def reservationExists(extId: String): Boolean = ExternalIdService.cache.getIfPresent(extId) != null
 }
 
 private object ExternalIdService {

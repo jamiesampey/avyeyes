@@ -4,18 +4,19 @@ import javax.inject._
 
 import com.avyeyes.model.enums._
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
+import com.avyeyes.service.ConfigurationService
 import com.avyeyes.system.UserEnvironment
+import org.json4s.JsonAST
 import org.json4s.JsonDSL._
-import org.json4s.jackson.JsonMethods.{compact => json4sCompact, render => json4sRender}
-import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import securesocial.core.SecureSocial
 
 
 @Singleton
-class TemplateController @Inject()(config: Configuration, val messagesApi: MessagesApi, implicit val env: UserEnvironment) extends SecureSocial with I18nSupport {
+class TemplateController @Inject()(val configService: ConfigurationService, val messagesApi: MessagesApi, implicit val env: UserEnvironment)
+  extends SecureSocial with I18nSupport with Json4sMethods {
 
-  private val s3Bucket = config.getString("s3.bucket").getOrElse("")
+  private val s3Bucket = configService.getProperty("s3.bucket")
 
   def index(extId: String) = UserAwareAction { implicit request =>
     Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket))
@@ -42,7 +43,7 @@ class TemplateController @Inject()(config: Configuration, val messagesApi: Messa
       if (CompositeLabelEnums.contains(tokens.head)) s"${tokens.last} - $label" else label
     }
 
-    val jValues = acEnum.selectableValues.map { enumValue =>
+    val jValues: Seq[JsonAST.JObject] = acEnum.selectableValues.map { enumValue =>
       val tokens = enumValue.toString.split('.')
       tokens.length match {
         case 2 => ("label" -> getLocalizedLabel(tokens)) ~ ("value" -> tokens(1))
@@ -50,6 +51,6 @@ class TemplateController @Inject()(config: Configuration, val messagesApi: Messa
       }
     }
 
-    json4sCompact(json4sRender(jValues))
+    writeJson(jValues)
   }
 }
