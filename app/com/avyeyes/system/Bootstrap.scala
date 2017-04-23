@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 @Singleton
-class AvyEyesBootstrap @Inject()(actorSystem: ActorSystem, logger: Logger, @Named("data-maintenance") dataMaintenanceActor: ActorRef) {
+class Bootstrap @Inject()(actorSystem: ActorSystem, logger: Logger, @Named("data-maintenance") dataMaintenanceActor: ActorRef) {
   logger.info("AvyEyes Startup")
 
   dataMaintenanceActor ! DataMaintenance.run // initial run at system startup

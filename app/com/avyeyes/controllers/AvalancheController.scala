@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.JsonSerializers
-import com.avyeyes.system.AvyEyesUserEnvironment
+import com.avyeyes.system.UserEnvironment
 import org.json4s.Formats
 import org.json4s.jackson.Serialization.write
 import play.api.Logger
@@ -13,7 +13,7 @@ import securesocial.core.SecureSocial
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AvalancheController @Inject()(dal: CachedDAL, jsonSerializers: JsonSerializers, authorizations: Authorizations, logger: Logger, implicit val env: AvyEyesUserEnvironment) extends SecureSocial {
+class AvalancheController @Inject()(dal: CachedDAL, jsonSerializers: JsonSerializers, authorizations: Authorizations, logger: Logger, implicit val env: UserEnvironment) extends SecureSocial {
   import authorizations._
   import jsonSerializers._
 

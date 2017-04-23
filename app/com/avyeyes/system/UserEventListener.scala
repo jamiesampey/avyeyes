@@ -5,11 +5,7 @@ import securesocial.core._
 import play.api.mvc.{RequestHeader, Session}
 import play.api.Logger
 
-/**
-  * A sample event listener
-  */
-
-class AvyEyesUserEventListener extends EventListener {
+class UserEventListener extends EventListener {
 
   def onEvent[U](event: Event[U], request: RequestHeader, session: Session): Option[Session] = {
     val eventName = event match {

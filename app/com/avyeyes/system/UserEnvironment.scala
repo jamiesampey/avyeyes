@@ -13,7 +13,7 @@ import scala.collection.immutable.ListMap
 
 
 @Singleton
-class AvyEyesUserEnvironment @Inject()(val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: AvyEyesUserEventListener)
+class UserEnvironment @Inject()(val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: UserEventListener)
   extends RuntimeEnvironment.Default {
 
   override type U = AvyEyesUser

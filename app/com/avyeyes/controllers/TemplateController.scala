@@ -4,7 +4,7 @@ import javax.inject._
 
 import com.avyeyes.model.enums._
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
-import com.avyeyes.system.AvyEyesUserEnvironment
+import com.avyeyes.system.UserEnvironment
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact => json4sCompact, render => json4sRender}
 import play.api.Configuration
@@ -13,7 +13,7 @@ import securesocial.core.SecureSocial
 
 
 @Singleton
-class TemplateController @Inject()(config: Configuration, val messagesApi: MessagesApi, implicit val env: AvyEyesUserEnvironment) extends SecureSocial with I18nSupport {
+class TemplateController @Inject()(config: Configuration, val messagesApi: MessagesApi, implicit val env: UserEnvironment) extends SecureSocial with I18nSupport {
 
   private val s3Bucket = config.getString("s3.bucket").getOrElse("")
 
