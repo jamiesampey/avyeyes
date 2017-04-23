@@ -14,8 +14,9 @@ class ConfigurationService @Inject()(config: Configuration, logger: Logger)() {
   def getBooleanProperty(prop: String): Boolean = config.getBoolean(prop) getOrElse logErrorAndThrowException(prop)
 
   private def logErrorAndThrowException(prop: String) = {
-    logger.error(s"Property '$prop' was not found in the properties file.")
-    throw new RuntimeException("Ruh roh, an exception occurred and the code bailed!")
+    val errorMsg = s"Property '$prop' was not found in the properties file."
+    logger.error(errorMsg)
+    throw new RuntimeException(errorMsg)
   }
 
   def httpsBaseUrl: String = {

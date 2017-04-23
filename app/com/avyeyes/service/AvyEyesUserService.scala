@@ -3,7 +3,7 @@ package com.avyeyes.service
 import javax.inject.Inject
 
 import com.avyeyes.data.UserDao
-import com.avyeyes.model.AvyEyesUser
+import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.Logger
 import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
@@ -116,4 +116,11 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
   def deleteExpiredTokens: Unit = {
     tokens --= tokens.filter(_._2.isExpired).keys
   }
+}
+
+object AvyEyesUserService {
+  val SiteOwnerRole = AvyEyesUserRole("site_owner")
+  val AdminRole = AvyEyesUserRole("admin")
+
+  val AdminRoles: List[AvyEyesUserRole] = List(SiteOwnerRole, AdminRole)
 }

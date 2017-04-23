@@ -12,4 +12,4 @@ case class AvyEyesUser(
   roles: List[AvyEyesUserRole] = List.empty
 )
 
-case class AvyEyesUserRole(email: String, role: String)
+case class AvyEyesUserRole(roleName: String)

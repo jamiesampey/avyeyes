@@ -17,6 +17,7 @@ private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow:
 private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
 private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
 private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String])
+private[data] case class AppUserRoleAssignmentRow(email: String, roleName: String)
 
 private[data] trait DatabaseComponent {this: SlickColumnMappers =>
   protected val jdbcProfile: JdbcProfile
@@ -30,7 +31,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
   protected val AvalancheImageRows = TableQuery[AvalancheImageTable]
 
   protected val AppUserRows = TableQuery[AppUserTable]
-  protected val AppUserRoleRows = TableQuery[AppUserRoleAssignmentTable]
+  protected val AppUserRoleAssignmentRows = TableQuery[AppUserRoleAssignmentTable]
 
   private[data] def createSchema = (
     AvalancheRows.schema ++
@@ -39,7 +40,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     AvalancheHumanRows.schema ++
     AvalancheImageRows.schema ++
     AppUserRows.schema ++
-    AppUserRoleRows.schema
+    AppUserRoleAssignmentRows.schema
   ).create
 
   class AvalancheTable(tag: Tag) extends Table[AvalancheTableRow](tag, "avalanche") {
@@ -133,11 +134,17 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     def * = (createTime, lastActivityTime, email, passwordHash) <> (AppUserTableRow.tupled, AppUserTableRow.unapply)
   }
 
-  class AppUserRoleAssignmentTable(tag: Tag) extends Table[AvyEyesUserRole](tag, "app_user_role_assignment") {
+  class AppRoleTable(tag: Tag) extends Table[AvyEyesUserRole](tag, "app_role") {
+    def roleName = column[String]("role_name")
+
+    def * = (roleName) <> (AvyEyesUserRole, AvyEyesUserRole.unapply)
+  }
+
+  class AppUserRoleAssignmentTable(tag: Tag) extends Table[AppUserRoleAssignmentRow](tag, "app_user_role_assignment") {
     def email = column[String]("app_user")
     def role = column[String]("app_role")
     def pk = primaryKey("app_user_role_assignment_pk", (email, role))
 
-    def * = (email, role) <> (AvyEyesUserRole.tupled, AvyEyesUserRole.unapply)
+    def * = (email, role) <> (AppUserRoleAssignmentRow.tupled, AppUserRoleAssignmentRow.unapply)
   }
 }

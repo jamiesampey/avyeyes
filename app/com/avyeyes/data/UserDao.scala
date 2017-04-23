@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import javax.inject.Inject
 
-import com.avyeyes.model.AvyEyesUser
+import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
 import play.db.NamedDatabase
@@ -19,8 +19,9 @@ class UserDao @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseCon
   import jdbcProfile.api._
 
   def findUser(email: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(_.email === email).result.headOption).flatMap { appUserRowOpt =>
-    db.run(AppUserRoleRows.filter(_.email === email).result).map { appUserRoleRows => appUserRowOpt.map { appUserRow =>
-      AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.passwordHash, roles = appUserRoleRows.toList)
+    db.run(AppUserRoleAssignmentRows.filter(_.email === email).result).map { appUserRoleAssignmentRows => appUserRowOpt.map { appUserRow =>
+      val userRoles = appUserRoleAssignmentRows.map(roleAssignment => AvyEyesUserRole(roleAssignment.roleName)).toList
+      AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.passwordHash, profiles = List.empty, roles = userRoles)
     }}
   }
 

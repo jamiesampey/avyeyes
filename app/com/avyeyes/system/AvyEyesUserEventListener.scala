@@ -9,7 +9,7 @@ import play.api.Logger
   * A sample event listener
   */
 
-class SecureSocialEventListener extends EventListener {
+class AvyEyesUserEventListener extends EventListener {
 
   def onEvent[U](event: Event[U], request: RequestHeader, session: Session): Option[Session] = {
     val eventName = event match {

@@ -13,10 +13,10 @@ import scala.collection.immutable.ListMap
 
 
 @Singleton
-class SecureSocialEnvironment @Inject() (val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: SecureSocialEventListener)
+class AvyEyesUserEnvironment @Inject()(val configuration: Configuration, val messagesApi: MessagesApi, avyEyesUserService: AvyEyesUserService, eventListener: AvyEyesUserEventListener)
   extends RuntimeEnvironment.Default {
 
-  type U = AvyEyesUser
+  override type U = AvyEyesUser
 
   override implicit val executionContext = play.api.libs.concurrent.Execution.defaultContext
   override lazy val userService = avyEyesUserService

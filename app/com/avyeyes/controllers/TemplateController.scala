@@ -3,22 +3,25 @@ package com.avyeyes.controllers
 import javax.inject._
 
 import com.avyeyes.model.enums._
+import com.avyeyes.service.AvyEyesUserService.AdminRoles
+import com.avyeyes.system.AvyEyesUserEnvironment
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact => json4sCompact, render => json4sRender}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import securesocial.core.{RuntimeEnvironment, SecureSocial}
+import securesocial.core.SecureSocial
 
 
 @Singleton
-class TemplateController @Inject()(config: Configuration, val messagesApi: MessagesApi, implicit val env: RuntimeEnvironment) extends SecureSocial with I18nSupport {
+class TemplateController @Inject()(config: Configuration, val messagesApi: MessagesApi, implicit val env: AvyEyesUserEnvironment) extends SecureSocial with I18nSupport {
+
   private val s3Bucket = config.getString("s3.bucket").getOrElse("")
 
   def index(extId: String) = UserAwareAction { implicit request =>
     Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket))
   }
 
-  def admin = SecuredAction { implicit request =>
+  def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>
     Ok(com.avyeyes.views.html.admin())
   }
 
