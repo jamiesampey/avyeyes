@@ -11,11 +11,9 @@ import org.json4s.JsonAST.{JString, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.{CustomSerializer, DefaultFormats, Extraction, Formats, JNull, Serializer, TypeInfo}
-import play.api.Logger
 import play.api.mvc.RequestHeader
 
 trait Json4sMethods {
-  val logger: Logger
   val configService: ConfigurationService
 
   implicit val formats: Formats = DefaultFormats +
@@ -72,13 +70,7 @@ trait Json4sMethods {
       case false => <span style="color: red;">No</span>.toString
     }
 
-    val drawVal = request.getQueryString("draw") match {
-      case Some(drawValue) => drawValue.toInt
-      case _ =>
-        logger.error("Table data 'draw' param missing")
-        throw new IllegalArgumentException
-    }
-
+    val drawVal = request.getQueryString("draw").map(_.toInt).getOrElse(throw new IllegalArgumentException)
     val matchingAvalanches = queryResult._1
     val filteredRecordCount = queryResult._2
     val totalRecordCount = queryResult._3
