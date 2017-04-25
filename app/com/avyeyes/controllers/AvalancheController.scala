@@ -51,7 +51,7 @@ class AvalancheController @Inject()(val configService: ConfigurationService, val
 
       avalancheOption match {
         case Some(avalanche) if isAuthorizedToEdit(request.user, editKeyOpt, extId) => Ok(writeJson(avalancheReadWriteData(avalanche, images)))
-        case Some(avalanche) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
+        case Some(avalanche) if isAuthorizedToView(request.user, extId) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
         case _ => NotFound
       }
     }
