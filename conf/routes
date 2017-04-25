@@ -11,13 +11,13 @@ GET     /authenticate/:provider     securesocial.controllers.ProviderController.
 POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
 # Templates
-GET     /                       com.avyeyes.controllers.TemplateController.index(extId = "")
-GET     /:extId                 com.avyeyes.controllers.TemplateController.index(extId)
+GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "")
+GET     /:extId                     com.avyeyes.controllers.TemplateController.index(extId)
 
 # Public assets
-GET     /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 # Avalanches
+GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AdminAvalancheQuery)
 GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
 GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
-

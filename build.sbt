@@ -1,5 +1,6 @@
-enablePlugins(PlayScala)
+import play.sbt.routes.RoutesKeys
 
+enablePlugins(PlayScala)
 enablePlugins(SbtWeb)
 
 organization := "com.avyeyes"
@@ -18,6 +19,8 @@ scalacOptions ++= Seq(
 )
 
 resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
+
+RoutesKeys.routesImport ++= Seq("com.avyeyes.controllers.AdminQueryBinder._")
 
 libraryDependencies ++= {
   Seq(
