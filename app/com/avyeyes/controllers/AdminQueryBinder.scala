@@ -19,7 +19,7 @@ object AdminQueryBinder {
         val orderColumnEntries = params.filterKeys(key => orderFieldRegex.findFirstMatchIn(key).isDefined).toList.sortBy(_._1)
 
         orderColumnEntries.foreach { entryTuple =>
-          val orderIdx = orderFieldRegex.findFirstMatchIn(entryTuple._1).map(_.group(1)).getOrElse(
+          val orderIdx = orderFieldGroupCaptureRegex.findFirstMatchIn(entryTuple._1).map(_.group(1)).getOrElse(
             throw new RuntimeException("Table data error. Could not extract order index")
           )
 
@@ -55,6 +55,7 @@ object AdminQueryBinder {
     override def unbind(key: String, adminQuery: AdminAvalancheQuery) = "unimplemented"
 
     private val orderFieldRegex = "order\\[\\d+\\]\\[column\\]".r
+    private val orderFieldGroupCaptureRegex ="order\\[(\\d+)\\]\\[column\\]".r
     private val searchFieldRegex = "search\\[value\\]".r
   }
 }
