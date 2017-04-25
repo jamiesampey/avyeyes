@@ -9,11 +9,12 @@ import com.avyeyes.system.UserEnvironment
 import org.json4s.JsonAST
 import org.json4s.JsonDSL._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.Logger
 import securesocial.core.SecureSocial
 
 
 @Singleton
-class TemplateController @Inject()(val configService: ConfigurationService, val messagesApi: MessagesApi, implicit val env: UserEnvironment)
+class TemplateController @Inject()(val configService: ConfigurationService, val logger: Logger, val messagesApi: MessagesApi, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
 
   private val s3Bucket = configService.getProperty("s3.bucket")

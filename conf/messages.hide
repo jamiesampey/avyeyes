@@ -5,13 +5,6 @@ title.infoDialog=Info
 title.errorDialog=Oops
 
 
-// admin
-msg.avyAdminLocalLoginAccessDenied=Access Denied
-
-label.avyAdminLoggedInEmail=Logged in as
-
-button.avyAdminLogOutButton=Log out
-
 // search
 
 msg.eyeTooHigh=The eye altitude is too high. The view must be zoomed in to {0} meters or less above the ground before searching.<p>Use the location input field or the mouse/touch controls to zoom in to a specific area of interest.</p>

@@ -1,41 +1,6 @@
 @import url("avyeyes.ui.css");
 @import url("jquery.dataTables.css");
 
-#avyAdminLoggedOutContentDiv {
-  display: block;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  background-color: white;
-}
-
-#avyAdminLoginFormDiv {
-    position: absolute;
-    margin: auto;
-    height: 100px;
-    width: 550px;
-    top: 0px; left: 0px; bottom: 0px; right: 0px;
-    text-align: center;
-}
-
-#avyAdminOmniLoginTd {
-	margin: 0px;
-	padding: 0px 20px 0px 0px;
-}
-
-#avyAdminLocalLoginTd {
-    margin: 0px;
-    padding: 0px 0px 0px 20px;
-	border-left: 1px solid black;
-	text-align: left;
-}
-
-#avyAdminLoggedInContentDiv {
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-}
 
 #avyAdminLayoutTable {
   width: 100%;
@@ -50,11 +15,6 @@
     white-space: nowrap;
     padding-right: 50px;
     padding-bottom: 30px;
-}
-
-#avyAdminHeaderStatsTd {
-    width: 99%;
-    vertical-align: top;
 }
 
 #avyAdminTableRow {

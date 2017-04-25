@@ -33,7 +33,7 @@ function wireDataTable() {
      "ajax": {
        "dataType": 'json',
        "type": 'GET',
-       "url": '/rest/admintable'
+       "url": '/avalanche/table'
       }
     }
   );

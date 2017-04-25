@@ -7,23 +7,9 @@
       <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
   </head>
   <body>
-      <div class="avyAdminLoggedInDiv"></div>
-
       <table id="avyAdminLayoutTable">
           <tr id="avyAdminHeaderRow">
               <td id="avyAdminHeaderTitleTd"><span id="avyAdminConsoleTitle" class="avyHeader"></span></td>
-              <td id="avyAdminHeaderStatsTd">
-                  <table id="avyAdminStatsTable">
-                      <tr>
-                          <td id="avyAdminViewableCountTd"><label for="avyAdminViewableCount">@messages("label.avyAdminViewableCount")</label></td>
-                          <td><span id="avyAdminViewableCount" class="lift:Admin.viewableAvalancheCount"></span></td>
-                      </tr>
-                      <tr>
-                          <td id="avyAdminUnviewableCountTd"><label for="avyAdminUnviewableCount">@messages("label.avyAdminUnviewableCount")</label></td>
-                          <td><span id="avyAdminUnviewableCount" class="lift:Admin.unviewableAvalancheCount"></span></td>
-                      </tr>
-                  </table>
-              </td>
           </tr>
           <tr><td id="avyAdminTableRow" colspan="2">
               <table id="avyAdminDataTable" class="display" width="100%">

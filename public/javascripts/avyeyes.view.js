@@ -121,7 +121,8 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
 
             $.getJSON(avyDetailsUrl, function(data) {
-                if (adminLogin()) {
+            // TODO: figure out when to show the admin controls
+                if (data.submitterEmail) {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
                 } else if (data.submitterEmail) {
@@ -455,12 +456,6 @@ function flyToHeadingFromAspect(aspect) {
     else return 0.0;
 }
 
-
-
-function adminLogin() {
-  var adminEmailSpan = $("#avyAdminLoggedInEmail");
-  return adminEmailSpan.length > 0 && adminEmailSpan.text().length > 0;
-}
 
 return AvyEyesView;
 });

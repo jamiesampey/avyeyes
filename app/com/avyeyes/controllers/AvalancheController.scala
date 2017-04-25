@@ -2,7 +2,8 @@ package com.avyeyes.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.{AdminAvalancheQuery, CachedDAL}
+import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
 import com.avyeyes.system.UserEnvironment
 import org.json4s.JsonAST._
@@ -11,6 +12,7 @@ import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success, Try}
 
 @Singleton
 class AvalancheController @Inject()(val configService: ConfigurationService, val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
@@ -52,6 +54,15 @@ class AvalancheController @Inject()(val configService: ConfigurationService, val
         case Some(avalanche) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
         case _ => NotFound
       }
+    }
+  }
+
+  def table(query: AdminAvalancheQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
+    Try(dal.getAvalanchesAdmin(query)) match {
+      case Success(result) => Ok(writeAdminTableJson(result))
+      case Failure(ex) =>
+        logger.error("Failed to retrieve avalanche avalanches for admin table", ex)
+        InternalServerError
     }
   }
 }

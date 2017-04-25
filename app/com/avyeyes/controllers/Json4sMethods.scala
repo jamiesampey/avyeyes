@@ -6,12 +6,16 @@ import com.avyeyes.service.ConfigurationService
 import com.avyeyes.util.Converters.{dateToStr, strToDate}
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.DateTime
-import org.json4s.JsonDSL._
+import org.joda.time.format.DateTimeFormat
 import org.json4s.JsonAST.{JString, JValue}
+import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, render}
 import org.json4s.{CustomSerializer, DefaultFormats, Extraction, Formats, JNull, Serializer, TypeInfo}
+import play.api.Logger
+import play.api.mvc.RequestHeader
 
 trait Json4sMethods {
+  val logger: Logger
   val configService: ConfigurationService
 
   implicit val formats: Formats = DefaultFormats +
@@ -54,7 +58,35 @@ trait Json4sMethods {
       ("slope" -> Extraction.decompose(a.slope))
   }
 
-  private[controllers] def writeJson(jValue: JValue) = compact(render(jValue))
+  private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))
+
+  private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
+
+  private[controllers] def writeAdminTableJson(queryResult: (List[Avalanche], Int, Int))(implicit request: RequestHeader) = {
+    def getHttpsAvalancheLink(a: Avalanche) = {
+      <a href={s"${configService.avalancheUrl(a.extId)}"} target="adminViewWindow">{s"${a.title}"}</a>.toString
+    }
+
+    def getViewableElem(viewable: Boolean) = viewable match {
+      case true => <span style="color: green;">Yes</span>.toString
+      case false => <span style="color: red;">No</span>.toString
+    }
+
+    val drawVal = request.getQueryString("draw") match {
+      case Some(drawValue) => drawValue.toInt
+      case _ =>
+        logger.error("Table data 'draw' param missing")
+        throw new IllegalArgumentException
+    }
+
+    val matchingAvalanches = queryResult._1
+    val filteredRecordCount = queryResult._2
+    val totalRecordCount = queryResult._3
+
+    writeJson(("draw" -> drawVal) ~ ("recordsTotal" -> totalRecordCount) ~ ("recordsFiltered" -> filteredRecordCount) ~
+      ("data" -> matchingAvalanches.map(a => List(a.createTime.toString(dtf), a.updateTime.toString(dtf), a.extId, getViewableElem(a.viewable), getHttpsAvalancheLink(a), a.submitterEmail)))
+    )
+  }
 }
 
 object DateTimeSerializer extends CustomSerializer[DateTime](format => (
