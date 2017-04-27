@@ -15,15 +15,15 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class AvalancheController @Inject()(val configService: ConfigurationService, val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
-  extends SecureSocial with Json4sMethods with ExternalIdService {
+class AvalancheController @Inject()(idService: ExternalIdService, val configService: ConfigurationService, val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
+  extends SecureSocial with Json4sMethods {
 
   import authorizations._
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   def newAvalancheId() = Action { implicit request => try {
-      val newExtId = reserveNewExtId
+      val newExtId = idService.reserveNewExtId
       logger.info(s"Served extId request from ${request.remoteAddress} with new extId $newExtId")
       Ok(writeJson(JObject(List(JField("extId", JString(newExtId))))))
     } catch {
@@ -50,8 +50,8 @@ class AvalancheController @Inject()(val configService: ConfigurationService, val
     } yield {
 
       avalancheOption match {
-        case Some(avalanche) if isAuthorizedToEdit(request.user, editKeyOpt, extId) => Ok(writeJson(avalancheReadWriteData(avalanche, images)))
-        case Some(avalanche) if isAuthorizedToView(request.user, extId) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
+        case Some(avalanche) if isAuthorizedToEdit(extId, request.user, editKeyOpt) => Ok(writeJson(avalancheReadWriteData(avalanche, images)))
+        case Some(avalanche) if isAuthorizedToView(extId, request.user) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
         case _ => NotFound
       }
     }

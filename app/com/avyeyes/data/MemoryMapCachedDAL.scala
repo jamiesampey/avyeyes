@@ -14,8 +14,8 @@ import slick.jdbc.JdbcProfile
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache, val logger: Logger)
-  extends CachedDAL with DatabaseComponent with SlickColumnMappers with ExternalIdService {
+class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache, idService: ExternalIdService, val logger: Logger)
+  extends CachedDAL with DatabaseComponent with SlickColumnMappers {
 
   private val avalancheMap = avalancheCache.avalancheMap
 
@@ -152,7 +152,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
   def deleteOrphanAvalancheImages = db.run(
     AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
   ).flatMap { orphanImages =>
-    val unfinishedReports = orphanImages.filterNot(img => reservationExists(img.avalanche)).map(_.avalanche).distinct
+    val unfinishedReports = orphanImages.filterNot(img => idService.reservationExists(img.avalanche)).map(_.avalanche).distinct
     logger.info(s"Deleting ${orphanImages.size} orphan images from ${unfinishedReports.size} unfinished avalanche reports")
     db.run(AvalancheImageRows.filter(img => img.avalanche inSetBind unfinishedReports).delete)
   }

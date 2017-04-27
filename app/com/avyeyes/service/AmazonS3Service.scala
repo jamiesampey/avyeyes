@@ -30,11 +30,11 @@ class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Log
   /**
     * Upload images asynchronously
     */
-  def uploadImage(avyExtId: String, filename: String, mimeType: String, origBytes: Array[Byte]): Future[Unit] = Future {
-    val writer = FormatDetector.detect(origBytes) match {
-      case Some(Format.PNG) => PngWriter()
-      case Some(Format.GIF) => GifWriter()
-      case _ => JpegWriter()
+  def uploadImage(avyExtId: String, filename: String, origBytes: Array[Byte], imageFormat: Format, mimeType: String): Future[Unit] = Future {
+    val writer = imageFormat match {
+      case Format.JPEG => JpegWriter()
+      case Format.PNG => PngWriter()
+      case Format.GIF => GifWriter()
     }
 
     val origBais = new ByteArrayInputStream(origBytes)
@@ -42,7 +42,7 @@ class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Log
 
     val key = filename match {
       case ScreenshotFilename => screenshotKey(avyExtId)
-      case _ => avalancheImageKey (avyExtId, filename)
+      case _ => avalancheImageKey (avyExtId, s"$filename.")
     }
 
     val metadata = new ObjectMetadata()

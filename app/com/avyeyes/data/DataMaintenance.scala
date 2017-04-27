@@ -10,7 +10,8 @@ import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCache: AvalancheCache, val logger: Logger) extends Actor with ExternalIdService  {
+class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCache: AvalancheCache, idService: ExternalIdService, val logger: Logger)
+  extends Actor {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
 
@@ -27,7 +28,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
           s3.allAvalancheKeys.map { _.foreach { s3AvalancheKey =>
             val extId = s3AvalancheKey.split("/").last
             logger.debug(s"Checking if S3 avalanche $extId exists in the DB")
-            if (!avalancheCache.avalancheMap.contains(extId) && !reservationExists(extId)) {
+            if (!avalancheCache.avalancheMap.contains(extId) && !idService.reservationExists(extId)) {
               logger.info(s"Avalanche $extId is not in the DB. Deleting S3 content for that avalanche")
               s3.deleteAllFiles(extId)
             }

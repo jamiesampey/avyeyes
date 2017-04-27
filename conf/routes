@@ -10,14 +10,17 @@ GET     /logout                     securesocial.controllers.LoginPage.logout
 GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
 POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
+# Avalanches
+GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AdminAvalancheQuery)
+GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
+GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
+
+# Images
+POST  /image/:extId                 com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
+
 # Templates
 GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "")
 GET     /:extId                     com.avyeyes.controllers.TemplateController.index(extId)
 
 # Public assets
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-# Avalanches
-GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AdminAvalancheQuery)
-GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
-GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])

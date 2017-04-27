@@ -1,6 +1,7 @@
 package com.avyeyes.service
 
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.util.Constants._
@@ -9,8 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import play.api.Logger
 
-trait ExternalIdService {
-  val logger: Logger
+class ExternalIdService @Inject()(logger: Logger) {
 
   val NewExternalIdAttemptLimit = 100
 
