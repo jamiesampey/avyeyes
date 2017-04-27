@@ -16,7 +16,11 @@ GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.
 GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
 
 # Images
-POST  /image/:extId                 com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
+POST    /image/:extId/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)
+POST    /image/:extId               com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
+PUT     /image/:extId/:filename     com.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])
+PUT     /image/:extId               com.avyeyes.controllers.ImageController.order(extId, edit: Option[String])
+DELETE  /image/:extId/:filename     com.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
 
 # Templates
 GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "")

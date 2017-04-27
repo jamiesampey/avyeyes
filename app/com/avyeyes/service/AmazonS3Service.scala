@@ -8,12 +8,12 @@ import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
 import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
-import com.sksamuel.scrimage.{Format, FormatDetector, Image}
+import com.sksamuel.scrimage.{Format, Image}
 import play.api.Logger
 
 import scala.collection.JavaConversions._
-import scala.util.{Failure, Success, Try}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Logger) {
   private val s3Bucket = configService.getProperty("s3.bucket")

@@ -325,7 +325,7 @@ AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {
   var editKeyParam = this.view.getRequestParam("edit");
-  var imageUrl = '/rest/images/' + extId;
+  var imageUrl = '/image/' + extId;
 
   if (filename) imageUrl += '/' + getFileBaseName(filename);
   if (editKeyParam) imageUrl += "?edit=" + editKeyParam;

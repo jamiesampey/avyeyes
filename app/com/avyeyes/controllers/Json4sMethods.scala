@@ -7,9 +7,9 @@ import com.avyeyes.util.Converters.{dateToStr, strToDate}
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import org.json4s.JsonAST.{JString, JValue}
+import org.json4s.JsonAST.{JObject, JString, JValue}
 import org.json4s.JsonDSL._
-import org.json4s.jackson.JsonMethods.{compact, render}
+import org.json4s.jackson.JsonMethods.{compact, parse, render}
 import org.json4s.{CustomSerializer, DefaultFormats, Extraction, Formats, JNull, Serializer, TypeInfo}
 import play.api.mvc.RequestHeader
 
@@ -57,6 +57,11 @@ trait Json4sMethods {
   }
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))
+
+  private[controllers] def readJson(jsonOpt: Option[String]): JValue = jsonOpt match {
+    case Some(jsonString) => parse(jsonString)
+    case _ => JObject()
+  }
 
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
