@@ -246,10 +246,10 @@ function wireButtons(view) {
         var boundingBox = view.getBoundingBox();
 
         var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
-           + "&camAlt=" + $("#avySearchCameraAlt").val(view.cesiumViewer.camera.positionCartographic.height)
-           + "&camPitch=" + $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch))
-           + "&camLng=" + $("#avySearchCameraLng").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude))
-           + "&camLat=" + $("#avySearchCameraLat").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude))
+           + "&camAlt=" + view.cesiumViewer.camera.positionCartographic.height
+           + "&camPitch=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch)
+           + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
+           + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
            + "&fromDate=" + $("#avySearchFromDate").val() + "&toDate=" + $("#avySearchToDate").val()
            + "&avyType=" + $("#avySearchType").val() + "&trigger=" + $("#avySearchTrigger").val()
            + "&rSize=" + $("#avySearchRsizeValue").val() + "&dSize=" + $("#avySearchDsizeValue").val()

@@ -21,30 +21,32 @@ object AvalancheQueryBinder {
       lngMin <- params.get("lngMin").map(_.head.toDouble)
       latMax <- params.get("latMax").map(_.head.toDouble)
       latMin <- params.get("latMin").map(_.head.toDouble)
-      camAlt <- params.get("camAlt").map(_.head.toInt)
+      camAlt <- params.get("camAlt").map(_.head.toDouble)
     } yield Try {
 
-//      if (camAlt > CamAltitudeLimit) {
-//        throw new RuntimeException(Messages("msg.eyeTooHigh"))
-//      }
+      //      if (camAlt > CamAltitudeLimit) {
+      //        throw new RuntimeException(Messages("msg.eyeTooHigh"))
+      //      }
 
       AvalancheQuery(
         viewable = Some(true),
         geoBounds = Some(GeoBounds(lngMax, lngMin, latMax, latMin)),
-        fromDate = params.get("fromDate").map(params => strToDate(params.head)),
-        toDate = params.get("toDate").map(params => strToDate(params.head)),
-        avyType = params.get("avyType").map(params => AvalancheType.fromCode(params.head)),
-        trigger = params.get("trigger").map(params => AvalancheTrigger.fromCode(params.head)),
-        rSize = params.get("rSize").map(_.head.toDouble),
-        dSize = params.get("dSize").map(_.head.toDouble),
-        numCaught = params.get("numCaught").map(_.head.toInt),
-        numKilled = params.get("numKilled").map(_.head.toInt),
+        fromDate = firstNonEmptyValue(params.get("fromDate")).map(strToDate),
+        toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate),
+        avyType = firstNonEmptyValue(params.get("avyType")).map(AvalancheType.fromCode),
+        trigger = firstNonEmptyValue(params.get("trigger")).map(AvalancheTrigger.fromCode),
+        rSize = firstNonEmptyValue(params.get("rSize")).map(_.toDouble),
+        dSize = firstNonEmptyValue(params.get("dSize")).map(_.toDouble),
+        numCaught = firstNonEmptyValue(params.get("numCaught")).map(_.toInt),
+        numKilled = firstNonEmptyValue(params.get("numKilled")).map(_.toInt),
         order = List((OrderField.Date, OrderDirection.desc))
       )
     } match {
       case Success(avalancheQuery) => Right(avalancheQuery)
       case Failure(ex) => Left(ex.getMessage)
     }
+
+    private def firstNonEmptyValue(possibleValues: Option[Seq[String]]): Option[String] = possibleValues.flatMap(_.find(_.nonEmpty))
 
     override def unbind(key: String, query: AvalancheQuery) = "unimplemented"
   }
