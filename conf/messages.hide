@@ -7,7 +7,6 @@ title.errorDialog=Oops
 
 // search
 
-msg.eyeTooHigh=The eye altitude is too high. The view must be zoomed in to {0} meters or less above the ground before searching.<p>Use the location input field or the mouse/touch controls to zoom in to a specific area of interest.</p>
 msg.horizonInView=Cannot set the geographic search bounds. The horizon or sky cannot be in view. The entire view window must show earth.
 msg.avySearchZeroMatches=No avalanches found in the current map view matching the search criteria.
 

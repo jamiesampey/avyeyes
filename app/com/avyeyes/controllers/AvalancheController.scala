@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.{AdminAvalancheQuery, CachedDAL}
+import com.avyeyes.data.{AdminAvalancheQuery, AvalancheQuery, CachedDAL}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
 import com.avyeyes.system.UserEnvironment
@@ -55,6 +55,11 @@ class AvalancheController @Inject()(idService: ExternalIdService, val configServ
         case _ => NotFound
       }
     }
+  }
+
+  def search(query: AvalancheQuery) = Action { implicit request =>
+    logger.debug(s"searching in ${query.geoBounds}")
+    Ok
   }
 
   def table(query: AdminAvalancheQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>

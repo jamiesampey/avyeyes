@@ -245,17 +245,21 @@ function wireButtons(view) {
 	$('#avySearchButton').click(function() {
         var boundingBox = view.getBoundingBox();
 
-        $("#avySearchLatMax").val(boundingBox[0]);
-        $("#avySearchLatMin").val(boundingBox[1]);
-        $("#avySearchLngMax").val(boundingBox[2]);
-        $("#avySearchLngMin").val(boundingBox[3]);
+        var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
+           + "&camAlt=" + $("#avySearchCameraAlt").val(view.cesiumViewer.camera.positionCartographic.height)
+           + "&camPitch=" + $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch))
+           + "&camLng=" + $("#avySearchCameraLng").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude))
+           + "&camLat=" + $("#avySearchCameraLat").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude))
+           + "&fromDate=" + $("#avySearchFromDate").val() + "&toDate=" + $("#avySearchToDate").val()
+           + "&avyType=" + $("#avySearchType").val() + "&trigger=" + $("#avySearchTrigger").val()
+           + "&rSize=" + $("#avySearchRsizeValue").val() + "&dSize=" + $("#avySearchDsizeValue").val()
+           + "&numCaught=" + $("#avySearchNumCaught").val() + "&numKilled=" + $("#avySearchNumKilled").val()
 
-        $("#avySearchCameraAlt").val(view.cesiumViewer.camera.positionCartographic.height);
-        $("#avySearchCameraPitch").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch));
-        $("#avySearchCameraLng").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude));
-        $("#avySearchCameraLat").val(Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude));
-
-	    $(this).submit();
+        $.getJSON(searchQueryString).done(function(searchResults) {
+            view.addAvalanches(avalancheJSON);
+        }).fail(function(jqxhr, textStatus, error) {
+            console.error("Avalanche search failed: " + error);
+        });
 	});
 
 	$('#avySearchResetButton').click(function() {
