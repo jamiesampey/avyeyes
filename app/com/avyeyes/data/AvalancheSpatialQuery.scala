@@ -33,7 +33,7 @@ case class AvalancheSpatialQuery(
     killedPredicate(numKilled) :: Nil
 
   def toPredicate = predicates.collect({case Some(predicate) => predicate}) match {
-    case definedPredicates if definedPredicates.size > 0 => and(definedPredicates)
+    case definedPredicates if definedPredicates.nonEmpty => and(definedPredicates)
     case _ => _ => true
   }
 }
