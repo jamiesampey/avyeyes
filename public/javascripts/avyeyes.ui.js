@@ -256,9 +256,9 @@ function wireButtons(view) {
            + "&numCaught=" + $("#avySearchNumCaught").val() + "&numKilled=" + $("#avySearchNumKilled").val()
 
         $.getJSON(searchQueryString).done(function(searchResults) {
-            view.addAvalanches(avalancheJSON);
+            view.addAvalanches(searchResults);
         }).fail(function(jqxhr, textStatus, error) {
-            console.error("Avalanche search failed: " + error);
+            view.showModalDialog(jqxhr.responseText);
         });
 	});
 

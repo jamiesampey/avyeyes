@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.data.AvalanchePredicates._
 
-case class AdminAvalancheQuery(
+case class AvalancheTableQuery(
   extId: Option[String] = None,
   areaName: Option[String] = None,
   submitterEmail: Option[String] = None,

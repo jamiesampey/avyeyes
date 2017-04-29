@@ -21,8 +21,8 @@ scalacOptions ++= Seq(
 resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
 
 RoutesKeys.routesImport ++= Seq(
-  "com.avyeyes.controllers.AdminQueryBinder._",
-  "com.avyeyes.controllers.AvalancheQueryBinder._"
+  "com.avyeyes.controllers.TableQueryBinder._",
+  "com.avyeyes.controllers.SpatialQueryBinder._"
 )
 
 libraryDependencies ++= {

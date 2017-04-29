@@ -5,7 +5,7 @@ import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.avyeyes.model.enums.AvalancheType.AvalancheType
 import org.joda.time.DateTime
 
-case class AvalancheQuery(
+case class AvalancheSpatialQuery(
   viewable: Option[Boolean] = None,
   geoBounds: Option[GeoBounds] = None,
   fromDate: Option[DateTime] = None,

@@ -33,12 +33,12 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
 
   def getAvalanche(extId: String): Option[Avalanche] = avalancheMap.get(extId)
 
-  def getAvalanches(query: AvalancheQuery): List[Avalanche] = {
+  def getAvalanches(query: AvalancheSpatialQuery): List[Avalanche] = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     matches.sortWith(query.sortFunction).slice(query.offset, query.offset + query.limit)
   }
 
-  def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int) = {
+  def getAvalanchesAdmin(query: AvalancheTableQuery): (List[Avalanche], Int, Int) = {
     val matches = avalancheMap.values.filter(query.toPredicate).toList
     (matches.sortWith(query.sortFunction).slice(query.offset, query.offset + query.limit), matches.size, avalancheMap.size)
   }

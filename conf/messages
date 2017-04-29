@@ -46,7 +46,9 @@ help.avySearchNumKilled=<p>The number of humans killed in the avalanche. Only av
 button.avySearchButton=Search
 button.avySearchResetButton=Reset Fields
 
-msg.eyeTooHigh=The eye altitude is too high. The view must be zoomed in to {0} meters or less above the ground before searching.<p>Use the location input field or the mouse/touch controls to zoom in to a specific area of interest.</p>
+msg.eyeTooHigh=The eye altitude is too high. The view must be zoomed in to {0} meters or less above the ground before searching.<p>Use the location input field or the mouse/touch controls to zoom in to a specific area of interest.
+msg.horizonInView=Cannot set the geographic search bounds. The horizon or sky cannot be in view. The entire view window must show earth.
+msg.avySearchZeroMatches=No avalanches found in the current map view matching the search criteria.
 msg.avySearchResultsOverlayClick=Click on the red avalanche path(s) for details
 msg.avySearchOverlayTips=<table class='avyOverlayTipsTable'><tr><td class='dialogTipsTd'>Tips:</td><td class='dialogTipsTd'>Click & drag to pan the view<br/>Hold the Control key + click & drag to rotate or tilt the view<br/>Mouse wheel or right-click & drag to zoom the view</td></tr></table>
 

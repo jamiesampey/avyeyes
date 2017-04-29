@@ -1,36 +1,32 @@
 package com.avyeyes.controllers
 
-import javax.inject.Inject
-
-import com.avyeyes.data.{AvalancheQuery, GeoBounds, OrderDirection, OrderField}
+import com.avyeyes.data.{AvalancheSpatialQuery, GeoBounds, OrderDirection, OrderField}
 import com.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
 import com.avyeyes.util.Converters.strToDate
-import com.avyeyes.util.Constants.CamAltitudeLimit
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.QueryStringBindable
 
 import scala.util.{Failure, Success, Try}
 
 
-object AvalancheQueryBinder {
+object SpatialQueryBinder {
 
-  implicit object AvalancheQueryBindable extends QueryStringBindable[AvalancheQuery] {
+  implicit def SpatialQueryBindable(implicit doubleBinder: QueryStringBindable[Double]) = new QueryStringBindable[AvalancheSpatialQuery] {
 
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, AvalancheQuery]] = for {
-      lngMax <- params.get("lngMax").map(_.head.toDouble)
-      lngMin <- params.get("lngMin").map(_.head.toDouble)
-      latMax <- params.get("latMax").map(_.head.toDouble)
-      latMin <- params.get("latMin").map(_.head.toDouble)
-      camAlt <- params.get("camAlt").map(_.head.toDouble)
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, AvalancheSpatialQuery]] = for {
+      lngMaxParam <- doubleBinder.bind("lngMax", params)
+      lngMinParam <- doubleBinder.bind("lngMin", params)
+      latMaxParam <- doubleBinder.bind("latMax", params)
+      latMinParam <- doubleBinder.bind("latMin", params)
     } yield Try {
 
-      //      if (camAlt > CamAltitudeLimit) {
-      //        throw new RuntimeException(Messages("msg.eyeTooHigh"))
-      //      }
+      val geoBoundsOpt = (lngMaxParam, lngMinParam, latMaxParam, latMinParam) match {
+        case (Right(lngMax), Right(lngMin), Right(latMax), Right(latMin)) => Some(GeoBounds(lngMax, lngMin, latMax, latMin))
+        case _ => None
+      }
 
-      AvalancheQuery(
+      AvalancheSpatialQuery(
         viewable = Some(true),
-        geoBounds = Some(GeoBounds(lngMax, lngMin, latMax, latMin)),
+        geoBounds = geoBoundsOpt,
         fromDate = firstNonEmptyValue(params.get("fromDate")).map(strToDate),
         toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate),
         avyType = firstNonEmptyValue(params.get("avyType")).map(AvalancheType.fromCode),
@@ -48,6 +44,6 @@ object AvalancheQueryBinder {
 
     private def firstNonEmptyValue(possibleValues: Option[Seq[String]]): Option[String] = possibleValues.flatMap(_.find(_.nonEmpty))
 
-    override def unbind(key: String, query: AvalancheQuery) = "unimplemented"
+    override def unbind(key: String, query: AvalancheSpatialQuery) = "unimplemented"
   }
 }

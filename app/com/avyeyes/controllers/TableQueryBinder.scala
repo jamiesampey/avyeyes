@@ -1,16 +1,16 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.data.{AdminAvalancheQuery, OrderDirection, OrderField}
+import com.avyeyes.data.{AvalancheTableQuery, OrderDirection, OrderField}
 import play.api.mvc.QueryStringBindable
 
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
-object AdminQueryBinder {
+object TableQueryBinder {
 
-  implicit object AdminQueryBindable extends QueryStringBindable[AdminAvalancheQuery] {
+  implicit object TableQueryBindable extends QueryStringBindable[AvalancheTableQuery] {
 
-    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, AdminAvalancheQuery]] = for {
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, AvalancheTableQuery]] = for {
       offsetVal <- params.get("start").map(_.head.toInt)
       limitVal <- params.get("length").map(_.head.toInt)
     } yield Try {
@@ -39,7 +39,7 @@ object AdminQueryBinder {
         case entryTuple if searchFieldRegex.findFirstMatchIn(entryTuple._1).isDefined && entryTuple._2.head.nonEmpty => s"${entryTuple._2.head}"
       }
 
-      AdminAvalancheQuery(
+      AvalancheTableQuery(
         extId = searchTerm,
         areaName = searchTerm,
         submitterEmail = searchTerm,
@@ -52,7 +52,7 @@ object AdminQueryBinder {
       case Failure(ex) => Left(ex.getMessage)
     }
 
-    override def unbind(key: String, adminQuery: AdminAvalancheQuery) = "unimplemented"
+    override def unbind(key: String, adminQuery: AvalancheTableQuery) = "unimplemented"
 
     private val orderFieldRegex = "order\\[\\d+\\]\\[column\\]".r
     private val orderFieldGroupCaptureRegex ="order\\[(\\d+)\\]\\[column\\]".r

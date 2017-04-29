@@ -1,13 +1,17 @@
 package com.avyeyes.controllers
 
+import java.text.NumberFormat
+import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.{AdminAvalancheQuery, AvalancheQuery, CachedDAL}
+import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDAL}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
 import com.avyeyes.system.UserEnvironment
+import com.avyeyes.util.Constants.CamAltitudeLimit
 import org.json4s.JsonAST._
 import play.api.Logger
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
@@ -15,12 +19,14 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class AvalancheController @Inject()(idService: ExternalIdService, val configService: ConfigurationService, val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
-  extends SecureSocial with Json4sMethods {
+class AvalancheController @Inject()(idService: ExternalIdService, val configService: ConfigurationService,
+                                    val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations,
+                                    val messagesApi: MessagesApi, implicit val env: UserEnvironment) extends SecureSocial with Json4sMethods with I18nSupport {
 
   import authorizations._
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
+  private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
 
   def newAvalancheId() = Action { implicit request => try {
       val newExtId = idService.reserveNewExtId
@@ -57,16 +63,27 @@ class AvalancheController @Inject()(idService: ExternalIdService, val configServ
     }
   }
 
-  def search(query: AvalancheQuery) = Action { implicit request =>
+  def search(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
     logger.debug(s"searching in ${query.geoBounds}")
-    Ok
+
+    camAltParam match {
+      case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
+      case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
+      case _ => Try(dal.getAvalanches(query)) match {
+        case Success(avalanches) if avalanches.isEmpty => BadRequest(Messages("msg.avySearchZeroMatches"))
+        case Success(avalanches) => Ok(writeJson(JArray(avalanches.map(avalancheSearchResultData))))
+        case Failure(ex) =>
+          logger.error("Failed to retrieve avalanches for view", ex)
+          InternalServerError
+      }
+    }
   }
 
-  def table(query: AdminAvalancheQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
+  def table(query: AvalancheTableQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
     Try(dal.getAvalanchesAdmin(query)) match {
       case Success(result) => Ok(writeAdminTableJson(result))
       case Failure(ex) =>
-        logger.error("Failed to retrieve avalanche avalanches for admin table", ex)
+        logger.error("Failed to retrieve avalanches for table", ex)
         InternalServerError
     }
   }

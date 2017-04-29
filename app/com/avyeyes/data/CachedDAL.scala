@@ -15,9 +15,9 @@ trait CachedDAL {
 
   def getAvalancheFromDisk(extId: String): Future[Option[Avalanche]]
 
-  def getAvalanches(query: AvalancheQuery): List[Avalanche]
+  def getAvalanches(query: AvalancheSpatialQuery): List[Avalanche]
 
-  def getAvalanchesAdmin(query: AdminAvalancheQuery): (List[Avalanche], Int, Int)
+  def getAvalanchesAdmin(query: AvalancheTableQuery): (List[Avalanche], Int, Int)
 
   def insertAvalanche(avalanche: Avalanche): Future[Unit]
 

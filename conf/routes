@@ -11,8 +11,8 @@ GET     /authenticate/:provider     securesocial.controllers.ProviderController.
 POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
 # Avalanches
-GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AdminAvalancheQuery)
-GET   /avalanche/search             com.avyeyes.controllers.AvalancheController.search(query: com.avyeyes.data.AvalancheQuery)
+GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AvalancheTableQuery)
+GET   /avalanche/search             com.avyeyes.controllers.AvalancheController.search(query: com.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
 GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
 GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
 

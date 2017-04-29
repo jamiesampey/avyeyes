@@ -1,16 +1,4 @@
 
-// general
-
-title.infoDialog=Info
-title.errorDialog=Oops
-
-
-// search
-
-msg.horizonInView=Cannot set the geographic search bounds. The horizon or sky cannot be in view. The entire view window must show earth.
-msg.avySearchZeroMatches=No avalanches found in the current map view matching the search criteria.
-
-// detail
 
 
 // report

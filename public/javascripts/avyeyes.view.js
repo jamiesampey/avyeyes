@@ -170,9 +170,9 @@ AvyEyesView.prototype.hideControls = function() {
     return $('#aeControlsSearchForm, #aeControlsReportInstructions').slideUp("slow").promise();
 }
 
-AvyEyesView.prototype.showModalDialog = function(title, msg) {
+AvyEyesView.prototype.showModalDialog = function(msg) {
     $("#multiDialog").html(msg);
-    $("#multiDialog").dialog("option", "title", title);
+    $("#multiDialog").dialog("option", "title", "Info");
     $("#multiDialog").dialog("open");
 }
 
@@ -263,7 +263,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
     var geocodeFailure = function(error) {
         geocodeAttempts = 0
-        this.showModalDialog("Error", "Failed to geocode '" + address + "'");
+        this.showModalDialog("Failed to geocode '" + address + "'");
     }.bind(this);
 
     this.geocode(address, function(data) {
