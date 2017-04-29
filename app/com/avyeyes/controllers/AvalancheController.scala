@@ -5,10 +5,11 @@ import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDAL}
+import com.avyeyes.model.Coordinate
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
 import com.avyeyes.system.UserEnvironment
-import com.avyeyes.util.Constants.CamAltitudeLimit
+import com.avyeyes.util.Constants.{AvyDistRangeMiles, CamAltitudeLimit, CamPitchCutoff}
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -64,17 +65,23 @@ class AvalancheController @Inject()(idService: ExternalIdService, val configServ
   }
 
   def search(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
-    logger.debug(s"searching in ${query.geoBounds}")
-
     camAltParam match {
       case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
       case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
       case _ => Try(dal.getAvalanches(query)) match {
         case Success(avalanches) if avalanches.isEmpty => BadRequest(Messages("msg.avySearchZeroMatches"))
-        case Success(avalanches) => Ok(writeJson(JArray(avalanches.map(avalancheSearchResultData))))
+        case Success(avalanches) =>
+          val filteredAvalanches = (camPitchParam, camLngParam, camLatParam) match {
+            case (Some(camPitch), Some(camLng), Some(camLat)) if camPitch > CamPitchCutoff =>
+              val camLocation = Coordinate(camLng, camLat, 0)
+              avalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
+            case _ => avalanches
+          }
+          Ok(writeJson(JArray(filteredAvalanches.map(avalancheSearchResultData))))
         case Failure(ex) =>
-          logger.error("Failed to retrieve avalanches for view", ex)
-          InternalServerError
+          val errorMsg = "Failed to retrieve avalanches in view"
+          logger.error(errorMsg, ex)
+          InternalServerError(errorMsg)
       }
     }
   }
