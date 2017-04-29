@@ -7,7 +7,7 @@ import javax.inject.{Inject, Singleton}
 import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDAL}
 import com.avyeyes.model.Coordinate
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
-import com.avyeyes.service.{ConfigurationService, ExternalIdService}
+import com.avyeyes.service.ConfigurationService
 import com.avyeyes.system.UserEnvironment
 import com.avyeyes.util.Constants.{AvyDistRangeMiles, CamAltitudeLimit, CamPitchCutoff}
 import org.json4s.JsonAST._
@@ -20,25 +20,15 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class AvalancheController @Inject()(idService: ExternalIdService, val configService: ConfigurationService,
-                                    val logger: Logger, implicit val dal: CachedDAL, authorizations: Authorizations,
-                                    val messagesApi: MessagesApi, implicit val env: UserEnvironment) extends SecureSocial with Json4sMethods with I18nSupport {
+class SearchController @Inject()(val configService: ConfigurationService, val logger: Logger,
+                                 val dal: CachedDAL, authorizations: Authorizations,
+                                 val messagesApi: MessagesApi, implicit val env: UserEnvironment)
+  extends SecureSocial with Json4sMethods with I18nSupport {
 
   import authorizations._
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
-
-  def newAvalancheId() = Action { implicit request => try {
-      val newExtId = idService.reserveNewExtId
-      logger.info(s"Served extId request from ${request.remoteAddress} with new extId $newExtId")
-      Ok(writeJson(JObject(List(JField("extId", JString(newExtId))))))
-    } catch {
-      case rte: RuntimeException => {
-        logger.error(s"Exception thrown while serving extId request from ${request.remoteAddress}", rte)
-        InternalServerError
-      }
-  }}
 
   def find(extId: String) = UserAwareAction { implicit request =>
     logger.debug(s"finding avalanche $extId")

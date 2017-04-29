@@ -10,11 +10,14 @@ GET     /logout                     securesocial.controllers.LoginPage.logout
 GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
 POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
-# Avalanches
-GET   /avalanche/table              com.avyeyes.controllers.AvalancheController.table(adminQuery: com.avyeyes.data.AvalancheTableQuery)
-GET   /avalanche/search             com.avyeyes.controllers.AvalancheController.search(query: com.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
-GET   /avalanche/details/:extId     com.avyeyes.controllers.AvalancheController.details(extId, edit: Option[String])
-GET   /avalanche/:extId             com.avyeyes.controllers.AvalancheController.find(extId)
+# Avalanche report
+GET     /avalanche/newReport        com.avyeyes.controllers.ReportController.newAvalancheId()
+
+# Avalanche search
+GET     /avalanche/table            com.avyeyes.controllers.SearchController.table(adminQuery: com.avyeyes.data.AvalancheTableQuery)
+GET     /avalanche/search           com.avyeyes.controllers.SearchController.search(query: com.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
+GET     /avalanche/details/:extId   com.avyeyes.controllers.SearchController.details(extId, edit: Option[String])
+GET     /avalanche/:extId           com.avyeyes.controllers.SearchController.find(extId)
 
 # Images
 POST    /image/:extId/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)

@@ -6,12 +6,10 @@ function AvyReport(avyEyesView) {
 }
 
 AvyReport.prototype.reserveExtId = function() {
-	$.getJSON('/rest/reserveExtId', function(data) {
+	$.getJSON('/avalanche/newReport', function(data) {
 		$('#rwAvyFormExtId').val(data.extId);
-	})
-	.fail(function(jqxhr, textStatus, error) {
-		var err = textStatus + ", " + error;
-	    console.log("AvyEyes failed to reserve an ExtId for the report:" + err);
+	}).fail(function(jqxhr, textStatus, error) {
+	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
 	    this.view.resetView();
 	}.bind(this));
 }
