@@ -299,7 +299,8 @@ function wireButtons(view) {
     });
 
     $("#rwAvyFormSubmitButton").click(function() {
-        $('#rwAvyFormDiv').children("form").submit();
+        window.onbeforeunload = null;
+        $('#rwAvyHtmlForm').submit();
     });
 
     $("#rwAvyFormCancelButton").click(function() {
