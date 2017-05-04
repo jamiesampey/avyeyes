@@ -126,7 +126,13 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
 }
 
 AvyReport.prototype.sendReport = function() {
-  var reportAvalanche = {
+  var csrfTokenFromCookie = function() {
+    var value = "; " + document.cookie;
+    var parts = value.split("; csrfToken=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
+  }
+
+  var data = {
     extId: this.extId,
     viewable: $('#rwAvyFormViewable').val(),
     submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
@@ -136,28 +142,18 @@ AvyReport.prototype.sendReport = function() {
       latitude: $('#rwAvyFormLat').val(),
       altitude: $('#rwAvyFormElevation').val()
     }
-  }
+  };
 
-console.log("submitter email is " + $('#rwAvyFormSubmitterEmail').val());
+  var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
-  var csrfTokenObj = $("input[name='csrfToken']");
-  console.log("csrfTokenObj is " + csrfTokenObj);
-
-  var csrfToken = csrfTokenObj.val();
-  console.log("csrfToken is " + csrfToken);
-
-  var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfToken;
-  console.log("reportUri is " + reportUri);
-
-
-  $.post(reportUri, JSON.stringify(reportAvalanche), function() {
-    alert( "avalanche report success" );
+  $.post(reportUri, JSON.stringify(data), function() {
+    console.log( "avalanche report success" );
   }).done(function() {
-   alert( "avalanche report second success" );
+   console.log( "avalanche report second success" );
   }).fail(function() {
-   alert( "avalanche report error" );
+   console.log( "avalanche report error" );
   }).always(function() {
-   alert( "avalanche report finished" );
+   console.log( "avalanche report finished" );
   });
 }
 
