@@ -299,8 +299,7 @@ function wireButtons(view) {
     });
 
     $("#rwAvyFormSubmitButton").click(function() {
-        window.onbeforeunload = null;
-        $('#rwAvyHtmlForm').submit();
+        view.currentReport.sendReport();
     });
 
     $("#rwAvyFormCancelButton").click(function() {

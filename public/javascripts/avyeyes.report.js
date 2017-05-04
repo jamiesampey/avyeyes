@@ -2,13 +2,14 @@ define(['jquery-ui'], function() {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
+	this.extId;
 	this.drawingPolygon;
 }
 
 AvyReport.prototype.reserveExtId = function() {
 	$.getJSON('/avalanche/newReport', function(data) {
-		$('#rwAvyFormExtId').val(data.extId);
-	}).fail(function(jqxhr, textStatus, error) {
+		this.extId = data.extId;
+	}.bind(this)).fail(function(jqxhr, textStatus, error) {
 	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
 	    this.view.resetView();
 	}.bind(this));
@@ -122,6 +123,42 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
         getAspect(highestCartographic, lowestCartographic),
         Math.round(Cesium.Math.toDegrees(Math.asin(opposite/hypotenuse))),
         coordStr.trim());
+}
+
+AvyReport.prototype.sendReport = function() {
+  var reportAvalanche = {
+    extId: this.extId,
+    viewable: $('#rwAvyFormViewable').val(),
+    submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
+    submitterExp: $('#rwAvyFormSubmitterExp').val(),
+    location: {
+      longitude: $('#rwAvyFormLng').val(),
+      latitude: $('#rwAvyFormLat').val(),
+      altitude: $('#rwAvyFormElevation').val()
+    }
+  }
+
+console.log("submitter email is " + $('#rwAvyFormSubmitterEmail').val());
+
+  var csrfTokenObj = $("input[name='csrfToken']");
+  console.log("csrfTokenObj is " + csrfTokenObj);
+
+  var csrfToken = csrfTokenObj.val();
+  console.log("csrfToken is " + csrfToken);
+
+  var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfToken;
+  console.log("reportUri is " + reportUri);
+
+
+  $.post(reportUri, JSON.stringify(reportAvalanche), function() {
+    alert( "avalanche report success" );
+  }).done(function() {
+   alert( "avalanche report second success" );
+  }).fail(function() {
+   alert( "avalanche report error" );
+  }).always(function() {
+   alert( "avalanche report finished" );
+  });
 }
 
 function getAspect(highestCartographic, lowestCartographic) {
