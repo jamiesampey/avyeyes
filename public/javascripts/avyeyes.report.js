@@ -132,21 +132,9 @@ AvyReport.prototype.sendReport = function() {
     if (parts.length == 2) return parts.pop().split(";").shift();
   }
 
-  var data = {
-    extId: this.extId,
-    viewable: $('#rwAvyFormViewable').val(),
-    submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
-    submitterExp: $('#rwAvyFormSubmitterExp').val(),
-    location: {
-      longitude: $('#rwAvyFormLng').val(),
-      latitude: $('#rwAvyFormLat').val(),
-      altitude: $('#rwAvyFormElevation').val()
-    }
-  };
-
   var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
-  $.post(reportUri, JSON.stringify(data), function() {
+  $.post(reportUri, JSON.stringify(parseReportForm()), function() {
     console.log( "avalanche report success" );
   }).done(function() {
    console.log( "avalanche report second success" );
@@ -155,6 +143,50 @@ AvyReport.prototype.sendReport = function() {
   }).always(function() {
    console.log( "avalanche report finished" );
   });
+}
+
+function parseReportForm() {
+    return {
+        extId: this.extId,
+        viewable: $('#rwAvyFormViewable').val(),
+        submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
+        submitterExp: $('#rwAvyFormSubmitterExp').val(),
+        location: {
+          longitude: $('#rwAvyFormLng').val(),
+          latitude: $('#rwAvyFormLat').val(),
+          altitude: $('#rwAvyFormElevation').val()
+        },
+        date: $("#rwAvyFormDate").val(),
+        areaName: $("#rwAvyFormAreaName").val(),
+        slope: {
+          aspect: $("#rwAvyFormAspect").val(),
+          angle: $("#rwAvyFormAngle").val(),
+          elevation: $('#rwAvyFormElevation').val()
+        },
+        weather: {
+          recentSnow: $("#rwAvyFormRecentSnow").val(),
+          recentWindSpeed: $("#rwAvyFormRecentWindSpeed").val(),
+          recentWindDirection: $("#rwAvyFormRecentWindDirection").val()
+        },
+        classification: {
+          avyType: $("#rwAvyFormType").val(),
+          trigger: $("#rwAvyFormTrigger").val(),
+          triggerModifier: $("#rwAvyFormTriggerModifier").val(),
+          interface: $("#rwAvyFormInterface").val(),
+          rSize: $("#rwAvyFormRsizeValue").val(),
+          dSize: $("#rwAvyFormDsizeValue").val()
+        },
+        humanNumbers: {
+          modeOfTravel: $("#rwAvyFormModeOfTravel").val(),
+          caught: $("#rwAvyFormNumCaught").val(),
+          partiallyBuried: $("#rwAvyFormNumPartiallyBuried").val(),
+          fullyBuried: $("#rwAvyFormNumFullyBuried").val(),
+          injured: $("#rwAvyFormNumInjured").val(),
+          killed: $("#rwAvyFormNumKilled").val()
+        },
+        perimeter: $("#rwAvyFormCoords").val(),
+        comments: $("#rwAvyFormComments").val()
+      };
 }
 
 function getAspect(highestCartographic, lowestCartographic) {

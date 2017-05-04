@@ -3,7 +3,10 @@ package com.avyeyes.controllers
 import javax.inject.{Inject, Singleton}
 
 import com.avyeyes.data.CachedDAL
+import com.avyeyes.model.Avalanche
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
+import org.json4s
+import org.json4s.Extraction
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.mvc.{Action, Controller}
@@ -25,7 +28,13 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
 
   def submitReport(extId: String) = Action(parse.tolerantText) { implicit request =>
     logger.info("received report submission")
-    println(s"received: ${request.body}")
+    println(s"request body is: ${request.body}")
+    val json = readJson(Some(request.body))
+
+    println(s"json is: $json")
+
+    val avalanche: Avalanche = Extraction.extract(json)
+    println(s"avalanche is: $avalanche")
 
     Ok
   }

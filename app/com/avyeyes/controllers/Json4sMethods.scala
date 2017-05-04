@@ -115,9 +115,19 @@ object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format 
   }
 ))
 
+//object AvalancheDeserializer extends CustomSerializer[Avalanche] (format => (
+//  {
+//    case _: JValue => ???
+//  },
+//  {
+//    case a: Avalanche => ???
+//  }
+//))
 
 class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
-  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = ???
+  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = {
+    case code: (TypeInfo, JValue) => println(s"trying to deserialize $code"); AvalancheType.HS
+  }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
     case ev: Enumeration#Value => ev.toString.split('.').last
