@@ -134,7 +134,7 @@ AvyReport.prototype.sendReport = function() {
 
   var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
-  $.post(reportUri, JSON.stringify(parseReportForm()), function() {
+  $.post(reportUri, JSON.stringify(parseReportForm(this.extId)), function() {
     console.log( "avalanche report success" );
   }).done(function() {
    console.log( "avalanche report second success" );
@@ -145,10 +145,10 @@ AvyReport.prototype.sendReport = function() {
   });
 }
 
-function parseReportForm() {
+function parseReportForm(reportExtId) {
     return {
-        extId: this.extId,
-        viewable: $('#rwAvyFormViewable').val(),
+        extId: reportExtId,
+        viewable: $('#rwAvyFormViewable').is(":checked"),
         submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
         submitterExp: $('#rwAvyFormSubmitterExp').val(),
         location: {

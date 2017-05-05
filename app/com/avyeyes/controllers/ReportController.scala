@@ -5,8 +5,6 @@ import javax.inject.{Inject, Singleton}
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.Avalanche
 import com.avyeyes.service.{ConfigurationService, ExternalIdService}
-import org.json4s
-import org.json4s.Extraction
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.mvc.{Action, Controller}
@@ -31,7 +29,7 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
     println(s"request body is: ${request.body}")
     val json = readJson(Some(request.body))
 
-    val avalanche: Avalanche = Extraction.extract(json)
+    val avalanche: Avalanche = json.extract[Avalanche]
     println(s"avalanche is: $avalanche")
 
     Ok

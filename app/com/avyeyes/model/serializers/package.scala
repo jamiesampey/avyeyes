@@ -13,5 +13,6 @@ package object serializers {
     HumanNumbersSerializer +
     SlopeSerializer +
     WeatherSerializer +
-    AvalancheImageSerializer
+    AvalancheImageSerializer +
+    AvalancheSerializer
 }
