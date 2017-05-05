@@ -1,27 +1,20 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.model.enums._
-import com.avyeyes.model.{Avalanche, AvalancheImage, Coordinate}
+import com.avyeyes.model.{Avalanche, AvalancheImage}
 import com.avyeyes.service.ConfigurationService
-import com.avyeyes.util.Converters.{dateToStr, strToDate}
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
-import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import org.json4s.JsonAST.{JObject, JString, JValue}
+import org.json4s.Extraction
+import org.json4s.JsonAST.{JObject, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
-import org.json4s.{CustomSerializer, DefaultFormats, Extraction, Formats, JNull, Serializer, TypeInfo}
 import play.api.mvc.RequestHeader
+import com.avyeyes.model.serializers.avyeyesFormats
 
 trait Json4sMethods {
   val configService: ConfigurationService
 
-  implicit val formats: Formats = DefaultFormats +
-    DateTimeSerializer +
-    CoordinateSerializer +
-    AvalancheImageSerializer +
-    new ChainedEnumSerializer(Direction, AvalancheInterface, AvalancheTrigger, AvalancheTriggerModifier,
-      AvalancheType, ExperienceLevel, ModeOfTravel, WindSpeed)
+  implicit val formats = avyeyesFormats
 
   private[controllers] def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
@@ -86,50 +79,13 @@ trait Json4sMethods {
   }
 }
 
-object DateTimeSerializer extends CustomSerializer[DateTime](format => (
-  {
-    case JString(s) => strToDate(s)
-    case JNull => null
-  },
-  {
-    case d: DateTime => JString(dateToStr(d))
-  }
-))
 
-object CoordinateSerializer extends CustomSerializer[Coordinate](format => (
-  {
-    case _: JValue => ???
-  },
-  {
-    case c: Coordinate => ("latitude" -> c.latitude) ~ ("longitude" -> c.longitude) ~ ("altitude" -> c.altitude)
-  }
-))
-
-object AvalancheImageSerializer extends CustomSerializer[AvalancheImage](format => (
-  {
-    case _: JValue => ???
-  },
-  {
-    case AvalancheImage(createTime, avyExtId, filename, origFilename, mimeType, size, order, caption) =>
-      ("filename" -> filename) ~ ("mimeType" -> mimeType) ~ ("size" -> size) ~ ("caption" -> caption)
-  }
-))
-
-//object AvalancheDeserializer extends CustomSerializer[Avalanche] (format => (
-//  {
-//    case _: JValue => ???
-//  },
-//  {
-//    case a: Avalanche => ???
+//class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
+//  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = {
+//    case code: (TypeInfo, JValue) => println(s"trying to deserialize $code"); AvalancheType.HS
 //  }
-//))
-
-class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
-  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = {
-    case code: (TypeInfo, JValue) => println(s"trying to deserialize $code"); AvalancheType.HS
-  }
-
-  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case ev: Enumeration#Value => ev.toString.split('.').last
-  }
-}
+//
+//  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
+//    case ev: Enumeration#Value => ev.toString.split('.').last
+//  }
+//}

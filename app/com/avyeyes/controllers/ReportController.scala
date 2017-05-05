@@ -31,8 +31,6 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
     println(s"request body is: ${request.body}")
     val json = readJson(Some(request.body))
 
-    println(s"json is: $json")
-
     val avalanche: Avalanche = Extraction.extract(json)
     println(s"avalanche is: $avalanche")
 
