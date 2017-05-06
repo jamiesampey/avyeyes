@@ -6,6 +6,8 @@ import org.joda.time.DateTime
 import org.json4s.{CustomSerializer, Extraction}
 import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
+import org.apache.commons.lang3.StringEscapeUtils._
+
 
 object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats => (
   {
@@ -23,8 +25,8 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
       weather = (json \ "weather").extract[Weather],
       classification = (json \ "classification").extract[Classification],
       humanNumbers = (json \ "humanNumbers").extract[HumanNumbers],
-      perimeter = (json \ "perimeter").extract[Seq[Coordinate]],
-      comments = (json \ "comments").extract[Option[String]]
+      perimeter = (json \ "perimeter").extract[String].trim.split(" ").toSeq.map(Coordinate(_)),
+      comments = (json \ "comments").extract[String].map(text => if (text.nonEmpty) Some(escapeJava(text)) else None)
     )
   },{
   case a: Avalanche =>

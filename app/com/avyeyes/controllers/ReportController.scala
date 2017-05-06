@@ -9,6 +9,8 @@ import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.mvc.{Action, Controller}
 
+import scala.util.{Try, Success, Failure}
+
 @Singleton
 class ReportController @Inject()(implicit val dal: CachedDAL, idService: ExternalIdService, val configService: ConfigurationService, val logger: Logger)
   extends Controller with Json4sMethods {
@@ -26,12 +28,16 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
 
   def submitReport(extId: String) = Action(parse.tolerantText) { implicit request =>
     logger.info("received report submission")
-    println(s"request body is: ${request.body}")
-    val json = readJson(Some(request.body))
+    val avalancheOption: Option[Avalanche] = Try(readJson(Some(request.body)).extract[Avalanche]) match {
+      case Success(avalancheFromData) =>
+        logger.info(s"Successfully parsed avalanche $extId from report data")
+        Some(avalancheFromData)
+      case Failure(ex) =>
+        logger.error(s"Unable to deserialize avalanche from report $extId", ex)
+        None
+    }
 
-    val avalanche: Avalanche = json.extract[Avalanche]
-    println(s"avalanche is: $avalanche")
-
+    avalancheOption.foreach(println(_))
     Ok
   }
 }

@@ -146,25 +146,29 @@ AvyReport.prototype.sendReport = function() {
 }
 
 function parseReportForm(reportExtId) {
+    var parseIntWithDefault = function(selector) {
+        return parseInt($(selector).val()) || -1
+    }
+
     return {
         extId: reportExtId,
         viewable: $('#rwAvyFormViewable').is(":checked"),
         submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
         submitterExp: $('#rwAvyFormSubmitterExp').val(),
         location: {
-          longitude: $('#rwAvyFormLng').val(),
-          latitude: $('#rwAvyFormLat').val(),
-          altitude: $('#rwAvyFormElevation').val()
+          longitude: parseFloat($('#rwAvyFormLng').val()),
+          latitude: parseFloat($('#rwAvyFormLat').val()),
+          altitude: parseFloat($('#rwAvyFormElevation').val())
         },
         date: $("#rwAvyFormDate").val(),
         areaName: $("#rwAvyFormAreaName").val(),
         slope: {
           aspect: $("#rwAvyFormAspect").val(),
-          angle: $("#rwAvyFormAngle").val(),
-          elevation: $('#rwAvyFormElevation').val()
+          angle: parseInt($("#rwAvyFormAngle").val()),
+          elevation: parseFloat($('#rwAvyFormElevation').val())
         },
         weather: {
-          recentSnow: $("#rwAvyFormRecentSnow").val(),
+          recentSnow: parseIntWithDefault("#rwAvyFormRecentSnow"),
           recentWindSpeed: $("#rwAvyFormRecentWindSpeed").val(),
           recentWindDirection: $("#rwAvyFormRecentWindDirection").val()
         },
@@ -173,16 +177,16 @@ function parseReportForm(reportExtId) {
           trigger: $("#rwAvyFormTrigger").val(),
           triggerModifier: $("#rwAvyFormTriggerModifier").val(),
           interface: $("#rwAvyFormInterface").val(),
-          rSize: $("#rwAvyFormRsizeValue").val(),
-          dSize: $("#rwAvyFormDsizeValue").val()
+          rSize: parseFloat($("#rwAvyFormRsizeValue").val()),
+          dSize: parseFloat($("#rwAvyFormDsizeValue").val())
         },
         humanNumbers: {
           modeOfTravel: $("#rwAvyFormModeOfTravel").val(),
-          caught: $("#rwAvyFormNumCaught").val(),
-          partiallyBuried: $("#rwAvyFormNumPartiallyBuried").val(),
-          fullyBuried: $("#rwAvyFormNumFullyBuried").val(),
-          injured: $("#rwAvyFormNumInjured").val(),
-          killed: $("#rwAvyFormNumKilled").val()
+          caught: parseIntWithDefault("#rwAvyFormNumCaught"),
+          partiallyBuried: parseIntWithDefault("#rwAvyFormNumPartiallyBuried"),
+          fullyBuried: parseIntWithDefault("#rwAvyFormNumFullyBuried"),
+          injured: parseIntWithDefault("#rwAvyFormNumInjured"),
+          killed: parseIntWithDefault("#rwAvyFormNumKilled")
         },
         perimeter: $("#rwAvyFormCoords").val(),
         comments: $("#rwAvyFormComments").val()

@@ -18,12 +18,12 @@ private[data] trait SlickColumnMappers {
 
   implicit def coordinateMapper = MappedColumnType.base[Coordinate, String](
     coord => coord.toString,
-    str => Coordinate.fromString(str)
+    str => Coordinate(str)
   )
 
   implicit def coordinateSeqMapper = MappedColumnType.base[Seq[Coordinate], String](
     seq => seq.mkString(" ").trim,
-    str => str.split(" ").map(Coordinate.fromString)
+    str => str.trim.split(" ").map(Coordinate(_))
   )
 
   private def enumNameMapper(enum: AutocompleteEnum) = MappedColumnType.base[enum.Value, String](
