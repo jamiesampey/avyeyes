@@ -7,7 +7,7 @@ function AvyReport(avyEyesView) {
 }
 
 AvyReport.prototype.reserveExtId = function() {
-	$.getJSON('/avalanche/newReport', function(data) {
+	$.getJSON('/avalanche/newReportId', function(data) {
 		this.extId = data.extId;
 	}.bind(this)).fail(function(jqxhr, textStatus, error) {
 	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);

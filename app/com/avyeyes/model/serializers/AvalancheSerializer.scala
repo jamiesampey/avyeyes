@@ -12,9 +12,9 @@ import org.apache.commons.lang3.StringEscapeUtils._
 object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats => (
   {
     case json: JValue => Avalanche(
-      createTime = (json \ "createTime").extract[Option[DateTime]].getOrElse(DateTime.now),
-      updateTime = (json \ "updateTime").extract[Option[DateTime]].getOrElse(DateTime.now),
-      viewable = (json \ "viewable").extract[Option[Boolean]].getOrElse(true),
+      createTime = (json \ "createTime").extractOpt[DateTime].getOrElse(DateTime.now),
+      updateTime = (json \ "updateTime").extractOpt[DateTime].getOrElse(DateTime.now),
+      viewable = (json \ "viewable").extractOpt[Boolean].getOrElse(true),
       extId = (json \ "extId").extract[String],
       submitterEmail = (json \ "submitterEmail").extract[String],
       submitterExp = ExperienceLevel.fromCode((json \ "submitterExp").extract[String]),
@@ -26,7 +26,10 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
       classification = (json \ "classification").extract[Classification],
       humanNumbers = (json \ "humanNumbers").extract[HumanNumbers],
       perimeter = (json \ "perimeter").extract[String].trim.split(" ").toSeq.map(Coordinate(_)),
-      comments = (json \ "comments").extract[String].map(text => if (text.nonEmpty) Some(escapeJava(text)) else None)
+      comments = {
+        val text = (json \ "comments").extract[String].trim
+        if (text.nonEmpty) Some(escapeJava(text)) else None
+      }
     )
   },{
   case a: Avalanche =>

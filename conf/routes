@@ -6,8 +6,10 @@ GET     /authenticate/:provider     securesocial.controllers.ProviderController.
 POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
 # Avalanche report
-GET     /avalanche/newReport        com.avyeyes.controllers.ReportController.newAvalancheId()
-POST    /avalanche/:extId           com.avyeyes.controllers.ReportController.submitReport(extId)
+GET     /avalanche/newReportId      com.avyeyes.controllers.ReportController.newReportId
+POST    /avalanche/:extId           com.avyeyes.controllers.ReportController.newReport(extId)
+PUT     /avalanche/:extId           com.avyeyes.controllers.ReportController.updateReport(extId)
+DELETE  /avalanche/:extId           com.avyeyes.controllers.ReportController.deleteReport(extId)
 
 # Avalanche search
 GET     /avalanche/table            com.avyeyes.controllers.SearchController.table(adminQuery: com.avyeyes.data.AvalancheTableQuery)
