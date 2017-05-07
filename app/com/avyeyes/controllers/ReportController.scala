@@ -40,7 +40,7 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
       BadRequest
   }}
 
-  def updateReport(extId: String) = Action(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
+  def updateReport(extId: String, editKeyOpt: Option[String]) = UserAwareAction(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
     case Success(avalancheFromData) =>
       logger.info(s"Successfully parsed avalanche $extId from report data")
       Ok

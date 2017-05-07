@@ -299,7 +299,12 @@ function wireButtons(view) {
     });
 
     $("#rwAvyFormSubmitButton").click(function() {
-        view.currentReport.sendReport();
+        var editKey = view.getRequestParam("edit");
+        if (editKey) {
+            view.currentReport.updateReport(editKey);
+        } else {
+            view.currentReport.submitReport();
+        }
     });
 
     $("#rwAvyFormCancelButton").click(function() {

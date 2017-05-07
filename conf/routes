@@ -8,7 +8,7 @@ POST    /authenticate/:provider     securesocial.controllers.ProviderController.
 # Avalanche report
 GET     /avalanche/newReportId      com.avyeyes.controllers.ReportController.newReportId
 POST    /avalanche/:extId           com.avyeyes.controllers.ReportController.newReport(extId)
-PUT     /avalanche/:extId           com.avyeyes.controllers.ReportController.updateReport(extId)
+PUT     /avalanche/:extId           com.avyeyes.controllers.ReportController.updateReport(extId, edit: Option[String])
 DELETE  /avalanche/:extId           com.avyeyes.controllers.ReportController.deleteReport(extId)
 
 # Avalanche search

@@ -60,7 +60,7 @@ trait Json4sMethods {
 
   private[controllers] def writeAdminTableJson(queryResult: (List[Avalanche], Int, Int))(implicit request: RequestHeader) = {
     def getHttpsAvalancheLink(a: Avalanche) = {
-      <a href={s"${configService.avalancheUrl(a.extId)}"} target="adminViewWindow">{s"${a.title}"}</a>.toString
+      <a href={s"${configService.avalancheEditUrl(a)}"} target="adminViewWindow">{s"${a.title}"}</a>.toString
     }
 
     def getViewableElem(viewable: Boolean) = viewable match {

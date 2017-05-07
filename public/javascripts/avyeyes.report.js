@@ -125,24 +125,32 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
         coordStr.trim());
 }
 
-AvyReport.prototype.sendReport = function() {
-  var csrfTokenFromCookie = function() {
-    var value = "; " + document.cookie;
-    var parts = value.split("; csrfToken=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
-  }
+AvyReport.prototype.submitReport = function() {
+  var reportSubmitUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
-  var reportUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
-
-  $.post(reportUri, JSON.stringify(parseReportForm(this.extId)), function() {
-    console.log( "avalanche report success" );
-  }).done(function() {
-   console.log( "avalanche report second success" );
+  $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
+   console.log("report SUBMIT done");
   }).fail(function() {
-   console.log( "avalanche report error" );
+   console.log("report SUBMIT error");
   }).always(function() {
-   console.log( "avalanche report finished" );
+   console.log("report SUBMIT finished");
   });
+}
+
+AvyReport.prototype.updateReport = function(editKey) {
+    var extId = $("#rwAvyFormExtId").val();
+
+    $.ajax({
+        type: 'PUT',
+        url: "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + csrfTokenFromCookie(),
+        data: JSON.stringify(parseReportForm(extId))
+    }).done(function() {
+        console.log("report UPDATE done");
+    }).fail(function() {
+        console.log("report UPDATE error");
+    }).always(function() {
+        console.log("report UPDATE finished");
+    });
 }
 
 function parseReportForm(reportExtId) {
@@ -191,6 +199,12 @@ function parseReportForm(reportExtId) {
         perimeter: $("#rwAvyFormCoords").val(),
         comments: $("#rwAvyFormComments").val()
       };
+}
+
+function csrfTokenFromCookie() {
+  var value = "; " + document.cookie;
+  var parts = value.split("; csrfToken=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 function getAspect(highestCartographic, lowestCartographic) {
