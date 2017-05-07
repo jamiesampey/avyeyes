@@ -313,7 +313,7 @@ function wireButtons(view) {
 
     $("#rwAvyFormDeleteButton").click(function() {
         if (confirm("Are you sure you want to delete report " + $('#rwAvyFormExtId').val())) {
-            $('#rwAvyFormDeleteBinding').click();
+            view.currentReport.deleteReport();
             view.resetView();
         }
     });

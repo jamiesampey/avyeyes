@@ -3,15 +3,11 @@
 
 // report
 
-msg.avyReportSaveError=An error occurred while processing the avalanche data. The avalanche was not saved.
 msg.avyReportInsertSuccess=Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='{0}' target='_blank' style='text-decoration: none;'>{1}</a>
+msg.rwAvyFormValidationError=Input validation error. The fields outlined in red need attention.
+
 msg.avyReportSubmitEmailAdminSubject=New Report by {0}
 msg.avyReportSubmitEmailAdminBody={0} has submitted a new avalanche report ({1}).<br/><br/>{2}<br/>{3}
 msg.avyReportSubmitEmailSubmitterSubject=Avalanche Report: {0}
 msg.avyReportSubmitEmailSubmitterBody=AvyEyes has received a new avalanche report submitted by this email address:<br/><br/><b>{0}</b><br/><br/>The report is publicly viewable at: {1} (share this URL)<br/><br/>The report may be edited for up to seven (7) days using this private URL: {2} (don't share this URL)
-msg.avyReportUpdateSuccess=Avalanche report successfully updated
-msg.avyReportDeleteSuccess=Avalanche report deleted
-msg.avyReportDeleteError=An error occurred while deleting the avalanche
-
-msg.rwAvyFormValidationError=Input validation error. The fields outlined in red need attention.
 

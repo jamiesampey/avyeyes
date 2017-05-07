@@ -126,18 +126,20 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
 }
 
 AvyReport.prototype.submitReport = function() {
-  var reportSubmitUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
+    var view = this.view;
+    var reportSubmitUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
-  $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
-   console.log("report SUBMIT done");
-  }).fail(function() {
-   console.log("report SUBMIT error");
-  }).always(function() {
-   console.log("report SUBMIT finished");
-  });
+    $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
+        view.showModalDialog("Avalanche report successfully submitted. You can view the report at ");
+    }).fail(function(jqxhr, textStatus, errorThrown) {
+        view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
+    }).always(function() {
+        view.resetView();
+    });
 }
 
 AvyReport.prototype.updateReport = function(editKey) {
+    var view = this.view;
     var extId = $("#rwAvyFormExtId").val();
 
     $.ajax({
@@ -145,17 +147,33 @@ AvyReport.prototype.updateReport = function(editKey) {
         url: "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + csrfTokenFromCookie(),
         data: JSON.stringify(parseReportForm(extId))
     }).done(function() {
-        console.log("report UPDATE done");
-    }).fail(function() {
-        console.log("report UPDATE error");
+        view.showModalDialog("Avalanche report " + extId + " successfully updated");
+    }).fail(function(jqxhr, textStatus, errorThrown) {
+        view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
-        console.log("report UPDATE finished");
+        view.resetView();
+    });
+}
+
+AvyReport.prototype.deleteReport = function() {
+    var view = this.view;
+    var extId = $("#rwAvyFormExtId").val();
+
+    $.ajax({
+        type: 'DELETE',
+        url: "/avalanche/" + extId + "csrfToken=" + csrfTokenFromCookie()
+    }).done(function() {
+        view.showModalDialog("Avalanche report " + extId + " successfully deleted");
+    }).fail(function(jqxhr, textStatus, errorThrown) {
+        view.showModalDialog("Error deleting report " + extId);
+    }).always(function() {
+        view.resetView();
     });
 }
 
 function parseReportForm(reportExtId) {
     var parseIntWithDefault = function(selector) {
-        return parseInt($(selector).val()) || -1
+        return parseInt($(selector).val()) || -1;
     }
 
     return {
