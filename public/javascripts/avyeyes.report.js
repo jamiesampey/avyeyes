@@ -132,6 +132,8 @@ AvyReport.prototype.submitReport = function() {
     $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
         view.showModalDialog("Avalanche report successfully submitted. You can view the report at ");
     }).fail(function(jqxhr, textStatus, errorThrown) {
+        // TODO: extract errorFields from jqxhr.responseText
+        view.form.highlightReportErrorFields(errorFields);
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();
@@ -149,6 +151,8 @@ AvyReport.prototype.updateReport = function(editKey) {
     }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully updated");
     }).fail(function(jqxhr, textStatus, errorThrown) {
+         // TODO: extract errorFields from jqxhr.responseText
+         view.form.highlightReportErrorFields(errorFields);
         view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();
@@ -250,10 +254,6 @@ AvyReport.prototype.clearDrawing = function() {
     	this.view.removeEntity(this.drawingPolygon);
     	this.drawingPolygon = null;
 	}
-}
-
-AvyReport.prototype.highlightErrorFields = function(errorFields) {
-    this.view.form.highlightReportErrorFields(errorFields);
 }
 
 return AvyReport;

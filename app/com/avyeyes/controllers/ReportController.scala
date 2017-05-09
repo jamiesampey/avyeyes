@@ -29,13 +29,25 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
       InternalServerError
   }}
 
-  def newReport(extId: String) = Action(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
+  def submitReport(extId: String) = Action(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
     case Success(avalancheFromData) =>
-      logger.info(s"Successfully parsed avalanche $extId from report data")
-      val now = DateTime.now
-      val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
+      logger.info(s"Successfully parsed new avalanche $extId from report data. Validating fields")
 
-      Ok
+      validateReport(avalancheFromData) match {
+        case Nil =>
+          val now = DateTime.now
+          val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
+          dal.insertAvalanche(avalanche)
+          s3.allowPublicFileAccess(extId)
+//          sendSubmissionNotifications(newAvalanche, submitterEmail)
+//          val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
+          logger.info(s"Avalanche $extId successfully inserted")
+          Ok // infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
+        case invalidFields =>
+          logger.warn(s"Input validation error while submitting avalanche $extId. Invalid fields were [${invalidFields.mkString(", ")}]")
+          val pinvalidFieldsJson = writeJson(JArray(invalidFields.map(JString)))
+          BadRequest(pinvalidFieldsJson)
+      }
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
       BadRequest
@@ -43,12 +55,17 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
 
   def updateReport(extId: String, editKeyOpt: Option[String]) = UserAwareAction(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
     case Success(avalancheFromData) =>
-      logger.info(s"Successfully parsed avalanche $extId from report data")
+      logger.info(s"Successfully parsed updated avalanche $extId from report data. Validating fields")
+      val invalidFields = validateReport(avalancheFromData)
       Ok
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
       BadRequest
   }}
+
+  private def validateReport(avalanche: Avalanche): List[String] = {
+    List.empty
+  }
 
   def deleteReport(extId: String) = SecuredAction(WithRole(AdminRoles)) { implicit request => Try {
     dal.deleteAvalanche(extId).resolve
