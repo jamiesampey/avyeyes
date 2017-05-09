@@ -127,13 +127,16 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
 
 AvyReport.prototype.submitReport = function() {
     var view = this.view;
+    if (view.form.validateReportFields() > 0) {
+        view.showModalDialog("The highlighted fields need attention");
+        return;
+    }
+
     var reportSubmitUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
 
     $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
         view.showModalDialog("Avalanche report successfully submitted. You can view the report at ");
     }).fail(function(jqxhr, textStatus, errorThrown) {
-        // TODO: extract errorFields from jqxhr.responseText
-        view.form.highlightReportErrorFields(errorFields);
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();
@@ -142,6 +145,11 @@ AvyReport.prototype.submitReport = function() {
 
 AvyReport.prototype.updateReport = function(editKey) {
     var view = this.view;
+    if (view.form.validateReportFields() > 0) {
+        view.showModalDialog("The highlighted fields need attention");
+        return;
+    }
+
     var extId = $("#rwAvyFormExtId").val();
 
     $.ajax({
@@ -151,8 +159,6 @@ AvyReport.prototype.updateReport = function(editKey) {
     }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully updated");
     }).fail(function(jqxhr, textStatus, errorThrown) {
-         // TODO: extract errorFields from jqxhr.responseText
-         view.form.highlightReportErrorFields(errorFields);
         view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();

@@ -340,15 +340,26 @@ AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
     $("#rwAvyFormAdminTd").show();
 }
 
-AvyForm.prototype.highlightReportErrorFields = function(errorFields) {
-    this.resetReportErrorFields();
-    $.each(errorFields, function(i, fieldId) {
+AvyForm.prototype.validateReportFields = function() {
+    var invalidFieldCount = 0;
+
+    var highlightInvalidField = function(fieldId) {
+        invalidFieldCount++;
         if (fieldId === 'rwAvyFormAngle') {
             $('#' + fieldId).parent().css('border', '1px solid red');
         } else {
             $('#' + fieldId).css('border', '1px solid red');
         }
-    });
+    };
+
+    if (!$("#rwAvyFormSubmitterEmail").val()) highlightInvalidField("rwAvyFormSubmitterEmail");
+    if (!$("#rwAvyFormSubmitterExp").val()) highlightInvalidField("rwAvyFormSubmitterExpAC");
+    if (!$("#rwAvyFormAreaName").val()) highlightInvalidField("rwAvyFormAreaName");
+    if (!$("#rwAvyFormDate").val()) highlightInvalidField("rwAvyFormAreaName");
+    if (!$("#rwAvyFormAspect").val()) highlightInvalidField("rwAvyFormAspectAC");
+    if (!$("#rwAvyFormAngle").val()) highlightInvalidField("rwAvyFormAngle");
+
+    return invalidFieldCount;
 }
 
 AvyForm.prototype.resetReportErrorFields = function() {

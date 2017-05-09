@@ -3,7 +3,6 @@ package com.avyeyes.service
 import javax.inject.Inject
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.util.Constants.LoginPath
 import play.api.{Configuration, Logger}
 
 
@@ -28,8 +27,6 @@ class ConfigurationService @Inject()(config: Configuration, logger: Logger)() {
 
     s"https://$host$portSuffix"
   }
-
-  def adminLoginUrl = s"$httpsBaseUrl/$LoginPath"
 
   def avalancheUrl(extId: String) = s"$httpsBaseUrl/$extId"
 

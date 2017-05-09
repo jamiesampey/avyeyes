@@ -33,21 +33,15 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
     case Success(avalancheFromData) =>
       logger.info(s"Successfully parsed new avalanche $extId from report data. Validating fields")
 
-      validateReport(avalancheFromData) match {
-        case Nil =>
-          val now = DateTime.now
-          val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
-          dal.insertAvalanche(avalanche)
-          s3.allowPublicFileAccess(extId)
+      val now = DateTime.now
+      val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
+      dal.insertAvalanche(avalanche)
+      s3.allowPublicFileAccess(extId)
 //          sendSubmissionNotifications(newAvalanche, submitterEmail)
 //          val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
-          logger.info(s"Avalanche $extId successfully inserted")
-          Ok // infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
-        case invalidFields =>
-          logger.warn(s"Input validation error while submitting avalanche $extId. Invalid fields were [${invalidFields.mkString(", ")}]")
-          val pinvalidFieldsJson = writeJson(JArray(invalidFields.map(JString)))
-          BadRequest(pinvalidFieldsJson)
-      }
+      logger.info(s"Avalanche $extId successfully inserted")
+      Ok // infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
+
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
       BadRequest
@@ -56,16 +50,20 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
   def updateReport(extId: String, editKeyOpt: Option[String]) = UserAwareAction(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
     case Success(avalancheFromData) =>
       logger.info(s"Successfully parsed updated avalanche $extId from report data. Validating fields")
-      val invalidFields = validateReport(avalancheFromData)
-      Ok
+      dal.getAvalanche(extId) match {
+        case Some(existingAvalanche) =>
+          dal.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime))
+          if (avalancheFromData.viewable) s3.allowPublicImageAccess(extId) else s3.denyPublicImageAccess(extId)
+          logger.info(s"Avalanche $extId successfully updated")
+          Ok
+        case _ =>
+          logger.error(s"Received update request for non-existent avalanche")
+          InternalServerError
+      }
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
       BadRequest
   }}
-
-  private def validateReport(avalanche: Avalanche): List[String] = {
-    List.empty
-  }
 
   def deleteReport(extId: String) = SecuredAction(WithRole(AdminRoles)) { implicit request => Try {
     dal.deleteAvalanche(extId).resolve
