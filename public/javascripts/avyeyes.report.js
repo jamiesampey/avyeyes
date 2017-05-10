@@ -132,9 +132,10 @@ AvyReport.prototype.submitReport = function() {
         return;
     }
 
-    var reportSubmitUri = "/avalanche/" + this.extId + "?csrfToken=" + csrfTokenFromCookie();
+    var extId = this.extId;
+    var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + csrfTokenFromCookie();
 
-    $.post(reportSubmitUri, JSON.stringify(parseReportForm(this.extId))).done(function() {
+    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function() {
         view.showModalDialog("Avalanche report successfully submitted. You can view the report at ");
     }).fail(function(jqxhr, textStatus, errorThrown) {
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
@@ -151,12 +152,9 @@ AvyReport.prototype.updateReport = function(editKey) {
     }
 
     var extId = $("#rwAvyFormExtId").val();
+    var reportUpdateUri = "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + csrfTokenFromCookie();
 
-    $.ajax({
-        type: 'PUT',
-        url: "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + csrfTokenFromCookie(),
-        data: JSON.stringify(parseReportForm(extId))
-    }).done(function() {
+    $.ajax({ type: 'PUT', url: reportUpdateUri, data: JSON.stringify(parseReportForm(extId)) }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully updated");
     }).fail(function(jqxhr, textStatus, errorThrown) {
         view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);

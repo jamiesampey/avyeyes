@@ -343,7 +343,7 @@ AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
 AvyForm.prototype.validateReportFields = function() {
     var invalidFieldCount = 0;
 
-    var highlightInvalidField = function(fieldId) {
+    var markFieldInvalid = function(fieldId) {
         invalidFieldCount++;
         if (fieldId === 'rwAvyFormAngle') {
             $('#' + fieldId).parent().css('border', '1px solid red');
@@ -352,12 +352,16 @@ AvyForm.prototype.validateReportFields = function() {
         }
     };
 
-    if (!$("#rwAvyFormSubmitterEmail").val()) highlightInvalidField("rwAvyFormSubmitterEmail");
-    if (!$("#rwAvyFormSubmitterExp").val()) highlightInvalidField("rwAvyFormSubmitterExpAC");
-    if (!$("#rwAvyFormAreaName").val()) highlightInvalidField("rwAvyFormAreaName");
-    if (!$("#rwAvyFormDate").val()) highlightInvalidField("rwAvyFormAreaName");
-    if (!$("#rwAvyFormAspect").val()) highlightInvalidField("rwAvyFormAspectAC");
-    if (!$("#rwAvyFormAngle").val()) highlightInvalidField("rwAvyFormAngle");
+    var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test($("#rwAvyFormSubmitterEmail").val())) markFieldInvalid("rwAvyFormSubmitterEmail");
+
+    var slopeAngle = parseInt($("#rwAvyFormAngle").val()) || -1;
+    if (slopeAngle < 1 || slopeAngle > 90) markFieldInvalid("rwAvyFormAngle");
+
+    if (!$("#rwAvyFormSubmitterExp").val()) markFieldInvalid("rwAvyFormSubmitterExpAC");
+    if (!$("#rwAvyFormAreaName").val()) markFieldInvalid("rwAvyFormAreaName");
+    if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormAreaName");
+    if (!$("#rwAvyFormAspect").val()) markFieldInvalid("rwAvyFormAspectAC");
 
     return invalidFieldCount;
 }
