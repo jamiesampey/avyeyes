@@ -9,6 +9,7 @@ function AvyReport(avyEyesView) {
 AvyReport.prototype.reserveExtId = function() {
 	$.getJSON('/avalanche/newReportId', function(data) {
 		this.extId = data.extId;
+		$("#rwAvyFormExtId").val(data.extId);
 	}.bind(this)).fail(function(jqxhr, textStatus, error) {
 	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
 	    this.view.resetView();
@@ -127,16 +128,15 @@ AvyReport.prototype.digestDrawing = function(cartesian3Array) {
 
 AvyReport.prototype.submitReport = function() {
     var view = this.view;
-    if (view.form.validateReportFields() > 0) {
-        view.showModalDialog("The highlighted fields need attention");
-        return;
-    }
+    if (!view.form.validateReportFields()) return;
 
     var extId = this.extId;
-    var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + csrfTokenFromCookie();
+    var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie();
 
-    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function() {
-        view.showModalDialog("Avalanche report successfully submitted. You can view the report at ");
+    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(jqxhr) {
+        var reportUrl = jqxhr.responseText;
+        view.showModalDialog("Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='"
+            + reportUrl + "' target='_blank' style='text-decoration: none;'>" + reportUrl + "</a>");
     }).fail(function(jqxhr, textStatus, errorThrown) {
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
@@ -146,13 +146,10 @@ AvyReport.prototype.submitReport = function() {
 
 AvyReport.prototype.updateReport = function(editKey) {
     var view = this.view;
-    if (view.form.validateReportFields() > 0) {
-        view.showModalDialog("The highlighted fields need attention");
-        return;
-    }
+    if (!view.form.validateReportFields()) return;
 
     var extId = $("#rwAvyFormExtId").val();
-    var reportUpdateUri = "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + csrfTokenFromCookie();
+    var reportUpdateUri = "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + view.csrfTokenFromCookie();
 
     $.ajax({ type: 'PUT', url: reportUpdateUri, data: JSON.stringify(parseReportForm(extId)) }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully updated");
@@ -169,11 +166,11 @@ AvyReport.prototype.deleteReport = function() {
 
     $.ajax({
         type: 'DELETE',
-        url: "/avalanche/" + extId + "csrfToken=" + csrfTokenFromCookie()
+        url: "/avalanche/" + extId + "csrfToken=" + view.csrfTokenFromCookie()
     }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully deleted");
     }).fail(function(jqxhr, textStatus, errorThrown) {
-        view.showModalDialog("Error deleting report " + extId);
+        view.showModalDialog("Error deleting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();
     });
@@ -225,12 +222,6 @@ function parseReportForm(reportExtId) {
         perimeter: $("#rwAvyFormCoords").val(),
         comments: $("#rwAvyFormComments").val()
       };
-}
-
-function csrfTokenFromCookie() {
-  var value = "; " + document.cookie;
-  var parts = value.split("; csrfToken=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 function getAspect(highestCartographic, lowestCartographic) {

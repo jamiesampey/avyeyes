@@ -341,6 +341,7 @@ AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
 }
 
 AvyForm.prototype.validateReportFields = function() {
+    this.resetReportErrorFields();
     var invalidFieldCount = 0;
 
     var markFieldInvalid = function(fieldId) {
@@ -360,10 +361,15 @@ AvyForm.prototype.validateReportFields = function() {
 
     if (!$("#rwAvyFormSubmitterExp").val()) markFieldInvalid("rwAvyFormSubmitterExpAC");
     if (!$("#rwAvyFormAreaName").val()) markFieldInvalid("rwAvyFormAreaName");
-    if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormAreaName");
+    if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormDate");
     if (!$("#rwAvyFormAspect").val()) markFieldInvalid("rwAvyFormAspectAC");
 
-    return invalidFieldCount;
+    if (invalidFieldCount > 0) {
+        this.view.showModalDialog("The highlighted fields need attention");
+        return false;
+    } else {
+        return true;
+    }
 }
 
 AvyForm.prototype.resetReportErrorFields = function() {

@@ -56,7 +56,7 @@ function AvyEyesView() {
     this.ui = new AvyEyesUI();
     this.ui.wire(this, function() {
         var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-        if (possibleExtId) {
+        if (possibleExtId && possibleExtId.length == 8) {
             $.getJSON("/avalanche/" + possibleExtId).done(function(avalancheJSON) {
                 this.addAvalancheAndFlyTo(avalancheJSON);
             }.bind(this)).fail(function(jqxhr, textStatus, error) {
@@ -429,7 +429,7 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
     formData.append("blob", new Blob(byteArrays, {type: 'image/jpeg'}), "screenshot.jpg");
 
     $.ajax({
-        url: "/image/" + $('#rwAvyFormExtId').val() + "/screenshot",
+        url: "/image/" + $('#rwAvyFormExtId').val() + "/screenshot?csrfToken=" + this.csrfTokenFromCookie(),
         type: "POST",
         cache: false,
         contentType: false,
@@ -439,6 +439,12 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
         var err = textStatus + ", " + error;
         console.log("AvyEyes screenshot upload error: " + err);
     });
+}
+
+AvyEyesView.prototype.csrfTokenFromCookie = function() {
+  var value = "; " + document.cookie;
+  var parts = value.split("; csrfToken=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
 function toHeadingPitchRange(heading, pitch, range) {
