@@ -7,8 +7,6 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model._
 import com.avyeyes.util.Constants._
-import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
-import com.sksamuel.scrimage.{Format, Image}
 import play.api.Logger
 
 import scala.collection.JavaConversions._
@@ -30,35 +28,25 @@ class AmazonS3Service @Inject()(configService: ConfigurationService, logger: Log
   /**
     * Upload images asynchronously
     */
-  def uploadImage(avyExtId: String, filename: String, origBytes: Array[Byte], imageFormat: Format, mimeType: String): Future[Unit] = Future {
-    val writer = imageFormat match {
-      case Format.JPEG => JpegWriter()
-      case Format.PNG => PngWriter()
-      case Format.GIF => GifWriter()
-    }
-
-    val origBais = new ByteArrayInputStream(origBytes)
-    val bytesForUpload = Image.fromStream(origBais).forWriter(writer).bytes
-
+  def uploadImage(extId: String, filename: String, mimeType: String, imageBytes: Array[Byte]): Future[Unit] = Future {
     val key = filename match {
-      case ScreenshotFilename => screenshotKey(avyExtId)
-      case _ => avalancheImageKey (avyExtId, s"$filename.")
+      case ScreenshotFilename => screenshotKey(extId)
+      case _ => avalancheImageKey(extId, s"$filename")
     }
 
     val metadata = new ObjectMetadata()
-    metadata.setContentLength(bytesForUpload.length)
+    metadata.setContentLength(imageBytes.length)
     metadata.setContentType(mimeType)
     metadata.setCacheControl(CacheControlMaxAge)
 
-    val uploadBais = new ByteArrayInputStream(bytesForUpload)
+    val uploadBais = new ByteArrayInputStream(imageBytes)
     val putObjectRequest = new PutObjectRequest(s3Bucket, key, uploadBais, metadata)
 
     Try(s3Client.putObject(putObjectRequest)) match {
-      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${bytesForUpload.length} bytes")
+      case Success(result) => logger.info(s"Uploaded image $key to AWS S3 in ${imageBytes.length} bytes")
       case Failure(ex) => logger.error(s"Unable to upload image $key to AWS S3", ex)
     }
 
-    origBais.close
     uploadBais.close
   }
 

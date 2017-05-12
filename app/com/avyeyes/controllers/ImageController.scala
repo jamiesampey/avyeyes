@@ -1,24 +1,22 @@
 package com.avyeyes.controllers
 
-import java.io.FileInputStream
+import java.io.{ByteArrayInputStream, FileInputStream}
 import java.util.UUID
 import javax.inject.Inject
 
 import com.avyeyes.data.CachedDAL
-import com.avyeyes.model.{AvalancheImage, AvyEyesUser}
+import com.avyeyes.model.AvalancheImage
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService}
 import com.avyeyes.system.UserEnvironment
 import com.avyeyes.util.Constants.{MaxImagesPerAvalanche, ScreenshotFilename}
-import com.sksamuel.scrimage.{Format, FormatDetector}
+import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
+import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import org.apache.commons.io.IOUtils
 import org.joda.time.DateTime
 import org.json4s.JsonDSL._
 import org.json4s.{JArray, JString}
 import play.api.Logger
-import play.api.libs.Files
-import play.api.mvc.Result
 import securesocial.core.SecureSocial
-import securesocial.core.SecureSocial.RequestWithUser
 
 import scala.concurrent.Future
 
@@ -28,8 +26,52 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
 
   import authorizations._
 
+  private val JpegMimeType = "image/jpeg"
+  private val PngMimeType = "image/png"
+  private val GifMimeType = "image/gif"
+
   def upload(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.temporaryFile) { implicit request =>
-    tryImageUpload(extId, editKeyOpt)
+    if (!isAuthorizedToEdit(extId, request.user, editKeyOpt)) {
+      logger.warn(s"Not authorized to add images to avalanche $extId")
+      Future { Unauthorized }
+    } else dal.countAvalancheImages(extId).flatMap {
+
+      case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
+        logger.warn(s"Cannot add more images to avalanche $extId")
+        Future { BadRequest }
+
+      case siblingImageCount =>
+        val imageFile = request.body.file
+        val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
+
+        val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
+          case Some(Format.PNG) => (PngWriter(), PngMimeType)
+          case Some(Format.GIF) => (GifWriter(), GifMimeType)
+          case _ => (JpegWriter(), JpegMimeType)
+        }
+        implicit val imageWriter = writer
+
+        val origBais = new ByteArrayInputStream(imageBytes)
+        val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
+
+        val newFilename = s"${UUID.randomUUID().toString}.${imageFile.getName.split('.').last.toLowerCase}"
+        logger.trace(s"Uploading image $newFilename (originally ${imageFile.getName}) for avalanche $extId")
+
+        s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
+          dal.insertAvalancheImage(AvalancheImage(
+            createTime = DateTime.now,
+            avalanche = extId,
+            filename = newFilename,
+            origFilename = imageFile.getName,
+            mimeType = mimeType,
+            size = rewrittenBytes.length,
+            sortOrder = siblingImageCount
+          )).map { _ =>
+            dal.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
+            Ok(writeJson(("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> imageFile.getName) ~ ("size" -> rewrittenBytes.length)))
+          }
+        }
+    }
   }
 
   def uploadScreenshot(avyExtId: String) = UserAwareAction.async(parse.temporaryFile) { implicit request =>
@@ -37,12 +79,9 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
       logger.warn(s"Not authorized to add screenshot to avalanche $avyExtId")
       Future { Unauthorized }
     } else {
-      val imageFile = request.body.file
-      val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
-      val (imageFormat, mimeType) = detectFormat(imageBytes)
-
+      val imageBytes = IOUtils.toByteArray(new FileInputStream(request.body.file))
       logger.info(s"Uploading screenshot for new avalanche $avyExtId")
-      s3.uploadImage(avyExtId, ScreenshotFilename, imageBytes, imageFormat, mimeType).map(_ => Ok)
+      s3.uploadImage(avyExtId, ScreenshotFilename, JpegMimeType, imageBytes).map(_ => Ok)
     }
   }
 
@@ -97,41 +136,6 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
           logger.error(s"Error while attempting to delete image $avyExtId/$baseFilename", ex)
           InternalServerError
       }
-  }
-
-  private[controllers] def tryImageUpload(avyExtId: String, editKeyOpt: Option[String])(implicit request: RequestWithUser[Files.TemporaryFile, AvyEyesUser]): Future[Result] = {
-    if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
-      logger.warn(s"Not authorized to add images to avalanche $avyExtId")
-      Future { Unauthorized }
-    } else dal.countAvalancheImages(avyExtId).flatMap {
-
-      case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
-        logger.warn(s"Cannot add more images to avalanche $avyExtId")
-        Future { BadRequest }
-
-      case siblingImageCount =>
-        val imageFile = request.body.file
-        val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
-        val (imageFormat, mimeType) = detectFormat(imageBytes)
-        val newFilename = s"${UUID.randomUUID().toString}.${imageFile.getName.split('.').last.toLowerCase}"
-
-        logger.trace(s"Uploading image $newFilename (${imageFile.getName}) for avalanche $avyExtId")
-
-        s3.uploadImage(avyExtId, newFilename, imageBytes, imageFormat, mimeType).flatMap { _ =>
-          dal.insertAvalancheImage(AvalancheImage(
-            createTime = DateTime.now,
-            avalanche = avyExtId,
-            filename = newFilename,
-            origFilename = imageFile.getName,
-            mimeType = mimeType,
-            size = imageBytes.length,
-            sortOrder = siblingImageCount
-          )).map { _ =>
-            dal.getAvalanche(avyExtId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(avyExtId) }
-            Ok(writeJson(("extId" -> avyExtId) ~ ("filename" -> newFilename) ~ ("origFilename" -> imageFile.getName) ~ ("size" -> imageBytes.length)))
-          }
-        }
-    }
   }
 
   private def detectFormat(imageBytes: Array[Byte]): (Format, String) = FormatDetector.detect(imageBytes) match {
