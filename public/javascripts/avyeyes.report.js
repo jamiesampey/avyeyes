@@ -2,13 +2,11 @@ define(['jquery-ui'], function() {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;
-	this.extId;
 	this.drawingPolygon;
 }
 
 AvyReport.prototype.reserveExtId = function() {
 	$.getJSON('/avalanche/newReportId', function(data) {
-		this.extId = data.extId;
 		$("#rwAvyFormExtId").val(data.extId);
 	}.bind(this)).fail(function(jqxhr, textStatus, error) {
 	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
@@ -130,7 +128,7 @@ AvyReport.prototype.submitReport = function() {
     var view = this.view;
     if (!view.form.validateReportFields()) return;
 
-    var extId = this.extId;
+    var extId = $("#rwAvyFormExtId").val();
     var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie();
 
     $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(jqxhr) {

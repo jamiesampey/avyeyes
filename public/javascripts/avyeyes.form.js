@@ -342,10 +342,10 @@ AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
 
 AvyForm.prototype.validateReportFields = function() {
     this.resetReportErrorFields();
-    var invalidFieldCount = 0;
+    var invalidFields = false;
 
     var markFieldInvalid = function(fieldId) {
-        invalidFieldCount++;
+        invalidFields = true;
         if (fieldId === 'rwAvyFormAngle') {
             $('#' + fieldId).parent().css('border', '1px solid red');
         } else {
@@ -364,12 +364,8 @@ AvyForm.prototype.validateReportFields = function() {
     if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormDate");
     if (!$("#rwAvyFormAspect").val()) markFieldInvalid("rwAvyFormAspectAC");
 
-    if (invalidFieldCount > 0) {
-        this.view.showModalDialog("The highlighted fields need attention");
-        return false;
-    } else {
-        return true;
-    }
+    if (invalidFields) this.view.showModalDialog("The highlighted fields need attention");
+    return !invalidFields;
 }
 
 AvyForm.prototype.resetReportErrorFields = function() {
