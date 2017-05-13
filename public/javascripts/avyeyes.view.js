@@ -426,7 +426,7 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
     }
 
     var formData = new FormData();
-    formData.append("blob", new Blob(byteArrays, {type: 'image/jpeg'}), "screenshot.jpg");
+    formData.append("screenshot", new Blob(byteArrays, {type: 'image/jpeg'}));
 
     $.ajax({
         url: "/image/" + $('#rwAvyFormExtId').val() + "/screenshot?csrfToken=" + this.csrfTokenFromCookie(),

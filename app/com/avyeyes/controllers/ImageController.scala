@@ -74,14 +74,16 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     }
   }
 
-  def uploadScreenshot(avyExtId: String) = UserAwareAction.async(parse.temporaryFile) { implicit request =>
+  def uploadScreenshot(avyExtId: String) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
     if (!isAuthorizedToEdit(avyExtId, request.user, None)) {
       logger.warn(s"Not authorized to add screenshot to avalanche $avyExtId")
       Future { Unauthorized }
     } else {
-      val imageBytes = IOUtils.toByteArray(new FileInputStream(request.body.file))
-      logger.info(s"Uploading screenshot for new avalanche $avyExtId")
-      s3.uploadImage(avyExtId, ScreenshotFilename, JpegMimeType, imageBytes).map(_ => Ok)
+      request.body.file("screenshot").map { formDataPart =>
+        val imageBytes = IOUtils.toByteArray(new FileInputStream(formDataPart.ref.file))
+        logger.info(s"Uploading screenshot for new avalanche $avyExtId in ${imageBytes.size} bytes")
+        s3.uploadImage(avyExtId, ScreenshotFilename, JpegMimeType, imageBytes).map(_ => Ok)
+      }.getOrElse(Future { BadRequest })
     }
   }
 
@@ -138,9 +140,4 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
       }
   }
 
-  private def detectFormat(imageBytes: Array[Byte]): (Format, String) = FormatDetector.detect(imageBytes) match {
-    case Some(Format.PNG) => (Format.PNG, "image/png")
-    case Some(Format.GIF) => (Format.GIF, "image/gif")
-    case _ => (Format.JPEG, "image/jpeg")
-  }
 }
