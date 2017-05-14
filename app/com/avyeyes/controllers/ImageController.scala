@@ -16,6 +16,7 @@ import org.joda.time.DateTime
 import org.json4s.JsonDSL._
 import org.json4s.{JArray, JString}
 import play.api.Logger
+import play.api.mvc.Result
 import securesocial.core.SecureSocial
 
 import scala.concurrent.Future
@@ -30,7 +31,7 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
   private val PngMimeType = "image/png"
   private val GifMimeType = "image/gif"
 
-  def upload(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.temporaryFile) { implicit request =>
+  def upload(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
     if (!isAuthorizedToEdit(extId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to add images to avalanche $extId")
       Future { Unauthorized }
@@ -41,36 +42,40 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
         Future { BadRequest }
 
       case siblingImageCount =>
-        val imageFile = request.body.file
-        val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
+        val imageResponseFutures: Seq[Future[Result]] = request.body.files.map { formDataPart =>
+          val imageFile = formDataPart.ref.file
+          val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
 
-        val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
-          case Some(Format.PNG) => (PngWriter(), PngMimeType)
-          case Some(Format.GIF) => (GifWriter(), GifMimeType)
-          case _ => (JpegWriter(), JpegMimeType)
-        }
-        implicit val imageWriter = writer
+          val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
+            case Some(Format.PNG) => (PngWriter(), PngMimeType)
+            case Some(Format.GIF) => (GifWriter(), GifMimeType)
+            case _ => (JpegWriter(), JpegMimeType)
+          }
+          implicit val imageWriter = writer
 
-        val origBais = new ByteArrayInputStream(imageBytes)
-        val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
+          val origBais = new ByteArrayInputStream(imageBytes)
+          val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
 
-        val newFilename = s"${UUID.randomUUID().toString}.${imageFile.getName.split('.').last.toLowerCase}"
-        logger.trace(s"Uploading image $newFilename (originally ${imageFile.getName}) for avalanche $extId")
+          val newFilename = s"${UUID.randomUUID().toString}.${imageFile.getName.split('.').last.toLowerCase}"
+          logger.trace(s"Uploading image $newFilename (originally ${imageFile.getName}) for avalanche $extId")
 
-        s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
-          dal.insertAvalancheImage(AvalancheImage(
-            createTime = DateTime.now,
-            avalanche = extId,
-            filename = newFilename,
-            origFilename = imageFile.getName,
-            mimeType = mimeType,
-            size = rewrittenBytes.length,
-            sortOrder = siblingImageCount
-          )).map { _ =>
-            dal.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
-            Ok(writeJson(("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> imageFile.getName) ~ ("size" -> rewrittenBytes.length)))
+          s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
+            dal.insertAvalancheImage(AvalancheImage(
+              createTime = DateTime.now,
+              avalanche = extId,
+              filename = newFilename,
+              origFilename = imageFile.getName,
+              mimeType = mimeType,
+              size = rewrittenBytes.length,
+              sortOrder = siblingImageCount
+            )).map { _ =>
+              dal.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
+              Ok(writeJson(("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> imageFile.getName) ~ ("size" -> rewrittenBytes.length)))
+            }
           }
         }
+
+      Future.sequence(imageResponseFutures).map(_ => Ok)
     }
   }
 

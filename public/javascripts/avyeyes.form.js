@@ -322,13 +322,15 @@ AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {
+  var avalancheImagesUrl = '/avalanche/' + extId + '/images';
+  if (filename) avalancheImagesUrl += '/' + getFileBaseName(filename);
+
+  avalancheImagesUrl += '?csrfToken=' + this.view.csrfTokenFromCookie();
+
   var editKeyParam = this.view.getRequestParam("edit");
-  var imageUrl = '/image/' + extId;
+  if (editKeyParam) avalancheImagesUrl += "&edit=" + editKeyParam;
 
-  if (filename) imageUrl += '/' + getFileBaseName(filename);
-  if (editKeyParam) imageUrl += "?edit=" + editKeyParam;
-
-  return imageUrl;
+  return avalancheImagesUrl;
 }
 
 function getFileBaseName(filename) {

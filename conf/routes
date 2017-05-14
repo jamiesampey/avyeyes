@@ -18,11 +18,11 @@ GET     /avalanche/details/:extId   com.avyeyes.controllers.SearchController.det
 GET     /avalanche/:extId           com.avyeyes.controllers.SearchController.find(extId)
 
 # Images
-POST    /image/:extId/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)
-POST    /image/:extId               com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
-PUT     /image/:extId/:filename     com.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])
-PUT     /image/:extId               com.avyeyes.controllers.ImageController.order(extId, edit: Option[String])
-DELETE  /image/:extId/:filename     com.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
+POST    /avalanche/:extId/images/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)
+POST    /avalanche/:extId/images               com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
+PUT     /avalanche/:extId/images/:filename     com.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])
+PUT     /avalanche/:extId/images               com.avyeyes.controllers.ImageController.order(extId, edit: Option[String])
+DELETE  /avalanche/:extId/images/:filename     com.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
 
 # Templates
 GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "")

@@ -429,7 +429,7 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
     formData.append("screenshot", new Blob(byteArrays, {type: 'image/jpeg'}));
 
     $.ajax({
-        url: "/image/" + $('#rwAvyFormExtId').val() + "/screenshot?csrfToken=" + this.csrfTokenFromCookie(),
+        url: "/avalanche/" + $('#rwAvyFormExtId').val() + "/images/screenshot?csrfToken=" + this.csrfTokenFromCookie(),
         type: "POST",
         cache: false,
         contentType: false,
