@@ -13,10 +13,10 @@ import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
 import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import org.apache.commons.io.IOUtils
 import org.joda.time.DateTime
+import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
-import org.json4s.{JArray, JString}
 import play.api.Logger
-import play.api.mvc.Result
+import play.api.libs.json.{JsArray, JsString}
 import securesocial.core.SecureSocial
 
 import scala.concurrent.Future
@@ -42,9 +42,10 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
         Future { BadRequest }
 
       case siblingImageCount =>
-        val imageResponseFutures: Seq[Future[Result]] = request.body.files.map { formDataPart =>
-          val imageFile = formDataPart.ref.file
-          val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
+
+        val jValueFutures: Seq[Future[JValue]] = request.body.files.map { formDataPart =>
+          val origFilename = formDataPart.filename
+          val imageBytes = IOUtils.toByteArray(new FileInputStream(formDataPart.ref.file))
 
           val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
             case Some(Format.PNG) => (PngWriter(), PngMimeType)
@@ -56,26 +57,26 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
           val origBais = new ByteArrayInputStream(imageBytes)
           val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
 
-          val newFilename = s"${UUID.randomUUID().toString}.${imageFile.getName.split('.').last.toLowerCase}"
-          logger.trace(s"Uploading image $newFilename (originally ${imageFile.getName}) for avalanche $extId")
+          val newFilename = s"${UUID.randomUUID().toString}.${origFilename.split('.').last.toLowerCase}"
+          logger.trace(s"Uploading image $newFilename (originally $origFilename) for avalanche $extId")
 
           s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
             dal.insertAvalancheImage(AvalancheImage(
               createTime = DateTime.now,
               avalanche = extId,
               filename = newFilename,
-              origFilename = imageFile.getName,
+              origFilename = origFilename,
               mimeType = mimeType,
               size = rewrittenBytes.length,
               sortOrder = siblingImageCount
             )).map { _ =>
               dal.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
-              Ok(writeJson(("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> imageFile.getName) ~ ("size" -> rewrittenBytes.length)))
+              ("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> origFilename)
             }
           }
         }
 
-      Future.sequence(imageResponseFutures).map(_ => Ok)
+      Future.sequence(jValueFutures.toList).map(jsonResponses => Ok(writeJson(jsonResponses)))
     }
   }
 
@@ -92,13 +93,13 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     }
   }
 
-  def order(avyExtId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
+  def order(avyExtId: String, editKeyOpt: Option[String]) = UserAwareAction(parse.json) { implicit request =>
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to edit image order for avalanche $avyExtId")
       Unauthorized
-    } else readJson(request.body.asText) \ "order" match {
-      case JArray(order) =>
-        dal.updateAvalancheImageOrder(avyExtId, order.map(_.extract[String]))
+    } else (request.body \ "order").as[JsArray] match {
+      case JsArray(jsValues) =>
+        dal.updateAvalancheImageOrder(avyExtId, jsValues.map(_.toString).toList)
         logger.debug(s"Successfully set image order on avalanche $avyExtId")
         Ok
       case _ =>
@@ -107,16 +108,16 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     }
   }
 
-  def caption(avyExtId: String, baseFilename: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
+  def caption(avyExtId: String, baseFilename: String, editKeyOpt: Option[String]) = UserAwareAction(parse.json) { implicit request =>
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to edit image caption for avalanche $avyExtId")
       Unauthorized
-    } else readJson(request.body.asText) \ "caption" match {
-      case JString(caption) if caption.nonEmpty =>
+    } else (request.body \ "caption").as[JsString] match {
+      case JsString(caption) if caption.nonEmpty =>
         dal.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
         logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
         Ok
-      case JString("") =>
+      case JsString("") =>
         dal.updateAvalancheImageCaption(avyExtId, baseFilename, None)
         logger.debug(s"Successfully cleared caption on $avyExtId/$baseFilename")
         Ok

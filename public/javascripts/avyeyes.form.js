@@ -194,10 +194,10 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
                     "order": $('#rwAvyFormImageGrid').sortable('toArray')
                 }),
                 success: function(result) {
-                    console.log("Successful image order call");
+                    console.log("Successfully changed image order");
                 },
                 fail: function(jqxhr, textStatus, error) {
-                    alert("Failed to set image order. Error: " + textStatus + ", " + error);
+                    console.error("Failed to set image order. Error: " + textStatus + ", " + error);
                 }
             });
         }.bind(this)
@@ -218,9 +218,10 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
             }
         }.bind(this),
         done: function(e, data) {
-            var newImageCellId = getFileBaseName(data.result.filename);
-            $("#" + tempImageCellId(data.result.origFilename)).attr("id", newImageCellId);
-            this.setImageCellContent(newImageCellId, extId, data.result);
+            var imageMetadata = data.result[0]
+            var newImageCellId = getFileBaseName(imageMetadata.filename);
+            $("#" + tempImageCellId(imageMetadata.origFilename)).attr("id", newImageCellId);
+            this.setImageCellContent(newImageCellId, extId, imageMetadata);
         }.bind(this),
         fail: function(e, data) {
             console.log("Error", data.errorThrown);
@@ -265,10 +266,11 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 success: function(result) {
                     existingCaption = caption;
                     $("#" + imageCellId).find(".captionContainer").html(caption);
-                    setImgFancyBox('#' + imageAnchorId);
+                    setImageFancyBox('#' + imageAnchorId);
+                    console.log("Successfully set image caption");
                 },
                 fail: function(jqxhr, textStatus, error) {
-                    alert("Failed to edit image caption. Error: " + textStatus + ", " + error);
+                    console.error("Failed to edit image caption. Error: " + textStatus + ", " + error);
                 }
             });
         }
@@ -282,9 +284,10 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
                 success: function(result) {
                     $('#rwAvyFormImageGrid').find('#' + imageCellId).remove();
                     $('#rwAvyFormImageGrid').sortable('refresh');
+                    console.log("Successfully deleted image");
                 },
                 fail: function(jqxhr, textStatus, error) {
-                    alert('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
+                    console.error('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
                 }
             });
         }
