@@ -11,14 +11,18 @@ import com.avyeyes.util.FutureOps._
 import org.joda.time.DateTime
 import org.json4s.JsonAST._
 import play.api.Logger
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, Request}
+import play.api.libs.mailer._
 import securesocial.core.SecureSocial
 
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class ReportController @Inject()(implicit val dal: CachedDAL, idService: ExternalIdService, s3: AmazonS3Service, val configService: ConfigurationService, val logger: Logger, implicit val env: UserEnvironment)
-  extends SecureSocial with Json4sMethods {
+class ReportController @Inject()(implicit val dal: CachedDAL, idService: ExternalIdService, s3: AmazonS3Service,
+                                 val configService: ConfigurationService, val logger: Logger, mailerClient: MailerClient,
+                                 implicit val env: UserEnvironment, val messagesApi: MessagesApi)
+  extends SecureSocial with Json4sMethods with I18nSupport {
 
   def newReportId = Action { implicit request => Try(idService.reserveNewExtId) match {
     case Success(newExtId) =>
@@ -37,10 +41,10 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
       val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
       dal.insertAvalanche(avalanche)
       s3.allowPublicFileAccess(extId)
-//          sendSubmissionNotifications(newAvalanche, submitterEmail)
-//          val avalancheUrl = R.avalancheUrl(newAvalanche.extId)
+      sendSubmissionEmails(avalanche)
+
       logger.info(s"Avalanche $extId successfully inserted")
-      Ok // infoDialog("avyReportInsertSuccess", avalancheUrl, avalancheUrl)
+      Ok(writeJson(JObject(List(JField("url", JString(configService.avalancheUrl(extId)))))))
 
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
@@ -76,4 +80,23 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
   }}
 
   private def parseAvalancheFromRequest(implicit request: Request[String]): Try[Avalanche] = Try(readJson(Some(request.body)).extract[Avalanche])
+
+  private def sendSubmissionEmails(a: Avalanche) = {
+    val emailToAdmin = Email(
+      Messages("msg.avyReportSubmitEmailAdminSubject", a.submitterEmail),
+      "AvyEyes FROM <avyeyes@gmail.com>",
+      Seq("AvyEyes TO <avyeyes@gmail.com>"),
+      bodyText = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, configService.avalancheUrl(a.extId)))
+    )
+
+    val emailToSubmitter = Email(
+      Messages("msg.avyReportSubmitEmailSubmitterSubject", a.title),
+      "AvyEyes FROM <avyeyes@gmail.com>",
+      Seq(s"TO <${a.submitterEmail}>"),
+      bodyText = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, configService.avalancheUrl(a.extId), configService.avalancheEditUrl(a)))
+    )
+
+    mailerClient.send(emailToAdmin)
+    mailerClient.send(emailToSubmitter)
+  }
 }
