@@ -131,10 +131,9 @@ AvyReport.prototype.submitReport = function() {
     var extId = $("#rwAvyFormExtId").val();
     var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie();
 
-    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(jqxhr) {
-        var reportUrl = jqxhr.responseText;
+    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(response) {
         view.showModalDialog("Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='"
-            + reportUrl + "' target='_blank' style='text-decoration: none;'>" + reportUrl + "</a>");
+            + response + "' target='_blank' style='text-decoration: none;'>" + response + "</a>");
     }).fail(function(jqxhr, textStatus, errorThrown) {
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {

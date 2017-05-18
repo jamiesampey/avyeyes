@@ -44,7 +44,7 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
       sendSubmissionEmails(avalanche)
 
       logger.info(s"Avalanche $extId successfully inserted")
-      Ok(writeJson(JObject(List(JField("url", JString(configService.avalancheUrl(extId)))))))
+      Ok(configService.avalancheUrl(extId))
 
     case Failure(ex) =>
       logger.error(s"Unable to deserialize avalanche from report $extId", ex)
@@ -83,17 +83,13 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
 
   private def sendSubmissionEmails(a: Avalanche) = {
     val emailToAdmin = Email(
-      Messages("msg.avyReportSubmitEmailAdminSubject", a.submitterEmail),
-      "AvyEyes FROM <avyeyes@gmail.com>",
-      Seq("AvyEyes TO <avyeyes@gmail.com>"),
-      bodyText = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, configService.avalancheUrl(a.extId)))
+      Messages("msg.avyReportSubmitEmailAdminSubject", a.submitterEmail), "AvyEyes <avyeyes@gmail.com>", Seq("avyeyes@gmail.com"),
+      bodyHtml = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, configService.avalancheUrl(a.extId)))
     )
 
     val emailToSubmitter = Email(
-      Messages("msg.avyReportSubmitEmailSubmitterSubject", a.title),
-      "AvyEyes FROM <avyeyes@gmail.com>",
-      Seq(s"TO <${a.submitterEmail}>"),
-      bodyText = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, configService.avalancheUrl(a.extId), configService.avalancheEditUrl(a)))
+      Messages("msg.avyReportSubmitEmailSubmitterSubject", a.title), "AvyEyes <avyeyes@gmail.com>", Seq(a.submitterEmail),
+      bodyHtml = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, configService.avalancheUrl(a.extId), configService.avalancheEditUrl(a)))
     )
 
     mailerClient.send(emailToAdmin)

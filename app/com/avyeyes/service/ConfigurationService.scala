@@ -18,17 +18,17 @@ class ConfigurationService @Inject()(config: Configuration, logger: Logger)() {
     throw new RuntimeException(errorMsg)
   }
 
-  def httpsBaseUrl: String = {
+  private lazy val httpBaseUrl: String = {
     val host = config.getString("hostname").getOrElse("avyeyes.com")
-    val portSuffix = config.getInt("httpsPort").getOrElse(443) match {
-      case 443 => ""
+    val portSuffix = config.getInt("httpPort").getOrElse(80) match {
+      case 80 => ""
       case port => s":$port"
     }
 
-    s"https://$host$portSuffix"
+    s"http://$host$portSuffix"
   }
 
-  def avalancheUrl(extId: String) = s"$httpsBaseUrl/$extId"
+  def avalancheUrl(extId: String) = s"$httpBaseUrl/$extId"
 
   def avalancheEditUrl(a: Avalanche) = s"${avalancheUrl(a.extId)}?edit=${a.editKey}"
 }
