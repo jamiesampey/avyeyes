@@ -33,7 +33,7 @@
 
   <logger name="avyeyes" level="DEBUG" />
 
-  <root level="WARN">
+  <root level="INFO">
     <appender-ref ref="AVYEYES-DAILY-ROLLING-FILE" />
   </root>
 </configuration>
