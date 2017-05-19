@@ -16,7 +16,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
@@ -30,31 +30,18 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
 
-  def find(extId: String) = UserAwareAction { implicit request =>
+  def find(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
     logger.debug(s"finding avalanche $extId")
-    dal.getAvalanche(extId) match {
-      case Some(avalanche) => Ok(writeJson(avalancheInitViewData(avalanche)))
-      case _ => NotFound
-    }
+
+    dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
+      if (isAuthorizedToEdit(extId, request.user, editKeyOpt) && isAdmin(request.user)) Ok(writeJson(avalancheAdminData(avalanche, images)))
+      else if (isAuthorizedToEdit(extId, request.user, editKeyOpt)) Ok(writeJson(avalancheReadWriteData(avalanche, images)))
+      else if (isAuthorizedToView(extId, request.user)) Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
+      else NotFound
+    }}.getOrElse(Future { NotFound })
   }
 
-  def details(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
-    logger.debug(s"serving avalanche details $extId")
-
-    for {
-      avalancheOption <- dal.getAvalancheFromDisk(extId)
-      images <- dal.getAvalancheImages(extId)
-    } yield {
-
-      avalancheOption match {
-        case Some(avalanche) if isAuthorizedToEdit(extId, request.user, editKeyOpt) => Ok(writeJson(avalancheReadWriteData(avalanche, images)))
-        case Some(avalanche) if isAuthorizedToView(extId, request.user) => Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
-        case _ => NotFound
-      }
-    }
-  }
-
-  def search(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
+  def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
     camAltParam match {
       case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
       case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
@@ -76,7 +63,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
     }
   }
 
-  def table(query: AvalancheTableQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
+  def tabularSearch(query: AvalancheTableQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
     Try(dal.getAvalanchesAdmin(query)) match {
       case Success(result) => Ok(writeAdminTableJson(result))
       case Failure(ex) =>

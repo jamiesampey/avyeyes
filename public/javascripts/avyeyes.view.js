@@ -116,13 +116,12 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             $("#cesiumContainer").css("cursor", "wait");
 
             var selectedAvalanche = pick.id;
-            var avyDetailsUrl = "/avalanche/details/" + selectedAvalanche.id;
+            var avalancheUrl = "/avalanche/" + selectedAvalanche.id;
             var editKeyParam = this.getRequestParam("edit");
-            if (editKeyParam) avyDetailsUrl += "?edit=" + editKeyParam;
+            if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
-            $.getJSON(avyDetailsUrl, function(data) {
-            // TODO: figure out when to show the admin controls
-                if (data.submitterEmail) {
+            $.getJSON(avalancheUrl, function(data) {
+                if (data.viewable) {
                     this.form.wireReadWriteFormAdminControls(this);
                     this.form.displayReadWriteForm(data);
                 } else if (data.submitterEmail) {

@@ -22,7 +22,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
       dal.getAvalanchesFromDisk onComplete {
         case Success(avalanchesFromDisk) if avalanchesFromDisk.nonEmpty =>
           avalancheCache.avalancheMap.clear
-          avalancheCache.avalancheMap ++= avalanchesFromDisk.map(a => a.extId -> a.copy(comments = None)).toMap
+          avalancheCache.avalancheMap ++= avalanchesFromDisk.map(a => a.extId -> a).toMap
           logger.info(s"Refreshed in-memory cache with ${avalancheCache.avalancheMap.size} avalanches from the DB")
 
           s3.allAvalancheKeys.map { _.foreach { s3AvalancheKey =>
@@ -34,7 +34,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
             }
           }}
 
-          dal.deleteOrphanAvalancheImages
+          dal.deleteOrphanAvalancheImages()
 
         case Failure(ex) => logger.error("Failed to retrieve avalanches from DB. Cannot perform S3 and DB data maintenance", ex)
       }

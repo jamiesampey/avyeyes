@@ -21,7 +21,7 @@ class Authorizations @Inject()(dal: CachedDAL, idService: ExternalIdService) {
     isAdmin(user) || idService.reservationExists(extId) || editKeyIsValid(dal.getAvalanche(extId), editKey)
   }
 
-  private def isAdmin(user: Option[AvyEyesUser]) = user.map(_.roles).exists(AdminRoles.contains)
+  def isAdmin(user: Option[AvyEyesUser]) = user.map(_.roles).exists(AdminRoles.contains)
 
   private def editKeyIsValid(avalancheOpt: Option[Avalanche], editKeyOpt: Option[String]) = (avalancheOpt, editKeyOpt) match {
     case (Some(avalanche), Some(editKey)) if avalanche.editKey == editKey.toLong =>

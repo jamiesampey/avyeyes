@@ -18,35 +18,33 @@ trait Json4sMethods {
 
   private[controllers] def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
-      ("extUrl" -> configService.avalancheUrl(a.extId)) ~
-      ("title" -> a.title) ~
-      ("areaName" -> a.areaName) ~
-      ("date" -> Extraction.decompose(a.date)) ~
-      ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
-      ("weather" -> Extraction.decompose(a.weather)) ~
-      ("slope" -> Extraction.decompose(a.slope)) ~
-      ("classification" -> Extraction.decompose(a.classification)) ~
-      ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
-      ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
-      ("images" -> Extraction.decompose(images))
+    ("extUrl" -> configService.avalancheUrl(a.extId)) ~
+    ("title" -> a.title) ~
+    ("areaName" -> a.areaName) ~
+    ("date" -> Extraction.decompose(a.date)) ~
+    ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
+    ("weather" -> Extraction.decompose(a.weather)) ~
+    ("slope" -> Extraction.decompose(a.slope)) ~
+    ("classification" -> Extraction.decompose(a.classification)) ~
+    ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
+    ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
+    ("images" -> Extraction.decompose(images))
   }
 
   private[controllers] def avalancheReadWriteData(a: Avalanche, images: List[AvalancheImage]) = {
-    ("viewable" -> a.viewable) ~
-      ("submitterEmail" -> a.submitterEmail) ~
-      avalancheReadOnlyData(a, images)
+    ("submitterEmail" -> a.submitterEmail) ~ avalancheReadOnlyData(a, images)
+  }
+
+  private[controllers] def avalancheAdminData(a: Avalanche, images: List[AvalancheImage]) = {
+    ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
   }
 
   private[controllers] def avalancheSearchResultData(a: Avalanche) = {
-    ("extId" -> a.extId) ~
-      ("title" -> a.title) ~
-      ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 
   private[controllers] def avalancheInitViewData(a: Avalanche) = {
-    avalancheSearchResultData(a) ~
-      ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
-      ("slope" -> Extraction.decompose(a.slope))
+    avalancheSearchResultData(a) ~ ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope))
   }
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))

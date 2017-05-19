@@ -43,7 +43,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
     (matches.sortWith(query.sortFunction).slice(query.offset, query.offset + query.limit), matches.size, avalancheMap.size)
   }
 
-  def getAvalanchesFromDisk = {
+  private[data] def getAvalanchesFromDisk = {
     val query = for {
       avalanche <- AvalancheRows
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
@@ -54,7 +54,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
     db.run(query.result).map(_.map(avalancheFromData))
   }
 
-  def getAvalancheFromDisk(extId: String) = {
+  private def getAvalancheFromDisk(extId: String) = {
     val query = for {
       avalanche <- AvalancheRows.filter(_.extId === extId)
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
@@ -76,7 +76,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
         db.run((AppUserRows += AppUserTableRow(now, now, avalanche.submitterEmail, None)) >> avalancheInserts)
       case true => db.run(avalancheInserts)
     }
-    .map(_ => avalancheMap += (avalanche.extId -> avalanche.copy(comments = None)))
+    .map(_ => avalancheMap += (avalanche.extId -> avalanche))
   }
 
   def updateAvalanche(update: Avalanche) = {
@@ -92,7 +92,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
       humanUpdateQuery.update((update.humanNumbers.modeOfTravel, update.humanNumbers.caught, update.humanNumbers.partiallyBuried, update.humanNumbers.fullyBuried, update.humanNumbers.injured, update.humanNumbers.killed))
     }
     .map(_ => getAvalancheFromDisk(update.extId).map {
-      case Some(a) => avalancheMap += (a.extId -> a.copy(comments = None))
+      case Some(a) => avalancheMap += (a.extId -> a)
       case None => logger.error("Unable to pull updated avalanche back out of database")
     })
   }
@@ -149,7 +149,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
     setAvalancheUpdateTimeAction(avyExtId)
   ).map(_ => getAvalancheImages(avyExtId).map(images => updateAvalancheImageOrder(avyExtId, images.map(_.filename))))
 
-  def deleteOrphanAvalancheImages = db.run(
+  private[data] def deleteOrphanAvalancheImages = db.run(
     AvalancheImageRows.filter(img => !AvalancheRows.filter(_.extId === img.avalanche).exists).result
   ).flatMap { orphanImages =>
     val unfinishedReports = orphanImages.filterNot(img => idService.reservationExists(img.avalanche)).map(_.avalanche).distinct
