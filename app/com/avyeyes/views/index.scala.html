@@ -1,4 +1,4 @@
-@(acSources: Map[String, String], s3Bucket: String)(implicit messages: Messages)
+@(acSources: Map[String, String], s3Bucket: String, avalanche: Option[String])(implicit messages: Messages)
 <!DOCTYPE html>
 <html>
   <head>
@@ -641,6 +641,15 @@
               @enum: @Html(sources),
             }
         };
+
+        @avalanche match {
+            case Some(json) => {
+                var initAvalanche = @Html(json);
+            }
+            case _ => {
+                var initAvalanche = "";
+            }
+        }
     </script>
   </body>
 </html>

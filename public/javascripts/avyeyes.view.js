@@ -53,26 +53,24 @@ function AvyEyesView() {
     }
 
     this.form = new AvyForm(this);
-    this.ui = new AvyEyesUI();
-    this.ui.wire(this, function() {
-        var possibleExtId = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-        if (possibleExtId && possibleExtId.length == 8) {
-            $.getJSON("/avalanche/" + possibleExtId).done(function(avalancheJSON) {
-                this.addAvalancheAndFlyTo(avalancheJSON);
-            }.bind(this)).fail(function(jqxhr, textStatus, error) {
-                console.warn( "Could not find avalanche " + possibleExtId);
-                this.geolocateAndFlyTo();
-            }.bind(this));
-        } else {
-            this.geolocateAndFlyTo();
-        }
-    }.bind(this));
+    this.ui = new AvyEyesUI(this);
 
     FB.init({
         appId: this.facebookAppId,
         xfbml: true,
         version: "v2.8"
     });
+
+    this.ui.loaded.then(function(result) {
+        console.log("AvyEyes UI is loaded");
+        if (initAvalanche) {
+            console.debug("Flying to avalanche " + initAvalanche.extId);
+            this.addAvalancheAndFlyTo(initAvalanche);
+        } else {
+            console.debug("Geolocating user");
+            this.geolocateAndFlyTo();
+        }
+    }.bind(this));
 }
 
 AvyEyesView.prototype.setCameraMoveEventListener = function() {
@@ -243,7 +241,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
         complete: function() {
             this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
                 duration: 4.0,
-                offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect.value), -25, 1200),
+                offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
                     $("#avyTitleOverlayName").text(a.title);
                     $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
@@ -252,6 +250,36 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 }.bind(this)
         });}.bind(this)
     });
+}
+
+AvyEyesView.prototype.geolocateAndFlyTo = function() {
+    var self = this;
+
+    var heading = 0.0;
+    var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
+    var range = 2000000;
+
+    var flyToWesternUS = function() {
+        this.ui.raiseTheCurtain();
+        var westernUSTarget = this.targetEntityFromCoords(-112, 44, false);
+        this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
+            this.removeEntity(westernUSTarget);
+            this.showControls();
+        }.bind(this));
+    }.bind(this)
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            this.ui.raiseTheCurtain();
+            var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true);
+            this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
+                this.removeEntity(geolocatedTarget);
+                this.showControls();
+            }.bind(this));
+        }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
+    } else {
+        flyToWesternUS();
+    }
 }
 
 var geocodeAttempts = 0;
@@ -307,36 +335,6 @@ AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
             onFailure(e);
         }
     });
-}
-
-AvyEyesView.prototype.geolocateAndFlyTo = function() {
-  var self = this;
-
-  var heading = 0.0;
-  var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
-  var range = 2000000;
-
-  var flyToWesternUS = function() {
-    this.ui.raiseTheCurtain();
-    var westernUSTarget = this.targetEntityFromCoords(-112, 44, false);
-    this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
-        this.removeEntity(westernUSTarget);
-        this.showControls();
-    }.bind(this));
-  }.bind(this)
-
-  if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        this.ui.raiseTheCurtain();
-        var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude, true);
-		this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
-		    this.removeEntity(geolocatedTarget);
-		    this.showControls();
-		}.bind(this));
-	  }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
-  } else {
-      flyToWesternUS();
-  }
 }
 
 AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {

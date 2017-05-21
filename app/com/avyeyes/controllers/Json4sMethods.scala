@@ -1,6 +1,6 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.model.{Avalanche, AvalancheImage}
+import com.avyeyes.model.{Avalanche, AvalancheImage, Coordinate}
 import com.avyeyes.service.ConfigurationService
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.format.DateTimeFormat
@@ -28,6 +28,7 @@ trait Json4sMethods {
     ("classification" -> Extraction.decompose(a.classification)) ~
     ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
+    ("coords" -> perimeterToArray(a.perimeter)) ~
     ("images" -> Extraction.decompose(images))
   }
 
@@ -40,12 +41,10 @@ trait Json4sMethods {
   }
 
   private[controllers] def avalancheSearchResultData(a: Avalanche) = {
-    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("coords" -> perimeterToArray(a.perimeter))
   }
 
-  private[controllers] def avalancheInitViewData(a: Avalanche) = {
-    avalancheSearchResultData(a) ~ ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope))
-  }
+  private def perimeterToArray(perimeter: Seq[Coordinate]): Seq[Double] = perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude))
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))
 

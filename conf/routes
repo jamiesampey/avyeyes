@@ -14,7 +14,6 @@ DELETE  /avalanche/:extId           com.avyeyes.controllers.ReportController.del
 # Avalanche search
 GET     /avalanche/table            com.avyeyes.controllers.SearchController.tabularSearch(adminQuery: com.avyeyes.data.AvalancheTableQuery)
 GET     /avalanche/search           com.avyeyes.controllers.SearchController.spatialSearch(query: com.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
-GET     /avalanche/:extId           com.avyeyes.controllers.SearchController.find(extId, edit: Option[String])
 
 # Images
 POST    /avalanche/:extId/images/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)
@@ -24,8 +23,8 @@ PUT     /avalanche/:extId/images               com.avyeyes.controllers.ImageCont
 DELETE  /avalanche/:extId/images/:filename     com.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
 
 # Templates
-GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "")
-GET     /:extId                     com.avyeyes.controllers.TemplateController.index(extId)
+GET     /                           com.avyeyes.controllers.TemplateController.index(extId = "", edit: Option[String])
+GET     /:extId                     com.avyeyes.controllers.TemplateController.index(extId, edit: Option[String])
 
 # Public assets
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

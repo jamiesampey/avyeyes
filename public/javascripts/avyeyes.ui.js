@@ -1,24 +1,24 @@
 define(['jquery-ui'], function() {
 
-function AvyEyesUI() {};
+function AvyEyesUI(view) {
+    this.loaded = new Promise(function(resolve, reject) {
+        wireMainMenu(view);
+        wireTooltips();
+        wireAutoCompletes(view);
+        wireDatePickers();
+        wireSliders();
+        wireSpinners();
+        wireButtons(view);
+        wireLocationInputs(view);
+        wireDialogs(view);
+        resolve();
+    });
+};
 
 AvyEyesUI.prototype.raiseTheCurtain = function() {
     if ($('#loadingDiv').is(':visible')) {
         $('#loadingDiv').fadeOut(500);
     }
-}
-
-AvyEyesUI.prototype.wire = function(view, callback) {
-    wireMainMenu(view);
-    wireTooltips();
-    wireAutoCompletes(view);
-    wireDatePickers();
-    wireSliders();
-    wireSpinners();
-    wireButtons(view);
-    wireLocationInputs(view);
-    wireDialogs(view);
-    callback();
 }
 
 function wireMainMenu(view) {
