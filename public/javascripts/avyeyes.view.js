@@ -120,8 +120,9 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
 
             $.getJSON(avalancheUrl, function(data) {
                 if (data.viewable) {
-                    this.form.wireReadWriteFormAdminControls(this);
-                    this.form.displayReadWriteForm(data);
+                    this.form.enableAdminControls.then(function() {
+                        this.form.displayReadWriteForm(data);
+                    }.bind(this));
                 } else if (data.submitterEmail) {
                     this.form.displayReadWriteForm(data);
                 } else {
@@ -244,7 +245,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
                     $("#avyTitleOverlayName").text(a.title);
-                    $("#avyTitleOverlaySubmitter").text("Submitter: " + a.submitterExp.label);
+                    $("#avyTitleOverlaySubmitter").text("Submitter: " + this.form.expLevelFromCode(a.submitterExp).label);
                     $("#avyTitleOverlay").show();
                     this.overlayClearTimer(12);
                 }.bind(this)

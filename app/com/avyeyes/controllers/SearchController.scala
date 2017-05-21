@@ -16,16 +16,33 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class SearchController @Inject()(val configService: ConfigurationService, val logger: Logger,
-                                 val dal: CachedDAL, val messagesApi: MessagesApi, implicit val env: UserEnvironment)
+                                 val dal: CachedDAL, authorizations: Authorizations,
+                                 val messagesApi: MessagesApi, implicit val env: UserEnvironment)
   extends SecureSocial with Json4sMethods with I18nSupport {
+
+  import authorizations._
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
   private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
+
+  def find(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
+    logger.debug(s"finding avalanche $extId")
+
+    dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
+      if (isAdmin(request.user))
+        Ok(writeJson(avalancheAdminData(avalanche, images)))
+      else if (isAuthorizedToEdit(extId, request.user, editKeyOpt))
+        Ok(writeJson(avalancheReadWriteData(avalanche, images)))
+      else if (isAuthorizedToView(extId, request.user))
+        Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
+      else NotFound
+    }}.getOrElse(Future { NotFound })
+  }
 
   def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
     camAltParam match {

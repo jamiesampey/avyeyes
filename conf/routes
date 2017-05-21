@@ -14,6 +14,7 @@ DELETE  /avalanche/:extId           com.avyeyes.controllers.ReportController.del
 # Avalanche search
 GET     /avalanche/table            com.avyeyes.controllers.SearchController.tabularSearch(adminQuery: com.avyeyes.data.AvalancheTableQuery)
 GET     /avalanche/search           com.avyeyes.controllers.SearchController.spatialSearch(query: com.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
+GET     /avalanche/:extId           com.avyeyes.controllers.SearchController.find(extId, edit: Option[String])
 
 # Images
 POST    /avalanche/:extId/images/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)

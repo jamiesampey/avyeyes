@@ -11,39 +11,21 @@ import org.json4s.JsonAST
 import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Action
 import securesocial.core.SecureSocial
-
-import scala.concurrent.Future
 
 
 @Singleton
 class TemplateController @Inject()(val configService: ConfigurationService, val logger: Logger, val messagesApi: MessagesApi,
-                                   val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
+                                   val dal: CachedDAL, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
-
-  import authorizations._
 
   private val s3Bucket = configService.getProperty("s3.bucket")
 
-  def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
+  def index(extId: String, editKeyOpt: Option[String]) = Action { implicit request =>
     logger.trace(s"Responding to request for avalanche $extId")
-
-    dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
-      if (isAdmin(request.user))
-        Some(avalancheAdminData(avalanche, images))
-      else if (isAuthorizedToEdit(extId, request.user, editKeyOpt))
-        Some(avalancheReadWriteData(avalanche, images))
-      else if (isAuthorizedToView(extId, request.user))
-        Some(avalancheReadOnlyData(avalanche, images))
-      else None
-    }}.getOrElse(Future { None }).map {
-      case Some(json) =>
-        logger.trace(s"Sending template with initial avalanche $extId")
-        Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, Some(writeJson(json))))
-      case _ =>
-        logger.trace("Sending template without an initial avalanche")
-        Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, None))
-    }
+    val avalancheJsonOpt: Option[String] = dal.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a)))
+    Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt))
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>

@@ -1,6 +1,8 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.model.{Avalanche, AvalancheImage, Coordinate}
+import com.avyeyes.model.enums.ExperienceLevel
+import com.avyeyes.model.serializers.avyeyesFormats
+import com.avyeyes.model.{Avalanche, AvalancheImage}
 import com.avyeyes.service.ConfigurationService
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.format.DateTimeFormat
@@ -9,7 +11,6 @@ import org.json4s.JsonAST.{JObject, JValue}
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, parse, render}
 import play.api.mvc.RequestHeader
-import com.avyeyes.model.serializers.avyeyesFormats
 
 trait Json4sMethods {
   val configService: ConfigurationService
@@ -22,13 +23,12 @@ trait Json4sMethods {
     ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
-    ("submitterExp" -> Extraction.decompose(a.submitterExp)) ~
+    ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~
     ("weather" -> Extraction.decompose(a.weather)) ~
     ("slope" -> Extraction.decompose(a.slope)) ~
     ("classification" -> Extraction.decompose(a.classification)) ~
     ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
-    ("coords" -> perimeterToArray(a.perimeter)) ~
     ("images" -> Extraction.decompose(images))
   }
 
@@ -41,10 +41,12 @@ trait Json4sMethods {
   }
 
   private[controllers] def avalancheSearchResultData(a: Avalanche) = {
-    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("coords" -> perimeterToArray(a.perimeter))
+    ("extId" -> a.extId) ~
+    ("title" -> a.title) ~
+    ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~
+    ("slope" -> Extraction.decompose(a.slope)) ~
+    ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
-
-  private def perimeterToArray(perimeter: Seq[Coordinate]): Seq[Double] = perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude))
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))
 

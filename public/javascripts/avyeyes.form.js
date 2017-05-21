@@ -11,7 +11,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var s3Bucket = $("#s3Bucket").val();
 
 	$("#roAvyFormTitle").text(a.title);
-	$("#roAvyFormSubmitterExp").text(expLevelFromCode(a.submitterExp).label);
+	$("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
@@ -135,7 +135,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
 
     $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
-    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', expLevelFromCode(a.submitterExp));
+    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', this.expLevelFromCode(a.submitterExp));
 
     $('#rwAvyFormAreaName').val(a.areaName);
     $('#rwAvyFormDate').val(a.date);
@@ -340,9 +340,12 @@ function getFileBaseName(filename) {
     return filename.substring(0, filename.lastIndexOf('.'));
 }
 
-AvyForm.prototype.wireReadWriteFormAdminControls = function(view) {
-    $("#rwAvyFormDeleteButton").show();
-    $("#rwAvyFormAdminTd").show();
+AvyForm.prototype.enableAdminControls = function() {
+    return new Promise(function(resolve, reject) {
+        $("#rwAvyFormDeleteButton").show();
+        $("#rwAvyFormAdminTd").show();
+        resolve();
+    });
 }
 
 AvyForm.prototype.validateReportFields = function() {
@@ -498,7 +501,7 @@ AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
   }
 }
 
-function expLevelFromCode(code) {
+AvyForm.prototype.expLevelFromCode = function(code) {
     return enumObjFromCode(window.AutoCompleteSources["ExperienceLevel"], code);
 }
 
