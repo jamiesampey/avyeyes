@@ -11,20 +11,23 @@ import org.json4s.JsonAST
 import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
 
 @Singleton
 class TemplateController @Inject()(val configService: ConfigurationService, val logger: Logger, val messagesApi: MessagesApi,
-                                   val dal: CachedDAL, implicit val env: UserEnvironment)
+                                   val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
 
+  import authorizations._
   private val s3Bucket = configService.getProperty("s3.bucket")
 
-  def index(extId: String, editKeyOpt: Option[String]) = Action { implicit request =>
+  def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
     logger.trace(s"Responding to request for avalanche $extId")
-    val avalancheJsonOpt: Option[String] = dal.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a)))
+
+    val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
+      dal.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a))) else None
+
     Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt))
   }
 

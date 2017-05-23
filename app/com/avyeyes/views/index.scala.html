@@ -522,7 +522,7 @@
                                             <tr>
                                                 <td><label for="rwAvyFormAspect" data-help="@Html(Messages("help.rwAvyFormAspect"))">@messages("label.rwAvyFormAspect"):<span style='color: red;'>&nbsp;*</span></label></td>
                                                 <td>
-                                                    <input id='rwAvyFormAspectAC' class="avyAutoComplete" data-source="Direction" type="text" />
+                                                    <input id='rwAvyFormAspectAC' class="avyAutoComplete avyDirectionAutoComplete" data-source="Direction" type="text" />
                                                     <input id="rwAvyFormAspect" type="hidden"/>
                                                 </td>
                                             </tr>
@@ -548,12 +548,12 @@
                                                     <tr>
                                                         <td><label for="rwAvyFormRecentWindSpeed" data-help="@Html(Messages("help.rwAvyFormRecentWindSpeed"))">@messages("label.rwAvyFormRecentWindSpeed"):</label></td>
                                                         <td>
-                                                            <input class="avyAutoComplete" data-source="WindSpeed" type="text"/>
+                                                            <input class="avyAutoComplete avyWindSpeedAutoComplete" data-source="WindSpeed" type="text"/>
                                                             <input id="rwAvyFormRecentWindSpeed" type="hidden"/>
                                                         </td>
                                                         <td>
                                                             <span id="rwAvyFormRecentWindDirectionText" class="avyMsg">@messages("msg.rwAvyFormRecentWindDirectionText")</span>
-                                                            <input class="avyAutoComplete" data-source="Direction" type="text"/>
+                                                            <input class="avyAutoComplete avyDirectionAutoComplete" data-source="Direction" type="text"/>
                                                             <input id="rwAvyFormRecentWindDirection" type="hidden"/>
                                                         </td>
                                                     </tr>

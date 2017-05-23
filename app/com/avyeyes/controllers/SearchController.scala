@@ -31,16 +31,19 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
 
   def find(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
-    logger.debug(s"finding avalanche $extId")
+    logger.debug(s"Requested avalanche $extId")
 
     dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
-      if (isAdmin(request.user))
+      if (isAdmin(request.user)) {
+        logger.debug(s"Sending admin data for avalanche $extId")
         Ok(writeJson(avalancheAdminData(avalanche, images)))
-      else if (isAuthorizedToEdit(extId, request.user, editKeyOpt))
+      } else if (isAuthorizedToEdit(extId, request.user, editKeyOpt)) {
+        logger.debug(s"Sending read-write data for avalanche $extId")
         Ok(writeJson(avalancheReadWriteData(avalanche, images)))
-      else if (isAuthorizedToView(extId, request.user))
+      } else if (isAuthorizedToView(extId, request.user)) {
+        logger.debug(s"Sending read-only data for avalanche $extId")
         Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
-      else NotFound
+      } else NotFound
     }}.getOrElse(Future { NotFound })
   }
 

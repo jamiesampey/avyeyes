@@ -119,19 +119,19 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
             $.getJSON(avalancheUrl, function(data) {
-                if (data.viewable) {
-                    this.form.enableAdminControls.then(function() {
+                this.currentReport = new AvyReport(this);
+                if (data.hasOwnProperty("viewable")) {
+                    this.form.enableAdminControls().then(function() {
                         this.form.displayReadWriteForm(data);
                     }.bind(this));
-                } else if (data.submitterEmail) {
+                } else if (data.hasOwnProperty("submitterEmail")) {
                     this.form.displayReadWriteForm(data);
                 } else {
                     this.form.displayReadOnlyForm(movement.position, data);
                 }
             }.bind(this))
             .fail(function(jqxhr, textStatus, error) {
-                var err = textStatus + ", " + error;
-                console.log("AvyEyes error: " + err);
+                console.log("AvyEyes error: " + error);
             });
         }
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);

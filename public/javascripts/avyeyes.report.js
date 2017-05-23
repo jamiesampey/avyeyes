@@ -163,11 +163,11 @@ AvyReport.prototype.deleteReport = function() {
 
     $.ajax({
         type: 'DELETE',
-        url: "/avalanche/" + extId + "csrfToken=" + view.csrfTokenFromCookie()
+        url: "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie()
     }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully deleted");
     }).fail(function(jqxhr, textStatus, errorThrown) {
-        view.showModalDialog("Error deleting report " + extId + ". Error: " + jqxhr.responseText);
+        view.showModalDialog("Error deleting report " + extId + ". Error: " + errorThrown);
     }).always(function() {
         view.resetView();
     });

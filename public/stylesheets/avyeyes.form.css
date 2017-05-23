@@ -399,14 +399,3 @@ img.rwAvyFormImageDeleteIcon {
     top: 0px;
     right: 0px;
 }
-
-#rwAvyFormImageOldSchoolImgUpload {
-	width: 100%;
-	padding: 10px;
-
-}
-
-#rwAvyFormImageOldSchoolImgUpload > form {
-	display: inline;
-    width: 200px;
-}
