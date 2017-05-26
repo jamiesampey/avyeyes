@@ -1,4 +1,4 @@
-@(acSources: Map[String, String], s3Bucket: String, avalanche: Option[String])(implicit messages: Messages)
+@(acSources: Map[String, String], s3Bucket: String, avalanche: Option[String], adminUser: Option[com.avyeyes.model.AvyEyesUser])(implicit messages: Messages)
 <!DOCTYPE html>
 <html>
   <head>
@@ -27,6 +27,10 @@
     </script>
   </head>
   <body>
+    @adminUser.map { admin =>
+        <div id="adminBar"><span>Logged in as @admin.email</span></div>
+    }
+
     <div id="cesiumContainer"></div>
     <div id="fb-root"></div>
 

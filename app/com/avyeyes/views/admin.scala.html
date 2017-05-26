@@ -1,4 +1,4 @@
-@()(implicit messages: Messages)
+@(admin: com.avyeyes.model.AvyEyesUser)(implicit messages: Messages)
 
 <html>
   <head>
@@ -7,6 +7,8 @@
       <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
   </head>
   <body>
+    <div id="adminBar"><span>Logged in as @admin.email</span></div>
+
       <table id="avyAdminLayoutTable">
           <tr id="avyAdminHeaderRow">
               <td id="avyAdminHeaderTitleTd"><span id="avyAdminConsoleTitle" class="avyHeader"></span></td>

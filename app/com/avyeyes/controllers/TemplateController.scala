@@ -28,11 +28,11 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
       dal.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a))) else None
 
-    Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt))
+    Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>
-    Ok(com.avyeyes.views.html.admin())
+    Ok(com.avyeyes.views.html.admin(request.user))
   }
 
   private val autocompleteSources = Map(

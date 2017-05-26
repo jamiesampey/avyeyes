@@ -11,9 +11,18 @@ body {
 	font-size:100%;
 }
 
-#liftContent {
-	height: 100%; 
+#adminBar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 20px;
     width: 100%;
+    margin: 0;
+    padding 5px 0px 0px 0px;
+    text-align: center;
+    color: black;
+    background: yellow;
+    z-index: 1000 !important;
 }
 
 #cesiumContainer {
