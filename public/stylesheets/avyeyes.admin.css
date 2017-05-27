@@ -22,3 +22,11 @@
   height: 100%;
   vertical-align: top;
 }
+
+#adminDiv {
+    color: black !important;
+}
+
+#adminLogout:link, #adminLogout:visited {
+    color: black !important;
+}
