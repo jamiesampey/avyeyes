@@ -197,14 +197,8 @@ help.rwAvyFormModeOfTravel=The primary mode of travel used by the group that tri
 
 ####### Admin #######
 
-button.avyAdminLocalLoginButton=Log in
-
-label.avyAdminLocalLoginEmail=Email
-label.avyAdminLocalLoginPw=Password
-label.avyAdminViewableCount=Viewable avalanches
-label.avyAdminUnviewableCount=Unviewable avalanches
-
-header.avyAdminConsoleTitle=Avalanche Reports
+label.avyAdminLoggedInAs=Logged in as
+label.avyAdminLogout=Logout
 
 header.avyAdminCreatedDateColumn=Created
 header.avyAdminUpdatedDateColumn=Last Updated

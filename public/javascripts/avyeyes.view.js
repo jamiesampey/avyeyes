@@ -440,8 +440,8 @@ AvyEyesView.prototype.uploadCesiumScreenshot = function() {
 }
 
 AvyEyesView.prototype.csrfTokenFromCookie = function() {
-  var value = "; " + document.cookie;
-  var parts = value.split("; csrfToken=");
+  var docCookie = "; " + document.cookie;
+  var parts = docCookie.split("; csrfToken=");
   if (parts.length == 2) return parts.pop().split(";").shift();
 }
 
