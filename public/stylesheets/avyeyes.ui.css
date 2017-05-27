@@ -20,9 +20,19 @@ body {
     margin: 0;
     padding 5px 0px 0px 0px;
     text-align: center;
-    color: black;
-    background: yellow;
+    color: white;
+    background: red;
     z-index: 1000 !important;
+}
+
+#adminLogout {
+    float: right;
+    padding-right: 10px;
+}
+
+#adminLogout:link, #adminLogout:visited {
+    color: white;
+    text-decoration: none;
 }
 
 #cesiumContainer {

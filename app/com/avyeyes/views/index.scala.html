@@ -28,7 +28,7 @@
   </head>
   <body>
     @adminUser.map { admin =>
-        <div id="adminBar"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span>&nbsp;<a href="#" id="adminLogout">@messages("label.avyAdminLogout")</a></div>
+        <div id="adminBar"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a href="#" id="adminLogout">@messages("label.avyAdminLogout")</a></div>
     }
 
     <div id="cesiumContainer"></div>
