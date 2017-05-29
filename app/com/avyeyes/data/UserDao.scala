@@ -5,18 +5,16 @@ import javax.inject.Inject
 import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
+import play.api.inject.ApplicationLifecycle
 import play.db.NamedDatabase
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserDao @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider) extends DatabaseComponent with SlickColumnMappers {
+class UserDao @Inject()(@NamedDatabase("postgres") val dbConfigProvider: DatabaseConfigProvider,
+                        val appLifecycle: ApplicationLifecycle) extends AvyEyesDatabase {
 
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
-  private val db = dbConfig.db
-  protected val jdbcProfile: JdbcProfile = dbConfig.profile
-  import jdbcProfile.api._
+  import dbConfig.profile.api._
 
   def findUser(email: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(_.email === email).result.headOption).flatMap { appUserRowOpt =>
     db.run(AppUserRoleAssignmentRows.filter(_.email === email).result).map { appUserRoleAssignmentRows => appUserRowOpt.map { appUserRow =>

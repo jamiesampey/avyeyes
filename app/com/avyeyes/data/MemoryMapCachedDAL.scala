@@ -2,27 +2,24 @@ package com.avyeyes.data
 
 import javax.inject._
 
-import com.avyeyes.data.SlickRowMappers._
 import com.avyeyes.model._
 import com.avyeyes.service.ExternalIdService
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
+import play.api.inject.ApplicationLifecycle
 import play.db.NamedDatabase
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache, idService: ExternalIdService, val logger: Logger)
-  extends CachedDAL with DatabaseComponent with SlickColumnMappers {
+class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") val dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache,
+                                   idService: ExternalIdService, val logger: Logger, val appLifecycle: ApplicationLifecycle)
+  extends CachedDAL with AvyEyesDatabase {
 
   private val avalancheMap = avalancheCache.avalancheMap
 
-  private val dbConfig = dbConfigProvider.get[JdbcProfile]
-  private val db = dbConfig.db
-  protected val jdbcProfile: JdbcProfile = dbConfig.profile
-  import jdbcProfile.api._
+  import dbConfig.profile.api._
 
   implicit def dateTimeOrdering: Ordering[DateTime] = Ordering.fromLessThan(_ isBefore _)
 
@@ -141,6 +138,7 @@ class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") dbConfigProvider: 
 
   def updateAvalancheImageOrder(avyExtId: String, filenameOrder: List[String]) = Future.sequence(filenameOrder.zipWithIndex.map { case (baseFilename, order) =>
     val imageOrderUpdateQuery = AvalancheImageRows.filter(img => img.avalanche === avyExtId && img.filename.startsWith(baseFilename)).map(_.sortOrder)
+    logger.debug(s"Setting order $order on image $baseFilename")
     db.run(imageOrderUpdateQuery.update(order))
   })
 

@@ -5,11 +5,12 @@ import java.sql.Timestamp
 import com.avyeyes.model._
 import com.avyeyes.model.enums._
 import org.joda.time.DateTime
+import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 
-private[data] trait SlickColumnMappers {
-  protected val jdbcProfile: JdbcProfile
-  import jdbcProfile.api._
+private[data] trait SlickColumnMappers { self: HasDatabaseConfigProvider[JdbcProfile] =>
+
+  import dbConfig.profile.api._
 
   implicit def dateTimeMapper = MappedColumnType.base[DateTime, Timestamp](
     dt => new java.sql.Timestamp(dt.getMillis),

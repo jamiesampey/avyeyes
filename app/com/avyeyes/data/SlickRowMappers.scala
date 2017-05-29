@@ -2,7 +2,7 @@ package com.avyeyes.data
 
 import com.avyeyes.model._
 
-private[data] object SlickRowMappers {
+private[data] trait SlickRowMappers { self: AvyEyesDatabase =>
 
   implicit def toAvalancheRow(avalanche: Avalanche): AvalancheTableRow =
     AvalancheTableRow(

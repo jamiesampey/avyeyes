@@ -1,35 +1,32 @@
 package com.avyeyes.data
 
 import com.avyeyes.model._
-import com.avyeyes.model.enums.Direction.Direction
 import com.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
 import com.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.avyeyes.model.enums.AvalancheTriggerModifier.AvalancheTriggerModifier
 import com.avyeyes.model.enums.AvalancheType.AvalancheType
+import com.avyeyes.model.enums.Direction.Direction
 import com.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
 import com.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
+import play.api.db.slick.HasDatabaseConfigProvider
+import play.api.inject.ApplicationLifecycle
 import slick.jdbc.JdbcProfile
 
-private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
-private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
-private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
-private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
-private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String])
-private[data] case class AppUserRoleAssignmentRow(email: String, roleName: String)
 
-private[data] trait DatabaseComponent {this: SlickColumnMappers =>
-  protected val jdbcProfile: JdbcProfile
-  import jdbcProfile.api._
+trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickColumnMappers with SlickRowMappers {
+
+  val appLifecycle: ApplicationLifecycle
+  appLifecycle.addStopHook(() => db.shutdown)
+
+  import dbConfig.profile.api._
 
   protected val AvalancheRows = TableQuery[AvalancheTable]
   protected val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
   protected val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
   protected val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
-
   protected val AvalancheImageRows = TableQuery[AvalancheImageTable]
-
   protected val AppUserRows = TableQuery[AppUserTable]
   protected val AppUserRoleAssignmentRows = TableQuery[AppUserRoleAssignmentTable]
 
@@ -43,6 +40,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     AppUserRoleAssignmentRows.schema
   ).create
 
+  private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
   class AvalancheTable(tag: Tag) extends Table[AvalancheTableRow](tag, "avalanche") {
     def createTime = column[DateTime]("create_time")
     def updateTime = column[DateTime]("update_time")
@@ -65,6 +63,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
 
   }
 
+  private[data] case class AvalancheWeatherTableRow(avalanche: String, recentSnow: Int, recentWindSpeed: WindSpeed, recentWindDirection: Direction)
   class AvalancheWeatherTable(tag: Tag) extends Table[AvalancheWeatherTableRow](tag, "avalanche_weather") {
     def avalanche = column[String]("avalanche")
     def recentSnow = column[Int]("recent_snow")
@@ -78,6 +77,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
       a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
   }
 
+  private[data] case class AvalancheClassificationTableRow(avalanche: String, avalancheType: AvalancheType, trigger: AvalancheTrigger, triggerModifier: AvalancheTriggerModifier, interface: AvalancheInterface, rSize: Double, dSize: Double)
   class AvalancheClassificationTable(tag: Tag) extends Table[AvalancheClassificationTableRow](tag, "avalanche_classification") {
     def avalanche = column[String]("avalanche")
     def avalancheType = column[AvalancheType]("avalanche_type")
@@ -94,6 +94,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
       a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
   }
 
+  private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
   class AvalancheHumanTable(tag: Tag) extends Table[AvalancheHumanTableRow](tag, "avalanche_human") {
     def avalanche = column[String]("avalanche")
     def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
@@ -125,6 +126,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     def pk = primaryKey("avalanche_image_pk", (avalanche, filename))
   }
 
+  private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String])
   class AppUserTable(tag: Tag) extends Table[AppUserTableRow](tag, "app_user") {
     def createTime = column[DateTime]("create_time")
     def lastActivityTime = column[DateTime]("last_activity_time")
@@ -140,6 +142,7 @@ private[data] trait DatabaseComponent {this: SlickColumnMappers =>
     def * = (roleName) <> (AvyEyesUserRole, AvyEyesUserRole.unapply)
   }
 
+  private[data] case class AppUserRoleAssignmentRow(email: String, roleName: String)
   class AppUserRoleAssignmentTable(tag: Tag) extends Table[AppUserRoleAssignmentRow](tag, "app_user_role_assignment") {
     def email = column[String]("app_user")
     def role = column[String]("app_role")
