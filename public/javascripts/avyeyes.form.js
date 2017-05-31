@@ -38,9 +38,12 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormAngle").text(a.slope.angle);
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
-   	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", a.weather.recentWindSpeed);
+
+   	var recentWindSpeedEnumObj = windSpeedFromCode(a.weather.recentWindSpeed)
+   	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", recentWindSpeedEnumObj);
    	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection)
-    if (a.weather.recentWindSpeed.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
+
+    if (recentWindSpeedEnumObj.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
         $("#roAvyFormRecentWindDirectionText").hide();
         $("#roAvyFormRecentWindDirection").hide();
     } else {
@@ -146,7 +149,7 @@ AvyForm.prototype.displayReadWriteForm = function(a) {
     $('#rwAvyFormAngle').val(a.slope.angle);
 
     this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
-    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', a.weather.recentWindSpeed);
+    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', windSpeedFromCode(a.weather.recentWindSpeed));
     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', directionFromCode(a.weather.recentWindDirection));
 
     this.setReadWriteAutocompleteVal('#rwAvyFormType', avyTypeFromCode(a.classification.avyType));
@@ -507,6 +510,10 @@ AvyForm.prototype.expLevelFromCode = function(code) {
 
 function directionFromCode(code) {
     return enumObjFromCode(window.AutoCompleteSources["Direction"], code);
+}
+
+function windSpeedFromCode(code) {
+    return enumObjFromCode(window.AutoCompleteSources["WindSpeed"], code);
 }
 
 function avyTypeFromCode(code) {
