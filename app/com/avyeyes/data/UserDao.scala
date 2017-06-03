@@ -6,12 +6,11 @@ import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.ApplicationLifecycle
-import play.db.NamedDatabase
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserDao @Inject()(@NamedDatabase("postgres") val dbConfigProvider: DatabaseConfigProvider,
+class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider,
                         val appLifecycle: ApplicationLifecycle) extends AvyEyesDatabase {
 
   import dbConfig.profile.api._

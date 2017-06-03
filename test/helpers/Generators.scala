@@ -9,29 +9,33 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
 import org.scalacheck.Gen
 
-object Generators {
+trait Generators {
 
-  def genDateTime(minMillis: Long = 0): Gen[DateTime] = Gen.choose(minMillis, DateTime.now.getMillis).map(new DateTime(_))
+  protected implicit class GenOps[T](gen: Gen[T]) {
+    implicit def generate: T = gen.sample.getOrElse(gen.generate)
+  }
 
-  def genCoordinate = for {
+  protected def genDateTime(minMillis: Long = 0): Gen[DateTime] = Gen.choose(minMillis, DateTime.now.getMillis).map(new DateTime(_))
+
+  protected def genCoordinate = for {
     lng <- Gen.choose(-180.0, 180.0)
     lat <- Gen.choose(-90.0, 90.0)
     alt <- Gen.choose(0, 8000)
   } yield Coordinate(lng, lat, alt)
 
-  def genWeather = for {
+  protected def genWeather = for {
     snow <- Gen.choose(-1, 1000)
     windSpeed <- Gen.oneOf(WindSpeed.values.toSeq)
     windDirection <- Gen.oneOf(Direction.values.toSeq)
   } yield Weather(snow, windSpeed, windDirection)
 
-  def genSlope = for {
+  protected def genSlope = for {
     aspect <- Gen.oneOf(Direction.values.toSeq)
     angle <- Gen.choose(0, 90)
     elevation <- Gen.choose(0, 8000)
   } yield Slope(aspect, angle, elevation)
 
-  def genClassification = for {
+  protected def genClassification = for {
     avyType <- Gen.oneOf(AvalancheType.values.toSeq)
     trigger <- Gen.oneOf(AvalancheTrigger.values.toSeq)
     triggerModifier <- Gen.oneOf(AvalancheTriggerModifier.values.toSeq)
@@ -40,7 +44,7 @@ object Generators {
     dSize <- Gen.oneOf(0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)
   } yield Classification(avyType, trigger, triggerModifier, interface, rSize, dSize)
 
-  def genHumanNumbers = for {
+  protected def genHumanNumbers = for {
     modeOfTravel <- Gen.oneOf(ModeOfTravel.values.toSeq)
     caught <- Gen.choose(-1, 50)
     partiallyBuried <- Gen.choose(-1, 50)
@@ -49,7 +53,7 @@ object Generators {
     killed <- Gen.choose(-1, 50)
   } yield HumanNumbers(modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed)
 
-  private def genAvalanche: Gen[Avalanche] = for {
+  protected def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
       extId <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
@@ -83,9 +87,7 @@ object Generators {
       comments = comments
     )
 
-  def avalancheForTest = genAvalanche.sample.get
-
-  def genAvalancheImage = for {
+  protected def genAvalancheImage = for {
     createTime <- genDateTime()
     avalanche <- Gen.const(RandomStringUtils.random(ExtIdLength, ExtIdChars))
     filename <- Gen.const(s"${UUID.randomUUID().toString}.jpg")
@@ -104,6 +106,4 @@ object Generators {
     sortOrder = sort_order,
     caption = caption
   )
-
-  def avalancheImageForTest = genAvalancheImage.sample.get
 }

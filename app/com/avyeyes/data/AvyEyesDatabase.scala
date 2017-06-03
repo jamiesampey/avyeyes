@@ -22,23 +22,14 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
 
   import dbConfig.profile.api._
 
-  protected val AvalancheRows = TableQuery[AvalancheTable]
-  protected val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
-  protected val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
-  protected val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
-  protected val AvalancheImageRows = TableQuery[AvalancheImageTable]
-  protected val AppUserRows = TableQuery[AppUserTable]
-  protected val AppUserRoleAssignmentRows = TableQuery[AppUserRoleAssignmentTable]
+  private[data] val AvalancheRows = TableQuery[AvalancheTable]
+  private[data] val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
+  private[data] val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
+  private[data] val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
+  private[data] val AvalancheImageRows = TableQuery[AvalancheImageTable]
+  private[data] val AppUserRows = TableQuery[AppUserTable]
+  private[data] val AppUserRoleAssignmentRows = TableQuery[AppUserRoleAssignmentTable]
 
-  private[data] def createSchema = (
-    AvalancheRows.schema ++
-    AvalancheWeatherRows.schema ++
-    AvalancheClassificationRows.schema ++
-    AvalancheHumanRows.schema ++
-    AvalancheImageRows.schema ++
-    AppUserRows.schema ++
-    AppUserRoleAssignmentRows.schema
-  ).create
 
   private[data] case class AvalancheTableRow(createTime: DateTime, updateTime: DateTime, extId: String, viewable: Boolean, submitterEmail: String, submitterExp: ExperienceLevel, areaName: String, date: DateTime, longitude: Double, latitude: Double, elevation: Int, aspect: Direction, angle: Int, perimeter: Seq[Coordinate], comments: Option[String])
   class AvalancheTable(tag: Tag) extends Table[AvalancheTableRow](tag, "avalanche") {

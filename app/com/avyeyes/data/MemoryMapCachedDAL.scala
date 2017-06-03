@@ -8,12 +8,11 @@ import org.joda.time.DateTime
 import play.api.Logger
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.ApplicationLifecycle
-import play.db.NamedDatabase
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(@NamedDatabase("postgres") val dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache,
+class MemoryMapCachedDAL @Inject()(val dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache,
                                    idService: ExternalIdService, val logger: Logger, val appLifecycle: ApplicationLifecycle)
   extends CachedDAL with AvyEyesDatabase {
 

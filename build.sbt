@@ -26,8 +26,11 @@ RoutesKeys.routesImport ++= Seq(
 )
 
 libraryDependencies ++= {
+  val playVersion = _root_.play.core.PlayVersion.current
+
   Seq(
     filters,
+    jdbc,
     "com.typesafe.play" %% "play-slick" % "2.1.0",
     "com.typesafe.play" %% "play-mailer" % "5.0.0",
     "ws.securesocial" %% "securesocial" % "3.0-M8",   // TODO upgrade to 3.0 when released
@@ -39,10 +42,10 @@ libraryDependencies ++= {
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
 
-    "org.specs2" %% "specs2" % "2.4.1" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
-    "com.h2database" % "h2" % "1.4.188" % "test",
-    "javax.servlet" % "servlet-api" % "2.5" % "test"
+    "com.typesafe.play" %% "play-specs2" % playVersion % Test,
+    "org.scalacheck" %% "scalacheck" % "1.12.4" % Test,
+    "com.h2database" % "h2" % "1.4.188" % Test,
+    "javax.servlet" % "servlet-api" % "2.5" % Test
   )
 }
 
