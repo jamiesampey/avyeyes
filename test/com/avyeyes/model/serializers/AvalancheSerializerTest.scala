@@ -36,7 +36,10 @@ class AvalancheSerializerTest extends BaseSpec {
     "deserialize an Avalanche from JSON" in {
       val avalanche = genAvalanche.generate
       val perimeterAsString = avalanche.perimeter.map(_.toString).mkString(" ")
-      val json = Extraction.decompose(avalanche).replace(List("perimeter"), JString(perimeterAsString))
+
+      val json = Extraction.decompose(avalanche)
+        .replace(List("perimeter"), JString(perimeterAsString))
+        .replace(List("comments"), JString(avalanche.comments.getOrElse("")))
 
       val extractedAvalanche = json.extract[Avalanche]
 
