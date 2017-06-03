@@ -8,7 +8,6 @@ import play.api.Logger
 import scala.util.{Failure, Success, Try}
 
 class ExternalIdServiceTest extends BaseSpec {
-  isolated
 
   class Setup extends Scope {
     implicit protected val dal = mock[CachedDAL]
