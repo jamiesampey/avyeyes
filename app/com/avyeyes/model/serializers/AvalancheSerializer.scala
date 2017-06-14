@@ -30,9 +30,9 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
         val perimeter = (json \ "perimeter").extract[String]
         if (perimeter.nonEmpty) perimeter.trim.split(" ").toSeq.map(Coordinate(_)) else Seq.empty
       },
-      comments = {
-        val text = (json \ "comments").extract[String].trim
-        if (text.nonEmpty) Some(escapeJava(text)) else None
+      comments = (json \ "comments").extractOpt[String] match {
+        case Some(text) if text.nonEmpty => Some(escapeJava(text))
+        case _ => None
       }
     )
   },{
