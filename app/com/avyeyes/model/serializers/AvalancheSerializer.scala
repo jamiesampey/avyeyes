@@ -25,10 +25,9 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
       weather = (json \ "weather").extract[Weather],
       classification = (json \ "classification").extract[Classification],
       humanNumbers = (json \ "humanNumbers").extract[HumanNumbers],
-      perimeter = {
-        // perimeter is set when SUBMITTING but not when UPDATING
-        val perimeter = (json \ "perimeter").extract[String]
-        if (perimeter.nonEmpty) perimeter.trim.split(" ").toSeq.map(Coordinate(_)) else Seq.empty
+      perimeter = (json \ "perimeter").extract[String] match {
+        case perim if perim.nonEmpty => perim.trim.split(" ").toSeq.map(Coordinate(_))
+        case _ => Seq.empty
       },
       comments = (json \ "comments").extractOpt[String] match {
         case Some(text) if text.nonEmpty => Some(escapeJava(text))
