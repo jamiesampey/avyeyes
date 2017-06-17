@@ -8,7 +8,7 @@ import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.{AvalancheImage, AvyEyesUser}
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService}
 import com.avyeyes.system.UserEnvironment
-import com.avyeyes.util.Constants.{MaxImagesPerAvalanche, ScreenshotFilename}
+import com.avyeyes.util.Constants.{MaxImagesPerAvalanche, ScreenshotFilename, ScreenshotRequestFilename}
 import com.sksamuel.scrimage.nio.{GifWriter, JpegWriter, PngWriter}
 import com.sksamuel.scrimage.{Format, FormatDetector, Image}
 import org.apache.commons.io.IOUtils
@@ -17,6 +17,7 @@ import org.json4s.JsonAST.JValue
 import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.libs.json.{JsArray, JsString}
+import play.api.mvc.Result
 import securesocial.core.SecureSocial
 
 import scala.concurrent.Future
@@ -29,15 +30,15 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
 
   import authorizations._
 
-  private val JpegMimeType = "image/jpeg"
-  private val PngMimeType = "image/png"
-  private val GifMimeType = "image/gif"
+  private[controllers] val JpegMimeType = "image/jpeg"
+  private[controllers] val PngMimeType = "image/png"
+  private[controllers] val GifMimeType = "image/gif"
 
-  def upload(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
-    uploadImages(extId, editKeyOpt, request.user, request.body.files.map(_.ref.file))
+  def uploadImages(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
+    doImagesUpload(extId, editKeyOpt, request.user, request.body.files.map(_.ref.file))
   }
 
-  private[controllers] def uploadImages(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser], imageFiles: Seq[File]) = {
+  private[controllers] def doImagesUpload(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser], imageFiles: Seq[File]) = {
     if (!isAuthorizedToEdit(extId, user, editKeyOpt)) {
       logger.warn(s"Not authorized to add images to avalanche $extId")
       Future { Unauthorized }
@@ -86,16 +87,21 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     }
   }
 
-  def uploadScreenshot(avyExtId: String) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
-    if (!isAuthorizedToEdit(avyExtId, request.user, None)) {
-      logger.warn(s"Not authorized to add screenshot to avalanche $avyExtId")
+  def uploadScreenshot(extId: String) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
+    val uploadResult: Option[Future[Result]] = request.body.file(ScreenshotRequestFilename).map { formDataPart =>
+      doScreenshotUpload(extId, request.user, formDataPart.ref.file)
+    }
+    uploadResult.getOrElse(Future { BadRequest })
+  }
+
+  private[controllers] def doScreenshotUpload(extId: String, user: Option[AvyEyesUser], screenshotFile: File): Future[Result] = {
+    if (!isAuthorizedToEdit(extId, user, None)) {
+      logger.warn(s"Not authorized to add screenshot to avalanche $extId")
       Future { Unauthorized }
     } else {
-      request.body.file("screenshot").map { formDataPart =>
-        val imageBytes = IOUtils.toByteArray(new FileInputStream(formDataPart.ref.file))
-        logger.info(s"Uploading screenshot for new avalanche $avyExtId in ${imageBytes.size} bytes")
-        s3.uploadImage(avyExtId, ScreenshotFilename, JpegMimeType, imageBytes).map(_ => Ok)
-      }.getOrElse(Future { BadRequest })
+      val imageBytes = IOUtils.toByteArray(new FileInputStream(screenshotFile))
+      logger.info(s"Uploading screenshot for new avalanche $extId in ${imageBytes.size} bytes")
+      s3.uploadImage(extId, ScreenshotFilename, JpegMimeType, imageBytes).map(_ => Ok)
     }
   }
 

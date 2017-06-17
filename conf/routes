@@ -18,7 +18,7 @@ GET     /avalanche/:extId           com.avyeyes.controllers.SearchController.fin
 
 # Images
 POST    /avalanche/:extId/images/screenshot    com.avyeyes.controllers.ImageController.uploadScreenshot(extId)
-POST    /avalanche/:extId/images               com.avyeyes.controllers.ImageController.upload(extId, edit: Option[String])
+POST    /avalanche/:extId/images               com.avyeyes.controllers.ImageController.uploadImages(extId, edit: Option[String])
 PUT     /avalanche/:extId/images/:filename     com.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])
 PUT     /avalanche/:extId/images               com.avyeyes.controllers.ImageController.order(extId, edit: Option[String])
 DELETE  /avalanche/:extId/images/:filename     com.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])

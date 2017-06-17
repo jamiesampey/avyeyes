@@ -15,5 +15,6 @@ object Constants {
 	val ExtIdChars = "0123456789abcdefghijklmnopqrstuvwxyz"
 
   val ScreenshotFilename = "screenshot.jpg"
+  val ScreenshotRequestFilename = "screenshot"
   val FacebookSharePageFilename = "facebook-share.html"
 }

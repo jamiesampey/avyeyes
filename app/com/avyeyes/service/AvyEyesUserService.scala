@@ -95,14 +95,14 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     ))
   }
 
-  override def saveToken(token: MailToken): Future[MailToken] = Future.successful {
+  def saveToken(token: MailToken): Future[MailToken] = Future.successful {
     tokens += (token.uuid -> token)
     token
   }
 
-  override def findToken(token: String): Future[Option[MailToken]] = Future.successful { tokens.get(token) }
+  def findToken(token: String): Future[Option[MailToken]] = Future.successful { tokens.get(token) }
 
-  override def deleteToken(uuid: String): Future[Option[MailToken]] = {
+  def deleteToken(uuid: String): Future[Option[MailToken]] = {
     Future.successful {
       tokens.get(uuid) match {
         case Some(token) =>
@@ -113,7 +113,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     }
   }
 
-  override def deleteExpiredTokens: Unit = {
+  def deleteExpiredTokens: Unit = {
     tokens --= tokens.filter(_._2.isExpired).keys
   }
 }
