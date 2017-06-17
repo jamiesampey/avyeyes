@@ -1,11 +1,11 @@
 package com.avyeyes.controllers
 
-import java.io.{ByteArrayInputStream, FileInputStream}
+import java.io.{ByteArrayInputStream, File, FileInputStream}
 import java.util.UUID
 import javax.inject.Inject
 
 import com.avyeyes.data.CachedDAL
-import com.avyeyes.model.AvalancheImage
+import com.avyeyes.model.{AvalancheImage, AvyEyesUser}
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService}
 import com.avyeyes.system.UserEnvironment
 import com.avyeyes.util.Constants.{MaxImagesPerAvalanche, ScreenshotFilename}
@@ -22,7 +22,9 @@ import securesocial.core.SecureSocial
 import scala.concurrent.Future
 
 
-class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizations: Authorizations, logger: Logger, val configService: ConfigurationService, implicit val env: UserEnvironment)
+class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizations: Authorizations,
+                                logger: Logger, val configService: ConfigurationService,
+                                implicit val env: UserEnvironment)
   extends SecureSocial with Json4sMethods {
 
   import authorizations._
@@ -32,7 +34,11 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
   private val GifMimeType = "image/gif"
 
   def upload(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
-    if (!isAuthorizedToEdit(extId, request.user, editKeyOpt)) {
+    uploadImages(extId, editKeyOpt, request.user, request.body.files.map(_.ref.file))
+  }
+
+  private[controllers] def uploadImages(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser], imageFiles: Seq[File]) = {
+    if (!isAuthorizedToEdit(extId, user, editKeyOpt)) {
       logger.warn(s"Not authorized to add images to avalanche $extId")
       Future { Unauthorized }
     } else dal.countAvalancheImages(extId).flatMap {
@@ -43,9 +49,9 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
 
       case siblingImageCount =>
 
-        val jValueFutures: Seq[Future[JValue]] = request.body.files.map { formDataPart =>
-          val origFilename = formDataPart.filename
-          val imageBytes = IOUtils.toByteArray(new FileInputStream(formDataPart.ref.file))
+        val jValueFutures: Seq[Future[JValue]] = imageFiles.map { imageFile =>
+          val origFilename = imageFile.getName
+          val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
 
           val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
             case Some(Format.PNG) => (PngWriter(), PngMimeType)

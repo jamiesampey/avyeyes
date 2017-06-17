@@ -4,6 +4,7 @@ import java.util.UUID
 
 import com.avyeyes.model._
 import com.avyeyes.model.enums.{ExperienceLevel, _}
+import com.avyeyes.service.AvyEyesUserService._
 import com.avyeyes.util.Constants._
 import org.apache.commons.lang3.RandomStringUtils
 import org.joda.time.DateTime
@@ -105,5 +106,20 @@ trait Generators {
     size = size,
     sortOrder = sort_order,
     caption = caption
+  )
+
+  protected def genAvyEyesUser = for {
+    createTime <- genDateTime()
+    lastActivityTime <- genDateTime()
+    email <- Gen.alphaStr
+    passwordHash <- Gen.option(Gen.alphaStr)
+    roles <- Gen.listOf(Gen.oneOf(SiteOwnerRole, AdminRole))
+  } yield AvyEyesUser(
+    createTime = createTime,
+    lastActivityTime = lastActivityTime,
+    email = email,
+    passwordHash = passwordHash,
+    profiles = List.empty,
+    roles = roles
   )
 }
