@@ -108,7 +108,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
 
     "allow a screenshot upload for a new report" in {
       mockExtIdService.reservationExists(testExtId) returns true
-      mockS3Service.uploadImage(Matchers.eq(testExtId), any, any, any) returns Future.successful { }
+      mockS3Service.uploadImage(Matchers.eq(testExtId), any, any, any) returns Future.successful {}
 
       val result = subject.doScreenshotUpload(testExtId, None, testImageFile).resolve
 
@@ -194,6 +194,44 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       val result = call(action, requestWithUser).resolve
 
       there was one(mockDAL).updateAvalancheImageCaption(testExtId, baseFilename, None)
+      result.header.status mustEqual OK
+    }
+  }
+
+  "Image delete" should {
+    "not allow an image delete if the user is not authorized to edit" in new WithApplication(appBuilder.build) {
+      val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
+      val existingImage = genAvalancheImage.generate.copy(avalanche = testExtId, filename = s"$baseFilename.jpg")
+
+      mockExtIdService.reservationExists(testExtId) returns false
+
+      val requestWithUser = RequestWithUser(None, None, FakeRequest())
+
+      val action = subject.delete(testExtId, baseFilename, None)
+      val result = call(action, requestWithUser).resolve
+
+      there was no(mockDAL).getAvalancheImage(any, any)
+      result.header.status mustEqual UNAUTHORIZED
+    }
+
+    "set an image caption within the report edit window" in new WithApplication(appBuilder.build) {
+      val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
+      val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
+      val existingImage = genAvalancheImage.generate.copy(avalanche = testExtId, filename = s"$baseFilename.jpg")
+
+      mockDAL.getAvalanche(Matchers.eq(testExtId)) returns Some(existingAvalanche)
+      mockDAL.getAvalancheImage(testExtId, baseFilename) returns Future(Some(existingImage))
+      mockDAL.deleteAvalancheImage(testExtId, existingImage.filename) returns Future.successful {}
+      mockExtIdService.reservationExists(testExtId) returns false
+
+      val requestWithUser = RequestWithUser(None, None, FakeRequest())
+
+      val action = subject.delete(testExtId, baseFilename, Some(existingAvalanche.editKey.toString))
+      val result = call(action, requestWithUser).resolve
+
+      there was one(mockDAL).getAvalancheImage(testExtId, baseFilename)
+      there was one(mockDAL).deleteAvalancheImage(testExtId, existingImage.filename)
+      there was one(mockS3Service).deleteImage(testExtId, existingImage.filename)
       result.header.status mustEqual OK
     }
   }
