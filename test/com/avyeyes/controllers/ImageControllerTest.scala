@@ -147,4 +147,54 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       result.header.status mustEqual OK
     }
   }
+
+  "Image caption" should {
+    "not allow an image caption if the user is not authorized to edit" in new WithApplication(appBuilder.build) {
+      mockExtIdService.reservationExists(testExtId) returns false
+
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString("")))
+      val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
+
+      val action = subject.caption(testExtId, "a129554e-859f-45ca-9ffb-b88d5b3e3bfa", None)
+      val result = call(action, requestWithUser).resolve
+
+      there was no(mockDAL).updateAvalancheImageCaption(any, any, any)
+      result.header.status mustEqual UNAUTHORIZED
+    }
+
+    "set an image caption within the report edit window" in new WithApplication(appBuilder.build) {
+      val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
+      mockExtIdService.reservationExists(testExtId) returns false
+      mockDAL.getAvalanche(Matchers.eq(testExtId)) returns Some(existingAvalanche)
+
+      val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
+
+      val imageCaption = "here's a picture of an avalanche"
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString(imageCaption)))
+      val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
+
+      val action = subject.caption(testExtId, baseFilename, Some(existingAvalanche.editKey.toString))
+      val result = call(action, requestWithUser).resolve
+
+      there was one(mockDAL).updateAvalancheImageCaption(testExtId, baseFilename, Some(imageCaption))
+      result.header.status mustEqual OK
+    }
+
+    "clear an image caption within the report edit window" in new WithApplication(appBuilder.build) {
+      val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
+      mockExtIdService.reservationExists(testExtId) returns false
+      mockDAL.getAvalanche(Matchers.eq(testExtId)) returns Some(existingAvalanche)
+
+      val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
+
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString("")))
+      val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
+
+      val action = subject.caption(testExtId, baseFilename, Some(existingAvalanche.editKey.toString))
+      val result = call(action, requestWithUser).resolve
+
+      there was one(mockDAL).updateAvalancheImageCaption(testExtId, baseFilename, None)
+      result.header.status mustEqual OK
+    }
+  }
 }
