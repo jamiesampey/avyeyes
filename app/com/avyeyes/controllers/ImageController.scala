@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import java.io.{ByteArrayInputStream, File, FileInputStream}
 import java.util.UUID
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import com.avyeyes.data.CachedDAL
 import com.avyeyes.model.{AvalancheImage, AvyEyesUser}
@@ -22,7 +22,7 @@ import securesocial.core.SecureSocial
 
 import scala.concurrent.Future
 
-
+@Singleton
 class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizations: Authorizations,
                                 logger: Logger, val configService: ConfigurationService,
                                 implicit val env: UserEnvironment)

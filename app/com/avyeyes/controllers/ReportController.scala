@@ -21,8 +21,10 @@ import scala.util.{Failure, Success, Try}
 @Singleton
 class ReportController @Inject()(implicit val dal: CachedDAL, idService: ExternalIdService, s3: AmazonS3Service,
                                  val configService: ConfigurationService, val logger: Logger, mailerClient: MailerClient,
-                                 implicit val env: UserEnvironment, val messagesApi: MessagesApi)
+                                 authorizations: Authorizations, implicit val env: UserEnvironment, val messagesApi: MessagesApi)
   extends SecureSocial with Json4sMethods with I18nSupport {
+
+  import authorizations._
 
   def newReportId = Action { implicit request => Try(idService.reserveNewExtId) match {
     case Success(newExtId) =>
@@ -55,11 +57,14 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
     case Success(avalancheFromData) =>
       logger.info(s"Successfully parsed updated avalanche $extId from report data. Validating fields")
       dal.getAvalanche(extId) match {
-        case Some(existingAvalanche) =>
+        case Some(existingAvalanche) if isAuthorizedToEdit(extId, request.user, editKeyOpt) =>
           dal.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime))
           if (avalancheFromData.viewable) s3.allowPublicImageAccess(extId) else s3.denyPublicImageAccess(extId)
           logger.info(s"Avalanche $extId successfully updated")
           Ok
+        case Some(_) =>
+          logger.warn(s"Received update request for $extId but edit is not authorized")
+          Unauthorized
         case _ =>
           logger.error(s"Received update request for non-existent avalanche")
           InternalServerError
