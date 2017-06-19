@@ -5,7 +5,7 @@ import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDAL}
-import com.avyeyes.model.Coordinate
+import com.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.ConfigurationService
 import com.avyeyes.system.UserEnvironment
@@ -31,16 +31,20 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
 
   def find(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
+    findAvalanche(extId, editKeyOpt, request.user)
+  }
+
+  private[controllers] def findAvalanche(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser]) = {
     logger.debug(s"Requested avalanche $extId")
 
     dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
-      if (isAdmin(request.user)) {
+      if (isAdmin(user)) {
         logger.debug(s"Sending admin data for avalanche $extId")
         Ok(writeJson(avalancheAdminData(avalanche, images)))
-      } else if (isAuthorizedToEdit(extId, request.user, editKeyOpt)) {
+      } else if (isAuthorizedToEdit(extId, user, editKeyOpt)) {
         logger.debug(s"Sending read-write data for avalanche $extId")
         Ok(writeJson(avalancheReadWriteData(avalanche, images)))
-      } else if (isAuthorizedToView(extId, request.user)) {
+      } else if (isAuthorizedToView(extId, user)) {
         logger.debug(s"Sending read-only data for avalanche $extId")
         Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
       } else NotFound
@@ -52,7 +56,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
       case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
       case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
       case _ => Try(dal.getAvalanches(query)) match {
-        case Success(avalanches) if avalanches.isEmpty => BadRequest(Messages("msg.avySearchZeroMatches"))
+        case Success(avalanches) if avalanches.isEmpty => NotFound(Messages("msg.avySearchZeroMatches"))
         case Success(avalanches) =>
           val filteredAvalanches = (camPitchParam, camLngParam, camLatParam) match {
             case (Some(camPitch), Some(camLng), Some(camLat)) if camPitch > CamPitchCutoff =>
