@@ -141,4 +141,7 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
 
     def * = (email, role) <> (AppUserRoleAssignmentRow.tupled, AppUserRoleAssignmentRow.unapply)
   }
+
+  // for testing
+  private[data] def execute(a: DBIOAction[Unit, NoStream, Effect.Schema]) = db.run(a)
 }

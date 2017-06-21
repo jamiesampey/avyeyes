@@ -1,33 +1,29 @@
 package com.avyeyes.data
 
 import com.avyeyes.model.Avalanche
-import com.avyeyes.util.FutureOps._
-import org.specs2.execute._
-import org.specs2.mock.Mockito
+import helpers.BaseSpec
 import org.specs2.specification._
-import play.api.db.Databases
+import play.api.Configuration
 
 import scala.concurrent.Future
 
 
-trait DatabaseTest extends AroundEach with Mockito {
+trait DatabaseTest extends BaseSpec with BeforeAll {
 
   protected val subject: AvyEyesDatabase
 
-  implicit val executionContext = scala.concurrent.ExecutionContext.global
+  implicit val ec = scala.concurrent.ExecutionContext.global
+
+  protected val h2Configuration = Configuration(
+    "slick.dbs.default.driver" -> "slick.driver.H2Driver$",
+    "slick.dbs.default.db.driver" -> "org.h2.Driver",
+    "slick.dbs.default.db.url" -> "jdbc:h2:mem:avyeyes_test_db;DB_CLOSE_DELAY=-1",
+    "slick.dbs.default.db.user" -> "sa"
+  )
 
   import slick.jdbc.H2Profile.api._
 
-//  protected lazy val cache = new TrieMap[String, Avalanche]()
-//  protected lazy val dal = new MemoryMapCachedDAL(H2Driver, h2DataSource, cache)
-
-  def around[T: AsResult](t: => T): Result = Databases.withInMemory(
-      name = "avyeyesTestDb",
-      urlOptions = Map("MODE" -> "PostgreSQL")
-    ) { database =>
-      createSchema
-      AsResult(t)
-    }
+  def beforeAll: Unit = subject.execute(sqlu"DROP ALL OBJECTS;" >> createSchema).resolve
 
   private def createSchema = (
     subject.AvalancheRows.schema ++
@@ -39,6 +35,6 @@ trait DatabaseTest extends AroundEach with Mockito {
     subject.AppUserRoleAssignmentRows.schema
   ).create
 
-  protected def insertAvalanches(avalanches: Avalanche*)(implicit dal: CachedDao) = Future.sequence(avalanches.toList.map(dal.insertAvalanche)).resolve
+  protected def insertAvalanches(avalanches: Avalanche*)(implicit dao: CachedDao): Unit = Future.sequence(avalanches.toList.map(dao.insertAvalanche)).resolve
 }
 
