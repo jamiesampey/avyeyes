@@ -26,8 +26,7 @@ trait DatabaseTest extends AroundEach with Mockito {
       urlOptions = Map("MODE" -> "PostgreSQL")
     ) { database =>
       createSchema
-      try AsResult(t)
-      finally database.shutdown()
+      AsResult(t)
     }
 
   private def createSchema = (
@@ -40,6 +39,6 @@ trait DatabaseTest extends AroundEach with Mockito {
     subject.AppUserRoleAssignmentRows.schema
   ).create
 
-  protected def insertAvalanches(avalanches: Avalanche*)(implicit dal: CachedDAL) = Future.sequence(avalanches.toList.map(dal.insertAvalanche)).resolve
+  protected def insertAvalanches(avalanches: Avalanche*)(implicit dal: CachedDao) = Future.sequence(avalanches.toList.map(dal.insertAvalanche)).resolve
 }
 

@@ -5,8 +5,8 @@ import com.google.inject.ImplementedBy
 
 import scala.concurrent.Future
 
-@ImplementedBy(classOf[MemoryMapCachedDAL])
-trait CachedDAL {
+@ImplementedBy(classOf[AvalancheDao])
+trait CachedDao {
   def countAvalanches(viewable: Option[Boolean]): Int
   def getAvalanche(extId: String): Option[Avalanche]
   def getAvalanches(query: AvalancheSpatialQuery): List[Avalanche]

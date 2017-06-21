@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.model.Avalanche
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService, ExternalIdService}
@@ -19,7 +19,7 @@ import securesocial.core.SecureSocial
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class ReportController @Inject()(implicit val dal: CachedDAL, idService: ExternalIdService, s3: AmazonS3Service,
+class ReportController @Inject()(implicit val dao: CachedDao, idService: ExternalIdService, s3: AmazonS3Service,
                                  val configService: ConfigurationService, val logger: Logger, mailerClient: MailerClient,
                                  authorizations: Authorizations, implicit val env: UserEnvironment, val messagesApi: MessagesApi)
   extends SecureSocial with Json4sMethods with I18nSupport {
@@ -41,7 +41,7 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
 
       val now = DateTime.now
       val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
-      dal.insertAvalanche(avalanche)
+      dao.insertAvalanche(avalanche)
       s3.allowPublicFileAccess(extId)
       sendSubmissionEmails(avalanche)
 
@@ -56,9 +56,9 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
   def updateReport(extId: String, editKeyOpt: Option[String]) = UserAwareAction(parse.tolerantText) { implicit request => parseAvalancheFromRequest match {
     case Success(avalancheFromData) =>
       logger.info(s"Successfully parsed updated avalanche $extId from report data. Validating fields")
-      dal.getAvalanche(extId) match {
+      dao.getAvalanche(extId) match {
         case Some(existingAvalanche) if isAuthorizedToEdit(extId, request.user, editKeyOpt) =>
-          dal.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime))
+          dao.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime))
           if (avalancheFromData.viewable) s3.allowPublicImageAccess(extId) else s3.denyPublicImageAccess(extId)
           logger.info(s"Avalanche $extId successfully updated")
           Ok
@@ -75,7 +75,7 @@ class ReportController @Inject()(implicit val dal: CachedDAL, idService: Externa
   }}
 
   def deleteReport(extId: String) = SecuredAction(WithRole(AdminRoles)) { implicit request => Try {
-    dal.deleteAvalanche(extId).resolve
+    dao.deleteAvalanche(extId).resolve
     s3.deleteAllFiles(extId)
   } match {
     case Success(_) => logger.info(s"Avalanche $extId deleted"); Ok

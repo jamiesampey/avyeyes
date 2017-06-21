@@ -4,7 +4,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDAL}
+import com.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDao}
 import com.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.ConfigurationService
@@ -21,7 +21,7 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class SearchController @Inject()(val configService: ConfigurationService, val logger: Logger,
-                                 val dal: CachedDAL, authorizations: Authorizations,
+                                 val dao: CachedDao, authorizations: Authorizations,
                                  val messagesApi: MessagesApi, implicit val env: UserEnvironment)
   extends SecureSocial with Json4sMethods with I18nSupport {
 
@@ -37,7 +37,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   private[controllers] def findAvalanche(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser]) = {
     logger.debug(s"Requested avalanche $extId")
 
-    dal.getAvalanche(extId).map { avalanche => dal.getAvalancheImages(extId).map { images =>
+    dao.getAvalanche(extId).map { avalanche => dao.getAvalancheImages(extId).map { images =>
       if (isAdmin(user)) {
         logger.debug(s"Sending admin data for avalanche $extId")
         Ok(writeJson(avalancheAdminData(avalanche, images)))
@@ -55,7 +55,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
     camAltParam match {
       case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
       case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
-      case _ => Try(dal.getAvalanches(query)) match {
+      case _ => Try(dao.getAvalanches(query)) match {
         case Success(avalanches) if avalanches.isEmpty => NotFound(Messages("msg.avySearchZeroMatches"))
         case Success(avalanches) =>
           val filteredAvalanches = (camPitchParam, camLngParam, camLatParam) match {
@@ -74,7 +74,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   }
 
   def tabularSearch(query: AvalancheTableQuery) = SecuredAction(WithRole(AdminRoles)) { implicit request =>
-    Try(dal.getAvalanchesAdmin(query)) match {
+    Try(dao.getAvalanchesAdmin(query)) match {
       case Success(result) => Ok(writeAdminTableJson(result))
       case Failure(ex) =>
         logger.error("Failed to retrieve avalanches for table", ex)

@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCache: AvalancheCache, idService: ExternalIdService, val logger: Logger)
+class DataMaintenance @Inject()(dao: CachedDao, s3: AmazonS3Service, avalancheCache: AvalancheCache, idService: ExternalIdService, val logger: Logger)
   extends Actor {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
@@ -19,7 +19,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
     case DataMaintenance.run =>
       logger.info("Running data maintenance")
 
-      dal.getAvalanchesFromDisk onComplete {
+      dao.getAvalanchesFromDisk onComplete {
         case Success(avalanchesFromDisk) if avalanchesFromDisk.nonEmpty =>
           avalancheCache.avalancheMap.clear
           avalancheCache.avalancheMap ++= avalanchesFromDisk.map(a => a.extId -> a).toMap
@@ -34,7 +34,7 @@ class DataMaintenance @Inject()(dal: CachedDAL, s3: AmazonS3Service, avalancheCa
             }
           }}
 
-          dal.deleteOrphanAvalancheImages()
+          dao.deleteOrphanAvalancheImages()
 
         case Failure(ex) => logger.error("Failed to retrieve avalanches from DB. Cannot perform S3 and DB data maintenance", ex)
       }

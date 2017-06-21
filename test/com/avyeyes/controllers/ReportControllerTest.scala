@@ -1,6 +1,6 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.model.Avalanche
 import com.avyeyes.service.AvyEyesUserService.AdminRole
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService, ExternalIdService}
@@ -24,17 +24,17 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
   private val testExtId = "49fk349d"
 
-  private val mockDAL = mock[CachedDAL]
+  private val mockDao = mock[CachedDao]
   private val mockS3Service = mock[AmazonS3Service]
   private val mockExtIdService = mock[ExternalIdService]
 
   def before = {
-    Mockito.reset(mockDAL, mockS3Service, mockExtIdService)
+    Mockito.reset(mockDao, mockS3Service, mockExtIdService)
   }
 
   val appBuilder = new GuiceApplicationBuilder()
     .overrides(bind[ExternalIdService].toInstance(mockExtIdService))
-    .overrides(bind[CachedDAL].toInstance(mockDAL))
+    .overrides(bind[CachedDao].toInstance(mockDao))
     .overrides(bind[AmazonS3Service].toInstance(mockS3Service))
 
   val injector = appBuilder.injector()
@@ -42,7 +42,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
   "Report submission" should {
     "retrieve a new external ID" in new WithApplication(appBuilder.build) {
-      implicit val implicitDALForIdService = mockDAL
+      implicit val implicitDALForIdService = mockDao
 
       mockExtIdService.reserveNewExtId returns testExtId
       val requestWithUser = RequestWithUser(None, None, FakeRequest())
@@ -64,7 +64,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val result = call(action, newReportRequest).resolve
 
       val avalancheArgCapture = capture[Avalanche]
-      there was one(mockDAL).insertAvalanche(avalancheArgCapture.capture)
+      there was one(mockDao).insertAvalanche(avalancheArgCapture.capture)
 
       result.header.status mustEqual OK
       avalancheArgCapture.value.extId mustEqual newAvalanche.extId
@@ -76,7 +76,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
   "Report update" should {
     "update an avalanche report with a valid edit key" in new WithApplication(appBuilder.build) {
       val originalAvalanche = genAvalanche.generate.copy(extId = testExtId, createTime = DateTime.now.minusDays(1))
-      mockDAL.getAvalanche(testExtId) returns Some(originalAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(originalAvalanche)
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
@@ -87,7 +87,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val result = call(action, updateRequest).resolve
 
       val avalancheArgCapture = capture[Avalanche]
-      there was one(mockDAL).updateAvalanche(avalancheArgCapture.capture)
+      there was one(mockDao).updateAvalanche(avalancheArgCapture.capture)
 
       result.header.status mustEqual OK
       avalancheArgCapture.value.extId mustEqual originalAvalanche.extId
@@ -98,7 +98,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
     "disallow an update without an edit key" in new WithApplication(appBuilder.build) {
       val originalAvalanche = genAvalanche.generate.copy(extId = testExtId, createTime = DateTime.now.minusDays(1))
-      mockDAL.getAvalanche(testExtId) returns Some(originalAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(originalAvalanche)
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
@@ -109,12 +109,12 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val result = call(action, updateRequest).resolve
 
       result.header.status mustEqual UNAUTHORIZED
-      there was no(mockDAL).updateAvalanche(any)
+      there was no(mockDao).updateAvalanche(any)
     }
 
     "disallow an update with an expired edit key" in new WithApplication(appBuilder.build) {
       val originalAvalanche = genAvalanche.generate.copy(extId = testExtId, createTime = DateTime.now.minus(AvalancheEditWindow.toMillis + 10))
-      mockDAL.getAvalanche(testExtId) returns Some(originalAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(originalAvalanche)
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
@@ -125,7 +125,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val result = call(action, updateRequest).resolve
 
       result.header.status mustEqual UNAUTHORIZED
-      there was no(mockDAL).updateAvalanche(any)
+      there was no(mockDao).updateAvalanche(any)
     }
   }
 
@@ -137,7 +137,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val result = call(action, deleteRequest).resolve
 
       result.header.status mustEqual UNAUTHORIZED
-      there was no(mockDAL).deleteAvalanche(any)
+      there was no(mockDao).deleteAvalanche(any)
       there was no(mockS3Service).deleteAllFiles(any)
     }
 

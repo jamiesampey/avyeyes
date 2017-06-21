@@ -4,7 +4,7 @@ import java.io.{ByteArrayInputStream, File, FileInputStream}
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.model.{AvalancheImage, AvyEyesUser}
 import com.avyeyes.service.{AmazonS3Service, ConfigurationService}
 import com.avyeyes.system.UserEnvironment
@@ -23,7 +23,7 @@ import securesocial.core.SecureSocial
 import scala.concurrent.Future
 
 @Singleton
-class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizations: Authorizations,
+class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizations: Authorizations,
                                 logger: Logger, val configService: ConfigurationService,
                                 implicit val env: UserEnvironment)
   extends SecureSocial with Json4sMethods {
@@ -42,7 +42,7 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     if (!isAuthorizedToEdit(extId, user, editKeyOpt)) {
       logger.warn(s"Not authorized to add images to avalanche $extId")
       Future { Unauthorized }
-    } else dal.countAvalancheImages(extId).flatMap {
+    } else dao.countAvalancheImages(extId).flatMap {
 
       case siblingImageCount if siblingImageCount >= MaxImagesPerAvalanche =>
         logger.warn(s"Cannot add more images to avalanche $extId")
@@ -68,7 +68,7 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
           logger.trace(s"Uploading image $newFilename (originally $origFilename) for avalanche $extId")
 
           s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
-            dal.insertAvalancheImage(AvalancheImage(
+            dao.insertAvalancheImage(AvalancheImage(
               createTime = DateTime.now,
               avalanche = extId,
               filename = newFilename,
@@ -77,7 +77,7 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
               size = rewrittenBytes.length,
               sortOrder = siblingImageCount
             )).map { _ =>
-              dal.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
+              dao.getAvalanche(extId).foreach { case avalanche if avalanche.viewable => s3.allowPublicImageAccess(extId) }
               ("extId" -> extId) ~ ("filename" -> newFilename) ~ ("origFilename" -> origFilename)
             }
           }
@@ -111,7 +111,7 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
       Unauthorized
     } else (request.body \ "order").as[JsArray] match {
       case JsArray(jsValues) =>
-        dal.updateAvalancheImageOrder(avyExtId, jsValues.map(_.toString).toList)
+        dao.updateAvalancheImageOrder(avyExtId, jsValues.map(_.toString).toList)
         logger.debug(s"Successfully set image order on avalanche $avyExtId")
         Ok
       case _ =>
@@ -126,11 +126,11 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
       Unauthorized
     } else (request.body \ "caption").as[JsString] match {
       case JsString(caption) if caption.nonEmpty =>
-        dal.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
+        dao.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
         logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
         Ok
       case JsString("") =>
-        dal.updateAvalancheImageCaption(avyExtId, baseFilename, None)
+        dao.updateAvalancheImageCaption(avyExtId, baseFilename, None)
         logger.debug(s"Successfully cleared caption on $avyExtId/$baseFilename")
         Ok
       case _ =>
@@ -143,10 +143,10 @@ class ImageController @Inject()(dal: CachedDAL, s3: AmazonS3Service, authorizati
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to delete image for avalanche $avyExtId")
       Future { Unauthorized }
-    } else dal.getAvalancheImage(avyExtId, baseFilename).flatMap {
+    } else dao.getAvalancheImage(avyExtId, baseFilename).flatMap {
         case Some(image) =>
           s3.deleteImage(avyExtId, image.filename)
-          dal.deleteAvalancheImage(avyExtId, image.filename)
+          dao.deleteAvalancheImage(avyExtId, image.filename)
         case None => Future.failed(new RuntimeException("Couldn't find image"))
       }.map { _ =>
         logger.debug(s"Successfully deleted image $avyExtId/$baseFilename")

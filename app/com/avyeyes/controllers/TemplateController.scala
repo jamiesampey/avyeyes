@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import javax.inject._
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.model.enums._
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.ConfigurationService
@@ -16,7 +16,7 @@ import securesocial.core.SecureSocial
 
 @Singleton
 class TemplateController @Inject()(val configService: ConfigurationService, val logger: Logger, val messagesApi: MessagesApi,
-                                   val dal: CachedDAL, authorizations: Authorizations, implicit val env: UserEnvironment)
+                                   val dao: CachedDao, authorizations: Authorizations, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
 
   import authorizations._
@@ -26,7 +26,7 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     logger.trace(s"Responding to request for avalanche $extId")
 
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
-      dal.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a))) else None
+      dao.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a))) else None
 
     Ok(com.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
   }

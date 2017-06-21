@@ -1,6 +1,6 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.data.{AvalancheSpatialQuery, CachedDAL, GeoBounds}
+import com.avyeyes.data.{AvalancheSpatialQuery, CachedDao, GeoBounds}
 import com.avyeyes.service.AvyEyesUserService.AdminRole
 import com.avyeyes.service.ConfigurationService
 import com.avyeyes.util.Constants.CamAltitudeLimit
@@ -22,14 +22,14 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
   private val testExtId = "49fk349d"
 
-  private val mockDAL = mock[CachedDAL]
+  private val mockDao = mock[CachedDao]
 
   def before = {
-    Mockito.reset(mockDAL)
+    Mockito.reset(mockDao)
   }
 
   val appBuilder = new GuiceApplicationBuilder()
-    .overrides(bind[CachedDAL].toInstance(mockDAL))
+    .overrides(bind[CachedDao].toInstance(mockDao))
 
   val injector = appBuilder.injector()
   val subject = injector.instanceOf[SearchController]
@@ -39,14 +39,14 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = false)
       val adminUser = genAvyEyesUser.generate.copy(roles = List(AdminRole))
 
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
-      mockDAL.getAvalancheImages(testExtId) returns Future { List.empty }
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalancheImages(testExtId) returns Future { List.empty }
 
       val result = subject.findAvalanche(testExtId, None, Some(adminUser))
       val jsonResponse = contentAsJson(result)
 
-      there was one(mockDAL).getAvalanche(testExtId)
-      there was one(mockDAL).getAvalancheImages(testExtId)
+      there was one(mockDao).getAvalanche(testExtId)
+      there was one(mockDao).getAvalancheImages(testExtId)
       result.resolve.header.status mustEqual OK
       (jsonResponse \ "extId").as[JsString].value mustEqual testExtId
       (jsonResponse \ "viewable").as[JsBoolean].value must beFalse
@@ -56,8 +56,8 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
     "retrieve read/write data for an existing avalanche with a valid edit key" in {
       val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
 
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
-      mockDAL.getAvalancheImages(testExtId) returns Future { List.empty }
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalancheImages(testExtId) returns Future { List.empty }
 
       val result = subject.findAvalanche(testExtId, Some(existingAvalanche.editKey.toString), None)
       val jsonResponse = contentAsJson(result)
@@ -72,8 +72,8 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
     "retrieve read-only data for an existing avalanche" in {
       val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
 
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
-      mockDAL.getAvalancheImages(testExtId) returns Future { List.empty }
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalancheImages(testExtId) returns Future { List.empty }
 
       val result = subject.findAvalanche(testExtId, None, None)
       val jsonResponse = contentAsJson(result)
@@ -104,7 +104,7 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
     }
 
     "return a 404 if no avalanches were found" in new WithApplication(appBuilder.build) {
-      mockDAL.getAvalanches(any) returns List.empty
+      mockDao.getAvalanches(any) returns List.empty
       val spatialQuery = AvalancheSpatialQuery(geoBounds = Some(GeoBounds(-104, -105, 39, 38)))
 
       val action = subject.spatialSearch(spatialQuery, Some(CamAltitudeLimit-1000), None, None, None)
@@ -118,7 +118,7 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       val avalancheTwo = genAvalanche.generate
       val avalanches = List(avalancheOne, avalancheTwo)
 
-      mockDAL.getAvalanches(any) returns avalanches
+      mockDao.getAvalanches(any) returns avalanches
       val spatialQuery = AvalancheSpatialQuery(geoBounds = Some(GeoBounds(-104, -105, 39, 38)))
 
       val action = subject.spatialSearch(spatialQuery, Some(CamAltitudeLimit-1000), None, None, None)

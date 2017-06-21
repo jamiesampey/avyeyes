@@ -1,6 +1,6 @@
 package com.avyeyes.controllers
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.service.AvyEyesUserService._
 import com.avyeyes.service.ExternalIdService
 import com.avyeyes.util.Constants.AvalancheEditWindow
@@ -16,16 +16,16 @@ class AuthorizationsTest extends BaseSpec with BeforeEach {
 
   private val testExtId = "49fk349d"
 
-  private val mockDAL = mock[CachedDAL]
+  private val mockDao = mock[CachedDao]
   private val mockExtIdService = mock[ExternalIdService]
 
   def before = {
-    Mockito.reset(mockDAL, mockExtIdService)
+    Mockito.reset(mockDao, mockExtIdService)
   }
 
   val appBuilder = new GuiceApplicationBuilder()
     .overrides(bind[ExternalIdService].toInstance(mockExtIdService))
-    .overrides(bind[CachedDAL].toInstance(mockDAL))
+    .overrides(bind[CachedDao].toInstance(mockDao))
 
   val injector = appBuilder.injector()
   val subject = injector.instanceOf[Authorizations]
@@ -44,13 +44,13 @@ class AuthorizationsTest extends BaseSpec with BeforeEach {
 
     "allow anyone to view a viewable avalanche" in {
       val existingAvalanche = genAvalanche.generate.copy(viewable = true)
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
       subject.isAuthorizedToView(testExtId, None) must beTrue
     }
 
     "disallow viewing of a non-viewable avalanche" in {
       val existingAvalanche = genAvalanche.generate.copy(viewable = false)
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
       subject.isAuthorizedToView(testExtId, None) must beFalse
     }
   }
@@ -69,7 +69,7 @@ class AuthorizationsTest extends BaseSpec with BeforeEach {
     "allow editing of an avalanche with an edit key" in {
       mockExtIdService.reservationExists(testExtId) returns false
       val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minusDays(1))
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
 
       subject.isAuthorizedToEdit(testExtId, None, Some(existingAvalanche.editKey.toString)) must beTrue
     }
@@ -77,7 +77,7 @@ class AuthorizationsTest extends BaseSpec with BeforeEach {
     "disallow editing of an avalanche after the edit window has expired" in {
       mockExtIdService.reservationExists(testExtId) returns false
       val existingAvalanche = genAvalanche.generate.copy(extId = testExtId, viewable = true, createTime = DateTime.now.minus(AvalancheEditWindow.toMillis + 10))
-      mockDAL.getAvalanche(testExtId) returns Some(existingAvalanche)
+      mockDao.getAvalanche(testExtId) returns Some(existingAvalanche)
 
       subject.isAuthorizedToEdit(testExtId, None, Some(existingAvalanche.editKey.toString)) must beFalse
     }

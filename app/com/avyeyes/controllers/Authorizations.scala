@@ -2,7 +2,7 @@ package com.avyeyes.controllers
 
 import javax.inject.Inject
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.model.{Avalanche, AvyEyesUser, AvyEyesUserRole}
 import com.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.avyeyes.service.ExternalIdService
@@ -11,14 +11,14 @@ import org.joda.time.{DateTime, Seconds}
 import play.api.mvc.RequestHeader
 import securesocial.core.Authorization
 
-class Authorizations @Inject()(dal: CachedDAL, idService: ExternalIdService) {
+class Authorizations @Inject()(dao: CachedDao, idService: ExternalIdService) {
 
   def isAuthorizedToView(extId: String, user: Option[AvyEyesUser]): Boolean = {
-    isAdmin(user) || dal.getAvalanche(extId).exists(_.viewable)
+    isAdmin(user) || dao.getAvalanche(extId).exists(_.viewable)
   }
 
   def isAuthorizedToEdit(extId: String, user: Option[AvyEyesUser], editKey: Option[String]): Boolean = {
-    isAdmin(user) || idService.reservationExists(extId) || editKeyIsValid(dal.getAvalanche(extId), editKey)
+    isAdmin(user) || idService.reservationExists(extId) || editKeyIsValid(dao.getAvalanche(extId), editKey)
   }
 
   def isAdmin(user: Option[AvyEyesUser]) = user.map(_.roles).exists(userRoles => userRoles.exists(AdminRoles.contains))

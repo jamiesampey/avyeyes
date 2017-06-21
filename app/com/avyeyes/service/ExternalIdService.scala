@@ -3,7 +3,7 @@ package com.avyeyes.service
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-import com.avyeyes.data.CachedDAL
+import com.avyeyes.data.CachedDao
 import com.avyeyes.util.Constants._
 import com.google.common.cache._
 import org.apache.commons.lang3.RandomStringUtils
@@ -14,17 +14,17 @@ class ExternalIdService @Inject()(logger: Logger) {
 
   val NewExternalIdAttemptLimit = 100
 
-  def reserveNewExtId(implicit dal: CachedDAL): String = {
+  def reserveNewExtId(implicit dao: CachedDao): String = {
     var extIdAttempt = ""
     var attemptCount = 0
-    
+
     do {
       extIdAttempt = RandomStringUtils.random(ExtIdLength, ExtIdChars)
       attemptCount += 1
       if (attemptCount >= NewExternalIdAttemptLimit) {
         throw new RuntimeException("Could not find an available ID")
       }
-    } while (reservationExists(extIdAttempt) || dal.getAvalanche(extIdAttempt).isDefined)
+    } while (reservationExists(extIdAttempt) || dao.getAvalanche(extIdAttempt).isDefined)
 
 
     ExternalIdService.cache.put(extIdAttempt, new DateTime)

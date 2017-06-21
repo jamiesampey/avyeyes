@@ -12,9 +12,9 @@ import play.api.inject.ApplicationLifecycle
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MemoryMapCachedDAL @Inject()(val dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache,
-                                   idService: ExternalIdService, val logger: Logger, val appLifecycle: ApplicationLifecycle)
-  extends CachedDAL with AvyEyesDatabase {
+class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avalancheCache: AvalancheCache,
+                             idService: ExternalIdService, val logger: Logger, val appLifecycle: ApplicationLifecycle)
+  extends CachedDao with AvyEyesDatabase {
 
   private val avalancheMap = avalancheCache.avalancheMap
 
