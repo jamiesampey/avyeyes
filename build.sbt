@@ -66,7 +66,7 @@ pipelineStages := Seq(rjs)
 //    copyDirectory(source = optimizedWebapp, target = origWebapp)
 //  }
 //}
-//
+
 //// xsbt-web-plugin config
 //containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
 //
@@ -81,22 +81,20 @@ pipelineStages := Seq(rjs)
 
 
 // sbt-jasmine-plugin config
-//Seq(jasmineSettings : _*)
-//
-//appJsDir <+= { sourceDirectory { src => src / "public" / "javascripts" } }
-//
-//appJsLibDir <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" }
-//
-//jasmineTestDir <+= sourceDirectory { src => src / "test" / "public" / "javascripts" }
-//
-//jasmineConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "test.dependencies.js" }
-//
-//jasmineRequireJsFile <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" / "require.js" }
-//
-//jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "public" / "javascripts" / "require.conf.js" }
-//
-//jasmineEdition := 2
-//
-//parallelExecution in Test := false
-//
+Seq(jasmineSettings : _*)
+
+appJsDir <+= { sourceDirectory { src => src / "public" / "javascripts" } }
+
+appJsLibDir <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" }
+
+jasmineTestDir <+= sourceDirectory { src => src / "test" / "javascripts" }
+
+jasmineConfFile <+= sourceDirectory { src => src / "test" / "javascripts" / "test.dependencies.js" }
+
+jasmineRequireJsFile <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" / "require.js" }
+
+jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "javascripts" / "require.conf.js" }
+
+jasmineEdition := 2
+
 //test in Test <<= (test in Test) dependsOn jasmine
