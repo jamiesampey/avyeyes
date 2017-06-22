@@ -82,19 +82,12 @@ pipelineStages := Seq(rjs)
 
 // sbt-jasmine-plugin config
 Seq(jasmineSettings : _*)
-
-appJsDir <+= { sourceDirectory { src => src / "public" / "javascripts" } }
-
-appJsLibDir <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" }
-
-jasmineTestDir <+= sourceDirectory { src => src / "test" / "javascripts" }
-
-jasmineConfFile <+= sourceDirectory { src => src / "test" / "javascripts" / "test.dependencies.js" }
-
-jasmineRequireJsFile <+= sourceDirectory { src => src / "public" / "javascripts" / "lib" / "require.js" }
-
-jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "javascripts" / "require.conf.js" }
-
 jasmineEdition := 2
+appJsDir <+= baseDirectory { base => base / "public/javascripts" }
+appJsLibDir <+= baseDirectory { base => base / "public" / "javascripts" / "lib" }
+jasmineTestDir <+= baseDirectory { base => base / "test" / "javascripts" }
+jasmineConfFile <+= baseDirectory { base => base / "test" / "javascripts" / "test.dependencies.js" }
+jasmineRequireJsFile <+= baseDirectory { base => base / "public" / "javascripts" / "lib" / "require.js" }
+jasmineRequireConfFile <+= baseDirectory { base => base / "test" / "javascripts" / "require.conf.js" }
 
 //test in Test <<= (test in Test) dependsOn jasmine
