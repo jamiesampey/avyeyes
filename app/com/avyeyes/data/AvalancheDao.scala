@@ -50,7 +50,7 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
     db.run(query.result).map(_.map(avalancheFromData))
   }
 
-  private def getAvalancheFromDisk(extId: String) = {
+  private[data] def getAvalancheFromDisk(extId: String) = {
     val query = for {
       avalanche <- AvalancheRows.filter(_.extId === extId)
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId

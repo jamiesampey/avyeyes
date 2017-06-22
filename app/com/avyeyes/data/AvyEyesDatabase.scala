@@ -14,6 +14,8 @@ import play.api.db.slick.HasDatabaseConfigProvider
 import play.api.inject.ApplicationLifecycle
 import slick.jdbc.JdbcProfile
 
+import scala.concurrent.Future
+
 
 trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickColumnMappers with SlickRowMappers {
 
@@ -143,5 +145,25 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
   }
 
   // for testing
-  private[data] def execute(a: DBIOAction[Unit, NoStream, Effect.Schema]) = db.run(a)
+  private[data] def createSchema: Future[Unit] = db.run(
+    sqlu"DROP ALL OBJECTS;" >> (
+    AvalancheRows.schema ++
+    AvalancheWeatherRows.schema ++
+    AvalancheClassificationRows.schema ++
+    AvalancheHumanRows.schema ++
+    AvalancheImageRows.schema ++
+    AppUserRows.schema ++
+    AppUserRoleAssignmentRows.schema
+  ).create)
+
+  // for testing
+  private[data] def deleteAllRows: Future[Int] = db.run(
+    AvalancheWeatherRows.delete >>
+    AvalancheClassificationRows.delete >>
+    AvalancheHumanRows.delete >>
+    AvalancheImageRows.delete >>
+    AvalancheRows.delete >>
+    AppUserRoleAssignmentRows.delete >>
+    AppUserRows.delete
+  )
 }
