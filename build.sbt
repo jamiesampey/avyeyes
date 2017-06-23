@@ -1,7 +1,6 @@
+import com.joescii.SbtJasminePlugin._
 import play.sbt.routes.RoutesKeys
-
-enablePlugins(PlayScala)
-enablePlugins(SbtWeb)
+import sbt.Keys.baseDirectory
 
 organization := "com.avyeyes"
 
@@ -9,7 +8,7 @@ name := "AvyEyes"
 
 version := "1.3.0"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
@@ -17,8 +16,6 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation"
 )
-
-resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
 
 RoutesKeys.routesImport ++= Seq(
   "com.avyeyes.controllers.TableQueryBinder._",
@@ -51,6 +48,22 @@ libraryDependencies ++= {
 
 pipelineStages := Seq(rjs)
 
+//test in Test <<= (test in Test) dependsOn jasmine
+
+lazy val avyeyes = (project in file("."))
+  .enablePlugins(PlayScala)
+  .enablePlugins(SbtWeb)
+  .settings(jasmineSettings: _*)
+  .settings(
+    jasmineEdition := 2,
+    appJsDir += baseDirectory.value / "public/javascripts",
+    appJsLibDir += baseDirectory.value / "public/javascripts/lib",
+    jasmineTestDir += baseDirectory.value / "test" / "javascripts",
+    jasmineConfFile += baseDirectory.value / "test" / "javascripts" / "test.dependencies.js",
+    jasmineRequireJsFile += baseDirectory.value / "public" / "javascripts" / "lib" / "require.js",
+    jasmineRequireConfFile += baseDirectory.value / "test" / "javascripts" / "require.conf.js"
+  )
+
 //lazy val mode = taskKey[String]("Build mode (dev or prod)")
 //
 //mode := sys.props.getOrElse("mode", default = "dev")
@@ -66,28 +79,3 @@ pipelineStages := Seq(rjs)
 //    copyDirectory(source = optimizedWebapp, target = origWebapp)
 //  }
 //}
-
-//// xsbt-web-plugin config
-//containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
-//
-//containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
-//
-//javaOptions in Tomcat ++= Seq(
-//  "-Xdebug",
-//  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
-//  "-Djavax.net.ssl.keyStore=misc/ssl/localKeystore.jks",
-//  "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
-//)
-
-
-// sbt-jasmine-plugin config
-Seq(jasmineSettings : _*)
-jasmineEdition := 2
-appJsDir <+= baseDirectory { base => base / "public/javascripts" }
-appJsLibDir <+= baseDirectory { base => base / "public" / "javascripts" / "lib" }
-jasmineTestDir <+= baseDirectory { base => base / "test" / "javascripts" }
-jasmineConfFile <+= baseDirectory { base => base / "test" / "javascripts" / "test.dependencies.js" }
-jasmineRequireJsFile <+= baseDirectory { base => base / "public" / "javascripts" / "lib" / "require.js" }
-jasmineRequireConfFile <+= baseDirectory { base => base / "test" / "javascripts" / "require.conf.js" }
-
-//test in Test <<= (test in Test) dependsOn jasmine
