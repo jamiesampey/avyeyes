@@ -49,9 +49,11 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     window.FB = fbSpy;
 
     var avyEyesUiStub = sinon.stub();
-    var uiWireStub = sinon.stub();
+    var uiWireStub = sinon.stub($.Deferred().promise());
+//    var mockLoadPromise = new Promise(function(resolve, reject) { resolve(); });
+//    var uiWireStub = sinon.stub(mockLoadPromise);
     avyEyesUiStub.returns({
-        wire: uiWireStub
+        loaded: uiWireStub
     });
 
     describe("AvyEyesView constructor", function () {

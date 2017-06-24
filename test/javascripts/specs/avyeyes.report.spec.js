@@ -59,7 +59,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         it("sets Ext ID fixture after successful ajax call", function() {
             setFixtures("<input id='rwAvyFormExtId'/>");
             var json = {extId: "4030jfj3"};
-            var jsonAjaxStub = sinon.stub($, "getJSON").withArgs("/rest/reserveExtId").callsArgWith(1, json).returns({fail: sinon.stub()});
+            var jsonAjaxStub = sinon.stub($, "getJSON").withArgs("/avalanche/newReportId").callsArgWith(1, json).returns({fail: sinon.stub()});
 
             avyReport.reserveExtId();
             expect($("#rwAvyFormExtId")).toHaveValue(json.extId);
