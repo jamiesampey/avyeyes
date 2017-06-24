@@ -56,8 +56,8 @@ lazy val avyeyes = (project in file("."))
   .settings(jasmineSettings: _*)
   .settings(
     jasmineEdition := 2,
-    appJsDir += baseDirectory.value / "public/javascripts",
-    appJsLibDir += baseDirectory.value / "public/javascripts/lib",
+    appJsDir += baseDirectory.value / "public" / "javascripts",
+    appJsLibDir += baseDirectory.value / "public" / "javascripts" / "lib",
     jasmineTestDir += baseDirectory.value / "test" / "javascripts",
     jasmineConfFile += baseDirectory.value / "test" / "javascripts" / "test.dependencies.js",
     jasmineRequireJsFile += baseDirectory.value / "public" / "javascripts" / "lib" / "require.js",
