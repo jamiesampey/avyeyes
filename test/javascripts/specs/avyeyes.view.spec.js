@@ -48,12 +48,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     };
     window.FB = fbSpy;
 
-    var avyEyesUiStub = sinon.stub();
-    var uiWireStub = sinon.stub($.Deferred().promise());
-//    var mockLoadPromise = new Promise(function(resolve, reject) { resolve(); });
-//    var uiWireStub = sinon.stub(mockLoadPromise);
-    avyEyesUiStub.returns({
-        loaded: uiWireStub
+    var avyEyesUiStub = sinon.stub().returns({
+        loaded: { then: function() {} }
     });
 
     describe("AvyEyesView constructor", function () {
@@ -61,7 +57,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         beforeEach(function (done) {
             cesiumSpy.reset();
-            uiWireStub.reset();
+            avyEyesUiStub.reset();
 
             new Squire()
             .mock("avyeyes.ui", avyEyesUiStub)
@@ -93,8 +89,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("wires the UI", function() {
-            expect(uiWireStub.callCount).toBe(1);
-            expect(uiWireStub.alwaysCalledWith(avyEyesView)).toBe(true);
+            expect(avyEyesUiStub.callCount).toBe(1);
+            expect(avyEyesUiStub.alwaysCalledWith(avyEyesView)).toBe(true);
         });
     });
 
@@ -114,16 +110,14 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("opens the jQuery UI utility dialog with the correct title and message", function() {
-            var title = "A Dialog Title"
             var htmlMsg = "<h1>Some important information</h1>"
-
             setFixtures("<div id='multiDialog'></div>");
 
             var jQueryMock = sinon.mock($.fn)
-            jQueryMock.expects("dialog").withArgs("option", "title", title).once();
+            jQueryMock.expects("dialog").withArgs("option", "title", "Info").once();
             jQueryMock.expects("dialog").withArgs("open").once();
 
-            avyEyesView.showModalDialog(title, htmlMsg);
+            avyEyesView.showModalDialog(htmlMsg);
 
             expect($("#multiDialog")).toHaveHtml(htmlMsg);
             jQueryMock.verify();

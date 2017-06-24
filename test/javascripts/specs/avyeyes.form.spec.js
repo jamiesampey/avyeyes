@@ -3,7 +3,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
     var viewStub = {
         getRequestParam: function(param) {
             return param;
-        }
+        },
+        showModalDialog: function(msg) { }
     };
 
     var avalanche = {
@@ -84,6 +85,16 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
       }]
     };
 
+    var acSources = {
+       AvalancheInterface: [{"label":"S - Layer of recent storm snow","value":"S"},{"label":"I - New/old snow interface","value":"I"},{"label":"O - Within old snow","value":"O"},{"label":"G - Ground, glacial ice, or firm","value":"G"},{"label":"U - Unknown","value":"U"}],
+       ExperienceLevel: [{"label":"Amateur with little or no avalanche education","value":"A0"},{"label":"Amateur with Level 1 education","value":"A1"},{"label":"Amateur with Level 2 education","value":"A2"},{"label":"On-snow pro with little or no avalanche education","value":"P0"},{"label":"On-snow pro with significant avalanche education","value":"P1"},{"label":"Professional avalanche forecaster or technician","value":"P2"}],
+       WindSpeed: [{"label":"Calm","value":"Calm"},{"label":"Light breeze","value":"LightBreeze"},{"label":"Moderate breeze","value":"ModerateBreeze"},{"label":"Strong breeze","value":"StrongBreeze"},{"label":"Gale","value":"Gale"},{"label":"Storm","value":"Storm"}],
+       AvalancheTriggerModifier: [{"label":"r - Remote release","value":"r"},{"label":"y - Sympathetic release","value":"y"},{"label":"c - Controlled or intentional release","value":"c"},{"label":"u - Unintentional release","value":"u"}],
+       AvalancheType: [{"label":"L - Loose-snow avalanche","value":"L"},{"label":"WL - Wet loose-snow avalanche","value":"WL"},{"label":"SS - Soft slab avalanche","value":"SS"},{"label":"HS - Hard slab avalanche","value":"HS"},{"label":"WS - Wet slab avalanche","value":"WS"},{"label":"I - Ice fall or avalanche","value":"I"},{"label":"SF - Slush flow","value":"SF"},{"label":"C - Cornice fall (w/o avalanche)","value":"C"},{"label":"R - Roof avalanche","value":"R"}],
+       ModeOfTravel: [{"label":"Skier","value":"Skier"},{"label":"Snowboarder","value":"Snowboarder"},{"label":"Snowmobiler","value":"Snowmobiler"},{"label":"Snowshoer","value":"Snowshoer"},{"label":"Hiker","value":"Hiker"},{"label":"Climber","value":"Climber"},{"label":"Motorist","value":"Motorist"},{"label":"Other","value":"Other"}],
+       AvalancheTrigger: [{"category":"Natural Triggers","label":"N - Natural avalanche trigger","value":"N"},{"category":"Natural Triggers","label":"NC - Cornice fall","value":"NC"},{"category":"Natural Triggers","label":"NE - Earthquake","value":"NE"},{"category":"Natural Triggers","label":"NI - Ice fall","value":"NI"},{"category":"Natural Triggers","label":"NL - Loose snow avalanche","value":"NL"},{"category":"Natural Triggers","label":"NS - Slab avalanche","value":"NS"},{"category":"Natural Triggers","label":"NR - Rock fall","value":"NR"},{"category":"Natural Triggers","label":"NO - Unclassified natural trigger","value":"NO"},{"category":"Artificial Triggers: Explosive","label":"AA - Artillery","value":"AA"},{"category":"Artificial Triggers: Explosive","label":"AE - Thrown or placed explosive","value":"AE"},{"category":"Artificial Triggers: Explosive","label":"AL - Avalauncher","value":"AL"},{"category":"Artificial Triggers: Explosive","label":"AB - Above snow air blast","value":"AB"},{"category":"Artificial Triggers: Explosive","label":"AC - Cornice fall from human or explosive","value":"AC"},{"category":"Artificial Triggers: Explosive","label":"AX - Gas exploder","value":"AX"},{"category":"Artificial Triggers: Explosive","label":"AH - Explosive placed from helicopter","value":"AH"},{"category":"Artificial Triggers: Explosive","label":"AP - Pre-placed remote explosive","value":"AP"},{"category":"Artificial Triggers: Misc","label":"AW - Wildlife","value":"AW"},{"category":"Artificial Triggers: Misc","label":"AU - Unknown artificial trigger","value":"AU"},{"category":"Artificial Triggers: Misc","label":"AO - Unclassified artificial trigger","value":"AO"},{"category":"Artificial Triggers: Vehicle","label":"AM - Snowmobile","value":"AM"},{"category":"Artificial Triggers: Vehicle","label":"AK - Snowcat","value":"AK"},{"category":"Artificial Triggers: Vehicle","label":"AV - Vehicle","value":"AV"},{"category":"Artificial Triggers: Human","label":"AS - Skier","value":"AS"},{"category":"Artificial Triggers: Human","label":"AR - Snowboarder","value":"AR"},{"category":"Artificial Triggers: Human","label":"AI - Snowshoer","value":"AI"},{"category":"Artificial Triggers: Human","label":"AF - Foot penetration","value":"AF"}],
+       Direction: [{"label":"N","value":"N"},{"label":"NE","value":"NE"},{"label":"E","value":"E"},{"label":"SE","value":"SE"},{"label":"S","value":"S"},{"label":"SW","value":"SW"},{"label":"W","value":"W"},{"label":"NW","value":"NW"}]
+    }
 
     describe("Display read-only form", function() {
         var avyForm;
@@ -95,6 +106,8 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 load: twttrLoadStub
             }
         };
+
+        window.AutoCompleteSources = acSources;
 
         beforeEach(function(done) {
             twttrLoadStub.reset();
@@ -410,15 +423,23 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("highlight erroneous fields", function() {
-            setFixtures("<input id='rwAvyFormSubmitterEmail'/>"
-                        + "<input id='rwAvyFormAreaName'/>"
-                        + "<input id='rwAvyFormDate'/>");
-            var errorFields = ["rwAvyFormSubmitterEmail", "rwAvyFormAreaName"];
+            setFixtures("<input id='rwAvyFormSubmitterEmail' value='joebob'/>"
+                + "<input id='rwAvyFormSubmitterExp'/>"
+                + "<input id='rwAvyFormSubmitterExpAC'/>"
+                + "<input id='rwAvyFormAreaName'/>"
+                + "<input id='rwAvyFormDate'/>"
+                + "<input id='rwAvyFormAngle' value='abc'/>"
+                + "<input id='rwAvyFormAspect'/>"
+                + "<input id='rwAvyFormAspectAC'/>");
 
-            avyForm.highlightReportErrorFields(errorFields);
+            avyForm.validateReportFields();
 
             expect($("#rwAvyFormSubmitterEmail")).toHaveCss({border: "1px solid red"});
+            expect($("#rwAvyFormSubmitterExpAC")).toHaveCss({border: "1px solid red"});
             expect($("#rwAvyFormAreaName")).toHaveCss({border: "1px solid red"});
+            expect($("#rwAvyFormDate")).toHaveCss({border: "1px solid red"});
+            expect($("#rwAvyFormAngle")).toHaveCss({border: "1px solid red"});
+            expect($("#rwAvyFormAspectAC")).toHaveCss({border: "1px solid red"});
         });
     });
 
