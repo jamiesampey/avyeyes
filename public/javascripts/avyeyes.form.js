@@ -1,4 +1,5 @@
-define(['fancybox',
+define(['jquery',
+        'fancybox',
         'file-upload',
         '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
         ], function() {

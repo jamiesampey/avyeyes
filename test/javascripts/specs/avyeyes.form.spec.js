@@ -15,59 +15,32 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
       "areaName":"north side of jones",
       "date":"07-04-2015",
       "submitterEmail": "joe.bob@here.com",
-      "submitterExp":{
-        "value":"P2",
-        "label":"Professional avalanche forecaster or technician"
-      },
+      "submitterExp": "P2",
       "weather":{
         "recentSnow":15,
-        "recentWindSpeed":{
-          "value":"ModerateBreeze",
-          "label":"Moderate breeze"
-        },
-        "recentWindDirection":{
-          "value":"NW",
-          "label":"NW"
-        }
+        "recentWindSpeed": "ModerateBreeze",
+        "recentWindDirection": "NW",
       },
       "slope":{
-        "aspect":{
-          "value":"SW",
-          "label":"SW"
-        },
+        "aspect": "SW",
         "angle":28,
         "elevation":3866
       },
       "classification":{
-        "avyType":{
-          "value":"WL",
-          "label":"WL - Wet loose-snow avalanche"
-        },
-        "trigger":{
-          "value":"NE",
-          "label":"NE - Earthquake"
-        },
-        "triggerModifier":{
-          "value":"c",
-          "label":"c - A controlled or intentional release by the indicated trigger"
-        },
-        "interface":{
-          "value":"G",
-          "label":"G - Ground, glacial ice, or firm"
-        },
-        "rSize":1.5,
-        "dSize":3.0
+        "avyType": "WL",
+        "trigger": "NE",
+        "triggerModifier": "c",
+        "interface": "G",
+        "rSize": 1.5,
+        "dSize": 3.0
       },
       "humanNumbers":{
-        "modeOfTravel":{
-          "value":"Snowmobiler",
-          "label":"Snowmobiler"
-        },
-        "caught":0,
-        "partiallyBuried":1,
-        "fullyBuried":2,
-        "injured":3,
-        "killed":-1
+        "modeOfTravel": "Snowmobiler",
+        "caught": 0,
+        "partiallyBuried": 1,
+        "fullyBuried": 2,
+        "injured": 3,
+        "killed": -1
       },
       "comments":"North side of jones with pics",
       "images":[{
@@ -97,251 +70,254 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
        Direction: [{"label":"N","value":"N"},{"label":"NE","value":"NE"},{"label":"E","value":"E"},{"label":"SE","value":"SE"},{"label":"S","value":"S"},{"label":"SW","value":"SW"},{"label":"W","value":"W"},{"label":"NW","value":"NW"}]
     }
 
-//    describe("Display read-only form", function() {
-//        var avyForm;
-//
-//        var mousePos = {x: 523, y: 527};
-//        var twttrLoadStub = sinon.stub();
-//        window.twttr = {
-//            widgets: {
-//                load: twttrLoadStub
-//            }
-//        };
-//
-//        window.AutoCompleteSources = acSources;
-//
-//        beforeEach(function(done) {
-//            twttrLoadStub.reset();
-//
-//            new Squire()
-//            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
-//            .require(["avyeyes.form"], function(AvyForm) {
-//                avyForm = new AvyForm(viewStub);
-//                done();
-//            });
-//        });
-//
-//        it("sets title fields", function() {
-//            setFixtures("<span id='roAvyFormTitle'></span>"
-//                + "<span id='roAvyFormSubmitterExp'></span>"
-//                + "<a id='roAvyFormExtLink'/>"
-//                + "<td id='roAvyFormSocialFacebookContainer'></td>"
-//                + "<td id='roAvyFormSocialTwitterContainer'></td>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormTitle")).toHaveText(avalanche.title);
-//            expect($("#roAvyFormSubmitterExp")).toHaveText(avalanche.submitterExp.label);
-//            expect($("#roAvyFormExtLink")).toHaveAttr("href", avalanche.extUrl);
-//            expect($("#roAvyFormExtLink")).toHaveText(avalanche.extUrl);
-//            expect($("#roAvyFormSocialFacebookContainer")).not.toBeEmpty();
-//            expect($("#roAvyFormSocialTwitterContainer")).not.toBeEmpty();
-//        });
-//
-//        it("sets slope characteristic fields", function() {
-//            setFixtures("<span id='roAvyFormElevation'></span>"
-//                + "<span id='roAvyFormElevationFt'></span>"
-//                + "<span id='roAvyFormAspect'></span>"
-//                + "<span id='roAvyFormAngle'></span>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation + " m");
-//            expect($("#roAvyFormElevationFt")).toHaveText(Math.round(avalanche.slope.elevation * 3.28084) + " ft");
-//            expect($("#roAvyFormAspect")).toHaveText(avalanche.slope.aspect.label);
-//            expect($("#roAvyFormAngle")).toHaveText(avalanche.slope.angle);
-//        });
-//
-//        it("sets weather fields", function() {
-//            setFixtures("<span id='roAvyFormRecentSnow'></span>"
-//                + "<span id='roAvyFormRecentWindSpeed'></span>"
-//                + "<span id='roAvyFormRecentWindDirection'></span>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormRecentSnow")).toHaveText(avalanche.weather.recentSnow + " cm");
-//            expect($("#roAvyFormRecentWindSpeed")).toHaveText(avalanche.weather.recentWindSpeed.label);
-//            expect($("#roAvyFormRecentWindDirection")).toHaveText(avalanche.weather.recentWindDirection.label);
-//        });
-//
-//        it("sets classification fields", function() {
-//            setFixtures("<span id='roAvyFormType'></span>"
-//                + "<span id='roAvyFormTrigger'></span>"
-//                + "<span id='roAvyFormTriggerModifier'></span>"
-//                + "<span id='roAvyFormInterface'></span>"
-//                + "<span id='roAvyFormRSize'></span>"
-//                + "<span id='roAvyFormDSize'></span>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormType")).toHaveText(avalanche.classification.avyType.label);
-//            expect($("#roAvyFormTrigger")).toHaveText(avalanche.classification.trigger.label);
-//            expect($("#roAvyFormTriggerModifier")).toHaveText(avalanche.classification.triggerModifier.label);
-//            expect($("#roAvyFormInterface")).toHaveText(avalanche.classification.interface.label);
-//            expect($("#roAvyFormRSize")).toHaveText(avalanche.classification.rSize);
-//            expect($("#roAvyFormDSize")).toHaveText(avalanche.classification.dSize);
-//        });
-//
-//        it("sets human number fields", function() {
-//            setFixtures("<span id='roAvyFormNumCaught'></span>"
-//                + "<span id='roAvyFormNumPartiallyBuried'></span>"
-//                + "<span id='roAvyFormNumFullyBuried'></span>"
-//                + "<span id='roAvyFormNumInjured'></span>"
-//                + "<span id='roAvyFormNumKilled'></span>"
-//                + "<span id='roAvyFormModeOfTravel'></span>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormNumCaught")).toHaveText(avalanche.humanNumbers.caught);
-//            expect($("#roAvyFormNumPartiallyBuried")).toHaveText(avalanche.humanNumbers.partiallyBuried);
-//            expect($("#roAvyFormNumFullyBuried")).toHaveText(avalanche.humanNumbers.fullyBuried);
-//            expect($("#roAvyFormNumInjured")).toHaveText(avalanche.humanNumbers.injured);
-//            expect($("#roAvyFormNumKilled")).toHaveText("unspecified");
-//            expect($("#roAvyFormModeOfTravel")).toHaveText(avalanche.humanNumbers.modeOfTravel.label);
-//        });
-//
-//        it("sets comments and images", function() {
-//            setFixtures("<table><tr id='roAvyFormCommentsRow'><td>"
-//                + "<div id='roAvyFormComments'></div></td></tr></table>"
-//                + "<table><tr id='roAvyFormImageRow'><td>"
-//                + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
-//
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//
-//            expect($("#roAvyFormComments")).toHaveValue(avalanche.comments);
-//            expect($("#roAvyFormImageList li").length).toBe(3);
-//        });
-//
-//        it("sets up social buttons", function() {
-//            avyForm.displayReadOnlyForm(mousePos, avalanche);
-//            expect(twttrLoadStub.callCount).toBe(1);
-//        });
-//    });
-//
-//    describe("Display read-write form", function() {
-//        var avyForm;
-//
-//        beforeEach(function(done) {
-//            new Squire()
-//            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
-//            .require(["avyeyes.form"], function(AvyForm) {
-//                avyForm = new AvyForm(viewStub);
-//                sinon.stub(avyForm, "setImageCellContent");
-//                done();
-//            });
-//        });
-//
-//        it("Reset the image upload form", function() {
-//            var mock = sinon.mock(avyForm)
-//            mock.expects("resetReadWriteImageUpload").once();
-//            avyForm.displayReadWriteForm();
-//            mock.verify();
-//
-//            var mock2 = sinon.mock(avyForm)
-//            mock2.expects("resetReadWriteImageUpload").withExactArgs(avalanche.extId).once();
-//            avyForm.displayReadWriteForm(avalanche);
-//            mock2.verify();
-//        });
-//
-//        it("set ext ID and edit key fixture", function() {
-//            setFixtures("<input id='rwAvyFormExtId'/><input id='rwAvyFormEditKey'/>");
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//            expect($("#rwAvyFormExtId")).toHaveValue(avalanche.extId);
-//            expect($("#rwAvyFormEditKey")).toHaveValue("edit");
-//        });
-//
-//        it("set submitter info", function() {
-//            setFixtures("<input id='rwAvyFormSubmitterEmail'/>");
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormSubmitterExp", avalanche.submitterExp);
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//
-//            expect($("#rwAvyFormSubmitterEmail")).toHaveValue(avalanche.submitterEmail);
-//            expect(spy.callCount).toBe(1);
-//        });
-//
-//        it("set area name and date info", function() {
-//            setFixtures("<input id='rwAvyFormAreaName'/><input id='rwAvyFormDate'/>");
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//
-//            expect($("#rwAvyFormDate")).toHaveValue(avalanche.date);
-//            expect($("#rwAvyFormAreaName")).toHaveValue(avalanche.areaName);
-//        });
-//
-//        it("set auto complete fields", function() {
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//            var mock = sinon.mock(avyForm);
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSubmitterExp", avalanche.submitterExp).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindSpeed", avalanche.weather.recentWindSpeed).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindDirection", avalanche.weather.recentWindDirection).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormType", avalanche.classification.avyType).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTrigger", avalanche.classification.trigger).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTriggerModifier", avalanche.classification.triggerModifier).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormInterface", avalanche.classification.interface).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormAspect", avalanche.slope.aspect).once();
-//            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormModeOfTravel", avalanche.humanNumbers.modeOfTravel).once();
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//            mock.verify();
-//        });
-//
-//        it("set slider fields", function() {
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//            var mock = sinon.mock(avyForm);
-//            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormRsizeValue", avalanche.classification.rSize).once();
-//            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormDsizeValue", avalanche.classification.dSize).once();
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//            mock.verify();
-//        });
-//
-//        it("set spinner fields", function() {
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//            var mock = sinon.mock(avyForm);
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormRecentSnow", avalanche.weather.recentSnow).once();
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumCaught", avalanche.humanNumbers.caught).once();
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumPartiallyBuried", avalanche.humanNumbers.partiallyBuried).once();
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumFullyBuried", avalanche.humanNumbers.fullyBuried).once();
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumInjured", avalanche.humanNumbers.injured).once();
-//            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumKilled", avalanche.humanNumbers.killed).once();
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//            mock.verify();
-//        });
-//
-//        it("set slope info", function() {
-//            setFixtures("<input id='rwAvyFormElevation'/>"
-//                + "<input id='rwAvyFormElevationFt'/>"
-//                + "<input id='rwAvyFormAngle'/>");
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//
-//            expect($("#rwAvyFormElevation")).toHaveValue(avalanche.slope.elevation.toString());
-//            expect($("#rwAvyFormElevationFt")).toHaveValue(Math.round(avalanche.slope.elevation * 3.28084).toString());
-//            expect($("#rwAvyFormAngle")).toHaveValue(avalanche.slope.angle.toString());
-//        });
-//
-//        it("set comments, images and delete binding", function() {
-//            setFixtures("<textarea id='rwAvyFormComments'></textarea>"
-//                + "<div id='rwAvyFormImageGrid'></div>"
-//                + "<div id='rwAvyFormDeleteBinding'></div>");
-//            sinon.stub(avyForm, "resetReadWriteImageUpload");
-//            var sortableFnStub = sinon.stub($.fn, "sortable");
-//
-//            avyForm.displayReadWriteForm(avalanche);
-//
-//            expect($("#rwAvyFormComments")).toHaveValue(avalanche.comments);
-//            expect($("#rwAvyFormImageGrid .rwAvyFormImageCell").length).toBe(3);
-//            expect(sortableFnStub.callCount).toBe(3);
-//            expect($("#rwAvyFormDeleteBinding")).toHaveValue(avalanche.extId);
-//        });
-//    });
+    describe("Display read-only form", function() {
+        var avyForm;
+
+        var mousePos = {x: 523, y: 527};
+        var twttrLoadStub = sinon.stub();
+        window.twttr = {
+            widgets: {
+                load: twttrLoadStub
+            }
+        };
+
+        beforeEach(function(done) {
+            twttrLoadStub.reset();
+
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm(viewStub);
+                done();
+            });
+        });
+
+        it("sets title fields", function() {
+            setFixtures("<span id='roAvyFormTitle'></span>"
+                + "<span id='roAvyFormSubmitterExp'></span>"
+                + "<a id='roAvyFormExtLink'/>"
+                + "<td id='roAvyFormSocialFacebookContainer'></td>"
+                + "<td id='roAvyFormSocialTwitterContainer'></td>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormTitle")).toHaveText(avalanche.title);
+            expect($("#roAvyFormSubmitterExp")).toHaveText("Professional avalanche forecaster or technician");
+            expect($("#roAvyFormExtLink")).toHaveAttr("href", avalanche.extUrl);
+            expect($("#roAvyFormExtLink")).toHaveText(avalanche.extUrl);
+            expect($("#roAvyFormSocialFacebookContainer")).not.toBeEmpty();
+            expect($("#roAvyFormSocialTwitterContainer")).not.toBeEmpty();
+        });
+
+        it("sets slope characteristic fields", function() {
+            setFixtures("<span id='roAvyFormElevation'></span>"
+                + "<span id='roAvyFormElevationFt'></span>"
+                + "<span id='roAvyFormAspect'></span>"
+                + "<span id='roAvyFormAngle'></span>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation + " m");
+            expect($("#roAvyFormElevationFt")).toHaveText(Math.round(avalanche.slope.elevation * 3.28084) + " ft");
+            expect($("#roAvyFormAspect")).toHaveText("SW");
+            expect($("#roAvyFormAngle")).toHaveText(avalanche.slope.angle);
+        });
+
+        it("sets weather fields", function() {
+            setFixtures("<span id='roAvyFormRecentSnow'></span>"
+                + "<span id='roAvyFormRecentWindSpeed'></span>"
+                + "<span id='roAvyFormRecentWindDirection'></span>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormRecentSnow")).toHaveText(avalanche.weather.recentSnow + " cm");
+            expect($("#roAvyFormRecentWindSpeed")).toHaveText("Moderate breeze");
+            expect($("#roAvyFormRecentWindDirection")).toHaveText("NW");
+        });
+
+        it("sets classification fields", function() {
+            setFixtures("<span id='roAvyFormType'></span>"
+                + "<span id='roAvyFormTrigger'></span>"
+                + "<span id='roAvyFormTriggerModifier'></span>"
+                + "<span id='roAvyFormInterface'></span>"
+                + "<span id='roAvyFormRSize'></span>"
+                + "<span id='roAvyFormDSize'></span>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormType")).toHaveText("WL - Wet loose-snow avalanche");
+            expect($("#roAvyFormTrigger")).toHaveText("NE - Earthquake");
+            expect($("#roAvyFormTriggerModifier")).toHaveText("c - Controlled or intentional release");
+            expect($("#roAvyFormInterface")).toHaveText("G - Ground, glacial ice, or firm");
+            expect($("#roAvyFormRSize")).toHaveText(avalanche.classification.rSize);
+            expect($("#roAvyFormDSize")).toHaveText(avalanche.classification.dSize);
+        });
+
+        it("sets human number fields", function() {
+            setFixtures("<span id='roAvyFormNumCaught'></span>"
+                + "<span id='roAvyFormNumPartiallyBuried'></span>"
+                + "<span id='roAvyFormNumFullyBuried'></span>"
+                + "<span id='roAvyFormNumInjured'></span>"
+                + "<span id='roAvyFormNumKilled'></span>"
+                + "<span id='roAvyFormModeOfTravel'></span>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormNumCaught")).toHaveText(avalanche.humanNumbers.caught);
+            expect($("#roAvyFormNumPartiallyBuried")).toHaveText(avalanche.humanNumbers.partiallyBuried);
+            expect($("#roAvyFormNumFullyBuried")).toHaveText(avalanche.humanNumbers.fullyBuried);
+            expect($("#roAvyFormNumInjured")).toHaveText(avalanche.humanNumbers.injured);
+            expect($("#roAvyFormNumKilled")).toHaveText("unspecified");
+            expect($("#roAvyFormModeOfTravel")).toHaveText("Snowmobiler");
+        });
+
+        it("sets comments and images", function() {
+            setFixtures("<table><tr id='roAvyFormCommentsRow'><td>"
+                + "<div id='roAvyFormComments'></div></td></tr></table>"
+                + "<table><tr id='roAvyFormImageRow'><td>"
+                + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
+
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+
+            expect($("#roAvyFormComments")).toHaveValue(avalanche.comments);
+            expect($("#roAvyFormImageList li").length).toBe(3);
+        });
+
+        it("sets up social buttons", function() {
+            avyForm.displayReadOnlyForm(mousePos, avalanche);
+            expect(twttrLoadStub.callCount).toBe(1);
+        });
+    });
+
+    describe("Display read-write form", function() {
+        var avyForm;
+
+        window.AutoCompleteSources = acSources;
+
+        var getTestAutoCompleteObj = function(enumObjArray, code) {
+            return $(enumObjArray).filter(function() { return this.value == code; })[0];
+        };
+
+        beforeEach(function(done) {
+            new Squire()
+            .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
+            .require(["avyeyes.form"], function(AvyForm) {
+                avyForm = new AvyForm(viewStub);
+                sinon.stub(avyForm, "setImageCellContent");
+                done();
+            });
+        });
+
+        it("Reset the image upload form", function() {
+            var mock = sinon.mock(avyForm)
+            mock.expects("resetReadWriteImageUpload").once();
+            avyForm.displayReadWriteForm();
+            mock.verify();
+
+            var mock2 = sinon.mock(avyForm)
+            mock2.expects("resetReadWriteImageUpload").withExactArgs(avalanche.extId).once();
+            avyForm.displayReadWriteForm(avalanche);
+            mock2.verify();
+        });
+
+        it("set ext ID fixture", function() {
+            setFixtures("<input id='rwAvyFormExtId'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+            expect($("#rwAvyFormExtId")).toHaveValue(avalanche.extId);
+        });
+
+        it("set submitter info", function() {
+            setFixtures("<input id='rwAvyFormSubmitterEmail'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var spy = sinon.spy(avyForm, "setReadWriteAutocompleteVal").withArgs("#rwAvyFormSubmitterExp", getTestAutoCompleteObj(acSources["ExperienceLevel"], "P2"));
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormSubmitterEmail")).toHaveValue(avalanche.submitterEmail);
+            expect(spy.callCount).toBe(1);
+        });
+
+        it("set area name and date info", function() {
+            setFixtures("<input id='rwAvyFormAreaName'/><input id='rwAvyFormDate'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormDate")).toHaveValue(avalanche.date);
+            expect($("#rwAvyFormAreaName")).toHaveValue(avalanche.areaName);
+        });
+
+        it("set auto complete fields", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormSubmitterExp", getTestAutoCompleteObj(acSources["ExperienceLevel"], "P2")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindSpeed", getTestAutoCompleteObj(acSources["WindSpeed"], "ModerateBreeze")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormRecentWindDirection", getTestAutoCompleteObj(acSources["Direction"], "NW")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormType", getTestAutoCompleteObj(acSources["AvalancheType"], "WL")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTrigger", getTestAutoCompleteObj(acSources["AvalancheTrigger"], "NE")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormTriggerModifier", getTestAutoCompleteObj(acSources["AvalancheTriggerModifier"], "c")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormInterface", getTestAutoCompleteObj(acSources["AvalancheInterface"], "G")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormAspect", getTestAutoCompleteObj(acSources["Direction"], "SW")).once();
+            mock.expects("setReadWriteAutocompleteVal").withExactArgs("#rwAvyFormModeOfTravel", getTestAutoCompleteObj(acSources["ModeOfTravel"], "Snowmobiler")).once();
+
+            avyForm.displayReadWriteForm(avalanche);
+            mock.verify();
+        });
+
+        it("set slider fields", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormRsizeValue", avalanche.classification.rSize).once();
+            mock.expects("setReadWriteSliderVal").withExactArgs("#rwAvyFormDsizeValue", avalanche.classification.dSize).once();
+
+            avyForm.displayReadWriteForm(avalanche);
+            mock.verify();
+        });
+
+        it("set spinner fields", function() {
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var mock = sinon.mock(avyForm);
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormRecentSnow", avalanche.weather.recentSnow).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumCaught", avalanche.humanNumbers.caught).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumPartiallyBuried", avalanche.humanNumbers.partiallyBuried).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumFullyBuried", avalanche.humanNumbers.fullyBuried).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumInjured", avalanche.humanNumbers.injured).once();
+            mock.expects("setReadWriteSpinnerVal").withExactArgs("#rwAvyFormNumKilled", avalanche.humanNumbers.killed).once();
+
+            avyForm.displayReadWriteForm(avalanche);
+            mock.verify();
+        });
+
+        it("set slope info", function() {
+            setFixtures("<input id='rwAvyFormElevation'/>"
+                + "<input id='rwAvyFormElevationFt'/>"
+                + "<input id='rwAvyFormAngle'/>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormElevation")).toHaveValue(avalanche.slope.elevation.toString());
+            expect($("#rwAvyFormElevationFt")).toHaveValue(Math.round(avalanche.slope.elevation * 3.28084).toString());
+            expect($("#rwAvyFormAngle")).toHaveValue(avalanche.slope.angle.toString());
+        });
+
+        it("set comments, images and delete binding", function() {
+            setFixtures("<textarea id='rwAvyFormComments'></textarea>"
+                + "<div id='rwAvyFormImageGrid'></div>"
+                + "<div id='rwAvyFormDeleteBinding'></div>");
+            sinon.stub(avyForm, "resetReadWriteImageUpload");
+            var sortableFnStub = sinon.stub($.fn, "sortable");
+
+            avyForm.displayReadWriteForm(avalanche);
+
+            expect($("#rwAvyFormComments")).toHaveValue(avalanche.comments);
+            expect($("#rwAvyFormImageGrid .rwAvyFormImageCell").length).toBe(3);
+            expect(sortableFnStub.callCount).toBe(3);
+            expect($("#rwAvyFormDeleteBinding")).toHaveValue(avalanche.extId);
+        });
+    });
 
     describe("Reset image upload form", function() {
         var avyForm;

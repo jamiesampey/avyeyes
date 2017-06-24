@@ -48,7 +48,7 @@ libraryDependencies ++= {
 
 pipelineStages := Seq(rjs)
 
-//test in Test <<= (test in Test) dependsOn jasmine
+test in Test <<= (test in Test) dependsOn jasmine
 
 lazy val avyeyes = (project in file("."))
   .enablePlugins(PlayScala)
