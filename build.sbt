@@ -1,6 +1,8 @@
 import com.joescii.SbtJasminePlugin._
 import play.sbt.routes.RoutesKeys
 import sbt.Keys.baseDirectory
+import WebJs._
+import RjsKeys._
 
 organization := "com.avyeyes"
 
@@ -47,6 +49,16 @@ libraryDependencies ++= {
 }
 
 pipelineStages := Seq(rjs)
+buildProfile := JS.Object("skipDirOptimize" -> true, "optimizeCss" -> "standard")
+RjsKeys.modules := Seq(JS.Object("name" -> "main"), JS.Object("name" -> "main.admin"))
+RjsKeys.generateSourceMaps := false
+RjsKeys.paths := Map(
+  "jquery" -> ("lib/jquery", "lib/jquery"),
+  "jquery-ui" -> ("lib/jquery-ui", "lib/jquery-ui"),
+  "file-upload" -> ("lib/jquery.fileupload", "lib/jquery.fileupload"),
+  "fancybox" -> ("lib/jquery.fancybox", "lib/jquery.fancybox"),
+  "datatables" -> ("lib/jquery.datatables", "lib/jquery.datatables")
+)
 
 test in Test <<= (test in Test) dependsOn jasmine
 
@@ -63,19 +75,3 @@ lazy val avyeyes = (project in file("."))
     jasmineRequireJsFile += baseDirectory.value / "public" / "javascripts" / "lib" / "require.js",
     jasmineRequireConfFile += baseDirectory.value / "test" / "javascripts" / "require.conf.js"
   )
-
-//lazy val mode = taskKey[String]("Build mode (dev or prod)")
-//
-//mode := sys.props.getOrElse("mode", default = "dev")
-//
-//webappPostProcess := { origWebapp =>
-//  if (mode.value == "prod") {
-//    import sbt.IO._
-//    println("r.js -o build.js".!!)
-//    val optimizedWebapp = new File("target/webapp-rjs")
-//    assertDirectory(optimizedWebapp)
-//    delete(origWebapp)
-//    delete(optimizedWebapp / "build.txt")
-//    copyDirectory(source = optimizedWebapp, target = origWebapp)
-//  }
-//}
