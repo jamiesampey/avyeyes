@@ -4,7 +4,7 @@ require.config({
         'specs': EnvJasmine.specsDir,
         'jquery': EnvJasmine.libDir + "jquery",
         'jqueryui': EnvJasmine.libDir + "jquery-ui",
-        'file-upload': EnvJasmine.libDir + 'jquery.fileupload',
+        'fileupload': EnvJasmine.libDir + 'jquery.fileupload',
         'fancybox': EnvJasmine.libDir + 'jquery.fancybox',
         'jasmine-jquery': EnvJasmine.testDir + 'jasmine-jquery',
         'squire': EnvJasmine.testDir + "squire",
