@@ -1,4 +1,4 @@
-define(['jquery-ui'], function() {
+define(['jqueryui'], function() {
 
 function AvyReport(avyEyesView) {
 	this.view = avyEyesView;

@@ -5,10 +5,10 @@ var avyEyesView;
 require.config({
   baseUrl: "/assets/javascripts",
   paths: {
-    'jquery': './lib/jquery',
-    'jquery-ui': './lib/jquery-ui',
-    'file-upload': './lib/jquery.fileupload',
-    'fancybox': './lib/jquery.fancybox'
+    jquery: "lib/jquery",
+    jqueryui: "lib/jquery-ui",
+    fileupload: "lib/jquery.fileupload",
+    fancybox: "lib/jquery.fancybox"
   }
 });
 

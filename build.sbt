@@ -49,15 +49,18 @@ libraryDependencies ++= {
 }
 
 pipelineStages := Seq(rjs)
-buildProfile := JS.Object("skipDirOptimize" -> true, "optimizeCss" -> "standard")
-RjsKeys.modules := Seq(JS.Object("name" -> "main"), JS.Object("name" -> "main.admin"))
-RjsKeys.generateSourceMaps := false
-RjsKeys.paths := Map(
-  "jquery" -> ("lib/jquery", "lib/jquery"),
-  "jquery-ui" -> ("lib/jquery-ui", "lib/jquery-ui"),
-  "file-upload" -> ("lib/jquery.fileupload", "lib/jquery.fileupload"),
-  "fancybox" -> ("lib/jquery.fancybox", "lib/jquery.fancybox"),
-  "datatables" -> ("lib/jquery.datatables", "lib/jquery.datatables")
+buildProfile := JS.Object(
+  "skipDirOptimize" -> true,
+  "generateSourceMaps" -> false,
+  "optimizeCss" -> "standard",
+  "modules" -> Seq(JS.Object("name" -> "main"), JS.Object("name" -> "main.admin")),
+  "paths" -> Map(
+    "jquery" -> "lib/jquery",
+    "jqueryui" -> "lib/jquery-ui",
+    "fileupload" -> "lib/jquery.fileupload",
+    "fancybox" -> "lib/jquery.fancybox",
+    "datatables" -> "lib/jquery.datatables"
+  )
 )
 
 test in Test <<= (test in Test) dependsOn jasmine

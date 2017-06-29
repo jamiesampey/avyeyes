@@ -3,7 +3,7 @@ require.config({
     paths: {
         'specs': EnvJasmine.specsDir,
         'jquery': EnvJasmine.libDir + "jquery",
-        'jquery-ui': EnvJasmine.libDir + "jquery-ui",
+        'jqueryui': EnvJasmine.libDir + "jquery-ui",
         'file-upload': EnvJasmine.libDir + 'jquery.fileupload',
         'fancybox': EnvJasmine.libDir + 'jquery.fancybox',
         'jasmine-jquery': EnvJasmine.testDir + 'jasmine-jquery',

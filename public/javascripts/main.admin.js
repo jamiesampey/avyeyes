@@ -3,8 +3,8 @@
 require.config({
   baseUrl: "/assets/javascripts",
   paths: {
-      'jquery': './lib/jquery',
-      'datatables': './lib/jquery.datatables'
+      jquery: "lib/jquery",
+      datatables: "lib/jquery.datatables"
   }
 });
 

@@ -1,4 +1,4 @@
-define(['jquery-ui'], function() {
+define(['jqueryui'], function() {
 
 function AvyEyesUI(view) {
     this.loaded = new Promise(function(resolve, reject) {
