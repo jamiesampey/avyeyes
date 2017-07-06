@@ -1,0 +1,96 @@
+hostname = "localhost"
+httpPort = 9000
+
+play.modules.enabled += "com.avyeyes.system.Module"
+play.http.filters = "com.avyeyes.system.Filters"
+play.filters.csrf {
+  token.name = "csrfToken"
+  cookie.name = "csrfToken"
+}
+
+play.mailer {
+  host = "smtp.gmail.com"
+  port = 587
+  tls = yes
+  ssl = no
+  user = "avyeyes@gmail.com"
+  password = "TODO"
+  mock = yes
+}
+
+slick {
+  dbs {
+    default {
+      driver="slick.driver.PostgresDriver$"
+      db.driver = "org.postgresql.Driver"
+      db.url="TODO"
+      db.user = "TODO"
+      db.password = "TODO"
+    }
+  }
+}
+
+s3 {
+  bucket = "TODO"
+  fullaccess {
+    accessKeyId = "TODO"
+    secretAccessKey = "TODO"
+  }
+  readonly {
+    accessKeyId = "TODO"
+    secretAccessKey = "TODO"
+  }
+}
+
+securesocial {
+  bootstrapCssPath = "stylesheets/bootstrap.min.css"
+  faviconPath = "images/favicon.ico"
+  jqueryPath = "javascripts/lib/jquery.js"
+
+  onLogoutGoTo = /admin
+
+  #
+  # Enable SSL for oauth callback urls, login/signup/password recovery pages and the authenticator cookie
+  #
+  ssl = false
+
+  #
+  # The application host and optional port are used to compute the URLs users are pointed to.
+  # (see RoutesService.Default.absoluteUrl)
+  #
+  applicationHost = localhost
+  applicationPort = 9000
+
+  cookie {
+    idleTimeoutInMinutes = 30
+    absoluteTimeoutInMinutes = 720
+  }
+
+  userpass {
+    withUserNameSupport = false
+    sendWelcomeEmail = false
+    enableGravatarSupport = false
+    signupSkipLogin = false
+    tokenDuration = 60
+    tokenDeleteInterval = 5
+    minimumPasswordLength = 8
+    enableTokenJob = true
+    hasher = bcrypt
+  }
+
+  facebook {
+    authorizationUrl = "https://graph.facebook.com/oauth/authorize"
+    accessTokenUrl = "https://graph.facebook.com/oauth/access_token"
+    clientId = TODO
+    clientSecret = "TODO"
+    scope = "email"
+  }
+
+  google {
+    authorizationUrl = "https://accounts.google.com/o/oauth2/auth"
+    accessTokenUrl = "https://accounts.google.com/o/oauth2/token"
+    clientId = "TODO"
+    clientSecret = "TODO"
+    scope = "profile email"
+  }
+}

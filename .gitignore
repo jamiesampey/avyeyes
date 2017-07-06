@@ -9,7 +9,6 @@ props/
 .cache
 .history
 .lib/
-dist/*
 target/
 lib_managed/
 src_managed/
