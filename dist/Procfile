@@ -1,1 +1,1 @@
-web: ./bin/avyeyes -Dconfig.file=application.prod.conf
+web: bin/avyeyes -Dhttp.port=5000 -Dconfig.file=conf/application.prod.conf
