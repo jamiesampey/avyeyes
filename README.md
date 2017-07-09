@@ -17,9 +17,9 @@ A few example reports:
 - [May 24, 2015: Red Peak, Gore Range](http://avyeyes.com/ktqfgc3h)
 - [Apr 04, 2016: Straight Creek](http://avyeyes.com/u60ektle)
 
-##The Code:
+## The Code:
 
-The server side is written in Scala and runs in the [Play Framework](https://www.playframework.com/). Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking.
+The server side is written in [Scala](http://www.scala-lang.org/) and runs in the [Play Framework](https://www.playframework.com/). Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking and [ScalaCheck](http://www.scalacheck.org/) for test object generation.
 
 The client side is vanilla Javascript with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few additional jQuery plugins. Javascript code is organized/injected via AMD and optimized with [RequireJS](http://requirejs.org/). The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
 
