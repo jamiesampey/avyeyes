@@ -1,4 +1,4 @@
-![AvyEyes screenshot](public/images/avyeyes.jpg?raw=true =800x)
+![AvyEyes screenshot](avyeyes/public/images/avyeyes.jpg?raw=true =800x)
 
 **AvyEyes** is a web application for reporting and sharing avalanches in a three dimensional, interactive view. 
 
