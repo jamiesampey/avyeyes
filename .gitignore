@@ -5,8 +5,7 @@
 # avyeyes specific
 conf/application.conf
 conf/application.prod.conf
-conf/avyeyes.crt
-conf/avyeyes.key
+dist/.ebextensions/ssl.config
 
 # sbt specific
 .cache
