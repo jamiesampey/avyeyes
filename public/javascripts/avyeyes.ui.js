@@ -233,19 +233,6 @@ function wireSpinners() {
 }
 
 function wireButtons(view) {
-    $("#adminLogout").click(function() {
-        $.ajax({
-            url: "/logout?csrfToken=" + view.csrfTokenFromCookie(),
-            type: 'GET',
-            success: function(result) {
-                window.location.replace("/admin");
-            },
-            fail: function(jqxhr, textStatus, error) {
-                console.error("AvyEyes logout failure. Error: " + error);
-            }
-        });
-    });
-
     $("#northButton").click(function() {
         var camPos = view.cesiumViewer.camera.positionCartographic;
         var range = camPos.height < 20000 ? 20000 : camPos.height;

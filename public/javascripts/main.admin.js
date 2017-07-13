@@ -54,21 +54,4 @@ function wireDataTable() {
     dataTableObj.dataTable().fnSettings().oScroll.sY = calcDataTableHeight();
     dataTableObj.dataTable().fnDraw();
   });
-
-  $("#adminLogout").click(function() {
-      var docCookie = "; " + document.cookie;
-      var parts = docCookie.split("; csrfToken=");
-      var csrfTokenFromCookie = parts.length == 2 ? parts.pop().split(";").shift() : "";
-
-      $.ajax({
-          url: "/logout?csrfToken=" + csrfTokenFromCookie,
-          type: 'GET',
-          success: function(result) {
-              window.location.replace("/admin");
-          },
-          fail: function(jqxhr, textStatus, error) {
-              console.error("AvyEyes logout failure. Error: " + error);
-          }
-      });
-  });
 }

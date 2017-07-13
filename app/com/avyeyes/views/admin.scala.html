@@ -7,7 +7,7 @@
       <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
   </head>
   <body>
-    <div id="adminDiv"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a href="#" id="adminLogout">@messages("label.avyAdminLogout")</a></div>
+    <div id="adminDiv"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a id="adminLogout" href="@securesocial.controllers.routes.LoginPage.logout()">@messages("label.avyAdminLogout")</a></div>
 
       <table id="avyAdminLayoutTable">
           <tr id="avyAdminHeaderRow">

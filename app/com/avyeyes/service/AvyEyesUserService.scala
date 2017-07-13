@@ -6,7 +6,7 @@ import com.avyeyes.data.UserDao
 import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.Logger
-import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
+import securesocial.core.{AuthenticationMethod, BasicProfile, OAuth2Info, PasswordInfo}
 import securesocial.core.providers.{FacebookProvider, GoogleProvider, MailToken}
 import securesocial.core.services.{SaveMode, UserService}
 
@@ -37,7 +37,9 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
     }
 
     dao.findUser(email).map( _.map { avyEyesUser =>
+      val oauth2InfoOpt: Option[OAuth2Info] = None
       val passwordInfoOpt = avyEyesUser.passwordHash.map (pwHash => PasswordInfo("bcrypt", pwHash))
+
       BasicProfile(
         providerId = providerId,
         userId = email,
@@ -47,6 +49,7 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
         email = Some(email),
         avatarUrl = None,
         authMethod = authMethod,
+        oAuth2Info = oauth2InfoOpt,
         passwordInfo = passwordInfoOpt
       )
     })

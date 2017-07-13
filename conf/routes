@@ -1,9 +1,4 @@
-# SecureSocial
 GET     /admin                      com.avyeyes.controllers.TemplateController.admin
-GET     /login                      securesocial.controllers.LoginPage.login
-GET     /logout                     securesocial.controllers.LoginPage.logout
-GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
-POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 
 # Avalanche report
 GET     /avalanche/newReportId      com.avyeyes.controllers.ReportController.newReportId
@@ -28,4 +23,5 @@ GET     /                           com.avyeyes.controllers.TemplateController.i
 GET     /:extId                     com.avyeyes.controllers.TemplateController.index(extId, edit: Option[String])
 
 # Public assets
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file        controllers.Assets.versioned(path = "/public", file: Asset)
+->      /auth                securesocial.Routes
