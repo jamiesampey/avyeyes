@@ -6,13 +6,13 @@ import com.avyeyes.data.UserDao
 import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.Logger
-import securesocial.core.{AuthenticationMethod, BasicProfile, OAuth2Info, PasswordInfo}
-import securesocial.core.providers.{FacebookProvider, GoogleProvider, MailToken}
+import securesocial.core.providers.MailToken
 import securesocial.core.services.{SaveMode, UserService}
+import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
 
 import scala.collection.concurrent.TrieMap
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserService[AvyEyesUser] {
@@ -21,38 +21,27 @@ class AvyEyesUserService @Inject()(dao: UserDao, logger: Logger) extends UserSer
 
   override def find(providerId: String, userId: String): Future[Option[BasicProfile]] = {
     logger.debug(s"Finding user by providerId/userId: $providerId/$userId")
-    findUser(userId, providerId)
+
+    dao.findUser(userId).map( _.map { avyEyesUser =>
+      logger.debug(s"Found user ${avyEyesUser.email} in the database")
+
+      BasicProfile(
+        providerId = providerId,
+        userId = avyEyesUser.email,
+        firstName = None,
+        lastName = None,
+        fullName = None,
+        email = Some(avyEyesUser.email),
+        avatarUrl = None,
+        authMethod = AuthenticationMethod.UserPassword,
+        passwordInfo = avyEyesUser.passwordHash.map (pwHash => PasswordInfo("bcrypt", pwHash))
+      )
+    })
   }
 
   override def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
     logger.debug(s"Finding user by providerId/email: $providerId/$email")
-    findUser(email, providerId)
-  }
-
-  private def findUser(email: String, providerId: String): Future[Option[BasicProfile]] = {
-    val authMethod = providerId match {
-      case FacebookProvider.Facebook => AuthenticationMethod.OAuth2
-      case GoogleProvider.Google => AuthenticationMethod.OAuth2
-      case _ => AuthenticationMethod.UserPassword
-    }
-
-    dao.findUser(email).map( _.map { avyEyesUser =>
-      val oauth2InfoOpt: Option[OAuth2Info] = None
-      val passwordInfoOpt = avyEyesUser.passwordHash.map (pwHash => PasswordInfo("bcrypt", pwHash))
-
-      BasicProfile(
-        providerId = providerId,
-        userId = email,
-        firstName = None,
-        lastName = None,
-        fullName = None,
-        email = Some(email),
-        avatarUrl = None,
-        authMethod = authMethod,
-        oAuth2Info = oauth2InfoOpt,
-        passwordInfo = passwordInfoOpt
-      )
-    })
+    Future(None)
   }
 
   override def save(profile: BasicProfile, mode: SaveMode): Future[AvyEyesUser] = {

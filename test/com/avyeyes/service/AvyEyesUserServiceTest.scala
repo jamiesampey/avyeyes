@@ -5,8 +5,8 @@ import com.avyeyes.model.AvyEyesUser
 import helpers.BaseSpec
 import org.joda.time.DateTime
 import play.api.Logger
+import securesocial.core.providers.UsernamePasswordProvider
 import securesocial.core.{AuthenticationMethod, PasswordInfo}
-import securesocial.core.providers.{FacebookProvider, UsernamePasswordProvider}
 
 import scala.concurrent.Future
 
@@ -27,17 +27,7 @@ class AvyEyesUserServiceTest extends BaseSpec {
 
   "AvyEyesUserService" should {
     "Find a user by user ID" in {
-      val userProfile = subject.find(FacebookProvider.Facebook, adminUser.email).resolve.get
-
-      userProfile.userId mustEqual adminUser.email
-      userProfile.providerId mustEqual FacebookProvider.Facebook
-      userProfile.email must beSome(adminUser.email)
-      userProfile.authMethod mustEqual AuthenticationMethod.OAuth2
-      userProfile.passwordInfo must beSome(PasswordInfo("bcrypt", adminUser.passwordHash.get, None))
-    }
-
-    "Find a user by email and provider ID" in {
-      val userProfile = subject.findByEmailAndProvider(adminUser.email, UsernamePasswordProvider.UsernamePassword).resolve.get
+      val userProfile = subject.find(UsernamePasswordProvider.UsernamePassword, adminUser.email).resolve.get
 
       userProfile.userId mustEqual adminUser.email
       userProfile.providerId mustEqual UsernamePasswordProvider.UsernamePassword

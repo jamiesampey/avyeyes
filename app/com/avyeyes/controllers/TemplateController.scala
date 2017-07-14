@@ -23,7 +23,7 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
   private val s3Bucket = configService.getProperty("s3.bucket")
 
   def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
-    logger.trace(s"Responding to request for avalanche $extId")
+    logger.debug(s"Responding to request for avalanche $extId from user ${request.user.map(_.email).getOrElse("<NONE>")}")
 
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
       dao.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a))) else None
