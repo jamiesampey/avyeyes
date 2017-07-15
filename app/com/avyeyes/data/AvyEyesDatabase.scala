@@ -119,14 +119,15 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
     def pk = primaryKey("avalanche_image_pk", (avalanche, filename))
   }
 
-  private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String])
+  private[data] case class AppUserTableRow(createTime: DateTime, lastActivityTime: DateTime, email: String, passwordHash: Option[String], facebookId: Option[String])
   class AppUserTable(tag: Tag) extends Table[AppUserTableRow](tag, "app_user") {
     def createTime = column[DateTime]("create_time")
     def lastActivityTime = column[DateTime]("last_activity_time")
     def email = column[String]("email", O.PrimaryKey)
     def passwordHash = column[Option[String]]("password_hash")
+    def facebookId = column[Option[String]]("facebook_user_id")
 
-    def * = (createTime, lastActivityTime, email, passwordHash) <> (AppUserTableRow.tupled, AppUserTableRow.unapply)
+    def * = (createTime, lastActivityTime, email, passwordHash, facebookId) <> (AppUserTableRow.tupled, AppUserTableRow.unapply)
   }
 
   class AppRoleTable(tag: Tag) extends Table[AvyEyesUserRole](tag, "app_role") {

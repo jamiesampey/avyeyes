@@ -112,13 +112,11 @@ trait Generators {
     createTime <- genDateTime()
     lastActivityTime <- genDateTime()
     email <- Gen.alphaStr
-    passwordHash <- Gen.option(Gen.alphaStr)
     roles <- Gen.listOfN(2, Gen.oneOf(SiteOwnerRole, AdminRole))
   } yield AvyEyesUser(
     createTime = createTime,
     lastActivityTime = lastActivityTime,
     email = email,
-    passwordHash = passwordHash,
     profiles = List.empty,
     roles = roles
   )

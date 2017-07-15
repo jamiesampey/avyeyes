@@ -69,7 +69,7 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
     ).flatMap {
       case false =>
         val now = DateTime.now
-        db.run((AppUserRows += AppUserTableRow(now, now, avalanche.submitterEmail, None)) >> avalancheInserts)
+        db.run((AppUserRows += AppUserTableRow(now, now, avalanche.submitterEmail, None, None)) >> avalancheInserts)
       case true => db.run(avalancheInserts)
     }
     .map(_ => avalancheMap += (avalanche.extId -> avalanche))

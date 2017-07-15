@@ -74,4 +74,12 @@ securesocial {
     enableTokenJob = true
     hasher = bcrypt
   }
+
+  facebook {
+    authorizationUrl = "https://graph.facebook.com/oauth/authorize"
+    accessTokenUrl = "https://graph.facebook.com/oauth/access_token"
+    clientId = TODO
+    clientSecret = "TODO"
+    scope = "email"
+  }
 }
