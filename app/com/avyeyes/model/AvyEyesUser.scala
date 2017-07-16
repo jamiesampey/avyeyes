@@ -1,13 +1,13 @@
 package com.avyeyes.model
 
 import org.joda.time.DateTime
-import securesocial.core.BasicProfile
 
 case class AvyEyesUser(
   createTime: DateTime,
   lastActivityTime: DateTime,
   email: String,
-  profiles: List[BasicProfile] = List.empty,
+  facebookId: Option[String],
+  passwordHash: Option[String],
   roles: List[AvyEyesUserRole] = List.empty
 )
 

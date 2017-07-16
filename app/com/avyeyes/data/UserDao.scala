@@ -6,8 +6,6 @@ import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.ApplicationLifecycle
-import securesocial.core.providers.{FacebookProvider, UsernamePasswordProvider}
-import securesocial.core.{AuthenticationMethod, BasicProfile, OAuth2Info, PasswordInfo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -17,18 +15,10 @@ class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider,
 
   import dbConfig.profile.api._
 
-  def findUser(email: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(_.email === email).result.headOption).flatMap { appUserRowOpt =>
-    val optUserFuture: Option[Future[AvyEyesUser]] = appUserRowOpt.map(appUserRow =>
-      appendRoles(AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, profiles = initProfileList(appUserRow))))
-    optUserFuture match {
-      case Some(userFuture) => userFuture.map(Some(_))
-      case None => Future.successful(None)
+  def findUser(userId: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(user => user.email === userId || user.facebookId === userId).result.headOption).flatMap { appUserRowOpt =>
+    val optUserFuture: Option[Future[AvyEyesUser]] = appUserRowOpt.map { appUserRow =>
+      appendRoles(AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.facebookId, appUserRow.passwordHash))
     }
-  }
-
-  def findUserByFacebook(fbId: String): Future[Option[AvyEyesUser]] = db.run(AppUserRows.filter(_.facebookId === fbId).result.headOption).flatMap { appUserRowOpt =>
-    val optUserFuture: Option[Future[AvyEyesUser]] = appUserRowOpt.map(appUserRow =>
-      appendRoles(AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, profiles = initProfileList(appUserRow))))
     optUserFuture match {
       case Some(userFuture) => userFuture.map(Some(_))
       case None => Future.successful(None)
@@ -37,7 +27,7 @@ class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider,
 
   def allUsers: Future[Seq[AvyEyesUser]] = db.run(AppUserRows.result).flatMap { appUserRows =>
     Future.sequence(appUserRows.map { (appUserRow: AppUserTableRow) =>
-      appendRoles(AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, profiles = initProfileList(appUserRow)))
+      appendRoles(AvyEyesUser(appUserRow.createTime, appUserRow.lastActivityTime, appUserRow.email, appUserRow.facebookId, appUserRow.passwordHash))
     })
   }
 
@@ -48,37 +38,9 @@ class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider,
     }
   }
 
-  private def initProfileList(appUserTableRow: AppUserTableRow): List[BasicProfile] = {
-    val userPassProfile = appUserTableRow.passwordHash.map { pwHash => BasicProfile(
-      providerId = UsernamePasswordProvider.UsernamePassword,
-      userId = appUserTableRow.email,
-      firstName = None,
-      lastName = None,
-      fullName = None,
-      email = Some(appUserTableRow.email),
-      avatarUrl = None,
-      authMethod = AuthenticationMethod.UserPassword,
-      passwordInfo = Some(PasswordInfo("bcrypt", pwHash))
-    )}
-
-    val fbProfile = appUserTableRow.facebookId.map { fbId => BasicProfile(
-      providerId = FacebookProvider.Facebook,
-      userId = fbId,
-      firstName = None,
-      lastName = None,
-      fullName = None,
-      email = Some(appUserTableRow.email),
-      avatarUrl = None,
-      authMethod = AuthenticationMethod.OAuth2
-    )}
-
-    List(userPassProfile, fbProfile).flatten
-  }
-
   def insertUser(newUser: AvyEyesUser): Future[Int] = {
     val now = DateTime.now
-    val passwordHash = newUser.profiles.headOption.flatMap(_.passwordInfo.map(_.password))
-    db.run(AppUserRows += AppUserTableRow(now, now, newUser.email, passwordHash, None))
+    db.run(AppUserRows += AppUserTableRow(now, now, newUser.email, newUser.facebookId, newUser.passwordHash))
   }
 
   def changePassword(email: String, newPasswordHash: String): Future[Int] = {

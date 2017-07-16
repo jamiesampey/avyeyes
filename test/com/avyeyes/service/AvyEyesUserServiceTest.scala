@@ -5,36 +5,24 @@ import com.avyeyes.model.AvyEyesUser
 import helpers.BaseSpec
 import org.joda.time.DateTime
 import play.api.Logger
+import securesocial.core.AuthenticationMethod
 import securesocial.core.providers.UsernamePasswordProvider
-import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
 
 import scala.concurrent.Future
 
 class AvyEyesUserServiceTest extends BaseSpec {
 
-  val adminUserEmail = "mradmin@avyeyes.com"
-
-  val adminUserPassProfile = BasicProfile(
-    providerId = UsernamePasswordProvider.UsernamePassword,
-    userId = adminUserEmail,
-    firstName = None,
-    lastName = None,
-    fullName = None,
-    email = Some(adminUserEmail),
-    avatarUrl = None,
-    authMethod = AuthenticationMethod.UserPassword,
-    passwordInfo = Some(PasswordInfo("bcrypt", "9tijdj90w9gjdg0je0-i0-iegjop"))
-  )
-
   val adminUser = AvyEyesUser(
     createTime = DateTime.now.minusYears(1),
     lastActivityTime = DateTime.now.minusHours(1),
-    email = adminUserEmail,
-    profiles = List(adminUserPassProfile)
+    email = "mradmin@avyeyes.com",
+    facebookId = Some("49582903490585920"),
+    passwordHash = Some("9tijdj90w9gjdg0je0-i0-iegjop"),
+    roles = List(AvyEyesUserService.AdminRole)
   )
 
   val mockUserDao = mock[UserDao]
-  mockUserDao.findUser(adminUser.email) returns Future.successful(Some(adminUser))
+  mockUserDao.allUsers returns Future.successful(Seq(adminUser))
 
   val subject = new AvyEyesUserService(mockUserDao, mock[Logger])
 
@@ -46,7 +34,7 @@ class AvyEyesUserServiceTest extends BaseSpec {
       userProfile.providerId mustEqual UsernamePasswordProvider.UsernamePassword
       userProfile.email must beSome(adminUser.email)
       userProfile.authMethod mustEqual AuthenticationMethod.UserPassword
-      userProfile.passwordInfo mustEqual adminUserPassProfile.passwordInfo
+      userProfile.passwordInfo.map(_.password) mustEqual adminUser.passwordHash
     }
   }
 }

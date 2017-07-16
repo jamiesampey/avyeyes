@@ -14,9 +14,7 @@
     </appender>
 
   <logger name="play" level="WARN" />
-
   <logger name="avyeyes" level="DEBUG" />
-
   <logger name="securesocial" level="DEBUG" />
 
   <root level="INFO">
