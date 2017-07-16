@@ -23,7 +23,7 @@ class AvyEyesUserService @Inject()(userDao: UserDao, logger: Logger) extends Use
     val futureOptUser = if (providerId == FacebookProvider.Facebook) userDao.findUserByFacebook(userId) else userDao.findUser(userId)
     futureOptUser.map { (userOpt: Option[AvyEyesUser]) =>
       val profileOpt: Option[BasicProfile] = userOpt.flatMap(_.profiles.find(profile => profile.providerId == providerId && profile.userId == userId))
-      logger.debug(profileOpt.map(profile => s"Found profile ${profile.providerId}/${profile.userId}").getOrElse(s"No profile found"))
+      logger.debug(profileOpt.map(profile => s"Found matching profile for ${profile.providerId}/${profile.userId}").getOrElse(s"No matching profile found"))
       profileOpt
     }
   }

@@ -6,8 +6,8 @@ import com.avyeyes.model.{AvyEyesUser, AvyEyesUserRole}
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.inject.ApplicationLifecycle
-import securesocial.core.providers.UsernamePasswordProvider
-import securesocial.core.{AuthenticationMethod, BasicProfile, PasswordInfo}
+import securesocial.core.providers.{FacebookProvider, UsernamePasswordProvider}
+import securesocial.core.{AuthenticationMethod, BasicProfile, OAuth2Info, PasswordInfo}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -49,19 +49,30 @@ class UserDao @Inject()(val dbConfigProvider: DatabaseConfigProvider,
   }
 
   private def initProfileList(appUserTableRow: AppUserTableRow): List[BasicProfile] = {
-    appUserTableRow.passwordHash.map { pwHash =>
-      List(BasicProfile(
-        providerId = UsernamePasswordProvider.UsernamePassword,
-        userId = appUserTableRow.email,
-        firstName = None,
-        lastName = None,
-        fullName = None,
-        email = Some(appUserTableRow.email),
-        avatarUrl = None,
-        authMethod = AuthenticationMethod.UserPassword,
-        passwordInfo = Some(PasswordInfo("bcrypt", pwHash))
-      ))
-    }.getOrElse(List.empty)
+    val userPassProfile = appUserTableRow.passwordHash.map { pwHash => BasicProfile(
+      providerId = UsernamePasswordProvider.UsernamePassword,
+      userId = appUserTableRow.email,
+      firstName = None,
+      lastName = None,
+      fullName = None,
+      email = Some(appUserTableRow.email),
+      avatarUrl = None,
+      authMethod = AuthenticationMethod.UserPassword,
+      passwordInfo = Some(PasswordInfo("bcrypt", pwHash))
+    )}
+
+    val fbProfile = appUserTableRow.facebookId.map { fbId => BasicProfile(
+      providerId = FacebookProvider.Facebook,
+      userId = fbId,
+      firstName = None,
+      lastName = None,
+      fullName = None,
+      email = Some(appUserTableRow.email),
+      avatarUrl = None,
+      authMethod = AuthenticationMethod.OAuth2
+    )}
+
+    List(userPassProfile, fbProfile).flatten
   }
 
   def insertUser(newUser: AvyEyesUser): Future[Int] = {

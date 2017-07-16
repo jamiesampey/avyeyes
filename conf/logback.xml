@@ -1,18 +1,4 @@
 <configuration>
-    <appender name="PLAY-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${log.dir:-logs}/play.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${log.dir:-logs}/play.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>25MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%date - [%level] - %logger [%thread]: %message%n%xException</pattern>
-        </encoder>
-    </appender>
-
     <appender name="AVYEYES-DAILY-ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.dir:-logs}/avyeyes.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -27,11 +13,11 @@
         </encoder>
     </appender>
 
-  <logger name="play" level="WARN" additivity="false">
-      <appender-ref ref="PLAY-DAILY-ROLLING-FILE" />
-  </logger>
+  <logger name="play" level="WARN" />
 
   <logger name="avyeyes" level="DEBUG" />
+
+  <logger name="securesocial" level="DEBUG" />
 
   <root level="INFO">
     <appender-ref ref="AVYEYES-DAILY-ROLLING-FILE" />
