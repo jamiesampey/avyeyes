@@ -63,6 +63,7 @@ create table "app_user" (
     "create_time" timestamp not null,
     "last_activity_time" timestamp not null,
     "email" text primary key,
+    "facebook_user_id" text,
     "password_hash" text
 );
 
