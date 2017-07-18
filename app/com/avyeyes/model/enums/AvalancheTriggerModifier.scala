@@ -7,8 +7,8 @@ object AvalancheTriggerModifier extends AutocompleteEnum {
 
   val empty = Value("AvalancheTriggerModifier.empty")
 
-  val r = Value("AvalancheTriggerModifier.r")
-  val y = Value("AvalancheTriggerModifier.y")
   val c = Value("AvalancheTriggerModifier.c")
   val u = Value("AvalancheTriggerModifier.u")
+  val r = Value("AvalancheTriggerModifier.r")
+  val y = Value("AvalancheTriggerModifier.y")
 }

@@ -426,22 +426,16 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
 }
 
 AvyForm.prototype.toggleTriggerCauseFields = function(category) {
-    if (!this.fullTriggerModifierSource) {
-        Object.defineProperty(this, "fullTriggerModifierSource", {
-            value: $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source')
-        });
-    }
-
     var enableTriggerModifierFields = function() {
         $('.avyTriggerModifierAutoComplete').prop('disabled', false);
         $('label[for="rwAvyFormTriggerModifier"]').css('color', 'white');
     }
 
     if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource.slice(0,2));
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier'].slice(2));
         enableTriggerModifierFields();
     } else if (category && category.endsWith('Human')) {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', this.fullTriggerModifierSource);
+        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier']);
         enableTriggerModifierFields();
     } else {
         $('#rwAvyFormTriggerModifier').val('');
