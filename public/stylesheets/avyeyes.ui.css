@@ -99,6 +99,7 @@ textarea:focus, input:focus {
     max-height: 275px;
     max-width: auto;
     padding-right: 15px;
+    padding-bottom: 5px;
     overflow-y: auto;
     overflow-x: hidden;
     text-align: left;
