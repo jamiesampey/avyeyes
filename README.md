@@ -23,4 +23,4 @@ The server side is written in [Scala](http://www.scala-lang.org/) and runs in th
 
 The client side is vanilla Javascript with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few additional jQuery plugins. Javascript code is organized/injected via AMD and optimized with [RequireJS](http://requirejs.org/). The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
 
-AvyEyes is deployed in [AWS](https://aws.amazon.com/) as an Elastic Beanstalk app with a Postgres RDS instance providing persistence and S3 providing file storage.
+AvyEyes is deployed in [AWS](https://aws.amazon.com/) as an Elastic Beanstalk app with a [Postgres](https://www.postgresql.org/) RDS instance providing persistence and S3 providing file storage.
