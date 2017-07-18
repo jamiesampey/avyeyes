@@ -1,7 +1,7 @@
 define(['jqueryui'], function() {
 
 function AvyEyesUI(view) {
-    this.loaded = new Promise(function(resolve, reject) {
+    this.loaded = new Promise(function(resolve) {
         wireMainMenu(view);
         wireTooltips();
         wireAutoCompletes(view);
@@ -108,7 +108,7 @@ function wireAutoCompletes(view) {
           var currentCategory = "";
 
            $.each(items, function(index, item) {
-              if (item.category && item.category != currentCategory) {
+              if (item.category && item.category !== currentCategory) {
                   ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
                   currentCategory = item.category;
               }
@@ -136,7 +136,7 @@ function wireAutoCompletes(view) {
                 $(this).siblings(':hidden').val(ui.item.value);
                 $(this).val(ui.item.label);
                 if ($(this).hasClass('avyWindSpeedAutoComplete')) view.form.toggleWindDirectionFields(ui.item.value);
-                if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields(ui.item.category)
+                if ($(this).hasClass('avyTriggerAutoComplete')) view.form.toggleTriggerCauseFields(ui.item.category);
                 return false;
             }
 		});
