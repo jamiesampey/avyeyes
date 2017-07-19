@@ -35,10 +35,10 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
   private[controllers] val GifMimeType = "image/gif"
 
   def uploadImages(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
-    doImagesUpload(extId, editKeyOpt, request.user, request.body.files.map(_.ref.file))
+    doImagesUpload(extId, editKeyOpt, request.user, request.body.files.map(f => (f.filename, f.ref.file)))
   }
 
-  private[controllers] def doImagesUpload(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser], imageFiles: Seq[File]) = {
+  private[controllers] def doImagesUpload(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser], files: Seq[(String, File)]) = {
     if (!isAuthorizedToEdit(extId, user, editKeyOpt)) {
       logger.warn(s"Not authorized to add images to avalanche $extId")
       Future { Unauthorized }
@@ -50,9 +50,8 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
 
       case siblingImageCount =>
 
-        val jValueFutures: Seq[Future[JValue]] = imageFiles.map { imageFile =>
-          val origFilename = imageFile.getName
-          val imageBytes = IOUtils.toByteArray(new FileInputStream(imageFile))
+        val jValueFutures: Seq[Future[JValue]] = files.map { case (origFilename, file) =>
+          val imageBytes = IOUtils.toByteArray(new FileInputStream(file))
 
           val (writer, mimeType) = FormatDetector.detect(imageBytes) match {
             case Some(Format.PNG) => (PngWriter(), PngMimeType)
@@ -65,7 +64,7 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
           val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
 
           val newFilename = s"${UUID.randomUUID().toString}.${origFilename.split('.').last.toLowerCase}"
-          logger.trace(s"Uploading image $newFilename (originally $origFilename) for avalanche $extId")
+          logger.debug(s"Uploading image $newFilename (originally $origFilename) for avalanche $extId")
 
           s3.uploadImage(extId, newFilename, mimeType, rewrittenBytes).flatMap { _ =>
             dao.insertAvalancheImage(AvalancheImage(

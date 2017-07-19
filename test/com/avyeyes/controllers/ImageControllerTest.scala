@@ -24,7 +24,8 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
   implicit val ec = scala.concurrent.ExecutionContext.Implicits.global
 
   private val testExtId = "49fk349d"
-  private val testImageFile = new File("public/images/avyeyes.jpg")
+  private val testImageFilename = "avyeyes.jpg"
+  private val testImageFile = new File(s"public/images/$testImageFilename")
 
   private val mockDao = mock[CachedDao]
   private val mockS3Service = mock[AmazonS3Service]
@@ -59,7 +60,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       mockDao.insertAvalancheImage(any) returns Future.successful(1)
       mockDao.getAvalanche(Matchers.eq(testExtId)) returns Some(genAvalanche.generate.copy(viewable = true))
 
-      val result = subject.doImagesUpload(testExtId, None, None, Seq(testImageFile)).resolve
+      val result = subject.doImagesUpload(testExtId, None, None, Seq((testImageFilename, testImageFile))).resolve
 
       there was one(mockS3Service).uploadImage(Matchers.eq(testExtId), any, any, any)
       there was one(mockDao).insertAvalancheImage(any)
@@ -76,7 +77,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       mockDao.insertAvalancheImage(any) returns Future.successful(1)
       mockDao.getAvalanche(Matchers.eq(testExtId)) returns Some(existingAvalanche)
 
-      val result = subject.doImagesUpload(testExtId, Some(existingAvalanche.editKey.toString), None, Seq(testImageFile)).resolve
+      val result = subject.doImagesUpload(testExtId, Some(existingAvalanche.editKey.toString), None, Seq((testImageFilename, testImageFile))).resolve
 
       there was one(mockS3Service).uploadImage(Matchers.eq(testExtId), any, any, any)
       there was one(mockDao).insertAvalancheImage(any)
