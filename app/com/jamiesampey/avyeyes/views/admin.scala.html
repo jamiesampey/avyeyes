@@ -1,0 +1,31 @@
+@(admin: com.jamiesampey.avyeyes.model.AvyEyesUser)(implicit messages: Messages)
+
+<html>
+  <head>
+    <title>AvyEyes Admin</title>
+      <script type="text/javascript" src="@routes.Assets.versioned("javascripts/lib/require.js")" data-main="@routes.Assets.versioned("javascripts/main.admin.js")" defer></script>
+      <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/avyeyes.admin.css")"/>
+  </head>
+  <body>
+    <div id="adminDiv"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a id="adminLogout" href="@securesocial.controllers.routes.LoginPage.logout()">@messages("label.avyAdminLogout")</a></div>
+
+      <table id="avyAdminLayoutTable">
+          <tr id="avyAdminHeaderRow">
+              <td id="avyAdminHeaderTitleTd"><span id="avyAdminConsoleTitle" class="avyHeader"></span></td>
+          </tr>
+          <tr><td id="avyAdminTableRow" colspan="2">
+              <table id="avyAdminDataTable" class="display" width="100%">
+                  <thead>
+                  <th><span id="avyAdminCreatedDateColumn" class="avyHeader">@messages("header.avyAdminCreatedDateColumn")</span></th>
+                  <th><span id="avyAdminUpdatedDateColumn" class="avyHeader">@messages("header.avyAdminUpdatedDateColumn")</span></th>
+                  <th><span id="avyAdminExtIdColumn" class="avyHeader">@messages("header.avyAdminExtIdColumn")</span></th>
+                  <th><span id="avyAdminViewableColumn" class="avyHeader">@messages("header.avyAdminViewableColumn")</span></th>
+                  <th><span id="avyAdminTitleColumn" class="avyHeader">@messages("header.avyAdminTitleColumn")</span></th>
+                  <th><span id="avyAdminSubmitterEmailColumn" class="avyHeader">@messages("header.avyAdminSubmitterEmailColumn")</span></th>
+                  </thead>
+              </table>
+          </td></tr>
+      </table>
+
+  </body>
+</html>

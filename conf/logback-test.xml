@@ -1,5 +1,4 @@
 <configuration>
-  <logger name="play" level="OFF" />
   <logger name="avyeyes" level="OFF" />
   <root level="OFF" />
 </configuration>

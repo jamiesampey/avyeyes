@@ -4,9 +4,9 @@ import sbt.Keys.baseDirectory
 import WebJs._
 import RjsKeys._
 
-organization := "com.avyeyes"
+organization := "com.jamiesampey"
 
-name := "AvyEyes"
+name := "avyeyes"
 
 version := "1.3.0"
 
@@ -20,8 +20,8 @@ scalacOptions ++= Seq(
 )
 
 RoutesKeys.routesImport ++= Seq(
-  "com.avyeyes.controllers.TableQueryBinder._",
-  "com.avyeyes.controllers.SpatialQueryBinder._"
+  "com.jamiesampey.avyeyes.controllers.TableQueryBinder._",
+  "com.jamiesampey.avyeyes.controllers.SpatialQueryBinder._"
 )
 
 libraryDependencies ++= {
