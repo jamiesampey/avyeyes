@@ -60,9 +60,9 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             avyEyesUiStub.reset();
 
             new Squire()
-            .mock("avyeyes.ui", avyEyesUiStub)
-            .mock("avyeyes.form", sinon.stub())
-            .require(["avyeyes.view"], function (AvyEyesView) {
+            .mock("avyeyes-ui", avyEyesUiStub)
+            .mock("avyeyes-form", sinon.stub())
+            .require(["avyeyes-view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });
@@ -101,9 +101,9 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             cesiumSpy.reset();
 
             new Squire()
-            .mock("avyeyes.ui", avyEyesUiStub)
-            .mock("avyeyes.form", sinon.spy())
-            .require(["avyeyes.view"], function (AvyEyesView) {
+            .mock("avyeyes-ui", avyEyesUiStub)
+            .mock("avyeyes-form", sinon.spy())
+            .require(["avyeyes-view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });
@@ -145,10 +145,10 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             cesiumSpy.reset();
 
             new Squire()
-            .mock("avyeyes.ui", avyEyesUiStub)
-            .mock("avyeyes.report", reportStub)
-            .mock("avyeyes.form", formStub)
-            .require(["avyeyes.view"], function (AvyEyesView) {
+            .mock("avyeyes-ui", avyEyesUiStub)
+            .mock("avyeyes-report", reportStub)
+            .mock("avyeyes-form", formStub)
+            .require(["avyeyes-view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });
@@ -189,9 +189,9 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             cesiumSpy.reset();
 
             new Squire()
-            .mock("avyeyes.ui", avyEyesUiStub)
-            .mock("avyeyes.form", sinon.stub())
-            .require(["avyeyes.view"], function (AvyEyesView) {
+            .mock("avyeyes-ui", avyEyesUiStub)
+            .mock("avyeyes-form", sinon.stub())
+            .require(["avyeyes-view"], function (AvyEyesView) {
                 avyEyesView = new AvyEyesView();
                 done();
             });

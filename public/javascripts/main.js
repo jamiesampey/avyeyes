@@ -13,7 +13,7 @@ require.config({
 });
 
 requirejs(["jquery",
-           "avyeyes.view",
+           "avyeyes-view",
            "//connect.facebook.net/en_US/all.js",
            "//platform.twitter.com/widgets.js"], function($, AvyEyesView) {
     console.log("Waiting for DOM to load before starting AvyEyes");

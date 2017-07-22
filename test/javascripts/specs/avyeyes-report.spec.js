@@ -50,7 +50,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             viewStub.reset();
 
             new Squire()
-            .require(["avyeyes.report"], function(AvyReport) {
+            .require(["avyeyes-report"], function(AvyReport) {
                 avyReport = new AvyReport(viewStub);
                 done();
             });
@@ -83,7 +83,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             viewStub.reset();
 
             new Squire()
-            .require(["avyeyes.report"], function(AvyReport) {
+            .require(["avyeyes-report"], function(AvyReport) {
                 avyReport = new AvyReport(viewStub);
                 done();
             });

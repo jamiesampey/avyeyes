@@ -1,6 +1,6 @@
-define(['avyeyes.ui',
-        'avyeyes.form',
-        'avyeyes.report'
+define(['avyeyes-ui',
+        'avyeyes-form',
+        'avyeyes-report'
         ], function(AvyEyesUI, AvyForm, AvyReport) {
 
 function AvyEyesView() {
