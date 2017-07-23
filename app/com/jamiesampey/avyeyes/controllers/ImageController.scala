@@ -35,6 +35,7 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
   private[controllers] val GifMimeType = "image/gif"
 
   def uploadImages(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async(parse.multipartFormData) { implicit request =>
+    logger.debug(s"Uploading ${request.body.files.size} images for avalanche $extId")
     doImagesUpload(extId, editKeyOpt, request.user, request.body.files.map(f => (f.filename, f.ref.file)))
   }
 
@@ -60,6 +61,7 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
           }
           implicit val imageWriter = writer
 
+          logger.debug(s"Rewriting image $origFilename for avalanche $extId")
           val origBais = new ByteArrayInputStream(imageBytes)
           val rewrittenBytes = Image.fromStream(origBais).forWriter(writer).bytes
 
