@@ -41,9 +41,11 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
 
       val now = DateTime.now
       val avalanche = avalancheFromData.copy(createTime = now, updateTime = now, viewable = true)
+
       dao.insertAvalanche(avalanche)
       s3.allowPublicFileAccess(extId)
       sendSubmissionEmails(avalanche)
+      idService.unreserveExtId(extId)
 
       logger.info(s"Avalanche $extId successfully inserted")
       Ok(configService.avalancheUrl(extId))

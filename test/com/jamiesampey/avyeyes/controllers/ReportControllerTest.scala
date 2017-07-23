@@ -70,6 +70,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       avalancheArgCapture.value.extId mustEqual newAvalanche.extId
       avalancheArgCapture.value.submitterEmail mustEqual newAvalanche.submitterEmail
       there was one(mockS3Service).allowPublicFileAccess(newAvalanche.extId)
+      there was one(mockExtIdService).unreserveExtId(newAvalanche.extId)
     }
   }
 
