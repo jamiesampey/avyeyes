@@ -19,13 +19,19 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
     $("#roAvyFormFacebookButton").click(function() {
         FB.ui({
-            method: 'feed',
-            name: 'AvyEyes',
-            link: a.extUrl,
-            caption: a.comments,
-            picture: "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-            description: a.title
-        }, function(response) {});
+            method: 'share_open_graph',
+            action_type: 'og.shares',
+            action_properties: JSON.stringify({
+                object: {
+                    'og:url': a.extUrl,
+                    'og:title': a.title,
+                    'og:description': a.comments,
+                    'og:image': "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+                    "og:image:width":  1200,
+                    "og:image:height": 650
+                }
+            })
+        });
     });
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
@@ -40,9 +46,9 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
 
-   	var recentWindSpeedEnumObj = windSpeedFromCode(a.weather.recentWindSpeed)
+   	var recentWindSpeedEnumObj = windSpeedFromCode(a.weather.recentWindSpeed);
    	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", recentWindSpeedEnumObj);
-   	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection)
+   	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection);
 
     if (recentWindSpeedEnumObj.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
         $("#roAvyFormRecentWindDirectionText").hide();

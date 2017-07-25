@@ -58,7 +58,7 @@ function AvyEyesView() {
     FB.init({
         appId: this.facebookAppId,
         xfbml: true,
-        version: "v2.8"
+        version: "v2.10"
     });
 
     this.ui.loaded.then(function(result) {
