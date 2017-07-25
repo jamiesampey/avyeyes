@@ -1,40 +1,26 @@
-![AvyEyes screenshot](/src/main/webapp/images/avyeyes.jpg?raw=true =800x)
+![AvyEyes screenshot](public/images/avyeyes.jpg?raw=true =800x)
 
-**AvyEyes** is a web application for reporting and sharing avalanches in a 3D, Google Earth-like interactive view. 
+**AvyEyes** is a web application for reporting and sharing avalanches in a three-dimensional, interactive view. 
 
-The typical AvyEyes workflow is as follows:
+The typical AvyEyes use case is as follows:
 
-1. I'm out backcountry skiing with my friends and I trigger an avalanche
-2. I come home and go to https://avyeyes.com to create an avalanche report to share with fellow skiers/riders
-3. I create an AvyEyes report by drawing the avalanche path perimeter on the 3D map view and entering the avalanche details (standard [SWAG](http://www.americanavalancheassociation.org/swag/) fields and free form comments), including any pictures I took of the slide
-4. I submit the report and receive a confirmation email with the unique eight-character report identifier
-5. I then email/link/post/message/tweet/share the report with anyone on the internet using the unique report URL (`https://avyeyes.com/8charUID`) so that everyone can see the avalanche online in an interactive 3D view
+1. Backcounty Bob is out skiing with his friends (in the backcountry of course) and triggers an avalanche
+2. Bob comes home and goes to http://avyeyes.com where he creates an avalanche report by drawing the avalanche path perimeter in the 3D view and entering the avalanche details (standard [SWAG](http://www.americanavalancheassociation.org/swag/) fields and free form comments), including pictures he took of the slide
+3. Bob submits the report and receives a confirmation email with the unique eight-character report identifier
+4. Bob then shares the unique report URL (`http://avyeyes.com/8charUID`) with anyone he wants to inform of the slide
 
-<br/>AvyEyes is online at https://avyeyes.com
+<br/>AvyEyes is online at http://avyeyes.com
 
 A few example reports:
 
-- [May 11, 2008: Coon Hill, SE Face](https://avyeyes.com/vsik4e4n)
-- [May 24, 2015: Red Peak, Gore Range](https://avyeyes.com/ktqfgc3h)
-- [Apr 04, 2016: Straight Creek](https://avyeyes.com/u60ektle)
+- [May 11, 2008: Coon Hill, SE Face](http://avyeyes.com/vsik4e4n)
+- [May 24, 2015: Red Peak, Gore Range](http://avyeyes.com/ktqfgc3h)
+- [Apr 04, 2016: Straight Creek](http://avyeyes.com/u60ektle)
 
-##Code:
+## The Code:
 
-Server side code is 100% Scala running in the [Lift web framework](https://liftweb.net/) and deployed in [Apache Tomcat](http://tomcat.apache.org/). AvyEyes runs as an [AWS](https://aws.amazon.com/) Elastic Beanstalk app with a Postgres RDS instance providing persistence and S3 for image storage. Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking.
+The server side is written in [Scala](http://www.scala-lang.org/) and runs in the [Play Framework](https://www.playframework.com/). Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking and [ScalaCheck](http://www.scalacheck.org/) for test object generation.
 
-Client side code is Javascript (vanilla JS along with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few jQuery plugins) organized via AMD and compiled/injected with [RequireJS](http://requirejs.org/) . The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
+The client side is vanilla Javascript with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few additional jQuery plugins. Javascript code is organized/injected via AMD and optimized with [RequireJS](http://requirejs.org/). The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
 
-##Compile, Test, Run:
-
-*Pre-step:* create `src/main/resources/props/default.props` with all the necessary config info. The `.props` files are excluded from the git repo to protect sensitive deployment keys/URLs/passwords
-
-*Pre-step:* create a `misc/ssl/localKeystore.jks` and update `build.sbt` with the local keystore path/password to access the locally running web server via https
-
-```
-$ sbt
-> compile
-> test
-> tomcat:start
-```
-
-AvyEyes should now be running locally at https\://localhost:8443
+AvyEyes is deployed in [AWS](https://aws.amazon.com/) as an Elastic Beanstalk app with a [Postgres](https://www.postgresql.org/) RDS instance providing persistence and S3 providing file storage.

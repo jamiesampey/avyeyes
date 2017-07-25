@@ -1,0 +1,29 @@
+GET     /admin                      com.jamiesampey.avyeyes.controllers.TemplateController.admin
+
+# Avalanche report
+GET     /avalanche/newReportId      com.jamiesampey.avyeyes.controllers.ReportController.newReportId
+POST    /avalanche/:extId           com.jamiesampey.avyeyes.controllers.ReportController.submitReport(extId)
+PUT     /avalanche/:extId           com.jamiesampey.avyeyes.controllers.ReportController.updateReport(extId, edit: Option[String])
+DELETE  /avalanche/:extId           com.jamiesampey.avyeyes.controllers.ReportController.deleteReport(extId)
+
+# Avalanche search
+GET     /avalanche/table            com.jamiesampey.avyeyes.controllers.SearchController.tabularSearch(adminQuery: com.jamiesampey.avyeyes.data.AvalancheTableQuery)
+GET     /avalanche/search           com.jamiesampey.avyeyes.controllers.SearchController.spatialSearch(query: com.jamiesampey.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
+GET     /avalanche/:extId           com.jamiesampey.avyeyes.controllers.SearchController.find(extId, edit: Option[String])
+
+# Images
+POST    /avalanche/:extId/images/screenshot    com.jamiesampey.avyeyes.controllers.ImageController.uploadScreenshot(extId)
+POST    /avalanche/:extId/images               com.jamiesampey.avyeyes.controllers.ImageController.uploadImages(extId, edit: Option[String])
+PUT     /avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])
+PUT     /avalanche/:extId/images               com.jamiesampey.avyeyes.controllers.ImageController.order(extId, edit: Option[String])
+DELETE  /avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
+
+# Templates
+GET     /                           com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "", edit: Option[String])
+GET     /:extId                     com.jamiesampey.avyeyes.controllers.TemplateController.index(extId, edit: Option[String])
+
+# Public assets
+GET     /assets/*file        controllers.Assets.versioned(path = "/public", file: Asset)
+
+# Securesocial
+->      /auth                securesocial.Routes

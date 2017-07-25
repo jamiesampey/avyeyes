@@ -1,15 +1,16 @@
-.gitignore
-ssl/
-props/
 *.class
 *.log
 *.DS_Store
+
+# avyeyes specific
+conf/application.conf
+conf/application.prod.conf
+dist/.ebextensions/ssl.config
 
 # sbt specific
 .cache
 .history
 .lib/
-dist/*
 target/
 lib_managed/
 src_managed/

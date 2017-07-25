@@ -1,10 +1,16 @@
-organization := "com.avyeyes"
+import com.joescii.SbtJasminePlugin._
+import play.sbt.routes.RoutesKeys
+import sbt.Keys.baseDirectory
+import WebJs._
+import RjsKeys._
 
-name := "AvyEyes"
+organization := "com.jamiesampey"
 
-version := "1.2.6"
+name := "avyeyes"
 
-scalaVersion := "2.11.7"
+version := "1.3.0"
+
+scalaVersion := "2.11.11"
 
 scalacOptions ++= Seq(
   "-target:jvm-1.8",
@@ -13,77 +19,62 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 
-resolvers += "Typesafe Releases" at "https://repo.typesafe.com/typesafe/releases"
+RoutesKeys.routesImport ++= Seq(
+  "com.jamiesampey.avyeyes.controllers.TableQueryBinder._",
+  "com.jamiesampey.avyeyes.controllers.SpatialQueryBinder._"
+)
 
 libraryDependencies ++= {
-  val liftVersion = "2.6.2"
+  val playVersion = _root_.play.core.PlayVersion.current
+
   Seq(
-    "net.liftweb" %% "lift-webkit" % liftVersion,
-    "net.liftweb" %% "lift-testkit" % liftVersion,
-    "net.liftmodules" %% "omniauth_2.6" % "0.17",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.13",
-    "com.typesafe.slick" %% "slick" % "3.0.3",
+    filters,
+    jdbc,
+    "com.typesafe.play" %% "play-slick" % "2.1.0",
+    "com.typesafe.play" %% "play-mailer" % "5.0.0",
+    "ws.securesocial" %% "securesocial" % "3.0-M8",
     "org.postgresql" % "postgresql" % "9.4-1202-jdbc41",
+    "org.json4s" %% "json4s-jackson" % "3.5.1",
     "com.amazonaws" % "aws-java-sdk-s3" % "1.10.15",
-    "ch.qos.logback" % "logback-classic" % "1.1.3",
+    "joda-time" % "joda-time" % "2.9.9",
     "org.apache.commons" % "commons-lang3" % "3.4",
     "com.google.guava" % "guava" % "18.0",
     "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8",
-    "org.specs2" %% "specs2" % "2.4.1" % "test",
-    "org.scalacheck" %% "scalacheck" % "1.12.4" % "test",
-    "com.h2database" % "h2" % "1.4.188" % "test",
-    "javax.servlet" % "servlet-api" % "2.5" % "test"
+
+    "com.typesafe.play" %% "play-specs2" % playVersion % Test,
+    "org.scalacheck" %% "scalacheck" % "1.12.4" % Test,
+    "com.h2database" % "h2" % "1.4.188" % Test,
+    "javax.servlet" % "servlet-api" % "2.5" % Test
   )
 }
 
-lazy val mode = taskKey[String]("Build mode (dev or prod)")
-
-mode := sys.props.getOrElse("mode", default = "dev")
-
-webappPostProcess := { origWebapp =>
-  if (mode.value == "prod") {
-    import sbt.IO._
-    println("r.js -o build.js".!!)
-    val optimizedWebapp = new File("target/webapp-rjs")
-    assertDirectory(optimizedWebapp)
-    delete(origWebapp)
-    delete(optimizedWebapp / "build.txt")
-    copyDirectory(source = optimizedWebapp, target = origWebapp)
-  }
-}
-
-// xsbt-web-plugin config
-enablePlugins(TomcatPlugin)
-
-containerLibs in Tomcat := Seq(("com.github.jsimone" % "webapp-runner" % "8.0.24.0").intransitive())
-
-containerArgs in Tomcat := Seq("--enable-ssl", "--port", "8443")
-
-javaOptions in Tomcat ++= Seq(
-  "-Xdebug",
-  "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8788",
-  "-Djavax.net.ssl.keyStore=misc/ssl/localKeystore.jks",
-  "-Djavax.net.ssl.keyStorePassword=49grklgioy9048udfgge034"
+pipelineStages := Seq(rjs)
+buildProfile := JS.Object(
+  "skipDirOptimize" -> true,
+  "generateSourceMaps" -> false,
+  "optimizeCss" -> "standard",
+  "modules" -> Seq(JS.Object("name" -> "main"), JS.Object("name" -> "main.admin")),
+  "paths" -> Map(
+    "jquery" -> "lib/jquery",
+    "jqueryui" -> "lib/jquery-ui",
+    "fileupload" -> "lib/jquery.fileupload",
+    "fancybox" -> "lib/jquery.fancybox",
+    "datatables" -> "lib/jquery.datatables"
+  )
 )
 
-
-// sbt-jasmine-plugin config
-seq(jasmineSettings : _*)
-
-appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "js" }
-
-appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" }
-
-jasmineTestDir <+= sourceDirectory { src => src / "test" / "webapp" / "js" }
-
-jasmineConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "test.dependencies.js" }
-
-jasmineRequireJsFile <+= sourceDirectory { src => src / "main" / "webapp" / "js" / "lib" / "require.js" }
-
-jasmineRequireConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "js" / "require.conf.js" }
-
-jasmineEdition := 2
-
-parallelExecution in Test := false
-
 test in Test <<= (test in Test) dependsOn jasmine
+
+lazy val avyeyes = (project in file("."))
+  .enablePlugins(PlayScala)
+  .enablePlugins(SbtWeb)
+  .settings(jasmineSettings: _*)
+  .settings(
+    jasmineEdition := 2,
+    appJsDir += baseDirectory.value / "public" / "javascripts",
+    appJsLibDir += baseDirectory.value / "public" / "javascripts" / "lib",
+    jasmineTestDir += baseDirectory.value / "test" / "javascripts",
+    jasmineConfFile += baseDirectory.value / "test" / "javascripts" / "test.dependencies.js",
+    jasmineRequireJsFile += baseDirectory.value / "public" / "javascripts" / "lib" / "require.js",
+    jasmineRequireConfFile += baseDirectory.value / "test" / "javascripts" / "require.conf.js"
+  )
