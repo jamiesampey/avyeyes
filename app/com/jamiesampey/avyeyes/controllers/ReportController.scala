@@ -60,8 +60,10 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
       logger.info(s"Successfully parsed updated avalanche $extId from report data. Validating fields")
       dao.getAvalanche(extId) match {
         case Some(existingAvalanche) if isAuthorizedToEdit(extId, request.user, editKeyOpt) =>
-          dao.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime))
-          if (avalancheFromData.viewable) s3.allowPublicImageAccess(extId) else s3.denyPublicImageAccess(extId)
+          val viewableUpdate = if (isAdmin(request.user)) avalancheFromData.viewable else existingAvalanche.viewable
+          logger.debug(s"Setting viewable=$viewableUpdate for avalanche $extId")
+          dao.updateAvalanche(avalancheFromData.copy(createTime = existingAvalanche.createTime, viewable = viewableUpdate))
+          if (viewableUpdate) s3.allowPublicImageAccess(extId) else s3.denyPublicImageAccess(extId)
           logger.info(s"Avalanche $extId successfully updated")
           Ok
         case Some(_) =>
