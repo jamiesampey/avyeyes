@@ -27,8 +27,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
                     'og:title': a.title,
                     'og:description': a.comments,
                     'og:image': "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-                    "og:image:width":  1200,
-                    "og:image:height": 650
+                    "og:image:width":  800,
+                    "og:image:height": 600
                 }
             })
         });
