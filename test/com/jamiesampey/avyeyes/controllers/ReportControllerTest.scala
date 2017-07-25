@@ -76,7 +76,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
   "Report update" should {
     "update an avalanche report with a valid edit key" in new WithApplication(appBuilder.build) {
-      val originalAvalanche = genAvalanche.generate.copy(extId = testExtId, createTime = DateTime.now.minusDays(1))
+      val originalAvalanche = genAvalanche.generate.copy(extId = testExtId, createTime = DateTime.now.minusDays(1), viewable = true)
       mockDao.getAvalanche(testExtId) returns Some(originalAvalanche)
 
       val newComments = "new comments"
@@ -94,6 +94,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       avalancheArgCapture.value.extId mustEqual originalAvalanche.extId
       avalancheArgCapture.value.comments must beSome(newComments)
       avalancheArgCapture.value.createTime mustEqual originalAvalanche.createTime
+      avalancheArgCapture.value.viewable mustEqual originalAvalanche.viewable
       there was one(mockS3Service).allowPublicImageAccess(testExtId)
     }
 
