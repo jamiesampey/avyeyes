@@ -137,14 +137,14 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       mockExtIdService.reservationExists(testExtId) returns false
       mockDao.getAvalanche(Matchers.eq(testExtId)) returns Some(existingAvalanche)
 
-      val imageOrderJsArray = JsArray(Seq(JsString("a129554e-859f-45ca-9ffb-b88d5b3e3bfa"), JsString("50cfcabc-c4b6-45d1-a5a2-862b5c5d8675"), JsString("39e4fab8-064f-49c1-8b4e-5f728277c0a8")))
-      val imageOrderRequest = FakeRequest().withJsonBody(Json.obj("order" -> imageOrderJsArray))
+      val imageOrderList = List("a129554e-859f-45ca-9ffb-b88d5b3e3bfa", "50cfcabc-c4b6-45d1-a5a2-862b5c5d8675", "39e4fab8-064f-49c1-8b4e-5f728277c0a8")
+      val imageOrderRequest = FakeRequest().withJsonBody(Json.obj("order" -> imageOrderList))
       val requestWithUser = RequestWithUser(None, None, imageOrderRequest)
 
       val action = subject.order(testExtId, Some(existingAvalanche.editKey.toString))
       val result = call(action, requestWithUser).resolve
 
-      there was one(mockDao).updateAvalancheImageOrder(testExtId, imageOrderJsArray.value.map(_.toString).toList)
+      there was one(mockDao).updateAvalancheImageOrder(testExtId, imageOrderList)
       result.header.status mustEqual OK
     }
   }
@@ -153,7 +153,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
     "not allow an image caption if the user is not authorized to edit" in new WithApplication(appBuilder.build) {
       mockExtIdService.reservationExists(testExtId) returns false
 
-      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString("")))
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> ""))
       val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
 
       val action = subject.caption(testExtId, "a129554e-859f-45ca-9ffb-b88d5b3e3bfa", None)
@@ -171,7 +171,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
       val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
 
       val imageCaption = "here's a picture of an avalanche"
-      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString(imageCaption)))
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> imageCaption))
       val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
 
       val action = subject.caption(testExtId, baseFilename, Some(existingAvalanche.editKey.toString))
@@ -188,7 +188,7 @@ class ImageControllerTest extends BaseSpec with BeforeEach {
 
       val baseFilename = "a129554e-859f-45ca-9ffb-b88d5b3e3bfa"
 
-      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> JsString("")))
+      val imageCaptionRequest = FakeRequest().withJsonBody(Json.obj("caption" -> ""))
       val requestWithUser = RequestWithUser(None, None, imageCaptionRequest)
 
       val action = subject.caption(testExtId, baseFilename, Some(existingAvalanche.editKey.toString))

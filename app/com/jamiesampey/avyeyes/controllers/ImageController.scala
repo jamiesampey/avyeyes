@@ -108,9 +108,9 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to edit image order for avalanche $avyExtId")
       Unauthorized
-    } else (request.body \ "order").as[JsArray] match {
-      case JsArray(jsValues) =>
-        dao.updateAvalancheImageOrder(avyExtId, jsValues.map(_.toString).toList)
+    } else (request.body \ "order").as[List[String]] match {
+      case orderedImageList: List[String] =>
+        dao.updateAvalancheImageOrder(avyExtId, orderedImageList)
         logger.debug(s"Successfully set image order on avalanche $avyExtId")
         Ok
       case _ =>
@@ -123,14 +123,14 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       logger.warn(s"Not authorized to edit image caption for avalanche $avyExtId")
       Unauthorized
-    } else (request.body \ "caption").as[JsString] match {
-      case JsString(caption) if caption.nonEmpty =>
-        dao.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
-        logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
-        Ok
-      case JsString("") =>
+    } else (request.body \ "caption").as[String] match {
+      case caption: String if caption.isEmpty =>
         dao.updateAvalancheImageCaption(avyExtId, baseFilename, None)
         logger.debug(s"Successfully cleared caption on $avyExtId/$baseFilename")
+        Ok
+      case caption: String =>
+        dao.updateAvalancheImageCaption(avyExtId, baseFilename, Some(caption))
+        logger.debug(s"Successfully set caption on $avyExtId/$baseFilename")
         Ok
       case _ =>
         logger.error("Received an image caption PUT request, but the caption payload was missing")
