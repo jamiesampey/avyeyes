@@ -9,7 +9,7 @@ import com.jamiesampey.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.jamiesampey.avyeyes.service.ConfigurationService
 import com.jamiesampey.avyeyes.system.UserEnvironment
-import com.jamiesampey.avyeyes.util.Constants.{AvyDistRangeMiles, CamAltitudeLimit, CamPitchCutoff}
+import com.jamiesampey.avyeyes.util.Constants.{AvyDistRangeMiles, CamAltitudePinThreshold, CamPitchCutoff}
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -28,7 +28,6 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   import authorizations._
 
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
-  private val camAltLimitFormatted = NumberFormat.getNumberInstance(Locale.US).format(CamAltitudeLimit)
 
   def find(extId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
     findAvalanche(extId, editKeyOpt, request.user)
@@ -52,11 +51,9 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   }
 
   def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
-    camAltParam match {
-      case Some(camAlt) if camAlt > CamAltitudeLimit => BadRequest(Messages("msg.eyeTooHigh", camAltLimitFormatted))
-      case _ if query.geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
+    query.geoBounds match {
+      case geoBounds if geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
       case _ => Try(dao.getAvalanches(query)) match {
-        case Success(avalanches) if avalanches.isEmpty => NotFound(Messages("msg.avySearchZeroMatches"))
         case Success(avalanches) =>
           val filteredAvalanches = (camPitchParam, camLngParam, camLatParam) match {
             case (Some(camPitch), Some(camLng), Some(camLat)) if camPitch > CamPitchCutoff =>
@@ -64,7 +61,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
               avalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
             case _ => avalanches
           }
-          Ok(writeJson(JArray(filteredAvalanches.map(avalancheSearchResultData))))
+          Ok(writeJson(JArray(filteredAvalanches.map(a => avalancheSearchResultData(a, camAltParam)))))
         case Failure(ex) =>
           val errorMsg = "Failed to retrieve avalanches in view"
           logger.error(errorMsg, ex)

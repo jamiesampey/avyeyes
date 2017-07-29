@@ -61,7 +61,7 @@ function AvyEyesView() {
         version: "v2.10"
     });
 
-    this.ui.loaded.then(function(result) {
+    this.ui.loaded.then(function() {
         console.log("AvyEyes UI is loaded");
         if (initAvalanche) {
             console.debug("Flying to avalanche " + initAvalanche.extId);
@@ -82,6 +82,9 @@ AvyEyesView.prototype.setCameraMoveEventListener = function() {
     }.bind(this));
     this.cesiumViewer.camera.moveEnd.addEventListener(function() {
         clearInterval(eyeAltSetter);
+        if (!this.currentReport) {
+            $('#avySearchButton').trigger('click');
+        }
     }.bind(this));
 }
 
@@ -204,36 +207,39 @@ AvyEyesView.prototype.resetView = function() {
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
+    var camAlt = this.cesiumViewer.camera.positionCartographic.height;
     $.each(avalancheArray, function(i, avalanche) {
-        this.addAvalanche(avalanche);
-    }.bind(this));
-
-    this.hideControls().then(function() {
-        $("#avySearchOverlayResults").text("Found " + avalancheArray.length
-            + " avalanche(s) within the current view that match the search criteria");
-        $("#avySearchOverlay").show();
-        this.overlayClearTimer(12);
+        this.addAvalanche(avalanche, camAlt);
     }.bind(this));
 }
 
-AvyEyesView.prototype.addAvalanche = function(a) {
-    var coordArray = Cesium.Cartesian3.fromDegreesArrayHeights(a.coords);
-
-	this.addEntity({
-	    id: a.extId,
-	    name: a.title,
-	    polygon: {
-            material: Cesium.Color.RED.withAlpha(0.4),
-            hierarchy: coordArray,
-            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+AvyEyesView.prototype.addAvalanche = function(a, camAltitude) {
+    var getEntity = function() {
+        if (camAltitude <= 10000) {
+            return {
+                id: a.extId,
+                name: a.title,
+                polygon: {
+                    material: Cesium.Color.RED.withAlpha(0.4),
+                    hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords),
+                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+                }
+            };
+        } else {
+            return {
+                position: Cesium.Cartesian3.fromDegrees(a.location.longitude, a.location.latitude, a.location.altitude),
+                billboard: { image: "/assets/images/poi-pin.png" }
+            };
         }
-    });
 
-    return coordArray;
+    };
+
+    this.addEntity(getEntity());
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
-    var boundingSphere = Cesium.BoundingSphere.fromPoints(this.addAvalanche(a));
+    this.addAvalanche(a, 4000);
+    var boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
     this.ui.raiseTheCurtain();
 
     this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
@@ -254,11 +260,9 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
 }
 
 AvyEyesView.prototype.geolocateAndFlyTo = function() {
-    var self = this;
-
     var heading = 0.0;
     var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
-    var range = 2000000;
+    var range = 1000000;
 
     var flyToWesternUS = function() {
         this.ui.raiseTheCurtain();
@@ -290,7 +294,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
     geocodeAttempts++;
 
     var geocodeFailure = function(error) {
-        geocodeAttempts = 0
+        geocodeAttempts = 0;
         this.showModalDialog("Failed to geocode '" + address + "'");
     }.bind(this);
 
@@ -344,7 +348,7 @@ AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat, showPin) {
     if (showPin) {
         return this.addEntity({
             position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-            billboard: {image: "/assets/images/flyto-pin.png"}
+            billboard: {image: "/assets/images/flyto-pixel.png"}
         });
     } else {
         return this.addEntity({

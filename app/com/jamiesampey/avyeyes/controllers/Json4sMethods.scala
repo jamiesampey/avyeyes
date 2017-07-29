@@ -4,6 +4,7 @@ import com.jamiesampey.avyeyes.model.enums.ExperienceLevel
 import com.jamiesampey.avyeyes.model.serializers.avyeyesFormats
 import com.jamiesampey.avyeyes.model.{Avalanche, AvalancheImage}
 import com.jamiesampey.avyeyes.service.ConfigurationService
+import com.jamiesampey.avyeyes.util.Constants.CamAltitudePinThreshold
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.format.DateTimeFormat
 import org.json4s.Extraction
@@ -40,12 +41,12 @@ trait Json4sMethods {
     ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
   }
 
-  private[controllers] def avalancheSearchResultData(a: Avalanche) = {
-    ("extId" -> a.extId) ~
-    ("title" -> a.title) ~
-    ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~
-    ("slope" -> Extraction.decompose(a.slope)) ~
-    ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+  private[controllers] def avalancheSearchResultData(a: Avalanche, camAltitude: Option[Double]) = {
+    val locationField: JObject = if (camAltitude.map(_.toInt).getOrElse(CamAltitudePinThreshold + 1) < CamAltitudePinThreshold)
+      "coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude))
+    else "location" -> Extraction.decompose(a.location)
+
+    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope)) ~ locationField
   }
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))

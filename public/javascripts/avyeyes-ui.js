@@ -54,14 +54,14 @@ function wireMainMenu(view) {
         }, 4000);
     });
 
-    $('#searchMenuItem').parent("li").click(function(e){
-        e.preventDefault();
-        view.resetView();
-    });
-
     $('#reportMenuItem').parent("li").click(function(e){
         e.preventDefault();
         view.doReport();
+    });
+
+    $('#searchMenuItem').parent("li").click(function(e){
+        e.preventDefault();
+        view.showControls();
     });
 
     $('#aboutMenuItem').parent("li").click(function(e){
@@ -243,6 +243,7 @@ function wireButtons(view) {
 	$('.avyButton').button();
 
 	$('#avySearchButton').click(function() {
+        view.removeAllEntities();
         var boundingBox = view.getBoundingBox();
 
         var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
@@ -257,8 +258,8 @@ function wireButtons(view) {
 
         $.getJSON(searchQueryString).done(function(searchResults) {
             view.addAvalanches(searchResults);
-        }).fail(function(jqxhr, textStatus, error) {
-            view.showModalDialog(jqxhr.responseText);
+        }).fail(function(jqxhr) {
+            console.error("Avalanche search failed: " + jqxhr.responseText);
         });
 	});
 

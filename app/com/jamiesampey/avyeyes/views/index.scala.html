@@ -82,8 +82,8 @@
                 <a id="aeControlsMenuButton" href="#"><img src="@routes.Assets.versioned("images/menu.png")"/></a>
             </div>
             <ul id="aeControlsMenu">
-                <li><a id="searchMenuItem" class="avyLink" href="#">@messages("link.searchMenuItem")</a></li>
                 <li><a id="reportMenuItem" class="avyLink" href="#">@messages("link.reportMenuItem")</a></li>
+                <li><a id="searchMenuItem" class="avyLink" href="#">@messages("link.searchMenuItem")</a></li>
                 <li><a id="aboutMenuItem" class="avyLink" href="#">@messages("link.aboutMenuItem")</a></li>
             </ul>
         </div>
@@ -96,10 +96,6 @@
             </div>
 
             <table id="avySearchDetailsTable">
-                <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchLocation" data-help="@Html(Messages("help.avySearchLocation"))">@messages("label.avySearchLocation")</label></td>
-                    <td class="avySearchTableInput"><input id="avySearchLocation" class="avyLocation avyRawTextInput" type="text"/></td>
-                </tr>
                 <tr>
                     <td class="avySearchTableLabel"><label for="avySearchFromDate" data-help="@Html(Messages("help.avySearchFromDate"))">@messages("label.avySearchFromDate")</label></td>
                     <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate" type="text" /></td>
