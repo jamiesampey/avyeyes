@@ -208,8 +208,33 @@ AvyEyesView.prototype.resetView = function() {
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
     var camAlt = this.cesiumViewer.camera.positionCartographic.height;
-    $.each(avalancheArray, function(i, avalanche) {
-        this.addAvalanche(avalanche, camAlt);
+    var oldAvalancheIds = this.cesiumViewer.entities.values.map(function(entity) {
+        return entity.id;
+    });
+    var newAvalancheIds = avalancheArray.map(function(a) {
+       return a.extId;
+    });
+
+    // remove any old avalanches that do not exist in the new set
+    $.each(oldAvalancheIds.filter(function(oldId) {
+        return newAvalancheIds.indexOf(oldId) < 0;
+    }), function(i, oldIdToRemove) {
+        this.cesiumViewer.entities.removeById(oldIdToRemove);
+    }.bind(this));
+
+    // does the entity need to be updated? I.e. pin->path or path->pin?
+    var updateEntity = function(entity, avalanche) {
+        var noUpdateNeeded = (entity && entity.polygon && avalanche.coords)
+            || (entity && entity.billboard && avalanche.location);
+        return !noUpdateNeeded;
+    };
+
+    $.each(avalancheArray, function(i, a) {
+        var existingEntity = this.cesiumViewer.entities.getById(a.extId);
+        if (updateEntity(existingEntity, a)) {
+            this.removeEntity(existingEntity);
+            this.addAvalanche(a, camAlt);
+        }
     }.bind(this));
 }
 
@@ -227,6 +252,7 @@ AvyEyesView.prototype.addAvalanche = function(a, camAltitude) {
             };
         } else {
             return {
+                id: a.extId,
                 position: Cesium.Cartesian3.fromDegrees(a.location.longitude, a.location.latitude, a.location.altitude),
                 billboard: { image: "/assets/images/poi-pin.png" }
             };

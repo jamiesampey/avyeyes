@@ -243,7 +243,6 @@ function wireButtons(view) {
 	$('.avyButton').button();
 
 	$('#avySearchButton').click(function() {
-        view.removeAllEntities();
         var boundingBox = view.getBoundingBox();
 
         var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
