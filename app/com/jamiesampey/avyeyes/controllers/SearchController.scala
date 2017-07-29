@@ -1,7 +1,5 @@
 package com.jamiesampey.avyeyes.controllers
 
-import java.text.NumberFormat
-import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 import com.jamiesampey.avyeyes.data.{AvalancheSpatialQuery, AvalancheTableQuery, CachedDao}
@@ -9,7 +7,7 @@ import com.jamiesampey.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.jamiesampey.avyeyes.service.ConfigurationService
 import com.jamiesampey.avyeyes.system.UserEnvironment
-import com.jamiesampey.avyeyes.util.Constants.{AvyDistRangeMiles, CamAltitudePinThreshold, CamPitchCutoff}
+import com.jamiesampey.avyeyes.util.Constants.{AvyDistRangeMiles, CamPitchCutoff}
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
