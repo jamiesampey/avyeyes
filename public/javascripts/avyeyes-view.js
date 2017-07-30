@@ -207,7 +207,6 @@ AvyEyesView.prototype.resetView = function() {
 }
 
 AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
-    var camAlt = this.cesiumViewer.camera.positionCartographic.height;
     var oldAvalancheIds = this.cesiumViewer.entities.values.map(function(entity) {
         return entity.id;
     });
@@ -233,14 +232,14 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         var existingEntity = this.cesiumViewer.entities.getById(a.extId);
         if (updateEntity(existingEntity, a)) {
             this.removeEntity(existingEntity);
-            this.addAvalanche(a, camAlt);
+            this.addAvalanche(a);
         }
     }.bind(this));
 }
 
-AvyEyesView.prototype.addAvalanche = function(a, camAltitude) {
+AvyEyesView.prototype.addAvalanche = function(a) {
     var getEntity = function() {
-        if (camAltitude <= 10000) {
+        if (a.coords) {
             return {
                 id: a.extId,
                 name: a.title,
@@ -264,7 +263,7 @@ AvyEyesView.prototype.addAvalanche = function(a, camAltitude) {
 }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
-    this.addAvalanche(a, 4000);
+    this.addAvalanche(a);
     var boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
     this.ui.raiseTheCurtain();
 

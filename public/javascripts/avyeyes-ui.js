@@ -267,6 +267,7 @@ function wireButtons(view) {
         $('#avySearchDetailsTable').find('input:hidden').val('');
         $('#avySearchDetailsTable').find('.avyRDSliderValue').val('0');
         $('#avySearchDetailsTable').find('.avyRDSlider').slider('value', 0);
+        $('#avySearchButton').trigger('click');
     });
 
     $("#avyReportInitLocationButton").click(function() {
