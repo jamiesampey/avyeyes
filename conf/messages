@@ -20,7 +20,8 @@ msg.avyTitleOverlayTips=<table class='avyOverlayTipsTable'><tr><td class='dialog
 ####### Search #######
 
 header.avySearchTitle=Avalanche Filter
-header.avySearchAdditionalCriteria=Additional Criteria
+header.avySearchSlopeHeader=Slope Characteristics
+header.avySearchClassification=Avalanche Classification
 header.avySearchHumanNumbersHeader=Human Numbers
 
 label.avySearchFromDate=From
