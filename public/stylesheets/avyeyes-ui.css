@@ -6,7 +6,7 @@ html {
 body {
 	height: 100%;
     width: 100%;
-	margin: 0px;
+	margin: 0;
 	overflow:hidden; 
 	font-size:100%;
 }
@@ -18,7 +18,7 @@ body {
     height: 20px;
     width: 100%;
     margin: 0;
-    padding 5px 0px 0px 0px;
+    padding 5px 0 0 0;
     text-align: center;
     color: white;
     background: transparent;
@@ -118,8 +118,8 @@ li.ui-autocomplete-category {
     font-size: 1.1em;
     white-space: nowrap;
     color: gray;
-    padding: 0px;
-    margin: 10px 0px 0px 5px;
+    padding: 0;
+    margin: 10px 0 0 5px;
     border-top: solid 1px gray;
 }
 
@@ -171,7 +171,7 @@ li.ui-autocomplete-category {
 
 .avyRDSliderContainer {
     width: 100%;
-    padding: 0px;
+    padding: 0;
 }
 
 .avyRDSliderValue {
@@ -182,7 +182,7 @@ li.ui-autocomplete-category {
     background: transparent;
     border: none;
     font-size: 1em;
-    padding: 0px 5px 0px 0px;
+    padding: 0 5px 0 0;
 }
 
 .avyMsg p, li {
@@ -268,7 +268,7 @@ li.ui-autocomplete-category {
     position: absolute;
     width: 450px;
     height: 50px;
-    bottom: 0px;
+    bottom: 0;
     left: 50%;
     margin-left: -170px;
     text-align: left;
@@ -289,7 +289,7 @@ li.ui-autocomplete-category {
 #helpOverlay .ui-widget-header {
     background: transparent;
     height: 30px;
-    border: 0px;
+    border: 0;
     border-bottom: 1px solid #333333;
 }
 
@@ -371,28 +371,28 @@ li.ui-autocomplete-category {
 
 #aeControlsTitle {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: inherit;
     height: 60px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     box-sizing:border-box;
 }
 
 #aeControlsTitle img {
-    padding: 0px;
-    margin: 0px 0px 0px 25px;
+    padding: 0;
+    margin: 0 0 0 25px;
 }
 
 #aeControlsMenuButtonContainer {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 0;
+    right: 0;
     width: auto;
     height: auto;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #aeControlsMenu {
@@ -404,17 +404,17 @@ li.ui-autocomplete-category {
     display: none;
     position: absolute;
     top: 60px;
-    left: 0px;
+    left: 0;
     width: 100%;
     height: 450px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     background: rgba(0, 0, 0, 0.7);
 }
 
 .aeControlsContent hr {
-    margin: 0px 10px 0px 10px;
-    padding: 0px;
+    margin: 0 10px 0 10px;
+    padding: 0;
 }
 
 #howItWorks:link, #howItWorks:visited {
@@ -423,7 +423,7 @@ li.ui-autocomplete-category {
 
 .avyFilterHeaderContainer {
     position: relative;
-    padding: 15px 0px 10px 10px;
+    padding: 15px 0 10px 10px;
 }
 
 .avyFilterHeader {
@@ -436,36 +436,36 @@ li.ui-autocomplete-category {
 #avyFilterHowItWorksDiv {
     float: right;
     font-size: .9em;
-    padding: 3px 10px 0px 0px;
+    padding: 3px 10px 0 0;
 }
 
 #avyFilterDetailsTable {
-    padding: 0px 10px 0px 10px;
-    margin: 0px;
+    padding: 0 10px 0 10px;
+    margin: 0;
     width: 100%;
 }
 
 .avyFilterTableLabel {
 	width: 70px;
-	padding: 5px 0px 0px 0px;
-    margin: 0px;
+	padding: 5px 0 0 0;
+    margin: 0;
 }
 
 .avyFilterTableInput {
-	padding: 5px 0px 0px 0px;
-    margin: 0px;
+	padding: 5px 0 0 0;
+    margin: 0;
 }
 
 .avyFilterSubHeader {
-	padding: 10px 0px 0px 0px;
+	padding: 10px 0 0 0;
 }
 
 #avyFilterHumanNumbersTable {
 	float: left;
 	width: 100%;
-    padding: 0px;
-    margin: 0px;
-    border-spacing: 0px;
+    padding: 0;
+    margin: 0;
+    border-spacing: 0;
 }
 
 #avyFilterButtonsContainer {
@@ -474,12 +474,12 @@ li.ui-autocomplete-category {
 
 #avyFilterButton {
     padding: 5px;
-    margin: 20px 10px 20px 0px;
+    margin: 20px 10px 20px 0;
 }
 
 #avyFilterResetButton {
     padding: 5px;
-    margin: 20px 10px 20px 0px;
+    margin: 20px 10px 20px 0;
 }
 
 .avyReportInstructionsHeader {
@@ -491,7 +491,7 @@ li.ui-autocomplete-category {
 .reportInstructions {
     display: none;
     height: 430px;
-    padding: 20px 10px 0px 10px;
+    padding: 20px 10px 0 10px;
     background-color: transparent;
 }
 
@@ -512,5 +512,5 @@ li.ui-autocomplete-category {
 }
 
 .avyReportInstructionsButtonWrapper > .avyButton {
-    margin: 0px 5px 0px 5px;
+    margin: 0 5px 0 5px;
 }
