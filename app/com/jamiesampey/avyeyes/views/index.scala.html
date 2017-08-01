@@ -53,11 +53,11 @@
         </div>
     </div>
 
-    <div id="avySearchOverlay" class="avyOverlay avyResultsOverlay">
+    <div id="avyFilterOverlay" class="avyOverlay avyResultsOverlay">
         <div class="avyOverlayContent">
-            <div id="avySearchOverlayResults"></div>
-            <div class="avyOverlayClickInstructions"><span class="avyMsg">@messages("msg.avySearchResultsOverlayClick")</span></div>
-            <span class="avyMsg">@Html(Messages("msg.avySearchOverlayTips"))</span>
+            <div id="avyFilterOverlayResults"></div>
+            <div class="avyOverlayClickInstructions"><span class="avyMsg">@messages("msg.avyFilterResultsOverlayClick")</span></div>
+            <span class="avyMsg">@Html(Messages("msg.avyFilterOverlayTips"))</span>
         </div>
     </div>
 
@@ -90,77 +90,77 @@
 
         <div id="aeControlsSearchForm" class="aeControlsContent">
             <hr/>
-            <div class="avySearchHeaderContainer">
-                <div class="avySearchHeader"><span class="avyHeader">@messages("header.avySearchTitle")</span></div>
-                <div id="avySearchHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#">@messages("link.howItWorks")</a></div>
+            <div class="avyFilterHeaderContainer">
+                <div class="avyFilterHeader"><span class="avyHeader">@messages("header.avyFilterTitle")</span></div>
+                <div id="avyFilterHowItWorksDiv"><a id="howItWorks" class="avyLink" href="#">@messages("link.howItWorks")</a></div>
             </div>
 
-            <table id="avySearchDetailsTable">
+            <table id="avyFilterDetailsTable">
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchFromDate" data-help="@Html(Messages("help.avySearchFromDate"))">@messages("label.avySearchFromDate")</label></td>
-                    <td class="avySearchTableInput"><input id="avySearchFromDate" class="avyDate"/></td>
+                    <td class="avyFilterTableLabel"><label for="avyFilterFromDate" data-help="@Html(Messages("help.avyFilterFromDate"))">@messages("label.avyFilterFromDate")</label></td>
+                    <td class="avyFilterTableInput"><input id="avyFilterFromDate" class="avyDate"/></td>
                 </tr>
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchToDate" data-help="@Html(Messages("help.avySearchToDate"))">@messages("label.avySearchToDate")</label></td>
-                    <td class="avySearchTableInput"><input id="avySearchToDate" class="avyDate"/></td>
+                    <td class="avyFilterTableLabel"><label for="avyFilterToDate" data-help="@Html(Messages("help.avyFilterToDate"))">@messages("label.avyFilterToDate")</label></td>
+                    <td class="avyFilterTableInput"><input id="avyFilterToDate" class="avyDate"/></td>
                 </tr>
                 <tr>
-                    <td class="avySearchSubHeader" colspan="2"><span class="avyHeader">@messages("header.avySearchSlopeHeader")</span></td>
+                    <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader">@messages("header.avyFilterSlopeHeader")</span></td>
                 </tr>
                 <tr>
-                    <td class="avySearchSubHeader" colspan="2"><span class="avyHeader">@messages("header.avySearchClassification")</span></td>
+                    <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader">@messages("header.avyFilterClassification")</span></td>
                 </tr>
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchType" data-help="@Html(Messages("help.avySearchType"))">@messages("label.avySearchType")</label></td>
-                    <td class="avySearchTableInput">
+                    <td class="avyFilterTableLabel"><label for="avyFilterType" data-help="@Html(Messages("help.avyFilterType"))">@messages("label.avyFilterType")</label></td>
+                    <td class="avyFilterTableInput">
                         <input class="avyAutoComplete" data-source="AvalancheType"/>
-                        <input id="avySearchType" type="hidden"/>
+                        <input id="avyFilterType" type="hidden"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchTrigger" data-help="@Html(Messages("help.avySearchTrigger"))">@messages("label.avySearchTrigger")</label></td>
-                    <td class="avySearchTableInput">
+                    <td class="avyFilterTableLabel"><label for="avyFilterTrigger" data-help="@Html(Messages("help.avyFilterTrigger"))">@messages("label.avyFilterTrigger")</label></td>
+                    <td class="avyFilterTableInput">
                         <input class="avyAutoComplete" data-source="AvalancheTrigger"/>
-                        <input id="avySearchTrigger" type="hidden"/>
+                        <input id="avyFilterTrigger" type="hidden"/>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchRsizeValue" data-help="@Html(Messages("help.avySearchRsizeValue"))">@messages("label.avySearchRsizeValue")</label></td>
-                    <td class="avySearchTableInput">
+                    <td class="avyFilterTableLabel"><label for="avyFilterRsizeValue" data-help="@Html(Messages("help.avyFilterRsizeValue"))">@messages("label.avyFilterRsizeValue")</label></td>
+                    <td class="avyFilterTableInput">
                         <div class="avyRDSliderContainer">
-                            <input id="avySearchRsizeValue" class="avyRDSliderValue" readonly/>
+                            <input id="avyFilterRsizeValue" class="avyRDSliderValue" readonly/>
                             <div id="avyRSearchRsizeSlider" class="avyRDSlider avyRSlider"></div>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avySearchTableLabel"><label for="avySearchDsizeValue" data-help="@Html(Messages("help.avySearchDsizeValue"))">@messages("label.avySearchDsizeValue")</label></td>
-                    <td class="avySearchTableInput">
+                    <td class="avyFilterTableLabel"><label for="avyFilterDsizeValue" data-help="@Html(Messages("help.avyFilterDsizeValue"))">@messages("label.avyFilterDsizeValue")</label></td>
+                    <td class="avyFilterTableInput">
                         <div class="avyRDSliderContainer">
-                            <input id="avySearchDsizeValue" class="avyRDSliderValue" readonly/>
-                            <div id="avySearchDsizeSlider" class="avyRDSlider avyDSlider"></div>
+                            <input id="avyFilterDsizeValue" class="avyRDSliderValue" readonly/>
+                            <div id="avyFilterDsizeSlider" class="avyRDSlider avyDSlider"></div>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avySearchSubHeader" colspan="2"><span class="avyHeader">@messages("header.avySearchHumanNumbersHeader")</span></td>
+                    <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader">@messages("header.avyFilterHumanNumbersHeader")</span></td>
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <table id="avySearchHumanNumbersTable">
+                        <table id="avyFilterHumanNumbersTable">
                             <tr>
-                                <td><label for="avySearchNumCaught" data-help="@Html(Messages("help.avySearchNumCaught"))">@messages("label.avySearchNumCaught")</label></td>
-                                <td><input id="avySearchNumCaught" class="avyHumanNumber" readonly/></td>
-                                <td><label for="avySearchNumKilled" data-help="@Html(Messages("help.avySearchNumKilled"))">@messages("label.avySearchNumKilled")</label></td>
-                                <td><input id="avySearchNumKilled" class="avyHumanNumber" readonly/></td>
+                                <td><label for="avyFilterNumCaught" data-help="@Html(Messages("help.avyFilterNumCaught"))">@messages("label.avyFilterNumCaught")</label></td>
+                                <td><input id="avyFilterNumCaught" class="avyHumanNumber" readonly/></td>
+                                <td><label for="avyFilterNumKilled" data-help="@Html(Messages("help.avyFilterNumKilled"))">@messages("label.avyFilterNumKilled")</label></td>
+                                <td><input id="avyFilterNumKilled" class="avyHumanNumber" readonly/></td>
                             </tr>
                         </table>
                     </td>
                 </tr>
             </table>
-            <div id="avySearchButtonsContainer">
-                <input id="avySearchButton" type="button" class="avyButton" value='@messages("button.avySearchButton")' />
-                <input id="avySearchResetButton" type="button" class="avyButton" value='@messages("button.avySearchResetButton")' />
+            <div id="avyFilterButtonsContainer">
+                <input id="avyFilterButton" type="button" class="avyButton" value='@messages("button.avyFilterButton")' />
+                <input id="avyFilterResetButton" type="button" class="avyButton" value='@messages("button.avyFilterResetButton")' />
             </div>
         </div>
 

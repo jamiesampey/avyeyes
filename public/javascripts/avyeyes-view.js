@@ -83,7 +83,7 @@ AvyEyesView.prototype.setCameraMoveEventListener = function() {
     this.cesiumViewer.camera.moveEnd.addEventListener(function() {
         clearInterval(eyeAltSetter);
         if (!this.currentReport) {
-            $('#avySearchButton').trigger('click');
+            $('#avyFilterButton').trigger('click');
         }
     }.bind(this));
 }

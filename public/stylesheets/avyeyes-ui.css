@@ -250,7 +250,7 @@ li.ui-autocomplete-category {
     padding-top: 10px;
 }
 
-#avySearchOverlayResults {
+#avyFilterOverlayResults {
     font-size: 2em;
 }
 
@@ -421,46 +421,46 @@ li.ui-autocomplete-category {
     color: white;
 }
 
-.avySearchHeaderContainer {
+.avyFilterHeaderContainer {
     position: relative;
     padding: 15px 0px 10px 10px;
 }
 
-.avySearchHeader {
+.avyFilterHeader {
     position: fixed;
     font-size: 1.1em;
     font-weight: bold;
     width: 150px;
 }
 
-#avySearchHowItWorksDiv {
+#avyFilterHowItWorksDiv {
     float: right;
     font-size: .9em;
     padding: 3px 10px 0px 0px;
 }
 
-#avySearchDetailsTable {
+#avyFilterDetailsTable {
     padding: 0px 10px 0px 10px;
     margin: 0px;
     width: 100%;
 }
 
-.avySearchTableLabel {
+.avyFilterTableLabel {
 	width: 70px;
 	padding: 5px 0px 0px 0px;
     margin: 0px;
 }
 
-.avySearchTableInput {
+.avyFilterTableInput {
 	padding: 5px 0px 0px 0px;
     margin: 0px;
 }
 
-.avySearchSubHeader {
+.avyFilterSubHeader {
 	padding: 10px 0px 0px 0px;
 }
 
-#avySearchHumanNumbersTable {
+#avyFilterHumanNumbersTable {
 	float: left;
 	width: 100%;
     padding: 0px;
@@ -468,16 +468,16 @@ li.ui-autocomplete-category {
     border-spacing: 0px;
 }
 
-#avySearchButtonsContainer {
+#avyFilterButtonsContainer {
 	float: right;
 }
 
-#avySearchButton {
+#avyFilterButton {
     padding: 5px;
     margin: 20px 10px 20px 0px;
 }
 
-#avySearchResetButton {
+#avyFilterResetButton {
     padding: 5px;
     margin: 20px 10px 20px 0px;
 }

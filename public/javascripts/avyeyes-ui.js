@@ -242,7 +242,7 @@ function wireButtons(view) {
 
 	$('.avyButton').button();
 
-	$('#avySearchButton').click(function() {
+	$('#avyFilterButton').click(function() {
         var boundingBox = view.getBoundingBox();
 
         var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
@@ -250,10 +250,10 @@ function wireButtons(view) {
            + "&camPitch=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.pitch)
            + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
            + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
-           + "&fromDate=" + $("#avySearchFromDate").val() + "&toDate=" + $("#avySearchToDate").val()
-           + "&avyType=" + $("#avySearchType").val() + "&trigger=" + $("#avySearchTrigger").val()
-           + "&rSize=" + $("#avySearchRsizeValue").val() + "&dSize=" + $("#avySearchDsizeValue").val()
-           + "&numCaught=" + $("#avySearchNumCaught").val() + "&numKilled=" + $("#avySearchNumKilled").val()
+           + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
+           + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val()
+           + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
+           + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
 
         $.getJSON(searchQueryString).done(function(searchResults) {
             view.addAvalanches(searchResults);
@@ -262,12 +262,12 @@ function wireButtons(view) {
         });
 	});
 
-	$('#avySearchResetButton').click(function() {
-        $('#avySearchDetailsTable').find('input:text').val('');
-        $('#avySearchDetailsTable').find('input:hidden').val('');
-        $('#avySearchDetailsTable').find('.avyRDSliderValue').val('0');
-        $('#avySearchDetailsTable').find('.avyRDSlider').slider('value', 0);
-        $('#avySearchButton').trigger('click');
+	$('#avyFilterResetButton').click(function() {
+        $('#avyFilterDetailsTable').find('input:text').val('');
+        $('#avyFilterDetailsTable').find('input:hidden').val('');
+        $('#avyFilterDetailsTable').find('.avyRDSliderValue').val('0');
+        $('#avyFilterDetailsTable').find('.avyRDSlider').slider('value', 0);
+        $('#avyFilterButton').trigger('click');
     });
 
     $("#avyReportInitLocationButton").click(function() {
