@@ -169,7 +169,7 @@ li.ui-autocomplete-category {
     border: 1px solid #7D7D7D;
 }
 
-.avyRDSliderContainer {
+.avySliderContainer {
     width: 100%;
     padding: 0;
 }
@@ -183,6 +183,15 @@ li.ui-autocomplete-category {
     border: none;
     font-size: 1em;
     padding: 0 5px 0 0;
+}
+
+.avySliderHandle {
+    width: 3em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
 }
 
 .avyMsg p, li {

@@ -23,13 +23,23 @@ private[data] object AvalanchePredicates {
     case None => None
   }
 
-  def fromDatePredicate(valueOption: Option[DateTime]): Option[AvalanchePredicate] = valueOption match {
-    case Some(fromDate) => Some(_.date.getMillis >= fromDate.getMillis)
+  def dateRangePredicate(rangeOption: Option[(DateTime, DateTime)]): Option[AvalanchePredicate] = rangeOption match {
+    case Some(dateRange) => Some(a => a.date.getMillis >= dateRange._1.getMillis && a.date.getMillis <= dateRange._2.getMillis)
     case None => None
   }
 
-  def toDatePredicate(valueOption: Option[DateTime]): Option[AvalanchePredicate] = valueOption match {
-    case Some(toDate) => Some(_.date.getMillis <= toDate.getMillis)
+  def aspectRangePredicate(rangeOption: Option[(Int, Int)]): Option[AvalanchePredicate] = rangeOption match {
+    case Some(aspectRange) => Some(a => a.slope.aspect >= aspectRange._1 && a.slope.aspect <= aspectRange._2)
+    case None => None
+  }
+
+  def angleRangePredicate(rangeOption: Option[(Int, Int)]): Option[AvalanchePredicate] = rangeOption match {
+    case Some(angleRange) => Some(a => (a.slope.angle >= angleRange._1) && (a.slope.angle <= angleRange._2))
+    case None => None
+  }
+
+  def elevationRangePredicate(rangeOption: Option[(Int, Int)]): Option[AvalanchePredicate] = rangeOption match {
+    case Some(altitudeRange) => Some(a => a.location.altitude >= altitudeRange._1 && a.location.altitude <= altitudeRange._2)
     case None => None
   }
 

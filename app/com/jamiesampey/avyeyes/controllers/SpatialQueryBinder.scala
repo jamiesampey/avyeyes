@@ -3,6 +3,7 @@ package com.jamiesampey.avyeyes.controllers
 import com.jamiesampey.avyeyes.data.{AvalancheSpatialQuery, GeoBounds, OrderDirection, OrderField}
 import com.jamiesampey.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
 import com.jamiesampey.avyeyes.util.Converters.strToDate
+import org.joda.time.DateTime
 import play.api.mvc.QueryStringBindable
 
 import scala.util.{Failure, Success, Try}
@@ -24,11 +25,20 @@ object SpatialQueryBinder {
         case _ => None
       }
 
+      val fromDate = firstNonEmptyValue(params.get("fromDate")).map(strToDate).getOrElse(new DateTime(0))
+      val toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate).getOrElse(DateTime.now)
+
+      val aspectRange = toOptionalIntRange(firstNonEmptyValue(params.get("aspectLow")), firstNonEmptyValue(params.get("aspectHigh")))
+      val angleRange = toOptionalIntRange(firstNonEmptyValue(params.get("angleLow")), firstNonEmptyValue(params.get("angleHigh")))
+      val elevationRange = toOptionalIntRange(firstNonEmptyValue(params.get("elevationLow")), firstNonEmptyValue(params.get("elevationHigh")))
+
       AvalancheSpatialQuery(
         viewable = Some(true),
         geoBounds = geoBoundsOpt,
-        fromDate = firstNonEmptyValue(params.get("fromDate")).map(strToDate),
-        toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate),
+        dateRange = Some((fromDate, toDate)),
+        aspectRange = aspectRange,
+        angleRange = angleRange,
+        elevationRange = elevationRange,
         avyType = firstNonEmptyValue(params.get("avyType")).map(AvalancheType.fromCode),
         trigger = firstNonEmptyValue(params.get("trigger")).map(AvalancheTrigger.fromCode),
         rSize = firstNonEmptyValue(params.get("rSize")).map(_.toDouble),
@@ -43,6 +53,13 @@ object SpatialQueryBinder {
     }
 
     private def firstNonEmptyValue(possibleValues: Option[Seq[String]]): Option[String] = possibleValues.flatMap(_.find(_.nonEmpty))
+
+    private def toOptionalIntRange(lowStrValue: Option[String], highStrValue: Option[String]): Option[(Int, Int)] = {
+      (lowStrValue.map(_.toInt), highStrValue.map(_.toInt)) match {
+        case (Some(low), Some(high)) => Some((low, high))
+        case _ => None
+      }
+    }
 
     override def unbind(key: String, query: AvalancheSpatialQuery) = "unimplemented"
   }

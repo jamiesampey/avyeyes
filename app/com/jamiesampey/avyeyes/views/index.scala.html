@@ -97,40 +97,52 @@
 
             <table id="avyFilterDetailsTable">
                 <tr>
-                    <td class="avyFilterTableLabel"><label for="avyFilterFromDate" data-help="@Html(Messages("help.avyFilterFromDate"))">@messages("label.avyFilterFromDate")</label></td>
-                    <td class="avyFilterTableInput"><input id="avyFilterFromDate" class="avyDate"/></td>
-                </tr>
-                <tr>
-                    <td class="avyFilterTableLabel"><label for="avyFilterToDate" data-help="@Html(Messages("help.avyFilterToDate"))">@messages("label.avyFilterToDate")</label></td>
-                    <td class="avyFilterTableInput"><input id="avyFilterToDate" class="avyDate"/></td>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <td class="avyFilterTableLabel"><label for="avyFilterFromDate" data-help="@Html(Messages("help.avyFilterFromDate"))">@messages("label.avyFilterFromDate")</label></td>
+                                <td class="avyFilterTableInput"><input id="avyFilterFromDate" class="avyDate"/></td>
+                                <td class="avyFilterTableLabel"><label for="avyFilterToDate" data-help="@Html(Messages("help.avyFilterToDate"))">@messages("label.avyFilterToDate")</label></td>
+                                <td class="avyFilterTableInput"><input id="avyFilterToDate" class="avyDate"/></td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
                 <tr>
                     <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader">@messages("header.avyFilterSlopeHeader")</span></td>
                 </tr>
                 <tr>
-                    <td class="avyFilterTableLabel"><label for="avyFilterAspectValue" data-help="@Html(Messages("help.avyFilterAspect"))">@messages("label.avyFilterAspect")</label></td>
+                    <td class="avyFilterTableLabel"><label data-help="@Html(Messages("help.avyFilterAspect"))">@messages("label.avyFilterAspect")</label></td>
                     <td class="avyFilterTableInput">
-                        <div class="avyRDSliderContainer">
-                            <input id="avyFilterAspectValue" class="avyRDSliderValue" readonly/>
-                            <div id="avyRSearchRsizeSlider" class="avyRDSlider avyRSlider"></div>
+                        <div class="avySliderContainer">
+                            <div id="avyFilterAspectSlider">
+                                <div id="avyFilterAspectLowHandle" class="ui-slider-handle avySliderHandle"></div>
+                                <div id="avyFilterAspectHighHandle" class="ui-slider-handle avySliderHandle"></div>
+                            </div>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avyFilterTableLabel"><label for="avyFilterAngleValue" data-help="@Html(Messages("help.avyFilterAngle"))">@messages("label.avyFilterAngle")</label></td>
+                    <td class="avyFilterTableLabel"><label data-help="@Html(Messages("help.avyFilterAngle"))">@messages("label.avyFilterAngle")</label></td>
                     <td class="avyFilterTableInput">
-                        <div class="avyRDSliderContainer">
-                            <input id="avyFilterAngleValue" class="avyRDSliderValue" readonly/>
-                            <div id="avyRSearchRsizeSlider" class="avyRDSlider"></div>
+                        <div class="avySliderContainer">
+                            <div class="avySliderContainer">
+                                <div id="avyFilterAngleSlider">
+                                    <div id="avyFilterAngleLowHandle" class="ui-slider-handle avySliderHandle"></div>
+                                    <div id="avyFilterAngleHighHandle" class="ui-slider-handle avySliderHandle"></div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="avyFilterTableLabel"><label for="avyFilterElevationValue" data-help="@Html(Messages("help.avyFilterElevation"))">@messages("label.avyFilterElevation")</label></td>
+                    <td class="avyFilterTableLabel"><label data-help="@Html(Messages("help.avyFilterElevation"))">@messages("label.avyFilterElevation")</label></td>
                     <td class="avyFilterTableInput">
-                        <div class="avyRDSliderContainer">
-                            <input id="avyFilterElevationValue" class="avyRDSliderValue" readonly/>
-                            <div id="avyRSearchRsizeSlider" class="avyRDSlider"></div>
+                        <div class="avySliderContainer">
+                            <div id="avyFilterElevationSlider">
+                                <div id="avyFilterElevationLowHandle" class="ui-slider-handle avySliderHandle"></div>
+                                <div id="avyFilterElevationHighHandle" class="ui-slider-handle avySliderHandle"></div>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -154,7 +166,7 @@
                 <tr>
                     <td class="avyFilterTableLabel"><label for="avyFilterRsizeValue" data-help="@Html(Messages("help.avyFilterRsizeValue"))">@messages("label.avyFilterRsizeValue")</label></td>
                     <td class="avyFilterTableInput">
-                        <div class="avyRDSliderContainer">
+                        <div class="avySliderContainer">
                             <input id="avyFilterRsizeValue" class="avyRDSliderValue" readonly/>
                             <div id="avyRSearchRsizeSlider" class="avyRDSlider avyRSlider"></div>
                         </div>
@@ -163,7 +175,7 @@
                 <tr>
                     <td class="avyFilterTableLabel"><label for="avyFilterDsizeValue" data-help="@Html(Messages("help.avyFilterDsizeValue"))">@messages("label.avyFilterDsizeValue")</label></td>
                     <td class="avyFilterTableInput">
-                        <div class="avyRDSliderContainer">
+                        <div class="avySliderContainer">
                             <input id="avyFilterDsizeValue" class="avyRDSliderValue" readonly/>
                             <div id="avyFilterDsizeSlider" class="avyRDSlider avyDSlider"></div>
                         </div>
@@ -495,7 +507,7 @@
                                                 <tr>
                                                     <td><label for="rwAvyFormRsizeValue" data-help="@messages("help.rwAvyFormRsizeValue")">@messages("label.rwAvyFormRsizeValue"):</label></td>
                                                     <td>
-                                                        <div class="avyRDSliderContainer">
+                                                        <div class="avySliderContainer">
                                                             <input id="rwAvyFormRsizeValue" class="avyRDSliderValue" readonly/>
                                                             <div id="rwAvyFormRsizeSlider" class="avyRDSlider avyRSlider"></div>
                                                         </div>
@@ -504,7 +516,7 @@
                                                 <tr>
                                                     <td><label for="rwAvyFormDsizeValue" data-help="@messages("help.rwAvyFormDsizeValue")">@messages("label.rwAvyFormDsizeValue"):</label></td>
                                                     <td>
-                                                        <div class="avyRDSliderContainer">
+                                                        <div class="avySliderContainer">
                                                             <input id="rwAvyFormDsizeValue" class="avyRDSliderValue" readonly/>
                                                             <div id="rwAvyFormDsizeSlider" class="avyRDSlider avyDSlider"></div>
                                                         </div>
