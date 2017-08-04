@@ -1,7 +1,7 @@
 ####### General UI #######
 
 link.reportMenuItem=Report an Avalanche
-link.searchMenuItem=Filter Avalanches
+link.filterMenuItem=Filter Avalanches
 link.aboutMenuItem=About AvyEyes
 link.howItWorks=how it works
 link.searchHelpTab=Searching
