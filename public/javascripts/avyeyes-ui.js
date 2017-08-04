@@ -31,17 +31,17 @@ function wireMainMenu(view) {
 
     var menuBlurTimer;
 
-    $('#aeControlsMenu').on('menufocus', function(event, ui) {
+    $('#aeControlsMenu').on('menufocus', function() {
         clearTimeout(menuBlurTimer);
     });
 
-    $('#aeControlsMenu').on('menublur', function(event, ui) {
+    $('#aeControlsMenu').on('menublur', function() {
         menuBlurTimer = setTimeout(function() {
             $('#aeControlsMenu').hide('slide', 400);
         }, 200);
     });
 
-    $('#aeControlsMenu').on('menuselect', function(event, ui){
+    $('#aeControlsMenu').on('menuselect', function(){
         $('#aeControlsMenu').hide('slide', 400);
     });
 
@@ -251,7 +251,7 @@ function wireButtons(view) {
            + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
            + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
            + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
-           + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val()
+           + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
            + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
            + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
 

@@ -1,6 +1,7 @@
 package com.jamiesampey.avyeyes.data
 
 import com.jamiesampey.avyeyes.model.Avalanche
+import com.jamiesampey.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
 import com.jamiesampey.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.jamiesampey.avyeyes.model.enums.AvalancheType.AvalancheType
 import org.joda.time.DateTime
@@ -40,6 +41,11 @@ private[data] object AvalanchePredicates {
 
   def triggerPredicate(valueOption: Option[AvalancheTrigger]): Option[AvalanchePredicate] = valueOption match {
     case Some(trigger) => Some(_.classification.trigger == trigger)
+    case None => None
+  }
+
+  def interfacePredicate(valueOption: Option[AvalancheInterface]): Option[AvalanchePredicate] = valueOption match {
+    case Some(interface) => Some(_.classification.interface == interface)
     case None => None
   }
 

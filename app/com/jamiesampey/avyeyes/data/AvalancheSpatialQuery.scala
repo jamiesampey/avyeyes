@@ -1,6 +1,7 @@
 package com.jamiesampey.avyeyes.data
 
 import com.jamiesampey.avyeyes.data.AvalanchePredicates._
+import com.jamiesampey.avyeyes.model.enums.AvalancheInterface.AvalancheInterface
 import com.jamiesampey.avyeyes.model.enums.AvalancheTrigger.AvalancheTrigger
 import com.jamiesampey.avyeyes.model.enums.AvalancheType.AvalancheType
 import org.joda.time.DateTime
@@ -12,6 +13,7 @@ case class AvalancheSpatialQuery(
   toDate: Option[DateTime] = None,
   avyType: Option[AvalancheType] = None,
   trigger: Option[AvalancheTrigger] = None,
+  interface: Option[AvalancheInterface] = None,
   rSize: Option[Double] = None,
   dSize: Option[Double] = None,
   numCaught: Option[Int] = None,
@@ -27,6 +29,7 @@ case class AvalancheSpatialQuery(
     toDatePredicate(toDate) ::
     avyTypePredicate(avyType) ::
     triggerPredicate(trigger) ::
+    interfacePredicate(interface) ::
     rSizePredicate(rSize) ::
     dSizePredicate(dSize) ::
     caughtPredicate(numCaught) ::

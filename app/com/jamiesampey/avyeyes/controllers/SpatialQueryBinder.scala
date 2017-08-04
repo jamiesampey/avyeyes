@@ -1,7 +1,7 @@
 package com.jamiesampey.avyeyes.controllers
 
 import com.jamiesampey.avyeyes.data.{AvalancheSpatialQuery, GeoBounds, OrderDirection, OrderField}
-import com.jamiesampey.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
+import com.jamiesampey.avyeyes.model.enums.{AvalancheInterface, AvalancheTrigger, AvalancheType}
 import com.jamiesampey.avyeyes.util.Converters.strToDate
 import play.api.mvc.QueryStringBindable
 
@@ -31,6 +31,7 @@ object SpatialQueryBinder {
         toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate),
         avyType = firstNonEmptyValue(params.get("avyType")).map(AvalancheType.fromCode),
         trigger = firstNonEmptyValue(params.get("trigger")).map(AvalancheTrigger.fromCode),
+        interface = firstNonEmptyValue(params.get("interface")).map(AvalancheInterface.fromCode),
         rSize = firstNonEmptyValue(params.get("rSize")).map(_.toDouble),
         dSize = firstNonEmptyValue(params.get("dSize")).map(_.toDouble),
         numCaught = firstNonEmptyValue(params.get("numCaught")).map(_.toInt),
