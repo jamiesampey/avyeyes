@@ -1,16 +1,13 @@
 package com.jamiesampey.avyeyes.data
 
 import com.jamiesampey.avyeyes.model.enums.{AvalancheInterface, AvalancheTrigger, AvalancheType}
-import com.jamiesampey.avyeyes.service.ExternalIdService
 import com.jamiesampey.avyeyes.util.Converters.strToDate
 import org.joda.time.DateTime
 import org.specs2.execute.Result
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.WithApplication
 
 
-class AvalancheDaoSearchSelectTest extends DatabaseTest {
+class AvalancheDaoFilterSelectTest extends DatabaseTest {
 
   implicit val subject = injector.instanceOf[AvalancheDao]
 
