@@ -8,10 +8,8 @@ import org.joda.time.DateTime
 case class AvalancheSpatialQuery(
   viewable: Option[Boolean] = None,
   geoBounds: Option[GeoBounds] = None,
-  dateRange: Option[(DateTime, DateTime)] = None,
-  aspectRange: Option[(Int, Int)] = None,
-  angleRange: Option[(Int, Int)] = None,
-  elevationRange: Option[(Int, Int)] = None,
+  fromDate: Option[DateTime] = None,
+  toDate: Option[DateTime] = None,
   avyType: Option[AvalancheType] = None,
   trigger: Option[AvalancheTrigger] = None,
   rSize: Option[Double] = None,
@@ -25,10 +23,8 @@ case class AvalancheSpatialQuery(
 
   lazy val predicates = viewablePredicate(viewable) ::
     geoBoundsPredicate(geoBounds) ::
-    dateRangePredicate(dateRange) ::
-    aspectRangePredicate(aspectRange) ::
-    angleRangePredicate(angleRange) ::
-    elevationRangePredicate(elevationRange) ::
+    fromDatePredicate(fromDate) ::
+    toDatePredicate(toDate) ::
     avyTypePredicate(avyType) ::
     triggerPredicate(trigger) ::
     rSizePredicate(rSize) ::

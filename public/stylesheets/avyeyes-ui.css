@@ -182,16 +182,7 @@ li.ui-autocomplete-category {
     background: transparent;
     border: none;
     font-size: 1em;
-    padding: 0 5px 0 0;
-}
-
-.avySliderHandle {
-    width: 3em;
-    height: 1.6em;
-    top: 50%;
-    margin-top: -.8em;
-    text-align: center;
-    line-height: 1.6em;
+    padding: 0px 5px 0px 0px;
 }
 
 .avyMsg p, li {
@@ -466,7 +457,7 @@ li.ui-autocomplete-category {
 }
 
 .avyFilterSubHeader {
-	padding: 10px 0 0 0;
+	padding: 20px 0 0 0;
 }
 
 #avyFilterHumanNumbersTable {

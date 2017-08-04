@@ -182,60 +182,12 @@ function wireDatePickers() {
 }
 
 function wireSliders() {
-    $('#avyFilterAspectSlider').slider({
-        min: 0,
-        max: 360,
-        step: 45,
-        range: true,
-        values: [0, 360],
-        create: function () {
-            $("#avyFilterAspectLowHandle").text(0);
-            $("#avyFilterAspectHighHandle").text(360);
-        },
-        slide: function (event, ui) {
-            $("#avyFilterAspectLowHandle").text(ui.values[0]);
-            $("#avyFilterAspectHighHandle").text(ui.values[1]);
-        }
-    });
-
-    $('#avyFilterAngleSlider').slider({
-        min: 0,
-        max: 70,
-        step: 1,
-        range: true,
-        values: [0, 70],
-        create: function () {
-            $("#avyFilterAngleLowHandle").text(0);
-            $("#avyFilterAngleHighHandle").text(70);
-        },
-        slide: function (event, ui) {
-            $("#avyFilterAngleLowHandle").text(ui.values[0]);
-            $("#avyFilterAngleHighHandle").text(ui.values[1]);
-        }
-    });
-
-    $('#avyFilterElevationSlider').slider({
-        min: 0,
-        max: 8000,
-        step: 200,
-        range: true,
-        values: [0, 8000],
-        create: function () {
-            $("#avyFilterElevationLowHandle").text(0);
-            $("#avyFilterElevationHighHandle").text(8000);
-        },
-        slide: function (event, ui) {
-            $("#avyFilterElevationLowHandle").text(ui.values[0]);
-            $("#avyFilterElevationHighHandle").text(ui.values[1]);
-        }
-    });
-
     $('.avyRSlider').slider({
         min: 0,
         max: 5,
         step: 1,
         range: 'min',
-        create: function () {
+        create: function (event, ui) {
             $(this).siblings(".avyRDSliderValue").val(0);
         },
         slide: function (event, ui) {
@@ -248,7 +200,7 @@ function wireSliders() {
         max: 5,
         step: 0.5,
         range: 'min',
-        create: function () {
+        create: function (event, ui) {
             $(this).siblings(".avyRDSliderValue").val(0);
         },
         slide: function (event, ui) {
@@ -299,9 +251,6 @@ function wireButtons(view) {
            + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
            + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
            + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
-           + "&aspectLow=" + $("#avyFilterAspectLowHandle").text() + "&aspectHigh=" + $("#avyFilterAspectHighHandle").text()
-           + "&angleLow=" + $("#avyFilterAngleLowHandle").text() + "&angleHigh=" + $("#avyFilterAngleHighHandle").text()
-           + "&elevationLow=" + $("#avyFilterElevationLowHandle").text() + "&elevationHigh=" + $("#avyFilterElevationHighHandle").text()
            + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val()
            + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
            + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
@@ -318,9 +267,6 @@ function wireButtons(view) {
 	$('#avyFilterResetButton').click(function() {
         $('#avyFilterDetailsTable').find('input:text').val('');
         $('#avyFilterDetailsTable').find('input:hidden').val('');
-        $('#avyFilterAspectSlider').find('.avyRDSlider').slider('values', [0, 360]);
-        $('#avyFilterAngleSlider').find('.avyRDSlider').slider('values', [0, 70]);
-        $('#avyFilterElevationSlider').find('.avyRDSlider').slider('values', [0, 29000]);
         $('#avyFilterDetailsTable').find('.avyRDSliderValue').val('0');
         $('#avyFilterDetailsTable').find('.avyRDSlider').slider('value', 0);
         $('#avyFilterButton').trigger('click');

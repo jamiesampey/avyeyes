@@ -20,15 +20,11 @@ msg.avyTitleOverlayTips=<table class='avyOverlayTipsTable'><tr><td class='dialog
 ####### Search #######
 
 header.avyFilterTitle=Avalanche Filter
-header.avyFilterSlopeHeader=Slope Characteristics
 header.avyFilterClassification=Avalanche Classification
 header.avyFilterHumanNumbersHeader=Human Numbers
 
 label.avyFilterFromDate=From
 label.avyFilterToDate=To
-label.avyFilterAspect=Aspect
-label.avyFilterAngle=Angle
-label.avyFilterElevation=Elevation
 label.avyFilterType=Type
 label.avyFilterTrigger=Trigger
 label.avyFilterRsizeValue=R Size
@@ -38,9 +34,6 @@ label.avyFilterNumKilled=Killed
 
 help.avyFilterFromDate=<p>The start date for the search. Only avalanches that occurred <i>on or after</i> this date will be displayed.</p>Leaving the start date blank will exclude it as a criteria of the search.
 help.avyFilterToDate=<p>The end date for the search. Only avalanches that occurred <i>on or before</i> this date will be displayed.</p>Leaving the end date blank will exclude it as a criteria of the search.
-help.avyFilterAspect=<p>The aspect (i.e. ordinal direction) of the avalanche path. Only avalanches with one of the specified aspects will be displayed.</p>Leaving the aspect blank will exclude it as a criteria of the search.
-help.avyFilterAngle=<p>The slope angle of the avalanche. Only avalanches with a slope angle within the specified range will be displayed.</p>Leaving the slope angle blank will exclude it as a criteria of the search.
-help.avyFilterElevation=<p>The elevation at the top of the avalanche path. Only avalanches at elevations within the specified range will be displayed.</p>Leaving the elevation blank will exclude it as a criteria of the search.
 help.avyFilterType=<p>The type classification of the avalanche. Only avalanches of the specified type will be displayed.</p>Leaving the type blank will exclude it as a criteria of the search.
 help.avyFilterTrigger=<p>The mechanism that caused the avalanche to release. Triggers are either natural (N* codes) or artificial (A* codes). Only avalanches with the specified trigger will be displayed.</p>Leaving the trigger blank will exclude it as a criteria of the search.
 help.avyFilterRsizeValue=<p>The relative (R) size of the avalanche. A R1 avalanche is very small relative to its path. A R5 avalanche encompasses all or nearly all of its path.</p><p>Only avalanches that have a R size value <i>equal to or greater than</i> the specified R size will be displayed.</p>Leaving the R size blank will exclude it as a criteria of the search.
