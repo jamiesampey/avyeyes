@@ -1,6 +1,6 @@
 package com.jamiesampey.avyeyes.data
 
-import com.jamiesampey.avyeyes.model.enums.{AvalancheTrigger, AvalancheType}
+import com.jamiesampey.avyeyes.model.enums.{AvalancheInterface, AvalancheTrigger, AvalancheType}
 import com.jamiesampey.avyeyes.service.ExternalIdService
 import com.jamiesampey.avyeyes.util.Converters.strToDate
 import org.joda.time.DateTime
@@ -37,11 +37,11 @@ class AvalancheDaoSearchSelectTest extends DatabaseTest {
     }
   }
 
-  "Type/Trigger filtering" should {
+  "Type/Trigger/Interface filtering" should {
     val hsAsAvalanche = genAvalanche.generate.copy(viewable = true, classification =
-      genClassification.sample.get.copy(avyType = AvalancheType.HS, trigger = AvalancheTrigger.AS))
+      genClassification.sample.get.copy(avyType = AvalancheType.HS, trigger = AvalancheTrigger.AS, interface = AvalancheInterface.O))
     val wsNeAvalanche = genAvalanche.generate.copy(viewable = true, classification =
-      genClassification.sample.get.copy(avyType = AvalancheType.WS, trigger = AvalancheTrigger.NE))
+      genClassification.sample.get.copy(avyType = AvalancheType.WS, trigger = AvalancheTrigger.NE, interface = AvalancheInterface.G))
 
     "type filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
@@ -55,10 +55,16 @@ class AvalancheDaoSearchSelectTest extends DatabaseTest {
       verifySingleResult(asTriggerQuery, hsAsAvalanche.extId)
     }
 
-    "type and trigger filtering" in new WithApplication(appBuilder.build) {
+    "interface filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
-      val hsAsQuery = AvalancheSpatialQuery(avyType = Some(AvalancheType.HS), trigger = Some(AvalancheTrigger.AS))
-      verifySingleResult(hsAsQuery, hsAsAvalanche.extId)
+      val gInterfaceQuery = AvalancheSpatialQuery(interface = Some(AvalancheInterface.G))
+      verifySingleResult(gInterfaceQuery, wsNeAvalanche.extId)
+    }
+
+    "type, trigger, and interface filtering" in new WithApplication(appBuilder.build) {
+      insertAvalanches(hsAsAvalanche, wsNeAvalanche)
+      val hsAsOQuery = AvalancheSpatialQuery(avyType = Some(AvalancheType.HS), trigger = Some(AvalancheTrigger.AS), interface = Some(AvalancheInterface.O))
+      verifySingleResult(hsAsOQuery, hsAsAvalanche.extId)
     }
   }
 
