@@ -255,8 +255,6 @@ function wireButtons(view) {
            + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
            + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
 
-        console.log("sending query: " + searchQueryString);
-
         $.getJSON(searchQueryString).done(function(searchResults) {
             view.addAvalanches(searchResults);
         }).fail(function(jqxhr) {
@@ -308,6 +306,7 @@ function wireButtons(view) {
         } else {
             view.currentReport.submitReport();
         }
+        view.resetView();
     });
 
     $("#rwAvyFormCancelButton").click(function() {

@@ -122,13 +122,14 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
             $.getJSON(avalancheUrl, function(data) {
-                this.currentReport = new AvyReport(this);
                 if (data.hasOwnProperty("viewable")) {
                     this.form.enableAdminControls().then(function() {
                         this.form.displayReadWriteForm(data);
+                        this.currentReport = new AvyReport(this);
                     }.bind(this));
                 } else if (data.hasOwnProperty("submitterEmail")) {
                     this.form.displayReadWriteForm(data);
+                    this.currentReport = new AvyReport(this);
                 } else {
                     this.form.displayReadOnlyForm(movement.position, data);
                 }
