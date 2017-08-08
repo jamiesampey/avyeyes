@@ -3,8 +3,7 @@ package com.jamiesampey.avyeyes.util
 import scala.concurrent.duration._
 
 object Constants {
-	val CamAltitudePinThreshold: Int = 15000 // meters
-	val CamRangePinThreshold = 5.0 // miles
+	val CamRangePinThreshold = 10000 // meters
 
   val MaxImagesPerAvalanche = 20
 

@@ -7,7 +7,7 @@ import com.jamiesampey.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.jamiesampey.avyeyes.service.ConfigurationService
 import com.jamiesampey.avyeyes.system.UserEnvironment
-import com.jamiesampey.avyeyes.util.Constants.{CamRangePinThreshold, CamAltitudePinThreshold}
+import com.jamiesampey.avyeyes.util.Constants.CamRangePinThreshold
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -54,11 +54,9 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
       case _ => Try(dao.getAvalanches(query)) match {
         case Success(avalanches) =>
           (camAltParam, camLngParam, camLatParam) match {
-            case (Some(camAlt), _, _) if camAlt > CamAltitudePinThreshold =>
-              Ok(writeJson(JArray(avalanches.map(a => avalanchePinSearchResult(a)))))
-            case (_, Some(camLng), Some(camLat)) =>
-              val camLocation = Coordinate(camLng, camLat, 0)
-              val (nearAvalanches, farAvalanches) = avalanches.partition(_.location.distanceTo(camLocation) < CamRangePinThreshold)
+            case (Some(camAlt), Some(camLng), Some(camLat)) =>
+              val camLocation = Coordinate(longitude = camLng, latitude = camLat, altitude = camAlt)
+              val (nearAvalanches, farAvalanches) = avalanches.partition(_.location.ecefDistanceTo(camLocation) < CamRangePinThreshold)
               Ok(writeJson(JArray(nearAvalanches.map(a => avalanchePathSearchResult(a)) ++ farAvalanches.map(a => avalanchePinSearchResult(a)))))
             case _ =>
               Ok(writeJson(JArray(avalanches.map(a => avalanchePinSearchResult(a)))))

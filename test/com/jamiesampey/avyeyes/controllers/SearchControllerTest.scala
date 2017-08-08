@@ -3,7 +3,6 @@ package com.jamiesampey.avyeyes.controllers
 import com.jamiesampey.avyeyes.data.{AvalancheSpatialQuery, CachedDao, GeoBounds}
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRole
 import com.jamiesampey.avyeyes.service.ConfigurationService
-import com.jamiesampey.avyeyes.util.Constants.CamAltitudePinThreshold
 import helpers.BaseSpec
 import org.joda.time.DateTime
 import org.mockito.Mockito
@@ -88,7 +87,7 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
   "Avalanche spatial search" should {
     "not allow search if the geographic bounds are not set (horizon is in view)" in new WithApplication(appBuilder.build) {
-      val action = subject.spatialSearch(AvalancheSpatialQuery(), Some(CamAltitudePinThreshold-1000), None, None)
+      val action = subject.spatialSearch(AvalancheSpatialQuery(), None, None, None)
       val result = call(action, FakeRequest()).resolve
 
       result.header.status mustEqual BAD_REQUEST
@@ -102,7 +101,7 @@ class SearchControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
       mockDao.getAvalanches(any) returns avalanches
       val spatialQuery = AvalancheSpatialQuery(geoBounds = Some(GeoBounds(-104, -105, 39, 38)))
 
-      val action = subject.spatialSearch(spatialQuery, Some(CamAltitudePinThreshold-1000), None, None)
+      val action = subject.spatialSearch(spatialQuery, Some(9000), Some(-104.5), Some(38.5))
       val result = call(action, FakeRequest())
       val jsonResponseArray = contentAsJson(result).as[JsArray].value
 

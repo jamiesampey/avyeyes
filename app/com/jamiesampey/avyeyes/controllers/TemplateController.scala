@@ -7,7 +7,6 @@ import com.jamiesampey.avyeyes.model.enums._
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.jamiesampey.avyeyes.service.ConfigurationService
 import com.jamiesampey.avyeyes.system.UserEnvironment
-import com.jamiesampey.avyeyes.util.Constants.CamAltitudePinThreshold
 import org.json4s.JsonAST
 import org.json4s.JsonDSL._
 import play.api.Logger

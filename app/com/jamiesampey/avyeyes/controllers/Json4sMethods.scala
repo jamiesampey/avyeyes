@@ -4,7 +4,6 @@ import com.jamiesampey.avyeyes.model.enums.ExperienceLevel
 import com.jamiesampey.avyeyes.model.serializers.avyeyesFormats
 import com.jamiesampey.avyeyes.model.{Avalanche, AvalancheImage}
 import com.jamiesampey.avyeyes.service.ConfigurationService
-import com.jamiesampey.avyeyes.util.Constants.CamAltitudePinThreshold
 import org.apache.commons.lang3.StringEscapeUtils.unescapeJava
 import org.joda.time.format.DateTimeFormat
 import org.json4s.Extraction
@@ -82,14 +81,3 @@ trait Json4sMethods {
     )
   }
 }
-
-
-//class ChainedEnumSerializer(enums: Enumeration*) extends Serializer[Enumeration#Value] {
-//  def deserialize(implicit format: Formats): PartialFunction[(TypeInfo, JValue), Enumeration#Value] = {
-//    case code: (TypeInfo, JValue) => println(s"trying to deserialize $code"); AvalancheType.HS
-//  }
-//
-//  def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-//    case ev: Enumeration#Value => ev.toString.split('.').last
-//  }
-//}
