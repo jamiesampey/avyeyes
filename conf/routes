@@ -8,7 +8,7 @@ DELETE  /avalanche/:extId           com.jamiesampey.avyeyes.controllers.ReportCo
 
 # Avalanche search
 GET     /avalanche/table            com.jamiesampey.avyeyes.controllers.SearchController.tabularSearch(adminQuery: com.jamiesampey.avyeyes.data.AvalancheTableQuery)
-GET     /avalanche/search           com.jamiesampey.avyeyes.controllers.SearchController.spatialSearch(query: com.jamiesampey.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camPitch: Option[Double], camLng: Option[Double], camLat: Option[Double])
+GET     /avalanche/search           com.jamiesampey.avyeyes.controllers.SearchController.spatialSearch(query: com.jamiesampey.avyeyes.data.AvalancheSpatialQuery, camAlt: Option[Double], camLng: Option[Double], camLat: Option[Double])
 GET     /avalanche/:extId           com.jamiesampey.avyeyes.controllers.SearchController.find(extId, edit: Option[String])
 
 # Images

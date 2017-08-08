@@ -25,7 +25,7 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
 
   def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
-      dao.getAvalanche(extId).map(a => writeJson(avalancheSearchResultData(a, Some(CamAltitudePinThreshold-1)))) else None
+      dao.getAvalanche(extId).map(a => writeJson(avalanchePathSearchResult(a))) else None
 
     Ok(com.jamiesampey.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
   }

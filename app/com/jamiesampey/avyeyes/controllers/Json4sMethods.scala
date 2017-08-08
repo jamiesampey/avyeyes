@@ -41,12 +41,16 @@ trait Json4sMethods {
     ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
   }
 
-  private[controllers] def avalancheSearchResultData(a: Avalanche, camAltitude: Option[Double]) = {
-    val locationField: JObject = if (camAltitude.map(_.toInt).getOrElse(CamAltitudePinThreshold + 1) < CamAltitudePinThreshold)
-      "coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude))
-    else "location" -> Extraction.decompose(a.location)
+  private[controllers] def avalanchePathSearchResult(a: Avalanche) = {
+    coreSearchResultData(a) ~ ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+  }
 
-    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope)) ~ locationField
+  private[controllers] def avalanchePinSearchResult(a: Avalanche) = {
+    coreSearchResultData(a) ~ ("location" -> Extraction.decompose(a.location))
+  }
+
+  private def coreSearchResultData(a: Avalanche) = {
+    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope))
   }
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))

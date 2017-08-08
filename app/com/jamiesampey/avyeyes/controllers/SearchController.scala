@@ -7,7 +7,7 @@ import com.jamiesampey.avyeyes.model.{AvyEyesUser, Coordinate}
 import com.jamiesampey.avyeyes.service.AvyEyesUserService.AdminRoles
 import com.jamiesampey.avyeyes.service.ConfigurationService
 import com.jamiesampey.avyeyes.system.UserEnvironment
-import com.jamiesampey.avyeyes.util.Constants.{AvyDistRangeMiles, CamPitchCutoff}
+import com.jamiesampey.avyeyes.util.Constants.{CamRangePinThreshold, CamAltitudePinThreshold}
 import org.json4s.JsonAST._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -48,18 +48,21 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
     }}.getOrElse(Future { NotFound })
   }
 
-  def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camPitchParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
+  def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
     query.geoBounds match {
       case geoBounds if geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
       case _ => Try(dao.getAvalanches(query)) match {
         case Success(avalanches) =>
-          val filteredAvalanches = (camPitchParam, camLngParam, camLatParam) match {
-            case (Some(camPitch), Some(camLng), Some(camLat)) if camPitch > CamPitchCutoff =>
+          (camAltParam, camLngParam, camLatParam) match {
+            case (Some(camAlt), _, _) if camAlt > CamAltitudePinThreshold =>
+              Ok(writeJson(JArray(avalanches.map(a => avalanchePinSearchResult(a)))))
+            case (_, Some(camLng), Some(camLat)) =>
               val camLocation = Coordinate(camLng, camLat, 0)
-              avalanches.filter(_.location.distanceTo(camLocation) < AvyDistRangeMiles)
-            case _ => avalanches
+              val (nearAvalanches, farAvalanches) = avalanches.partition(_.location.distanceTo(camLocation) < CamRangePinThreshold)
+              Ok(writeJson(JArray(nearAvalanches.map(a => avalanchePathSearchResult(a)) ++ farAvalanches.map(a => avalanchePinSearchResult(a)))))
+            case _ =>
+              Ok(writeJson(JArray(avalanches.map(a => avalanchePinSearchResult(a)))))
           }
-          Ok(writeJson(JArray(filteredAvalanches.map(a => avalancheSearchResultData(a, camAltParam)))))
         case Failure(ex) =>
           val errorMsg = "Failed to retrieve avalanches in view"
           logger.error(errorMsg, ex)
