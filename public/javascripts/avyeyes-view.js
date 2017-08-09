@@ -244,25 +244,35 @@ AvyEyesView.prototype.addAvalanche = function(a) {
     var getEntity = function() {
         if (a.coords) {
             var cart3Array = Cesium.Cartesian3.fromDegreesArrayHeights(a.coords);
+            var clickMeId = a.extId + "-clickme";
 
-            var clickMeLabel = this.cesiumLabels.add({
-              show: true,
-              position: cart3Array[0],
-              horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-              verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-              text: 'Click for Details',
-              font: '16px sans-serif',
-              fillColor: Cesium.Color.WHITE,
-              outlineColor: Cesium.Color.BLACK,
-              outlineWidth: 1.0,
-              showBackground: true,
-              backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8),
-              backgroundPadding : new Cesium.Cartesian2(7, 5)
+            // var clickMeLabel = this.cesiumLabels.add({
+            //   show: true,
+            //   position: cart3Array[0],
+            //   horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            //   verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+            //   text: 'Click for Details',
+            //   font: '16px sans-serif',
+            //   fillColor: Cesium.Color.WHITE,
+            //   outlineColor: Cesium.Color.BLACK,
+            //   outlineWidth: 1.0,
+            //   showBackground: true,
+            //   backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8),
+            //   backgroundPadding : new Cesium.Cartesian2(7, 5)
+            // });
+
+            this.addEntity({
+                id: clickMeId,
+                position: cart3Array[0],
+                horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+                verticalOrigin: Cesium.VerticalOrigin.TOP,
+                billboard: { image: "/assets/images/click-me.png" }
             });
 
             setTimeout(function() {
-                this.cesiumLabels.remove(clickMeLabel);
-            }.bind(this), 5000);
+                this.cesiumViewer.entities.removeById(clickMeId);
+                //this.cesiumLabels.remove(clickMeLabel);
+            }.bind(this), 3000);
 
             return {
                 id: a.extId,
