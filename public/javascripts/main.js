@@ -8,7 +8,8 @@ require.config({
     jquery: "lib/jquery",
     jqueryui: "lib/jquery-ui",
     fileupload: "lib/jquery.fileupload",
-    fancybox: "lib/jquery.fancybox"
+    fancybox: "lib/jquery.fancybox",
+    notify: "lib/jquery.notify"
   }
 });
 

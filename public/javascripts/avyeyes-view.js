@@ -1,6 +1,7 @@
 define(['avyeyes-ui',
         'avyeyes-form',
-        'avyeyes-report'
+        'avyeyes-report',
+        'notify'
         ], function(AvyEyesUI, AvyForm, AvyReport) {
 
 function AvyEyesView() {

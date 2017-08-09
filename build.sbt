@@ -8,7 +8,7 @@ organization := "com.jamiesampey"
 
 name := "avyeyes"
 
-version := "1.3.0"
+version := "1.3.1"
 
 scalaVersion := "2.11.11"
 
@@ -59,6 +59,7 @@ buildProfile := JS.Object(
     "jqueryui" -> "lib/jquery-ui",
     "fileupload" -> "lib/jquery.fileupload",
     "fancybox" -> "lib/jquery.fancybox",
+    "notify" -> "lib/jquery.notify",
     "datatables" -> "lib/jquery.datatables"
   )
 )
