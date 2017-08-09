@@ -38,8 +38,6 @@ function AvyEyesView() {
         terrainShadows: false
     });
 
-    this.cesiumLabels = this.cesiumViewer.scene.primitives.add(new Cesium.LabelCollection());
-
     this.setCameraMoveEventListener();
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvyMouseEventHandlers();
@@ -244,43 +242,12 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 AvyEyesView.prototype.addAvalanche = function(a) {
     var getEntity = function() {
         if (a.coords) {
-            var cart3Array = Cesium.Cartesian3.fromDegreesArrayHeights(a.coords);
-            var clickMeId = a.extId + "-clickme";
-
-            // var clickMeLabel = this.cesiumLabels.add({
-            //   show: true,
-            //   position: cart3Array[0],
-            //   horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-            //   verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-            //   text: 'Click for Details',
-            //   font: '16px sans-serif',
-            //   fillColor: Cesium.Color.WHITE,
-            //   outlineColor: Cesium.Color.BLACK,
-            //   outlineWidth: 1.0,
-            //   showBackground: true,
-            //   backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8),
-            //   backgroundPadding : new Cesium.Cartesian2(7, 5)
-            // });
-
-            this.addEntity({
-                id: clickMeId,
-                position: cart3Array[0],
-                horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
-                verticalOrigin: Cesium.VerticalOrigin.TOP,
-                billboard: { image: "/assets/images/click-me.png" }
-            });
-
-            setTimeout(function() {
-                this.cesiumViewer.entities.removeById(clickMeId);
-                //this.cesiumLabels.remove(clickMeLabel);
-            }.bind(this), 3000);
-
             return {
                 id: a.extId,
                 name: a.title,
                 polygon: {
                     material: Cesium.Color.RED.withAlpha(0.4),
-                    hierarchy: cart3Array,
+                    hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords),
                     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
                 }
             };
