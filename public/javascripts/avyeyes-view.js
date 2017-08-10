@@ -270,7 +270,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 duration: 4.0,
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
-                    // TODO js notify with avalanche path click instructions
+                    this.showNavHelp();
                 }.bind(this)
         });}.bind(this)
     });
@@ -281,12 +281,13 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
     var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
     var range = 1000000;
 
-    var flyToWesternUS = function() {
+    var flyToColorado = function() {
         this.ui.raiseTheCurtain();
-        var westernUSTarget = this.targetEntityFromCoords(-112, 44);
-        this.flyTo(westernUSTarget, heading, pitch, range).then(function() {
-            this.removeEntity(westernUSTarget);
+        var coloradoTarget = this.targetEntityFromCoords(-105.5, 39.0);
+        this.flyTo(coloradoTarget, heading, pitch, range).then(function() {
+            this.removeEntity(coloradoTarget);
             this.showControls();
+            this.showNavHelp();
         }.bind(this));
     }.bind(this)
 
@@ -297,10 +298,11 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
             this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
                 this.removeEntity(geolocatedTarget);
                 this.showControls();
+                this.showNavHelp();
             }.bind(this));
-        }.bind(this), flyToWesternUS, {timeout:8000, enableHighAccuracy:false});
+        }.bind(this), flyToColorado, {timeout:8000, enableHighAccuracy:false});
     } else {
-        flyToWesternUS();
+        flyToColorado();
     }
 }
 
@@ -383,6 +385,24 @@ AvyEyesView.prototype.camDisplayAlt = function() {
     } else {
         return meters + " meters";
     }
+}
+
+AvyEyesView.prototype.showNavHelp = function() {
+    $('button.cesium-navigation-help-button').notify("Click this button for nav help!", {
+        clickToHide: true,
+        autoHide: true,
+        autoHideDelay: 8000,
+        arrowShow: true,
+        arrowSize: 5,
+        position: 'bottom right',
+        style: 'bootstrap',
+        className: 'info',
+        showAnimation: 'slideDown',
+        showDuration: 400,
+        hideAnimation: 'slideUp',
+        hideDuration: 200,
+        gap: 2
+    });
 }
 
 AvyEyesView.prototype.getBoundingBox = function() {
