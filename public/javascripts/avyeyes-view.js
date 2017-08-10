@@ -42,16 +42,9 @@ function AvyEyesView() {
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     this.setAvyMouseEventHandlers();
 
-    window.addEventListener("keydown", function(e) {
+    window.addEventListener("keydown", function() {
         $("#helpOverlay").hide();
-        $(".avyResultsOverlay").hide();
     }, false);
-    window.addEventListener("click", function(e) {
-        $(".avyResultsOverlay").hide();
-    }, false);
-    this.overlayClearTimer = function(seconds) {
-        setTimeout(function() { $(".avyResultsOverlay").hide() }, seconds * 1000);
-    }
 
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI(this);
@@ -277,10 +270,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 duration: 4.0,
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
-                    $("#avyTitleOverlayName").text(a.title);
-                    $("#avyTitleOverlaySubmitter").text("Submitter: " + this.form.expLevelFromCode(a.submitterExp).label);
-                    $("#avyTitleOverlay").show();
-                    this.overlayClearTimer(12);
+                    // TODO js notify with avalanche path click instructions
                 }.bind(this)
         });}.bind(this)
     });

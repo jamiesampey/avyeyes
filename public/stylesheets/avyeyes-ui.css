@@ -240,40 +240,6 @@ li.ui-autocomplete-category {
     color: white;
 }
 
-#avyTitleOverlayName {
-    font-size: 3em;
-}
-
-#avyTitleOverlaySubmitter {
-    font-size: 1em;
-    font-style: italic;
-    padding-top: 10px;
-}
-
-#avyFilterOverlayResults {
-    font-size: 2em;
-}
-
-.avyOverlayClickInstructions {
-    position: absolute;
-    width: 500px;
-    height: 50px;
-    top: 50%;
-    left: 50%;
-    margin-left: -250px;
-    font-size: 1.5em;
-}
-
-.avyOverlayTipsTable {
-    position: absolute;
-    width: 450px;
-    height: 50px;
-    bottom: 0;
-    left: 50%;
-    margin-left: -170px;
-    text-align: left;
-}
-
 #helpOverlay .ui-tabs-anchor {
 	padding: 3px 20px;
 }
