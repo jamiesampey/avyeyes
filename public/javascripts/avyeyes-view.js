@@ -66,7 +66,7 @@ function AvyEyesView() {
         }
     }.bind(this));
 
-    this.showAvyEyesViewClue();
+    this.clickPathClueShown = false;
 }
 
 AvyEyesView.prototype.setCameraMoveEventListener = function() {
@@ -232,6 +232,10 @@ AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
         if (updateEntity(existingEntity, a)) {
             this.removeEntity(existingEntity);
             this.addAvalanche(a);
+            if (!this.clickPathClueShown && a.coords) {
+                showClickPathClue("Click on any red avalanche path for the details");
+                this.clickPathClueShown = true;
+            }
         }
     }.bind(this));
 }
@@ -323,7 +327,7 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
 
     geocodeAttempts++;
 
-    var geocodeFailure = function(error) {
+    var geocodeFailure = function() {
         geocodeAttempts = 0;
         this.showModalDialog("Failed to geocode '" + address + "'");
     }.bind(this);
@@ -398,69 +402,6 @@ AvyEyesView.prototype.camDisplayAlt = function() {
     }
 }
 
-function showZoomInClue() {
-    return showCenterTopClue("Zoom in until pins are replaced by avalanche paths");
-}
-
-function showClickPathClue(text) {
-    return showCenterTopClue(text);
-}
-
-function showCenterTopClue(text) {
-    var delay = 8000;
-    var showDuration = 400;
-    var hideDuration = 200;
-    return new Promise(function(resolve) {
-        $('#topCenterMsgDiv').notify(text, {
-            clickToHide: true,
-            autoHide: true,
-            autoHideDelay: delay,
-            arrowShow: false,
-            arrowSize: 5,
-            position: 'bottom center',
-            style: 'bootstrap',
-            className: 'info',
-            showAnimation: 'slideDown',
-            showDuration: showDuration,
-            hideAnimation: 'slideUp',
-            hideDuration: hideDuration,
-            gap: 0
-        });
-
-        setTimeout(function() {
-            resolve();
-        }, delay + showDuration + hideDuration);
-    });
-}
-
-function showCesiumHelpClue() {
-    var delay = 8000;
-    var showDuration = 400;
-    var hideDuration = 200;
-    return new Promise(function(resolve) {
-        $('button.cesium-navigation-help-button').notify(
-            "Click the ? button for help moving the 3D view", {
-            clickToHide: true,
-            autoHide: true,
-            autoHideDelay: delay,
-            arrowShow: true,
-            arrowSize: 5,
-            position: 'bottom right',
-            style: 'bootstrap',
-            className: 'info',
-            showAnimation: 'slideDown',
-            showDuration: showDuration,
-            hideAnimation: 'slideUp',
-            hideDuration: hideDuration,
-            gap: 2
-        });
-
-        setTimeout(function() {
-            resolve();
-        }, delay + showDuration + hideDuration);
-    });
-}
-
 AvyEyesView.prototype.getBoundingBox = function() {
     var getCoordsAtWindowPos = function(x, y) {
         var ray = this.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
@@ -533,6 +474,69 @@ AvyEyesView.prototype.csrfTokenFromCookie = function() {
   var docCookie = "; " + document.cookie;
   var parts = docCookie.split("; csrfToken=");
   if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
+function showZoomInClue() {
+    return showCenterTopClue("Zoom in until pins are replaced by avalanche paths");
+}
+
+function showClickPathClue(text) {
+    return showCenterTopClue(text);
+}
+
+function showCenterTopClue(text) {
+    var delay = 8000;
+    var showDuration = 400;
+    var hideDuration = 200;
+    return new Promise(function(resolve) {
+        $('#topCenterMsgDiv').notify(text, {
+            clickToHide: true,
+            autoHide: true,
+            autoHideDelay: delay,
+            arrowShow: false,
+            arrowSize: 5,
+            position: 'bottom center',
+            style: 'bootstrap',
+            className: 'info',
+            showAnimation: 'slideDown',
+            showDuration: showDuration,
+            hideAnimation: 'slideUp',
+            hideDuration: hideDuration,
+            gap: 0
+        });
+
+        setTimeout(function() {
+            resolve();
+        }, delay + showDuration + hideDuration);
+    });
+}
+
+function showCesiumHelpClue() {
+    var delay = 8000;
+    var showDuration = 400;
+    var hideDuration = 200;
+    return new Promise(function(resolve) {
+        $('button.cesium-navigation-help-button').notify(
+            "Click the ? button for help moving the 3D view", {
+                clickToHide: true,
+                autoHide: true,
+                autoHideDelay: delay,
+                arrowShow: true,
+                arrowSize: 5,
+                position: 'bottom right',
+                style: 'bootstrap',
+                className: 'info',
+                showAnimation: 'slideDown',
+                showDuration: showDuration,
+                hideAnimation: 'slideUp',
+                hideDuration: hideDuration,
+                gap: 2
+            });
+
+        setTimeout(function() {
+            resolve();
+        }, delay + showDuration + hideDuration);
+    });
 }
 
 function toHeadingPitchRange(heading, pitch, range) {
