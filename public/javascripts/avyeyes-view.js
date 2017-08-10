@@ -158,9 +158,11 @@ AvyEyesView.prototype.removeAllEntities = function() {
 AvyEyesView.prototype.showControls = function(divId) {
     var controlContentDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
     if ($(controlContentDiv).css("display") == "none") {
-        this.hideControls().then(function() {
-            $(controlContentDiv).slideDown("slow");
+        return this.hideControls().then(function() {
+            return $(controlContentDiv).slideDown("slow").promise();
         });
+    } else {
+        return Promise.resolve();
     }
 }
 
@@ -272,7 +274,9 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 duration: 4.0,
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
-                    this.showCesiumHelpClue();
+                    showClickPathClue("Click on the red avalanche path for the details").then(function() {
+                        showCesiumHelpClue()
+                    });
                 }.bind(this)
         });}.bind(this)
     });
@@ -283,13 +287,20 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
     var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
     var range = 1000000;
 
-    var flyToColorado = function() {
+    var finishUp = function(flyToEntity) {
+        this.removeEntity(flyToEntity);
+        this.showControls().then(function() {
+            showZoomInClue().then(function() {
+                showCesiumHelpClue();
+            })
+        });
+    }.bind(this);
+
+    var flyToDefaultView = function() {
         this.ui.raiseTheCurtain();
-        var coloradoTarget = this.targetEntityFromCoords(-105.5, 39.0);
-        this.flyTo(coloradoTarget, heading, pitch, range).then(function() {
-            this.removeEntity(coloradoTarget);
-            this.showControls();
-            this.showCesiumHelpClue();
+        var defaultTarget = this.targetEntityFromCoords(-105.5, 39.0); // colorado
+        this.flyTo(defaultTarget, heading, pitch, range).then(function() {
+            finishUp(defaultTarget);
         }.bind(this));
     }.bind(this)
 
@@ -298,13 +309,11 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
             this.ui.raiseTheCurtain();
             var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
             this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
-                this.removeEntity(geolocatedTarget);
-                this.showControls();
-                this.showCesiumHelpClue();
+                finishUp(geolocatedTarget);
             }.bind(this));
-        }.bind(this), flyToColorado, {timeout:8000, enableHighAccuracy:false});
+        }.bind(this), flyToDefaultView, {timeout:8000, enableHighAccuracy:false});
     } else {
-        flyToColorado();
+        flyToDefaultView();
     }
 }
 
@@ -389,39 +398,66 @@ AvyEyesView.prototype.camDisplayAlt = function() {
     }
 }
 
-AvyEyesView.prototype.showAvyEyesViewClue = function() {
-    $('#topCenterMsgDiv').notify("Zoom the view in until avalanche paths appear. When the red avalanche path is visible, click on it for details.", {
-        clickToHide: true,
-        autoHide: true,
-        autoHideDelay: 10000,
-        arrowShow: false,
-        arrowSize: 5,
-        position: 'bottom center',
-        style: 'bootstrap',
-        className: 'info',
-        showAnimation: 'slideDown',
-        showDuration: 400,
-        hideAnimation: 'slideUp',
-        hideDuration: 200,
-        gap: 0
+function showZoomInClue() {
+    return showCenterTopClue("Zoom in until pins are replaced by avalanche paths");
+}
+
+function showClickPathClue(text) {
+    return showCenterTopClue(text);
+}
+
+function showCenterTopClue(text) {
+    var delay = 8000;
+    var showDuration = 400;
+    var hideDuration = 200;
+    return new Promise(function(resolve) {
+        $('#topCenterMsgDiv').notify(text, {
+            clickToHide: true,
+            autoHide: true,
+            autoHideDelay: delay,
+            arrowShow: false,
+            arrowSize: 5,
+            position: 'bottom center',
+            style: 'bootstrap',
+            className: 'info',
+            showAnimation: 'slideDown',
+            showDuration: showDuration,
+            hideAnimation: 'slideUp',
+            hideDuration: hideDuration,
+            gap: 0
+        });
+
+        setTimeout(function() {
+            resolve();
+        }, delay + showDuration + hideDuration);
     });
 }
 
-AvyEyesView.prototype.showCesiumHelpClue = function() {
-    $('button.cesium-navigation-help-button').notify("Click this button for nav help!", {
-        clickToHide: true,
-        autoHide: true,
-        autoHideDelay: 6000,
-        arrowShow: true,
-        arrowSize: 5,
-        position: 'bottom right',
-        style: 'bootstrap',
-        className: 'info',
-        showAnimation: 'slideDown',
-        showDuration: 400,
-        hideAnimation: 'slideUp',
-        hideDuration: 200,
-        gap: 2
+function showCesiumHelpClue() {
+    var delay = 8000;
+    var showDuration = 400;
+    var hideDuration = 200;
+    return new Promise(function(resolve) {
+        $('button.cesium-navigation-help-button').notify(
+            "Click the ? button for help moving the 3D view", {
+            clickToHide: true,
+            autoHide: true,
+            autoHideDelay: delay,
+            arrowShow: true,
+            arrowSize: 5,
+            position: 'bottom right',
+            style: 'bootstrap',
+            className: 'info',
+            showAnimation: 'slideDown',
+            showDuration: showDuration,
+            hideAnimation: 'slideUp',
+            hideDuration: hideDuration,
+            gap: 2
+        });
+
+        setTimeout(function() {
+            resolve();
+        }, delay + showDuration + hideDuration);
     });
 }
 
