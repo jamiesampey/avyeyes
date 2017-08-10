@@ -65,6 +65,8 @@ function AvyEyesView() {
             this.geolocateAndFlyTo();
         }
     }.bind(this));
+
+    this.showAvyEyesViewClue();
 }
 
 AvyEyesView.prototype.setCameraMoveEventListener = function() {
@@ -270,7 +272,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 duration: 4.0,
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
-                    this.showNavHelp();
+                    this.showCesiumHelpClue();
                 }.bind(this)
         });}.bind(this)
     });
@@ -287,7 +289,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
         this.flyTo(coloradoTarget, heading, pitch, range).then(function() {
             this.removeEntity(coloradoTarget);
             this.showControls();
-            this.showNavHelp();
+            this.showCesiumHelpClue();
         }.bind(this));
     }.bind(this)
 
@@ -298,7 +300,7 @@ AvyEyesView.prototype.geolocateAndFlyTo = function() {
             this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
                 this.removeEntity(geolocatedTarget);
                 this.showControls();
-                this.showNavHelp();
+                this.showCesiumHelpClue();
             }.bind(this));
         }.bind(this), flyToColorado, {timeout:8000, enableHighAccuracy:false});
     } else {
@@ -387,11 +389,29 @@ AvyEyesView.prototype.camDisplayAlt = function() {
     }
 }
 
-AvyEyesView.prototype.showNavHelp = function() {
+AvyEyesView.prototype.showAvyEyesViewClue = function() {
+    $('#topCenterMsgDiv').notify("Zoom the view in until avalanche paths appear. When the red avalanche path is visible, click on it for details.", {
+        clickToHide: true,
+        autoHide: true,
+        autoHideDelay: 10000,
+        arrowShow: false,
+        arrowSize: 5,
+        position: 'bottom center',
+        style: 'bootstrap',
+        className: 'info',
+        showAnimation: 'slideDown',
+        showDuration: 400,
+        hideAnimation: 'slideUp',
+        hideDuration: 200,
+        gap: 0
+    });
+}
+
+AvyEyesView.prototype.showCesiumHelpClue = function() {
     $('button.cesium-navigation-help-button').notify("Click this button for nav help!", {
         clickToHide: true,
         autoHide: true,
-        autoHideDelay: 8000,
+        autoHideDelay: 6000,
         arrowShow: true,
         arrowSize: 5,
         position: 'bottom right',

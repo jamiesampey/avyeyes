@@ -27,9 +27,11 @@
     </script>
   </head>
   <body>
-    @adminUser.map { admin =>
-        <div id="adminDiv"><span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a id="adminLogout" href="@securesocial.controllers.routes.LoginPage.logout()">@messages("label.avyAdminLogout")</a></div>
-    }
+    <div id="topCenterMsgDiv">
+        @adminUser.map { admin =>
+            <span>@messages("label.avyAdminLoggedInAs")&nbsp;@admin.email</span><a id="adminLogout" href="@securesocial.controllers.routes.LoginPage.logout()">@messages("label.avyAdminLogout")</a>
+        }
+    </div>
 
     <div id="cesiumContainer"></div>
     <div id="fb-root"></div>
