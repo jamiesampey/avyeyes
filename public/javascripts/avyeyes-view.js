@@ -55,9 +55,13 @@ function AvyEyesView() {
         version: "v2.10"
     });
 
+    this.clickPathClueShown = false;
+    this.showingInitAvalanche = false;
+
     this.ui.loaded.then(function() {
         console.log("AvyEyes UI is loaded");
         if (initAvalanche) {
+            this.showingInitAvalanche = true;
             console.debug("Flying to avalanche " + initAvalanche.extId);
             this.addAvalancheAndFlyTo(initAvalanche);
         } else {
@@ -65,8 +69,6 @@ function AvyEyesView() {
             this.geolocateAndFlyTo();
         }
     }.bind(this));
-
-    this.clickPathClueShown = false;
 }
 
 AvyEyesView.prototype.setCameraMoveEventListener = function() {
@@ -78,7 +80,7 @@ AvyEyesView.prototype.setCameraMoveEventListener = function() {
     }.bind(this));
     this.cesiumViewer.camera.moveEnd.addEventListener(function() {
         clearInterval(eyeAltSetter);
-        if (!this.currentReport) {
+        if (!this.currentReport && !this.showingInitAvalanche) {
             $('#avyFilterButton').trigger('click');
         }
     }.bind(this));
@@ -281,6 +283,10 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                     showClickPathClue("Click on the red avalanche path for the details").then(function() {
                         showCesiumHelpClue()
                     });
+                    this.clickPathClueShown = true;
+                    setTimeout(function() {
+                        this.showingInitAvalanche = false;
+                    }.bind(this), 5000);
                 }.bind(this)
         });}.bind(this)
     });
@@ -494,7 +500,7 @@ function showCenterTopClue(text) {
             autoHide: true,
             autoHideDelay: delay,
             arrowShow: false,
-            arrowSize: 5,
+            arrowSize: 10,
             position: 'bottom center',
             style: 'bootstrap',
             className: 'info',
@@ -517,7 +523,7 @@ function showCesiumHelpClue() {
     var hideDuration = 200;
     return new Promise(function(resolve) {
         $('button.cesium-navigation-help-button').notify(
-            "Click the ? button for help moving the 3D view", {
+            "Click the ? button for help using the 3D map view", {
                 clickToHide: true,
                 autoHide: true,
                 autoHideDelay: delay,
