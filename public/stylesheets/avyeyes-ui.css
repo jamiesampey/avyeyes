@@ -271,11 +271,16 @@ li.ui-autocomplete-category {
 	font: normal 1em times,serif !important;
 }
 
-#anyKeyToCloseWrapper {
+#helpCloseWrapper {
     float: right;
     color: white;
     text-align: right;
-    font: italic .8em times,serif !important
+    font: 1.2em times,serif !important;
+    padding: 5px 5px 0 0;
+}
+
+#helpCloseWrapper a {
+    text-decoration: none;
 }
 
 .helpContent {
@@ -424,6 +429,16 @@ li.ui-autocomplete-category {
 
 .avyFilterSubHeader {
 	padding: 20px 0 0 0;
+}
+
+.avyFilterSubHeader a {
+    color: white;
+    text-decoration: none;
+}
+
+.avyFilterSubHeader a:visited {
+    color: white;
+    text-decoration: none;
 }
 
 #avyFilterHumanNumbersTable {

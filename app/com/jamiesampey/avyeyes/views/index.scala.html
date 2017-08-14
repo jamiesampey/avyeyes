@@ -48,7 +48,7 @@
 
     <div id="helpOverlay" class="avyOverlay">
         <div id="helpOverlayText" class="avyOverlayContent">
-            <div id="anyKeyToCloseWrapper"><span id="anyKeyToClose" class="avyMsg">@messages("msg.anyKeyToClose")</span></div>
+            <div id="helpCloseWrapper"><a href="#" onclick="$('#helpOverlay').hide();return false;">X</a></div>
             <ul>
                 <li><a id="searchHelpTab" class="avyLink" href="#searchHelpDiv">@messages("link.searchHelpTab")</a></li>
                 <li><a id="reportHelpTab" class="avyLink" href="#reportHelpDiv">@messages("link.reportHelpTab")</a></li>
@@ -90,7 +90,7 @@
                     <td class="avyFilterTableInput"><input id="avyFilterToDate" class="avyDate" /></td>
                 </tr>
                 <tr>
-                    <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader">@messages("header.avyFilterClassification")</span></td>
+                    <td class="avyFilterSubHeader" colspan="2"><span class="avyHeader"><a href="http://www.americanavalancheassociation.org/swag" target="_blank">@messages("header.avyFilterClassification")</a></span></td>
                 </tr>
                 <tr>
                     <td class="avyFilterTableLabel"><label for="avyFilterType" data-help="@Html(Messages("help.avyFilterType"))">@messages("label.avyFilterType")</label></td>
