@@ -472,7 +472,7 @@ function setReadOnlySliderVal(inputElem, value) {
 }
 
 function setReadOnlySpinnerVal(inputElem, value, unit) {
-    if (value == -1) {
+    if (value === -1) {
         $(inputElem).css('color', 'gray');
         $(inputElem).text('unspecified');
     } else {
@@ -483,7 +483,7 @@ function setReadOnlySpinnerVal(inputElem, value, unit) {
 }
 
 AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, obj) {
-  if (obj.value == 'empty') {
+  if (obj.value === 'empty') {
       $(hiddenSibling).val('');
       $(hiddenSibling).siblings('.avyAutoComplete').val('');
   } else {

@@ -175,7 +175,8 @@ AvyReport.prototype.deleteReport = function() {
 
 function parseReportForm(reportExtId) {
     var parseIntWithDefault = function(selector) {
-        return parseInt($(selector).val()) || -1;
+        var attemptedInt = parseInt($(selector).val());
+        return isNaN(attemptedInt) ? -1 : attemptedInt;
     }
 
     return {
