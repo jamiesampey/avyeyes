@@ -134,7 +134,7 @@ AvyReport.prototype.submitReport = function() {
     $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(response) {
         view.showModalDialog("Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='"
             + response + "' target='_blank' style='text-decoration: none;'>" + response + "</a>");
-    }).fail(function(jqxhr, textStatus, errorThrown) {
+    }).fail(function(jqxhr) {
         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();
@@ -150,7 +150,7 @@ AvyReport.prototype.updateReport = function(editKey) {
 
     $.ajax({ type: 'PUT', url: reportUpdateUri, data: JSON.stringify(parseReportForm(extId)) }).done(function() {
         view.showModalDialog("Avalanche report " + extId + " successfully updated");
-    }).fail(function(jqxhr, textStatus, errorThrown) {
+    }).fail(function(jqxhr) {
         view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
     }).always(function() {
         view.resetView();

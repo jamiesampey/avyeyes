@@ -305,7 +305,6 @@ function wireButtons(view) {
         } else {
             view.currentReport.submitReport();
         }
-        view.resetView();
     });
 
     $("#rwAvyFormCancelButton").click(function() {
