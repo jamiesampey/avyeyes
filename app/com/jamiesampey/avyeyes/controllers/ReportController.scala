@@ -10,6 +10,7 @@ import com.jamiesampey.avyeyes.system.UserEnvironment
 import com.jamiesampey.avyeyes.util.FutureOps._
 import org.joda.time.DateTime
 import org.json4s.JsonAST._
+import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, Request}
@@ -25,6 +26,15 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
   extends SecureSocial with Json4sMethods with I18nSupport {
 
   import authorizations._
+
+  val s3config = Action { implicit request =>
+    val s3ReadOnlyConfig: JValue = "s3" ->
+      ("bucket" -> configService.getProperty("s3.bucket")) ~
+      ("accessKeyId" -> configService.getProperty("s3.readonly.accessKeyId")) ~
+      ("secretAccessKey" -> configService.getProperty("s3.readonly.secretAccessKey"))
+
+    Ok(writeJson(s3ReadOnlyConfig))
+  }
 
   def newReportId = Action { implicit request => Try(idService.reserveNewExtId) match {
     case Success(newExtId) =>

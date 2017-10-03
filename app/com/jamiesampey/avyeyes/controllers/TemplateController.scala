@@ -20,13 +20,12 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
   extends SecureSocial with I18nSupport with Json4sMethods {
 
   import authorizations._
-  private val s3Bucket = configService.getProperty("s3.bucket")
 
   def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
       dao.getAvalanche(extId).map(a => writeJson(avalanchePathSearchResult(a))) else None
 
-    Ok(com.jamiesampey.avyeyes.views.html.index(autocompleteSources, s3Bucket, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
+    Ok(com.jamiesampey.avyeyes.views.html.index(autocompleteSources, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>

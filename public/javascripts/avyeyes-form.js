@@ -6,10 +6,16 @@ define(['jquery',
 
 function AvyForm(avyEyesView) {
     this.view = avyEyesView;
+
+    $.getJSON("/s3config").done(function(data) {
+        this.s3 = data.s3;
+    }.bind(this)).fail(function(jqxhr) {
+        console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
+    });
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var s3Bucket = $("#s3Bucket").val();
+    var s3 = this.s3;
 
 	$("#roAvyFormTitle").text(a.title);
 	$("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
@@ -26,7 +32,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
                     'og:url': a.extUrl,
                     'og:title': a.title,
                     'og:description': a.comments,
-                    'og:image': "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+                    'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
                     "og:image:width":  800,
                     "og:image:height": 600
                 }
@@ -91,7 +97,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	    $("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
-            var imgUrl = "//" + s3Bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
+            var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
 			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
@@ -323,15 +329,13 @@ var s3Client;
 AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
     if (!s3Client) {
         s3Client = new AWS.S3({
-            accessKeyId: 'AKIAIGF6JECD4PNKHYOQ',
-            secretAccessKey: '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'
+            accessKeyId: this.s3.accessKeyId,
+            secretAccessKey: this.s3.secretAccessKey
         });
     }
 
-    var s3Bucket = $("#s3Bucket").val();
-
     return s3Client.getSignedUrl('getObject', {
-        Bucket: s3Bucket, Key: 'avalanches/' + extId + '/images/' + filename});
+        Bucket: this.s3.bucket, Key: 'avalanches/' + extId + '/images/' + filename});
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {
