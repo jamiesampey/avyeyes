@@ -104,7 +104,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
         it("retrieves S3 configuration values from the server", function() {
             sinon.stub($, "getJSON").withArgs("/s3config").callsArgWith(1, s3Config).returns({fail: sinon.stub()});
-            avyForm.retrieveS3Config();
+            avyForm.retrieveS3Config(function() {});
             expect(avyForm.s3).toEqual(s3Config.s3);
         });
 

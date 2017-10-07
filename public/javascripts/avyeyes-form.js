@@ -8,39 +8,44 @@ function AvyForm(avyEyesView) {
     this.view = avyEyesView;
 }
 
-AvyForm.prototype.retrieveS3Config = function() {
-    $.getJSON("/s3config", function(data) {
-        this.s3 = data.s3;
-    }.bind(this)).fail(function(jqxhr) {
-        console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
-    });
+AvyForm.prototype.retrieveS3Config = function(callback) {
+    if (this.s3) {
+        return callback(this.s3);
+    } else {
+        $.getJSON("/s3config", function (data) {
+            this.s3 = data.s3;
+            return callback(data.s3);
+        }.bind(this)).fail(function (jqxhr) {
+            console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
+        });
+    }
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    if (!this.s3) this.retrieveS3Config();
-
 	$("#roAvyFormTitle").text(a.title);
 	$("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
 
-    $("#roAvyFormFacebookButton").click(function() {
-        FB.ui({
-            method: 'share_open_graph',
-            action_type: 'og.shares',
-            action_properties: JSON.stringify({
-                object: {
-                    'og:url': a.extUrl,
-                    'og:title': a.title,
-                    'og:description': a.comments,
-                    'og:image': "https://" + this.s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-                    "og:image:width":  800,
-                    "og:image:height": 600
-                }
-            })
-        });
-    }.bind(this));
+    $("#roAvyFormFacebookButton").click(
+        this.retrieveS3Config(function(s3) {
+            FB.ui({
+                method: 'share_open_graph',
+                action_type: 'og.shares',
+                action_properties: JSON.stringify({
+                    object: {
+                        'og:url': a.extUrl,
+                        'og:title': a.title,
+                        'og:description': a.comments,
+                        'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+                        "og:image:width":  800,
+                        "og:image:height": 600
+                    }
+                })
+            });
+        })
+    );
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
@@ -98,13 +103,15 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	    $("#roAvyFormImageList").empty();
 	    $("#roAvyFormImageRow").show();
 
-        $.each(a.images, function(i, image) {
-            var imgUrl = "//" + this.s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
-            var caption = (typeof image.caption != "undefined") ? image.caption : "";
-			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
-			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
-                + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
-		}.bind(this));
+        this.retrieveS3Config(function(s3) {
+            $.each(a.images, function(i, image) {
+                var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
+                var caption = (typeof image.caption != "undefined") ? image.caption : "";
+                $("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
+                    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
+                    + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
+            });
+        });
 
         setImageFancyBox('.roAvyFormImageAnchor');
 	} else {
@@ -329,17 +336,17 @@ function setImageFancyBox(selector) {
 
 var s3Client;
 AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
-    if (!this.s3) this.retrieveS3Config();
+    return this.retrieveS3Config(function(s3) {
+        if (!s3Client) {
+            s3Client = new AWS.S3({
+                accessKeyId: s3.accessKeyId,
+                secretAccessKey: s3.secretAccessKey
+            });
+        }
 
-    if (!s3Client) {
-        s3Client = new AWS.S3({
-            accessKeyId: this.s3.accessKeyId,
-            secretAccessKey: this.s3.secretAccessKey
-        });
-    }
-
-    return s3Client.getSignedUrl('getObject', {
-        Bucket: this.s3.bucket, Key: 'avalanches/' + extId + '/images/' + filename});
+        return s3Client.getSignedUrl('getObject', {
+            Bucket: s3.bucket, Key: 'avalanches/' + extId + '/images/' + filename});
+    });
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {

@@ -281,7 +281,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
                 complete: function() {
                     showClickPathClue("Click on the red avalanche path for the details").then(function() {
-                        showCesiumHelpClue()
+                        showCesiumHelpClue();
                     });
                     this.clickPathClueShown = true;
                     setTimeout(function() {
@@ -491,7 +491,7 @@ function showClickPathClue(text) {
 }
 
 function showCenterTopClue(text) {
-    var delay = 8000;
+    var delay = 6000;
     var showDuration = 400;
     var hideDuration = 200;
     return new Promise(function(resolve) {
@@ -518,7 +518,7 @@ function showCenterTopClue(text) {
 }
 
 function showCesiumHelpClue() {
-    var delay = 8000;
+    var delay = 6000;
     var showDuration = 400;
     var hideDuration = 200;
     return new Promise(function(resolve) {
