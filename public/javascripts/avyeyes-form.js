@@ -6,8 +6,10 @@ define(['jquery',
 
 function AvyForm(avyEyesView) {
     this.view = avyEyesView;
+}
 
-    $.getJSON("/s3config").done(function(data) {
+AvyForm.prototype.retrieveS3Config = function() {
+    $.getJSON("/s3config", function(data) {
         this.s3 = data.s3;
     }.bind(this)).fail(function(jqxhr) {
         console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
@@ -15,7 +17,7 @@ function AvyForm(avyEyesView) {
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-    var s3 = this.s3;
+    if (!this.s3) this.retrieveS3Config();
 
 	$("#roAvyFormTitle").text(a.title);
 	$("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
@@ -32,13 +34,13 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
                     'og:url': a.extUrl,
                     'og:title': a.title,
                     'og:description': a.comments,
-                    'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+                    'og:image': "https://" + this.s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
                     "og:image:width":  800,
                     "og:image:height": 600
                 }
             })
         });
-    });
+    }.bind(this));
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
@@ -97,12 +99,12 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	    $("#roAvyFormImageRow").show();
 
         $.each(a.images, function(i, image) {
-            var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
+            var imgUrl = "//" + this.s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
             var caption = (typeof image.caption != "undefined") ? image.caption : "";
 			$("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
 			    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
                 + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
-		});
+		}.bind(this));
 
         setImageFancyBox('.roAvyFormImageAnchor');
 	} else {
@@ -327,6 +329,8 @@ function setImageFancyBox(selector) {
 
 var s3Client;
 AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
+    if (!this.s3) this.retrieveS3Config();
+
     if (!s3Client) {
         s3Client = new AWS.S3({
             accessKeyId: this.s3.accessKeyId,

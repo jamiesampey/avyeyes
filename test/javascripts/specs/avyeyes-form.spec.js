@@ -68,7 +68,17 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
        ModeOfTravel: [{"label":"Skier","value":"Skier"},{"label":"Snowboarder","value":"Snowboarder"},{"label":"Snowmobiler","value":"Snowmobiler"},{"label":"Snowshoer","value":"Snowshoer"},{"label":"Hiker","value":"Hiker"},{"label":"Climber","value":"Climber"},{"label":"Motorist","value":"Motorist"},{"label":"Other","value":"Other"}],
        AvalancheTrigger: [{"category":"Natural Triggers","label":"N - Natural avalanche trigger","value":"N"},{"category":"Natural Triggers","label":"NC - Cornice fall","value":"NC"},{"category":"Natural Triggers","label":"NE - Earthquake","value":"NE"},{"category":"Natural Triggers","label":"NI - Ice fall","value":"NI"},{"category":"Natural Triggers","label":"NL - Loose snow avalanche","value":"NL"},{"category":"Natural Triggers","label":"NS - Slab avalanche","value":"NS"},{"category":"Natural Triggers","label":"NR - Rock fall","value":"NR"},{"category":"Natural Triggers","label":"NO - Unclassified natural trigger","value":"NO"},{"category":"Artificial Triggers: Explosive","label":"AA - Artillery","value":"AA"},{"category":"Artificial Triggers: Explosive","label":"AE - Thrown or placed explosive","value":"AE"},{"category":"Artificial Triggers: Explosive","label":"AL - Avalauncher","value":"AL"},{"category":"Artificial Triggers: Explosive","label":"AB - Above snow air blast","value":"AB"},{"category":"Artificial Triggers: Explosive","label":"AC - Cornice fall from human or explosive","value":"AC"},{"category":"Artificial Triggers: Explosive","label":"AX - Gas exploder","value":"AX"},{"category":"Artificial Triggers: Explosive","label":"AH - Explosive placed from helicopter","value":"AH"},{"category":"Artificial Triggers: Explosive","label":"AP - Pre-placed remote explosive","value":"AP"},{"category":"Artificial Triggers: Misc","label":"AW - Wildlife","value":"AW"},{"category":"Artificial Triggers: Misc","label":"AU - Unknown artificial trigger","value":"AU"},{"category":"Artificial Triggers: Misc","label":"AO - Unclassified artificial trigger","value":"AO"},{"category":"Artificial Triggers: Vehicle","label":"AM - Snowmobile","value":"AM"},{"category":"Artificial Triggers: Vehicle","label":"AK - Snowcat","value":"AK"},{"category":"Artificial Triggers: Vehicle","label":"AV - Vehicle","value":"AV"},{"category":"Artificial Triggers: Human","label":"AS - Skier","value":"AS"},{"category":"Artificial Triggers: Human","label":"AR - Snowboarder","value":"AR"},{"category":"Artificial Triggers: Human","label":"AI - Snowshoer","value":"AI"},{"category":"Artificial Triggers: Human","label":"AF - Foot penetration","value":"AF"}],
        Direction: [{"label":"N","value":"N"},{"label":"NE","value":"NE"},{"label":"E","value":"E"},{"label":"SE","value":"SE"},{"label":"S","value":"S"},{"label":"SW","value":"SW"},{"label":"W","value":"W"},{"label":"NW","value":"NW"}]
-    }
+    };
+
+    window.AutoCompleteSources = acSources;
+
+    var s3Config = {
+        s3: {
+            bucket: "testBucket",
+            accessKeyId: "1234",
+            secretAccessKey: "abcd"
+        }
+    };
 
     describe("Display read-only form", function() {
         var avyForm;
@@ -92,6 +102,12 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             });
         });
 
+        it("retrieves S3 configuration values from the server", function() {
+            sinon.stub($, "getJSON").withArgs("/s3config").callsArgWith(1, s3Config).returns({fail: sinon.stub()});
+            avyForm.retrieveS3Config();
+            expect(avyForm.s3).toEqual(s3Config.s3);
+        });
+
         it("sets title fields", function() {
             setFixtures("<span id='roAvyFormTitle'></span>"
                 + "<span id='roAvyFormSubmitterExp'></span>"
@@ -99,6 +115,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<td id='roAvyFormSocialFacebookContainer'></td>"
                 + "<td id='roAvyFormSocialTwitterContainer'></td>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormTitle")).toHaveText(avalanche.title);
@@ -115,6 +132,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormAspect'></span>"
                 + "<span id='roAvyFormAngle'></span>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation + " m");
@@ -128,6 +146,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormRecentWindSpeed'></span>"
                 + "<span id='roAvyFormRecentWindDirection'></span>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormRecentSnow")).toHaveText(avalanche.weather.recentSnow + " cm");
@@ -143,6 +162,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormRSize'></span>"
                 + "<span id='roAvyFormDSize'></span>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormType")).toHaveText("WL - Wet loose-snow avalanche");
@@ -161,6 +181,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormNumKilled'></span>"
                 + "<span id='roAvyFormModeOfTravel'></span>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormNumCaught")).toHaveText(avalanche.humanNumbers.caught);
@@ -177,6 +198,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<table><tr id='roAvyFormImageRow'><td>"
                 + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
 
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormComments")).toHaveValue(avalanche.comments);
@@ -184,6 +206,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
         });
 
         it("sets up social buttons", function() {
+            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
             expect(twttrLoadStub.callCount).toBe(1);
         });
