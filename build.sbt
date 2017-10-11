@@ -8,7 +8,7 @@ organization := "com.jamiesampey"
 
 name := "avyeyes"
 
-version := "1.3.2"
+version := "1.3.3"
 
 scalaVersion := "2.11.11"
 

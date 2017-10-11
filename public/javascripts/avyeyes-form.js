@@ -28,8 +28,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
 
-    $("#roAvyFormFacebookButton").click(
-        this.retrieveS3Config(function(s3) {
+    $("#roAvyFormFacebookButton").click(function() {
+        this.retrieveS3Config(function (s3) {
             FB.ui({
                 method: 'share_open_graph',
                 action_type: 'og.shares',
@@ -39,13 +39,13 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
                         'og:title': a.title,
                         'og:description': a.comments,
                         'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-                        "og:image:width":  800,
+                        "og:image:width": 800,
                         "og:image:height": 600
                     }
                 })
             });
         })
-    );
+    }.bind(this));
 
     var twttrContainer = $("#roAvyFormSocialTwitterContainer");
     twttrContainer.empty();
