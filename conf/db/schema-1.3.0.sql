@@ -1,3 +1,4 @@
+drop schema public cascade;
 create schema public;
 grant usage on schema public to public;
 grant create on schema public to public;
@@ -60,8 +61,8 @@ create table "avalanche_image" (
 );
 
 create table "app_user" (
-    "create_time" timestamp not null,
-    "last_activity_time" timestamp not null,
+    "create_time" timestamp not null default now(),
+    "last_activity_time" timestamp not null default now(),
     "email" text primary key,
     "facebook_user_id" text,
     "password_hash" text
@@ -89,8 +90,8 @@ alter table "app_user_role_assignment" add constraint "app_user_role_assignment_
 alter table "app_user_role_assignment" add constraint "app_user_role_assignment_role_fk" foreign key ("app_role") references "app_role"("role_name");
 
 -- initial inserts
-insert into app_user (create_time, email) values (now(), 'jamie.sampey@gmail.com');
-insert into app_user (create_time, email) values (now(), 'avyeyes@gmail.com');
+insert into app_user (email) values ('jamie.sampey@gmail.com');
+insert into app_user (email) values ('avyeyes@gmail.com');
 insert into app_role (role_name) values ('site_owner');
 insert into app_role (role_name) values ('admin');
 insert into app_user_role_assignment(app_user, app_role) values ('jamie.sampey@gmail.com', 'site_owner');
