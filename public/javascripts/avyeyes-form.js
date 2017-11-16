@@ -8,7 +8,7 @@ function AvyForm(avyEyesView, mockS3Promise) {
     this.view = avyEyesView;
 
     this.s3Config = mockS3Promise ? mockS3Promise : new Promise(function(resolve) {
-        console.info("fetching s3 config");
+        console.info("fetching S3 config");
         $.getJSON("/s3config", function (data) {
             resolve(data.s3);
         }).fail(function (jqxhr) {
@@ -17,7 +17,7 @@ function AvyForm(avyEyesView, mockS3Promise) {
     });
 
     this.s3Config.then(function(s3) {
-        console.info("newing up AWS.S3 with config " + JSON.stringify(s3));
+        console.info("creating new AWS.S3 client");
         this.s3Client = new AWS.S3({
             accessKeyId: s3.accessKeyId,
             secretAccessKey: s3.secretAccessKey,
