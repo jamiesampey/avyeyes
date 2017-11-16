@@ -4,21 +4,28 @@ define(['jquery',
         '//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js'
         ], function() {
 
-function AvyForm(avyEyesView) {
+function AvyForm(avyEyesView, mockS3Promise) {
     this.view = avyEyesView;
-}
 
-AvyForm.prototype.retrieveS3Config = function(callback) {
-    if (this.s3) {
-        return callback(this.s3);
-    } else {
+    this.s3Config = mockS3Promise ? mockS3Promise : new Promise(function(resolve) {
+        console.info("fetching s3 config");
         $.getJSON("/s3config", function (data) {
-            this.s3 = data.s3;
-            return callback(data.s3);
-        }.bind(this)).fail(function (jqxhr) {
+            resolve(data.s3);
+        }).fail(function (jqxhr) {
             console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
         });
-    }
+    });
+
+    this.s3Config.then(function(s3) {
+        console.info("newing up AWS.S3 with config " + JSON.stringify(s3));
+        this.s3Client = new AWS.S3({
+            accessKeyId: s3.accessKeyId,
+            secretAccessKey: s3.secretAccessKey,
+            params: {
+                Bucket: s3.bucket
+            }
+        });
+    }.bind(this));
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
@@ -29,7 +36,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormExtLink").text(a.extUrl);
 
     $("#roAvyFormFacebookButton").click(function() {
-        this.retrieveS3Config(function (s3) {
+        this.s3Config.then(function(s3) {
             FB.ui({
                 method: 'share_open_graph',
                 action_type: 'og.shares',
@@ -103,7 +110,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	    $("#roAvyFormImageList").empty();
 	    $("#roAvyFormImageRow").show();
 
-        this.retrieveS3Config(function(s3) {
+        this.s3Config.then(function(s3) {
             $.each(a.images, function(i, image) {
                 var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
                 var caption = (typeof image.caption != "undefined") ? image.caption : "";
@@ -334,19 +341,8 @@ function setImageFancyBox(selector) {
     });
 }
 
-var s3Client;
 AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
-    return this.retrieveS3Config(function(s3) {
-        if (!s3Client) {
-            s3Client = new AWS.S3({
-                accessKeyId: s3.accessKeyId,
-                secretAccessKey: s3.secretAccessKey
-            });
-        }
-
-        return s3Client.getSignedUrl('getObject', {
-            Bucket: s3.bucket, Key: 'avalanches/' + extId + '/images/' + filename});
-    });
+    return this.s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + filename });
 }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {

@@ -72,11 +72,13 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
     window.AutoCompleteSources = acSources;
 
-    var s3Config = {
-        s3: {
-            bucket: "testBucket",
-            accessKeyId: "1234",
-            secretAccessKey: "abcd"
+    var s3Promise = {
+        then: function() {
+            return {
+                bucket: "testBucket",
+                accessKeyId: "1234",
+                secretAccessKey: "abcd"
+            }
         }
     };
 
@@ -98,15 +100,9 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 done();
             });
-        });
-
-        it("retrieves S3 configuration values from the server", function() {
-            sinon.stub($, "getJSON").withArgs("/s3config").callsArgWith(1, s3Config).returns({fail: sinon.stub()});
-            avyForm.retrieveS3Config(function() {});
-            expect(avyForm.s3).toEqual(s3Config.s3);
         });
 
         it("sets title fields", function() {
@@ -116,7 +112,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<td id='roAvyFormSocialFacebookContainer'></td>"
                 + "<td id='roAvyFormSocialTwitterContainer'></td>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormTitle")).toHaveText(avalanche.title);
@@ -133,7 +128,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormAspect'></span>"
                 + "<span id='roAvyFormAngle'></span>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormElevation")).toHaveText(avalanche.slope.elevation + " m");
@@ -147,7 +141,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormRecentWindSpeed'></span>"
                 + "<span id='roAvyFormRecentWindDirection'></span>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormRecentSnow")).toHaveText(avalanche.weather.recentSnow + " cm");
@@ -163,7 +156,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormRSize'></span>"
                 + "<span id='roAvyFormDSize'></span>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormType")).toHaveText("WL - Wet loose-snow avalanche");
@@ -182,7 +174,6 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
                 + "<span id='roAvyFormNumKilled'></span>"
                 + "<span id='roAvyFormModeOfTravel'></span>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormNumCaught")).toHaveText(avalanche.humanNumbers.caught);
@@ -193,21 +184,18 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             expect($("#roAvyFormModeOfTravel")).toHaveText("Snowmobiler");
         });
 
-        it("sets comments and images", function() {
+        it("sets comments", function() {
             setFixtures("<table><tr id='roAvyFormCommentsRow'><td>"
                 + "<div id='roAvyFormComments'></div></td></tr></table>"
                 + "<table><tr id='roAvyFormImageRow'><td>"
                 + "<ul id='roAvyFormImageList'></ul></td></tr></table>");
 
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
 
             expect($("#roAvyFormComments")).toHaveValue(avalanche.comments);
-            expect($("#roAvyFormImageList li").length).toBe(3);
         });
 
         it("sets up social buttons", function() {
-            avyForm.s3 = s3Config;
             avyForm.displayReadOnlyForm(mousePos, avalanche);
             expect(twttrLoadStub.callCount).toBe(1);
         });
@@ -226,7 +214,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 sinon.stub(avyForm, "setImageCellContent");
                 done();
             });
@@ -350,7 +338,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 done();
             });
         });
@@ -383,7 +371,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 sinon.stub(avyForm, "getSignedImageUrl");
                 done();
             });
@@ -418,7 +406,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 done();
             });
         });
@@ -451,7 +439,7 @@ define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
             new Squire()
             .mock("//sdk.amazonaws.com/js/aws-sdk-2.1.34.min.js", sinon.stub())
             .require(["avyeyes-form"], function(AvyForm) {
-                avyForm = new AvyForm(viewStub);
+                avyForm = new AvyForm(viewStub, s3Promise);
                 done();
             });
         });
