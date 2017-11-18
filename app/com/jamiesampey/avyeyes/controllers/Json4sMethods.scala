@@ -17,8 +17,17 @@ trait Json4sMethods {
 
   implicit val formats = avyeyesFormats
 
+  private[controllers] def avalancheAdminData(a: Avalanche, images: List[AvalancheImage]) = {
+    ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
+  }
+
+  private[controllers] def avalancheReadWriteData(a: Avalanche, images: List[AvalancheImage]) = {
+    ("submitterEmail" -> a.submitterEmail) ~ avalancheReadOnlyData(a, images)
+  }
+
   private[controllers] def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
+    ("location" -> Extraction.decompose(a.location)) ~
     ("extUrl" -> configService.avalancheUrl(a.extId)) ~
     ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
@@ -29,27 +38,16 @@ trait Json4sMethods {
     ("classification" -> Extraction.decompose(a.classification)) ~
     ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
-    ("images" -> Extraction.decompose(images))
-  }
-
-  private[controllers] def avalancheReadWriteData(a: Avalanche, images: List[AvalancheImage]) = {
-    ("submitterEmail" -> a.submitterEmail) ~ avalancheReadOnlyData(a, images)
-  }
-
-  private[controllers] def avalancheAdminData(a: Avalanche, images: List[AvalancheImage]) = {
-    ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
+    ("images" -> Extraction.decompose(images)) ~
+    ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 
   private[controllers] def avalanchePathSearchResult(a: Avalanche) = {
-    coreSearchResultData(a) ~ ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+    avalanchePinSearchResult(a) ~ ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
   }
 
   private[controllers] def avalanchePinSearchResult(a: Avalanche) = {
-    coreSearchResultData(a) ~ ("location" -> Extraction.decompose(a.location))
-  }
-
-  private def coreSearchResultData(a: Avalanche) = {
-    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope))
+    ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope)) ~ ("location" -> Extraction.decompose(a.location))
   }
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))

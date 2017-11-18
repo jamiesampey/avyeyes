@@ -56,12 +56,12 @@ function AvyEyesView() {
     });
 
     this.clickPathClueShown = false;
-    this.showingInitAvalanche = false;
+    this.avalancheSpotlight = false;
 
     this.ui.loaded.then(function() {
         console.log("AvyEyes UI is loaded");
         if (initAvalanche) {
-            this.showingInitAvalanche = true;
+            this.avalancheSpotlight = true;
             console.debug("Flying to avalanche " + initAvalanche.extId);
             this.addAvalancheAndFlyTo(initAvalanche);
         } else {
@@ -80,7 +80,7 @@ AvyEyesView.prototype.setCameraMoveEventListener = function() {
     }.bind(this));
     this.cesiumViewer.camera.moveEnd.addEventListener(function() {
         clearInterval(eyeAltSetter);
-        if (!this.currentReport && !this.showingInitAvalanche) {
+        if (!this.currentReport && !this.avalancheSpotlight) {
             $('#avyFilterButton').trigger('click');
         }
     }.bind(this));
@@ -112,7 +112,6 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
         var pick = this.cesiumViewer.scene.pick(movement.position);
         if (Cesium.defined(pick) && pick.id.name) {
             $("#avyMouseHoverTitle").hide();
-            $("#cesiumContainer").css("cursor", "wait");
 
             var selectedAvalanche = pick.id;
             var avalancheUrl = "/avalanche/" + selectedAvalanche.id;
@@ -120,19 +119,27 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
             if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
             $.getJSON(avalancheUrl, function(data) {
-                if (data.hasOwnProperty("viewable")) {
-                    this.form.enableAdminControls().then(function() {
+                if (pick.id.billboard) {
+                    // click on a pin, add the path and fly to it
+                    this.removeAllEntities();
+                    this.avalancheSpotlight = true;
+                    this.addAvalancheAndFlyTo(data);
+                } else {
+                    // click on a path, display details
+                    $("#cesiumContainer").css("cursor", "wait");
+                    if (data.hasOwnProperty("viewable")) {
+                        this.form.enableAdminControls().then(function () {
+                            this.form.displayReadWriteForm(data);
+                            this.currentReport = new AvyReport(this);
+                        }.bind(this));
+                    } else if (data.hasOwnProperty("submitterEmail")) {
                         this.form.displayReadWriteForm(data);
                         this.currentReport = new AvyReport(this);
-                    }.bind(this));
-                } else if (data.hasOwnProperty("submitterEmail")) {
-                    this.form.displayReadWriteForm(data);
-                    this.currentReport = new AvyReport(this);
-                } else {
-                    this.form.displayReadOnlyForm(movement.position, data);
+                    } else {
+                        this.form.displayReadOnlyForm(movement.position, data);
+                    }
                 }
-            }.bind(this))
-            .fail(function(jqxhr, textStatus, error) {
+            }.bind(this)).fail(function(jqxhr, textStatus, error) {
                 console.log("AvyEyes error: " + error);
             });
         }
@@ -257,12 +264,12 @@ AvyEyesView.prototype.addAvalanche = function(a) {
         } else {
             return {
                 id: a.extId,
+                name: a.title,
                 position: Cesium.Cartesian3.fromDegrees(a.location.longitude, a.location.latitude, a.location.altitude),
                 billboard: { image: "/assets/images/poi-pin.png" }
             };
         }
-
-    }.bind(this);
+    };
 
     this.addEntity(getEntity());
 }
@@ -285,7 +292,7 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
                     });
                     this.clickPathClueShown = true;
                     setTimeout(function() {
-                        this.showingInitAvalanche = false;
+                        this.avalancheSpotlight = false;
                     }.bind(this), 5000);
                 }.bind(this)
         });}.bind(this)
@@ -483,7 +490,7 @@ AvyEyesView.prototype.csrfTokenFromCookie = function() {
 }
 
 function showZoomInClue() {
-    return showCenterTopClue("Zoom in until pins are replaced by avalanche paths");
+    return showCenterTopClue("Click on an avalanche pin to zoom in, or zoom in manually");
 }
 
 function showClickPathClue(text) {
