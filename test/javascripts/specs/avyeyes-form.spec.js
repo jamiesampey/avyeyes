@@ -1,6 +1,7 @@
 define(["squire", "sinon", "jasmine-jquery"], function (Squire, sinon, jas$) {
 
     var viewStub = {
+        socialEnabled: true,
         getRequestParam: function(param) {
             return param;
         },
