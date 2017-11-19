@@ -8,7 +8,6 @@ function AvyForm(avyEyesView, mockS3Promise) {
     this.view = avyEyesView;
 
     this.s3Config = mockS3Promise ? mockS3Promise : new Promise(function(resolve) {
-        console.info("fetching S3 config");
         $.getJSON("/s3config", function (data) {
             resolve(data.s3);
         }).fail(function (jqxhr) {
@@ -17,7 +16,6 @@ function AvyForm(avyEyesView, mockS3Promise) {
     });
 
     this.s3Config.then(function(s3) {
-        console.info("creating new AWS.S3 client");
         this.s3Client = new AWS.S3({
             accessKeyId: s3.accessKeyId,
             secretAccessKey: s3.secretAccessKey,
@@ -59,6 +57,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         twttrContainer.empty();
         twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
             + "' href='//twitter.com/share' data-count='horizontal' />");
+        twttr.widgets.load();
     } else {
         $("#roAvyFormSocialButtonsTable").hide();
     }

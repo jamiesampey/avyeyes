@@ -6,6 +6,8 @@ define(['avyeyes-ui',
 
 function AvyEyesView(socialMode) {
     this.socialEnabled = socialMode;
+    console.info("Starting AvyEyes view. Social plugins loaded == " + socialMode);
+
     this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";
     this.facebookAppId = "541063359326610";
 
@@ -62,7 +64,7 @@ function AvyEyesView(socialMode) {
     this.avalancheSpotlight = false;
 
     this.ui.loaded.then(function() {
-        console.log("AvyEyes UI is loaded");
+        console.log("AvyEyes UI is wired");
         if (initAvalanche) {
             this.avalancheSpotlight = true;
             console.debug("Flying to avalanche " + initAvalanche.extId);
