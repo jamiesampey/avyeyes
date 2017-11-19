@@ -35,29 +35,33 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
 
-    $("#roAvyFormFacebookButton").click(function() {
-        this.s3Config.then(function(s3) {
-            FB.ui({
-                method: 'share_open_graph',
-                action_type: 'og.shares',
-                action_properties: JSON.stringify({
-                    object: {
-                        'og:url': a.extUrl,
-                        'og:title': a.title,
-                        'og:description': a.comments,
-                        'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-                        "og:image:width": 800,
-                        "og:image:height": 600
-                    }
-                })
-            });
-        })
-    }.bind(this));
+    if (this.view.socialEnabled) {
+        $("#roAvyFormFacebookButton").click(function() {
+            this.s3Config.then(function(s3) {
+                FB.ui({
+                    method: 'share_open_graph',
+                    action_type: 'og.shares',
+                    action_properties: JSON.stringify({
+                        object: {
+                            'og:url': a.extUrl,
+                            'og:title': a.title,
+                            'og:description': a.comments,
+                            'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+                            "og:image:width": 800,
+                            "og:image:height": 600
+                        }
+                    })
+                });
+            })
+        }.bind(this));
 
-    var twttrContainer = $("#roAvyFormSocialTwitterContainer");
-    twttrContainer.empty();
-    twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
-      + "' href='//twitter.com/share' data-count='horizontal' />");
+        var twttrContainer = $("#roAvyFormSocialTwitterContainer");
+        twttrContainer.empty();
+        twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
+            + "' href='//twitter.com/share' data-count='horizontal' />");
+    } else {
+        $("#roAvyFormSocialButtonsTable").hide();
+    }
 
 	$("#roAvyFormElevation").text(a.slope.elevation + " m");
 	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
@@ -141,8 +145,6 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         of: $.Event("click", {pageX: mousePos.x, pageY: mousePos.y}),
         collision: "fit"
     });
-
-    twttr.widgets.load();
 }
 
 AvyForm.prototype.hideReadOnlyForm = function() {

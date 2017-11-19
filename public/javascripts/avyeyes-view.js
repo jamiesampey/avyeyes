@@ -4,7 +4,8 @@ define(['avyeyes-ui',
         'notify'
         ], function(AvyEyesUI, AvyForm, AvyReport) {
 
-function AvyEyesView() {
+function AvyEyesView(socialMode) {
+    this.socialEnabled = socialMode;
     this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";
     this.facebookAppId = "541063359326610";
 
@@ -49,11 +50,13 @@ function AvyEyesView() {
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI(this);
 
-    FB.init({
-        appId: this.facebookAppId,
-        xfbml: true,
-        version: "v2.10"
-    });
+    if (this.socialEnabled) {
+        FB.init({
+            appId: this.facebookAppId,
+            xfbml: true,
+            version: "v2.10"
+        });
+    }
 
     this.clickPathClueShown = false;
     this.avalancheSpotlight = false;

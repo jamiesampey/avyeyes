@@ -9,21 +9,22 @@ require.config({
     jqueryui: "lib/jquery-ui",
     fileupload: "lib/jquery.fileupload",
     fancybox: "lib/jquery.fancybox",
-    notify: "lib/jquery.notify"
+    notify: "lib/jquery.notify",
+    facebook: "//connect.facebook.net/en_US/all.js",
+    twitter: "//platform.twitter.com/widgets.js"
   }
 });
 
-requirejs(["jquery",
-           "avyeyes-view",
-           "//connect.facebook.net/en_US/all.js",
-           "//platform.twitter.com/widgets.js"], function($, AvyEyesView) {
-    console.log("Waiting for DOM to load before starting AvyEyes");
-    $(document).ready(function() {
-        if (!avyEyesView) {
-            console.log("Instantiating AvyEyes view");
-            avyEyesView = new AvyEyesView();
-        } else {
-            console.error("AvyEyes view already instantiated");
-        }
-    });
+requirejs(["jquery", "avyeyes-view", "facebook", "twitter"], function($, AvyEyesView) {
+    $(document).ready(function() { if (!avyEyesView) avyEyesView = new AvyEyesView(true); });
+}, function(err) {
+    var failedModule = err.requireModules[0];
+    if (failedModule === "facebook" || failedModule === "twitter" && !avyEyesView) {
+        console.warn("Failed to load Facebook and/or Twitter (most likely due to Tracking Protection). Starting AvyEyes without them");
+        requirejs.undef("facebook");
+        requirejs.undef("twitter");
+        requirejs(["jquery", "avyeyes-view"], function($, AvyEyesView) {
+            $(document).ready(function() { if (!avyEyesView) avyEyesView = new AvyEyesView(false); });
+        });
+    }
 });
