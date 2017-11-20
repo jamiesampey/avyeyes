@@ -235,9 +235,8 @@ function wireSpinners() {
 function wireButtons(view) {
     $("#northButton").click(function() {
         var camPos = view.cesiumViewer.camera.positionCartographic;
-        var range = camPos.height < 20000 ? 20000 : camPos.height;
         var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
-        view.flyTo(target, 0.0, -89.9, range);
+        view.flyTo(target, 0.0, -89.9, 100000);
     });
 
 	$('.avyButton').button();
