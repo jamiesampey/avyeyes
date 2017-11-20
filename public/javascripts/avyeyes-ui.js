@@ -236,7 +236,7 @@ function wireButtons(view) {
     $("#northButton").click(function() {
         var camPos = view.cesiumViewer.camera.positionCartographic;
         var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
-        view.flyTo(target, 0.0, -89.9, 100000);
+        view.flyTo(target, 0.0, -89.9, 500000);
     });
 
 	$('.avyButton').button();
