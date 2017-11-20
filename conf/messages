@@ -40,7 +40,7 @@ help.avyFilterNumCaught=<p>The number of humans caught in the avalanche. Only av
 help.avyFilterNumKilled=<p>The number of humans killed in the avalanche. Only avalanches that killed <i>greater than or equal to</i> this number of people will be displayed.</p>Leaving this value blank will exclude it as a criteria of the search.
 
 button.avyFilterButton=Filter Avalanches
-button.avyFilterResetButton=Reset Filter
+button.avyFilterResetButton=Clear Filter
 
 msg.horizonInView=Cannot set the geographic search bounds. The horizon or sky cannot be in view. The entire view window must show earth.
 
