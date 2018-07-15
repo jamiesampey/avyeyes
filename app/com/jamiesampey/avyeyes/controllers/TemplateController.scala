@@ -22,15 +22,11 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
 
   import authorizations._
 
-  def reactIndex = Action {
-    Ok(com.jamiesampey.avyeyes.views.html.index("Your new application is ready."))
-  }
-
   def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
     val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
       dao.getAvalanche(extId).map(a => writeJson(avalanchePathSearchResult(a))) else None
 
-    Ok(com.jamiesampey.avyeyes.views.html.index_orig(autocompleteSources, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
+    Ok(com.jamiesampey.avyeyes.views.html.index(autocompleteSources, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>

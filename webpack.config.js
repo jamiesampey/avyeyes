@@ -8,7 +8,7 @@ let webpack = require('webpack'),
 const config = {
     target: 'web',
     entry: {
-        app: path.join(srcPath, 'app.jsx')
+        client: path.join(srcPath, 'AvyEyesClient.jsx')
         //, common: ['react-dom', 'react']
     },
     resolve: {

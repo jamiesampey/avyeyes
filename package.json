@@ -5,9 +5,9 @@
   "main": "index.js",
   "author": "Jamie Sampey",
   "scripts": {
+    "clean": "rm -rf app/assets/javascripts/build",
     "webpack:compile": "webpack --config webpack.config.js",
-    "webpack:watch": "webpack --config webpack.config.js --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webpack:watch": "webpack --config webpack.config.js --watch"
   },
   "repository": {
     "type": "git",

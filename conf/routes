@@ -1,5 +1,5 @@
-# User Interface
-GET     /                           com.jamiesampey.avyeyes.controllers.TemplateController.reactIndex
+# Templates
+GET     /                           com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "", edit: Option[String])
 GET     /admin                      com.jamiesampey.avyeyes.controllers.TemplateController.admin
 
 # Avalanche report
@@ -22,7 +22,6 @@ PUT     /api/avalanche/:extId/images               com.jamiesampey.avyeyes.contr
 DELETE  /api/avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
 
 # Templates
-#GET     /                           com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "", edit: Option[String])
 GET     /:extId                     com.jamiesampey.avyeyes.controllers.TemplateController.index(extId, edit: Option[String])
 
 # Public assets
