@@ -59,3 +59,16 @@ watchSources ~= { (ws: Seq[File]) =>
 pipelineStages := Seq(digest, gzip)
 
 lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
+
+lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
+
+webpack := {
+  val result = Process("npm run webpack:compile", baseDirectory.value) !
+  if(result != 0) throw new Exception("webpack:compile failed")
+}
+
+dist <<= dist dependsOn webpack
+
+stage <<= stage dependsOn webpack
+
+test <<= (test in Test) dependsOn webpack
