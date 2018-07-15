@@ -1,7 +1,32 @@
 @(acSources: Map[String, String], avalanche: Option[String], adminUser: Option[com.jamiesampey.avyeyes.model.AvyEyesUser])(implicit messages: Messages)
 
-@main("AvyEyes") {
-    <div id="app"></div>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AvyEyes</title>
 
-    <script src="@routes.Assets.versioned("javascripts/build/client.js")"></script>
-}
+        <meta name="description" content="AvyEyes is a graphical, searchable database of avalanches built on the Cesium 3D javascript library" />
+        <meta property="fb:app_id" content="541063359326610" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="AvyEyes" />
+        <meta property="og:description" content="View avalanches in 3D" />
+        <meta property="og:url" content="http://avyeyes.com" />
+        <meta property="og:image" content="http://avyeyes.com/assets/images/avyeyes.jpg" />
+
+        <link rel="shortcut icon" href="@routes.Assets.versioned("images/favicon.ico")"/>
+
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-45548947-3', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script src="@routes.Assets.versioned("javascripts/build/client.js")"></script>
+    </body>
+</html>
