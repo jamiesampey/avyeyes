@@ -52,7 +52,7 @@ excludeFilter in (Assets, JshintKeys.jshint) := "*.js"
 
 watchSources ~= { (ws: Seq[File]) =>
   ws filterNot { path =>
-    path.getName.endsWith(".js") || path.getName == ("build")
+    path.getName.endsWith(".js") || path.getName == "build"
   }
 }
 
@@ -62,10 +62,7 @@ lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
 
 lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
 
-webpack := {
-  val result = Process("npm run webpack:compile", baseDirectory.value) !
-  if(result != 0) throw new Exception("webpack:compile failed")
-}
+webpack := { Process("npm run webpack:compile", baseDirectory.value) ! }
 
 dist <<= dist dependsOn webpack
 
