@@ -1,52 +1,40 @@
-'use strict';
+const path = require('path');
+const webpack = require('webpack');
+const jsSrcDir = './app/assets/javascripts';
+const cssSrcDir = './app/assets/stylesheets';
 
-let webpack = require('webpack'),
-    jsPath  = 'app/assets/javascripts',
-    path = require('path'),
-    srcPath = path.join(__dirname, 'app/assets/javascripts');
-
-const config = {
+module.exports = {
     target: 'web',
-    entry: {
-        client: path.join(srcPath, 'AvyEyesClient.jsx')
-        //, common: ['react-dom', 'react']
-    },
+    devtool: 'source-map',
+    entry: `${jsSrcDir}/AvyEyesClient`,
     resolve: {
-        alias: {},
-        root: srcPath,
-        extensions: ['', '.js'],
-        modulesDirectories: ['node_modules', jsPath]
+        extensions: ['.js', '.jsx'],
     },
-    output: {
-        path:path.resolve(__dirname, jsPath, 'build'),
-        publicPath: '',
-        filename: '[name].js',
-        pathInfo: true
-    },
-
     module: {
-        noParse: [],
-        loaders: [
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loader: 'babel'
-            },
-            {
-                test: /\.scss$/,
-                include: /\/app\/assets/,
-                loader: 'style!css!sass'
-            }
-        ]
+        rules: [{
+            test: /\.(js|jsx)$/,
+            include: path.resolve(jsSrcDir),
+            use: [{
+                loader: 'babel-loader',
+                options: {
+                    presets: [ 'env', 'react' ]
+                }
+            }],
+        },{
+            test: /\.(scss|css)$/,
+            include: [
+                path.resolve(cssSrcDir)
+            ],
+            use: ['style-loader', 'css-loader', 'sass-loader']
+        }],
     },
     plugins: [
-        //new webpack.optimize.CommonsChunkPlugin('common', 'common.js'),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: { warnings: false },
-            output: { comments: false }
-        }),
-        new webpack.NoErrorsPlugin()
-    ]
+        new webpack.NamedModulesPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+    ],
+    output: {
+        path: path.resolve(jsSrcDir, 'build'),
+        filename: 'client.js',
+        publicPath: '/',
+    },
 };
-
-module.exports = config;

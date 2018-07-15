@@ -1,11 +1,17 @@
-import React from 'react';
-import { render } from 'react-dom';
-import Greeter from './Greeter.jsx';
+import React, {Component} from 'react';
+import ReactDOM from "react-dom";
+import Greeter from "./Greeter";
 
-import '../stylesheets/style.scss'
+import '../stylesheets/style.scss';
 
-render((
-    <div>
-        <h1>Playframework, React JS, ES 6 and webpack</h1>
-        <Greeter name="Ninja" />
-    </div>), document.getElementById("root"));
+class AvyEyesClient extends Component {
+    render() {
+        return (
+            <div className="AvyEyesClient">
+                <Greeter name="Little Razzy" />
+            </div>
+        )
+    }
+}
+
+ReactDOM.render(<AvyEyesClient/>, document.getElementById('root'));
