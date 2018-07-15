@@ -2,20 +2,20 @@
 *.log
 *.DS_Store
 
-# avyeyes specific
+# AvyEyes specific
 conf/application.conf
 conf/application.prod.conf
 dist/.ebextensions/ssl.config
 
-# sbt specific
+# SBT
 .cache
 .history
 .lib/
 target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
 
-# Intellij
+# NPM
+app/assets/javascripts/build
+node_modules
+
+# IntelliJ
 .idea/

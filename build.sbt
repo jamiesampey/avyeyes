@@ -1,8 +1,4 @@
-import com.joescii.SbtJasminePlugin._
 import play.sbt.routes.RoutesKeys
-import sbt.Keys.baseDirectory
-import WebJs._
-import RjsKeys._
 
 organization := "com.jamiesampey"
 
@@ -48,34 +44,18 @@ libraryDependencies ++= {
   )
 }
 
-pipelineStages := Seq(rjs)
-buildProfile := JS.Object(
-  "skipDirOptimize" -> true,
-  "generateSourceMaps" -> false,
-  "optimizeCss" -> "standard",
-  "modules" -> Seq(JS.Object("name" -> "main"), JS.Object("name" -> "main.admin")),
-  "paths" -> Map(
-    "jquery" -> "lib/jquery",
-    "jqueryui" -> "lib/jquery-ui",
-    "fileupload" -> "lib/jquery.fileupload",
-    "fancybox" -> "lib/jquery.fancybox",
-    "notify" -> "lib/jquery.notify",
-    "datatables" -> "lib/jquery.datatables"
-  )
-)
+PlayKeys.playRunHooks <+= baseDirectory.map(Webpack.apply)
 
-test in Test <<= (test in Test) dependsOn jasmine
+routesGenerator := InjectedRoutesGenerator
 
-lazy val avyeyes = (project in file("."))
-  .enablePlugins(PlayScala)
-  .enablePlugins(SbtWeb)
-  .settings(jasmineSettings: _*)
-  .settings(
-    jasmineEdition := 2,
-    appJsDir += baseDirectory.value / "public" / "javascripts",
-    appJsLibDir += baseDirectory.value / "public" / "javascripts" / "lib",
-    jasmineTestDir += baseDirectory.value / "test" / "javascripts",
-    jasmineConfFile += baseDirectory.value / "test" / "javascripts" / "test.dependencies.js",
-    jasmineRequireJsFile += baseDirectory.value / "public" / "javascripts" / "lib" / "require.js",
-    jasmineRequireConfFile += baseDirectory.value / "test" / "javascripts" / "require.conf.js"
-  )
+excludeFilter in (Assets, JshintKeys.jshint) := "*.js"
+
+watchSources ~= { (ws: Seq[File]) =>
+  ws filterNot { path =>
+    path.getName.endsWith(".js") || path.getName == ("build")
+  }
+}
+
+pipelineStages := Seq(digest, gzip)
+
+lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
