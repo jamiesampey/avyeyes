@@ -30,6 +30,10 @@ const cesiumViewerOptions = {
 
 class AvyEyesClient extends React.Component {
 
+  shouldComponentUpdate() {
+    return false;
+  }
+
   constructor() {
     super();
     // console.info("Starting AvyEyes view. Social plugins loaded == " + socialMode);

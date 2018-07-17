@@ -2,8 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CopywebpackPlugin = require('copy-webpack-plugin');
 
-const avyeyesJsSource = './app/assets/javascripts';
-const avyeyesCssSource = './app/assets/stylesheets';
+const avyeyesSource = './app/assets/javascripts';
 const cesiumSource = 'node_modules/cesium/Source';
 const cesiumWorkers = '../Build/Cesium/Workers';
 
@@ -11,10 +10,10 @@ module.exports = {
     target: 'web',
     devtool: 'source-map',
     entry: {
-      client: `${avyeyesJsSource}/AvyEyesClient`
+      client: `${avyeyesSource}/AvyEyesClient`
     },
     output: {
-      path: path.resolve(avyeyesJsSource, 'build'),
+      path: path.resolve(avyeyesSource, 'build'),
       filename: '[name].js',
       publicPath: '/',
       sourcePrefix: '' // Needed to compile multiline strings in Cesium
@@ -28,7 +27,7 @@ module.exports = {
     module: {
         rules: [{
             test: /\.(js|jsx)$/,
-            include: path.resolve(avyeyesJsSource),
+            include: path.resolve(avyeyesSource),
             use: [{
                 loader: 'babel-loader',
                 options: {
@@ -37,10 +36,6 @@ module.exports = {
             }],
         },{
             test: /\.(scss|css)$/,
-            include: [
-                path.resolve(avyeyesCssSource),
-                path.resolve(cesiumSource)
-            ],
             use: ['style-loader', 'css-loader', 'sass-loader']
         },{
             test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
