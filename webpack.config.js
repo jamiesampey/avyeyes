@@ -10,7 +10,7 @@ module.exports = {
     target: 'web',
     devtool: 'source-map',
     entry: {
-      client: `${avyeyesSource}/AvyEyesClient`
+      avyeyes: `${avyeyesSource}/AvyEyesClient`
     },
     output: {
       path: path.resolve(avyeyesSource, 'build'),
