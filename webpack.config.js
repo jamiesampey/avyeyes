@@ -51,6 +51,10 @@ module.exports = {
         new CopywebpackPlugin([ { from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' } ]),
         new webpack.DefinePlugin({
           CESIUM_BASE_URL: JSON.stringify('assets/javascripts/build') // Define relative base path in cesium for loading assets
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+          name: 'cesium',
+          minChunks: (module) => { return module.context && module.context.indexOf('cesium') !== -1 }
         })
     ],
     amd: {
