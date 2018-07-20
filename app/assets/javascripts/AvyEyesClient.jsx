@@ -1,57 +1,52 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import Cesium from 'cesium/Cesium';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Config from './Config';
+import Menu from './Menu';
 
 import 'cesium/Widgets/widgets.css';
-import '../stylesheets/style.scss';
-
-const cesiumViewerOptions = {
-  sceneMode: Cesium.SceneMode.SCENE3D,
-  imageryProvider: Cesium.createWorldImagery(),
-  terrainProvider: Cesium.createWorldTerrain(),
-  contextOptions: {
-    webgl: { preserveDrawingBuffer: true }
-  },
-  animation: false,
-  baseLayerPicker: false,
-  fullscreenButton: true,
-  geocoder: false,
-  homeButton: false,
-  infoBox: false,
-  sceneModePicker: false,
-  selectionIndicator: false,
-  timeline: false,
-  navigationHelpButton: true,
-  navigationInstructionsInitiallyVisible: false,
-  scene3DOnly: true,
-  shadows: false,
-  terrainShadows: false
-};
+import '../stylesheets/AvyEyesClient.scss';
 
 class AvyEyesClient extends React.Component {
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
     return false;
   }
 
-  constructor() {
-    super();
-    // console.info("Starting AvyEyes view. Social plugins loaded == " + socialMode);
-    this.facebookAppId = "541063359326610";
-    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MjNkZTk5Yy1iMGViLTQ1M2YtOGFkZS1kZDIwNzNkMDE4YzUiLCJpZCI6MjE1NSwiaWF0IjoxNTMxNzk1MjM1fQ.A7eUkBj1ZtZHoOtyWJyGixTAXs7mXE6SVCA_lJod_-c';
+  componentWillMount() {
+    Cesium.Ion.defaultAccessToken = Config.cesiumAccessToken;
+    this.setState({
+      menuOpen: true,
+    });
   }
 
   componentDidMount() {
-    this.cesiumViewer = new Cesium.Viewer(this.refs.cesiumContainer, cesiumViewerOptions);
+    this.cesiumViewer = new Cesium.Viewer("cesiumContainer", Config.cesiumViewerOptions);
     this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
+  }
+
+  toggleMenu() {
+    let previousMenuState = this.setState.menuOpen;
+    this.setState({
+      menuOpen: !previousMenuState,
+    });
   }
 
   render() {
     return (
-        <div ref="cesiumContainer" />
+      <div id="AvyEyes" className="fullScreen">
+        <div id="cesiumContainer" className="fullScreen"/>
+        <SwipeableDrawer
+          anchor="left"
+          open={this.state.menuOpen}
+          onClose={this.toggleMenu}
+          onOpen={this.toggleMenu}>
+            <Menu/>
+        </SwipeableDrawer>
+      </div>
     )
   }
 }
-
 
 ReactDOM.render(<AvyEyesClient/>, document.getElementById('root'));

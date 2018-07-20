@@ -62,7 +62,7 @@ lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
 
 lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
 
-webpack := { Process("npm run webpack:compile", baseDirectory.value) ! }
+webpack := { Process("npm run compile", baseDirectory.value) ! }
 
 dist <<= dist dependsOn webpack
 

@@ -6,8 +6,8 @@
   "author": "Jamie Sampey",
   "scripts": {
     "clean": "rm -rf app/assets/javascripts/build",
-    "webpack:compile": "webpack --config webpack.config.js",
-    "webpack:watch": "webpack --config webpack.config.js --watch"
+    "compile": "webpack --config webpack.config.js",
+    "watch": "webpack --config webpack.config.js --watch"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/jamiesampey/avyeyes",
   "dependencies": {
+    "@material-ui/core": "^1.4.0",
     "cesium": "^1.47.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1"
