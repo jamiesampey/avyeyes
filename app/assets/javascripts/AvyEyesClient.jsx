@@ -71,6 +71,7 @@ class AvyEyesClient extends React.Component {
   constructor() {
     super();
     Cesium.Ion.defaultAccessToken = Config.cesiumAccessToken;
+    this.toggleMenu = this.toggleMenu.bind(this);
   }
 
   componentWillMount() {
@@ -85,7 +86,7 @@ class AvyEyesClient extends React.Component {
   }
 
   toggleMenu() {
-    let previousMenuState = this.setState.menuOpen;
+    let previousMenuState = this.state.menuOpen;
     this.setState({
       menuOpen: !previousMenuState,
     });
@@ -98,8 +99,8 @@ class AvyEyesClient extends React.Component {
     return (
       <div id="AvyEyes" className={classes.root}>
         <div className={classes.appFrame}>
-          <MenuDrawer drawerWidth={drawerWidth} toggle={this.toggleMenu} />
-          <MenuButton toggle={this.toggleMenu} />
+          <MenuDrawer showDrawer={menuOpen} drawerWidth={drawerWidth} menuToggle={this.toggleMenu} />
+          <MenuButton menuToggle={this.toggleMenu} />
           <main
             className={classNames(classes.content, classes[`content-left`], {
               [classes.contentShift]: menuOpen,

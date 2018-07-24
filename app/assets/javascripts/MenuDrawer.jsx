@@ -30,39 +30,24 @@ class MenuDrawer extends React.Component {
 
   constructor() {
     super();
-    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
-    this.handleDrawerClose = this.handleDrawerClose.bind(this);
-  }
-
-  componentWillMount() {
-    this.setState({ open: true });
-  }
-
-  handleDrawerOpen() {
-    this.setState({ open: true });
-  }
-
-  handleDrawerClose() {
-    this.setState({ open: false });
   }
 
   render() {
-    const { classes, theme } = this.props;
-    const { open } = this.state;
+    const { classes, theme, showDrawer, menuToggle } = this.props;
 
     return (
       <div className={classes.root}>
         <Drawer
           variant="persistent"
           anchor="left"
-          open={open}
+          open={showDrawer}
           classes={{
             paper: classes.drawerPaper,
           }}
         >
           <div className={classes.drawerHeader}>
             AvyEyes
-            <IconButton onClick={this.handleDrawerClose}>
+            <IconButton onClick={menuToggle}>
               <ChevronLeftIcon/>
             </IconButton>
           </div>

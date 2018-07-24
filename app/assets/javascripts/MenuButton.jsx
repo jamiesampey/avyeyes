@@ -21,12 +21,17 @@ const styles = theme => ({
 });
 
 const MenuButton = (props) => {
-  const { classes } = props;
+  const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>
-      <Button variant="fab" size="small" className={classes.button}>
+      <MenuItonButton
+        variant="fab"
+        mini={true}
+        onClick={menuToggle}
+        className={classes.button}
+      >
         <MenuIcon className={classes.menuIcon} />
-      </Button>
+      </MenuItonButton>
     </div>
   );
 };
