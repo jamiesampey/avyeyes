@@ -24,14 +24,14 @@ const MenuButton = (props) => {
   const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>
-      <MenuItonButton
+      <Button
         variant="fab"
         mini={true}
         onClick={menuToggle}
         className={classes.button}
       >
         <MenuIcon className={classes.menuIcon} />
-      </MenuItonButton>
+      </Button>
     </div>
   );
 };
