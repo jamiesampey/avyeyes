@@ -16,7 +16,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
   menuIcon: {
-    // marginRight: theme.spacing.unit,
+    color: 'white',
   },
 });
 

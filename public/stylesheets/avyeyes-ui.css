@@ -302,24 +302,24 @@ li.ui-autocomplete-category {
     font-style: italic;
 }
 
-#eyeAltContainer {
-	position: absolute;
-    top: 8px;
-    right: 85px;
-    z-index: 100;
-    padding: 6px;
-    background: rgba(48, 51, 54, 1.0);
-    color: white;
-    border-radius: 5px;
-}
+/*#eyeAltContainer {*/
+	/*position: absolute;*/
+    /*top: 8px;*/
+    /*right: 85px;*/
+    /*z-index: 100;*/
+    /*padding: 6px;*/
+    /*background: rgba(48, 51, 54, 1.0);*/
+    /*color: white;*/
+    /*border-radius: 5px;*/
+/*}*/
 
-#northButton {
-	position: absolute;
-	top: 5px;
-    right: 43px;
-    z-index: 100;
-    background-image: url("../images/north-button.png");
-}
+/*#northButton {*/
+	/*position: absolute;*/
+	/*top: 5px;*/
+    /*right: 43px;*/
+    /*z-index: 100;*/
+    /*background-image: url("../images/north-button.png");*/
+/*}*/
 
 #avyMouseHoverTitle {
     position: absolute;

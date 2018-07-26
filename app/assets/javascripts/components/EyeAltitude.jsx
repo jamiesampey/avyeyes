@@ -10,7 +10,7 @@ const styles = theme => ({
     zIndex: 10,
     padding: 6,
     background: '#303336',
-    color: 'white',
+    color: '#edffff',
     borderRadius: 5,
   },
 });
@@ -21,19 +21,19 @@ class EyeAltitude extends React.Component {
     let self = this;
     let eyeAltSetter = {};
 
-    let altFormat = (meters) => {
+    let toAltitudeString = (meters) => {
       return `eye at ${(meters > 10000) ? (meters / 1000).toFixed(2) + " km" : meters + " meters"}`;
     };
 
-    this.props.cesiumViewer.camera.moveStart.addEventListener(() => {
+    this.props.viewer.camera.moveStart.addEventListener(() => {
       eyeAltSetter = setInterval(() => {
         self.setState({
-          eyeAltitude: altFormat(self.props.cesiumViewer.camera.positionCartographic.height.toFixed(0)),
+          eyeAltitude: toAltitudeString(self.props.viewer.camera.positionCartographic.height.toFixed(0)),
         });
       }, 10);
     });
 
-    this.props.cesiumViewer.camera.moveEnd.addEventListener(() => {
+    this.props.viewer.camera.moveEnd.addEventListener(() => {
       clearInterval(eyeAltSetter);
       if (!self.currentReport && !self.avalancheSpotlight) {
         // TODO avyFilterButton.trigger('click'); to re-filter avalanches
@@ -42,7 +42,7 @@ class EyeAltitude extends React.Component {
 
     // set the initial altitude
     this.setState({
-      eyeAltitude: altFormat(this.props.cesiumViewer.camera.positionCartographic.height.toFixed(0)),
+      eyeAltitude: toAltitudeString(this.props.viewer.camera.positionCartographic.height.toFixed(0)),
     });
   }
 
