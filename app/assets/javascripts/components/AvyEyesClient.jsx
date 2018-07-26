@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cesium from 'cesium/Cesium';
-import Config from './Config';
+import Config from '../Config';
 import MenuButton from "./MenuButton";
 import MenuDrawer from "./MenuDrawer";
 import EyeAltitude from "./EyeAltitude";
 
 import 'cesium/Widgets/widgets.css';
-import '../stylesheets/AvyEyesClient.scss';
+import '../../stylesheets/AvyEyesClient.scss';
 
 import {withStyles} from '@material-ui/core/styles';
 
