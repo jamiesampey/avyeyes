@@ -4,6 +4,7 @@ import Cesium from 'cesium/Cesium';
 import Config from './Config';
 import MenuButton from "./MenuButton";
 import MenuDrawer from "./MenuDrawer";
+import EyeAltitude from "./EyeAltitude";
 
 import 'cesium/Widgets/widgets.css';
 import '../stylesheets/AvyEyesClient.scss';
@@ -33,14 +34,13 @@ class AvyEyesClient extends React.Component {
   }
 
   componentWillMount() {
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MjNkZTk5Yy1iMGViLTQ1M2YtOGFkZS1kZDIwNzNkMDE4YzUiLCJpZCI6MjE1NSwiaWF0IjoxNTMxNzk1MjM1fQ.A7eUkBj1ZtZHoOtyWJyGixTAXs7mXE6SVCA_lJod_-c';
+    this.cesiumViewer = new Cesium.Viewer('cesiumContainer', Config.cesiumViewerOptions);
+    this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
+
     this.setState({
       menuOpen: false,
     });
-  }
-
-  componentDidMount() {
-    this.cesiumViewer = new Cesium.Viewer("cesiumContainer", Config.cesiumViewerOptions);
-    this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
   }
 
   toggleMenu() {
@@ -58,7 +58,7 @@ class AvyEyesClient extends React.Component {
       <div id="AvyEyes" className={classes.avyeyes}>
         <MenuDrawer showDrawer={menuOpen} menuToggle={this.toggleMenu} />
         <MenuButton menuToggle={this.toggleMenu} />
-        <div id="cesiumContainer" className={classes.cesium} />
+        <EyeAltitude cesiumViewer={this.cesiumViewer} />
       </div>
     );
   }
