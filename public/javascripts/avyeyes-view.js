@@ -61,19 +61,19 @@ function AvyEyesView(socialMode) {
     }
 
     this.clickPathClueShown = false;
-    this.avalancheSpotlight = false;
+    // this.avalancheSpotlight = false;
 
-    this.ui.loaded.then(function() {
-        console.log("AvyEyes UI is wired");
-        if (initAvalanche) {
-            this.avalancheSpotlight = true;
-            console.debug("Flying to avalanche " + initAvalanche.extId);
-            this.addAvalancheAndFlyTo(initAvalanche);
-        } else {
-            console.debug("Geolocating user");
-            this.geolocateAndFlyTo();
-        }
-    }.bind(this));
+    // this.ui.loaded.then(function() {
+    //     console.log("AvyEyes UI is wired");
+    //     if (initAvalanche) {
+    //         this.avalancheSpotlight = true;
+    //         console.debug("Flying to avalanche " + initAvalanche.extId);
+    //         this.addAvalancheAndFlyTo(initAvalanche);
+    //     } else {
+    //         console.debug("Geolocating user");
+    //         this.geolocateAndFlyTo();
+    //     }
+    // }.bind(this));
 }
 
 // AvyEyesView.prototype.setCameraMoveEventListener = function() {
@@ -304,40 +304,40 @@ AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     });
 }
 
-AvyEyesView.prototype.geolocateAndFlyTo = function() {
-    var heading = 0.0;
-    var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
-    var range = 1000000;
-
-    var finishUp = function(flyToEntity) {
-        this.removeEntity(flyToEntity);
-        this.showControls().then(function() {
-            showZoomInClue().then(function() {
-                showCesiumHelpClue();
-            })
-        });
-    }.bind(this);
-
-    var flyToDefaultView = function() {
-        this.ui.raiseTheCurtain();
-        var defaultTarget = this.targetEntityFromCoords(-105.5, 39.0); // colorado
-        this.flyTo(defaultTarget, heading, pitch, range).then(function() {
-            finishUp(defaultTarget);
-        }.bind(this));
-    }.bind(this)
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            this.ui.raiseTheCurtain();
-            var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
-            this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
-                finishUp(geolocatedTarget);
-            }.bind(this));
-        }.bind(this), flyToDefaultView, {timeout:8000, enableHighAccuracy:false});
-    } else {
-        flyToDefaultView();
-    }
-}
+// AvyEyesView.prototype.geolocateAndFlyTo = function() {
+//     var heading = 0.0;
+//     var pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
+//     var range = 1000000;
+//
+//     var finishUp = function(flyToEntity) {
+//         this.removeEntity(flyToEntity);
+//         this.showControls().then(function() {
+//             showZoomInClue().then(function() {
+//                 showCesiumHelpClue();
+//             })
+//         });
+//     }.bind(this);
+//
+//     var flyToDefaultView = function() {
+//         this.ui.raiseTheCurtain();
+//         var defaultTarget = this.targetEntityFromCoords(-105.5, 39.0); // colorado
+//         this.flyTo(defaultTarget, heading, pitch, range).then(function() {
+//             finishUp(defaultTarget);
+//         }.bind(this));
+//     }.bind(this)
+//
+//     if (navigator.geolocation) {
+//         navigator.geolocation.getCurrentPosition(function(pos) {
+//             this.ui.raiseTheCurtain();
+//             var geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
+//             this.flyTo(geolocatedTarget, 0.0, pitch, range).then(function() {
+//                 finishUp(geolocatedTarget);
+//             }.bind(this));
+//         }.bind(this), flyToDefaultView, {timeout:8000, enableHighAccuracy:false});
+//     } else {
+//         flyToDefaultView();
+//     }
+// }
 
 var geocodeAttempts = 0;
 AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {

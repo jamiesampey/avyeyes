@@ -23,15 +23,6 @@ class CesiumController {
     return this.viewer.entities.remove(entity);
   }
 
-  targetEntityFromCoords(lng, lat) {
-    let alt = this.viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
-
-    return this.addEntity({
-      position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
-      billboard: {image: "/assets/images/flyto-pixel.png"}
-    });
-  }
-
   flyTo(targetEntity, heading, pitch, range) {
     return this.viewer.flyTo(targetEntity, {
       duration: 4.0,
@@ -39,8 +30,36 @@ class CesiumController {
     });
   }
 
-  toHeadingPitchRange(heading, pitch, range) {
-    return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
+  geolocateAndFlyTo() {
+    let heading = 0.0;
+    let pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
+    let range = 1000000;
+
+    let finishUp = (flyToEntity) => {
+      this.removeEntity(flyToEntity);
+      // TODO show clues
+      // showZoomInClue().then(function() {
+      //   showCesiumHelpClue();
+      // })
+    };
+
+    let flyToDefaultView = () => {
+      let defaultTarget = this.targetEntityFromCoords(-105.5, 39.0); // colorado
+      this.flyTo(defaultTarget, heading, pitch, range).then(() => {
+        finishUp(defaultTarget);
+      });
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        let geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
+        this.flyTo(geolocatedTarget, 0.0, pitch, range).then(() => {
+          finishUp(geolocatedTarget);
+        });
+      }, flyToDefaultView, {timeout:8000, enableHighAccuracy:false});
+    } else {
+      flyToDefaultView();
+    }
   }
 
   addAvalanches(avalancheArray) {
@@ -107,6 +126,18 @@ class CesiumController {
     this.addEntity(getEntity());
   }
 
+  targetEntityFromCoords(lng, lat) {
+    let alt = this.viewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));
+
+    return this.addEntity({
+      position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
+      billboard: {image: "/assets/images/flyto-pixel.png"}
+    });
+  }
+
+  toHeadingPitchRange(heading, pitch, range) {
+    return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
+  }
 }
 
 export default CesiumController;

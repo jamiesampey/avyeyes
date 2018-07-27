@@ -37,7 +37,18 @@ class AvyEyesClient extends React.Component {
 
     this.setState({
       menuOpen: false,
+      initAvalanche: false,
     });
+  }
+
+  componentDidMount() {
+    if (this.state.initAvalanche) {
+      // this.avalancheSpotlight = true;
+      // console.debug("Flying to avalanche " + initAvalanche.extId);
+      // this.addAvalancheAndFlyTo(initAvalanche);
+    } else {
+      this.controller.geolocateAndFlyTo();
+    }
   }
 
   toggleMenu() {
