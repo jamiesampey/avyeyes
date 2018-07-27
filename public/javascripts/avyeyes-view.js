@@ -156,9 +156,9 @@ AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
 //   return this.cesiumViewer.entities.add(entity);
 // }
 
-AvyEyesView.prototype.removeEntity = function(entity) {
-  return this.cesiumViewer.entities.remove(entity);
-}
+// AvyEyesView.prototype.removeEntity = function(entity) {
+//   return this.cesiumViewer.entities.remove(entity);
+// }
 
 AvyEyesView.prototype.removeAllEntities = function() {
     var entitiesToRemove = [];
@@ -219,65 +219,65 @@ AvyEyesView.prototype.resetView = function() {
 	this.showControls();
 }
 
-AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
-    var oldAvalancheIds = this.cesiumViewer.entities.values.map(function(entity) {
-        return entity.id;
-    });
-    var newAvalancheIds = avalancheArray.map(function(a) {
-       return a.extId;
-    });
+// AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
+//     var oldAvalancheIds = this.cesiumViewer.entities.values.map(function(entity) {
+//         return entity.id;
+//     });
+//     var newAvalancheIds = avalancheArray.map(function(a) {
+//        return a.extId;
+//     });
+//
+//     // remove any old avalanches that do not exist in the new set
+//     $.each(oldAvalancheIds.filter(function(oldId) {
+//         return newAvalancheIds.indexOf(oldId) < 0;
+//     }), function(i, oldIdToRemove) {
+//         this.cesiumViewer.entities.removeById(oldIdToRemove);
+//     }.bind(this));
+//
+//     // does the entity need to be updated? I.e. pin->path or path->pin?
+//     var updateEntity = function(entity, avalanche) {
+//         var noUpdateNeeded = (entity && entity.polygon && avalanche.coords)
+//             || (entity && entity.billboard && avalanche.location);
+//         return !noUpdateNeeded;
+//     };
+//
+//     $.each(avalancheArray, function(i, a) {
+//         var existingEntity = this.cesiumViewer.entities.getById(a.extId);
+//         if (updateEntity(existingEntity, a)) {
+//             this.removeEntity(existingEntity);
+//             this.addAvalanche(a);
+//             if (!this.clickPathClueShown && a.coords) {
+//                 showClickPathClue("Click on any red avalanche path for the details");
+//                 this.clickPathClueShown = true;
+//             }
+//         }
+//     }.bind(this));
+// }
 
-    // remove any old avalanches that do not exist in the new set
-    $.each(oldAvalancheIds.filter(function(oldId) {
-        return newAvalancheIds.indexOf(oldId) < 0;
-    }), function(i, oldIdToRemove) {
-        this.cesiumViewer.entities.removeById(oldIdToRemove);
-    }.bind(this));
-
-    // does the entity need to be updated? I.e. pin->path or path->pin?
-    var updateEntity = function(entity, avalanche) {
-        var noUpdateNeeded = (entity && entity.polygon && avalanche.coords)
-            || (entity && entity.billboard && avalanche.location);
-        return !noUpdateNeeded;
-    };
-
-    $.each(avalancheArray, function(i, a) {
-        var existingEntity = this.cesiumViewer.entities.getById(a.extId);
-        if (updateEntity(existingEntity, a)) {
-            this.removeEntity(existingEntity);
-            this.addAvalanche(a);
-            if (!this.clickPathClueShown && a.coords) {
-                showClickPathClue("Click on any red avalanche path for the details");
-                this.clickPathClueShown = true;
-            }
-        }
-    }.bind(this));
-}
-
-AvyEyesView.prototype.addAvalanche = function(a) {
-    var getEntity = function() {
-        if (a.coords) {
-            return {
-                id: a.extId,
-                name: a.title,
-                polygon: {
-                    material: Cesium.Color.RED.withAlpha(0.4),
-                    hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords),
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                }
-            };
-        } else {
-            return {
-                id: a.extId,
-                name: a.title,
-                position: Cesium.Cartesian3.fromDegrees(a.location.longitude, a.location.latitude, a.location.altitude),
-                billboard: { image: "/assets/images/poi-pin.png" }
-            };
-        }
-    };
-
-    this.addEntity(getEntity());
-}
+// AvyEyesView.prototype.addAvalanche = function(a) {
+//     var getEntity = function() {
+//         if (a.coords) {
+//             return {
+//                 id: a.extId,
+//                 name: a.title,
+//                 polygon: {
+//                     material: Cesium.Color.RED.withAlpha(0.4),
+//                     hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords),
+//                     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
+//                 }
+//             };
+//         } else {
+//             return {
+//                 id: a.extId,
+//                 name: a.title,
+//                 position: Cesium.Cartesian3.fromDegrees(a.location.longitude, a.location.latitude, a.location.altitude),
+//                 billboard: { image: "/assets/images/poi-pin.png" }
+//             };
+//         }
+//     };
+//
+//     this.addEntity(getEntity());
+// }
 
 AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
     this.addAvalanche(a);
@@ -431,7 +431,7 @@ AvyEyesView.prototype.getBoundingBox = function() {
 
     var UL = getCoordsAtWindowPos(0, 0);
     var UR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, 0);
-    var LR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, this.cesiumViewer.canvas.clientHeight);
+    var LR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, this._viewer.canvas.clientHeight);
     var LL = getCoordsAtWindowPos(0, this.cesiumViewer.canvas.clientHeight);
 
     if (!UL || !UR || !LR || !LL) {

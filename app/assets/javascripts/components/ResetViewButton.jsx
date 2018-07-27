@@ -5,21 +5,17 @@ import IconButton from '@material-ui/core/IconButton';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
 
+const rootStyle = {
+  position: 'absolute',
+  top: 5,
+  right: 43,
+  zIndex: 10,
+};
+
 const styles = theme => ({
-  root: {
-    position: 'absolute',
-    top: 7,
-    right: 46,
+  button: {
     height: 32,
     width: 32,
-    zIndex: 10,
-    backgroundColor: '#303336',
-    borderRadius: 4,
-    border: '1px solid #444',
-    '&:hover': {
-      backgroundColor: '#48b',
-      borderColor: '#aef',
-    },
   },
   icon: {
     color: '#edffff',
@@ -43,9 +39,11 @@ class ResetViewButton extends React.Component {
     const { classes } = this.props;
 
     return (
-      <IconButton className={classes.root} onClick={this.resetView}>
-        <RefreshIcon className={classes.icon} />
-      </IconButton>
+      <div className="cesium-button cesium-toolbar-button" style={rootStyle}>
+        <IconButton className={classes.button} onClick={this.resetView}>
+          <RefreshIcon className={classes.icon} />
+        </IconButton>
+      </div>
     )
   };
 }
