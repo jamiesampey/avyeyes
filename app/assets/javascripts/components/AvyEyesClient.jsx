@@ -15,7 +15,7 @@ import CesiumController from "../CesiumController";
 
 
 const styles = theme => ({
-  avyeyes: {
+  root: {
     width: '100%',
     height: '100%',
     overflow: 'hidden',
@@ -27,15 +27,13 @@ class AvyEyesClient extends React.Component {
 
   constructor() {
     super();
-    Cesium.Ion.defaultAccessToken = Config.cesiumAccessToken;
     this.toggleMenu = this.toggleMenu.bind(this);
   }
 
   componentWillMount() {
-    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3MjNkZTk5Yy1iMGViLTQ1M2YtOGFkZS1kZDIwNzNkMDE4YzUiLCJpZCI6MjE1NSwiaWF0IjoxNTMxNzk1MjM1fQ.A7eUkBj1ZtZHoOtyWJyGixTAXs7mXE6SVCA_lJod_-c';
     this.viewer = new Cesium.Viewer('cesiumContainer', Config.cesiumViewerOptions);
-    this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
     this.controller = new CesiumController(this.viewer);
+    this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
     this.setState({
       menuOpen: false,
@@ -54,7 +52,7 @@ class AvyEyesClient extends React.Component {
     const { menuOpen } = this.state;
 
     return (
-      <div className={classes.avyeyes}>
+      <div className={classes.root}>
         <MenuDrawer showDrawer={menuOpen} menuToggle={this.toggleMenu} />
         <MenuButton menuToggle={this.toggleMenu} />
         <EyeAltitude viewer={this.viewer} />
