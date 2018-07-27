@@ -7,8 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const rootStyle = {
   position: 'absolute',
-  top: 5,
-  right: 43,
+  top: 4,
+  right: 42,
   zIndex: 10,
 };
 

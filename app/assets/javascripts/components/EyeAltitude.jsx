@@ -6,7 +6,7 @@ const styles = theme => ({
   root: {
     position: 'absolute',
     top: 8,
-    right: 85,
+    right: 82,
     zIndex: 10,
     padding: 6,
     background: '#303336',
