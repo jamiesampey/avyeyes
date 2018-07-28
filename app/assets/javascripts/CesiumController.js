@@ -3,7 +3,7 @@ import Cesium from 'cesium/Cesium';
 class CesiumController {
 
   constructor(cesiumViewer) {
-    this.viewer = cesiumViewer
+    this.viewer = cesiumViewer;
   }
 
   get viewer() {

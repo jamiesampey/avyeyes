@@ -61,7 +61,7 @@ function AvyEyesView(socialMode) {
     }
 
     this.clickPathClueShown = false;
-    // this.avalancheSpotlight = false;
+    this.avalancheSpotlight = false;
 
     // this.ui.loaded.then(function() {
     //     console.log("AvyEyes UI is wired");
@@ -91,65 +91,65 @@ function AvyEyesView(socialMode) {
 //     }.bind(this));
 // }
 
-AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
-    this.cesiumEventHandler.setInputAction(function(movement) {
-        if ($("#cesiumContainer").css("cursor") === "wait") return; // in the process of opening a report
-
-        $("#avyMouseHoverTitle").hide();
-        var pick = this.cesiumViewer.scene.pick(movement.endPosition);
-
-        if (Cesium.defined(pick) && pick.id.name) {
-            $("#avyMouseHoverTitle").text(pick.id.name);
-            $("#avyMouseHoverTitle").css({
-                "left": movement.endPosition.x + 12,
-                "top": movement.endPosition.y + 10
-            });
-            $("#avyMouseHoverTitle").show();
-            $("#cesiumContainer").css("cursor", "pointer");
-        } else {
-            $("#cesiumContainer").css("cursor", "default");
-        }
-    }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-
-    this.cesiumEventHandler.setInputAction(function(movement) {
-        this.form.hideReadOnlyForm();
-
-        var pick = this.cesiumViewer.scene.pick(movement.position);
-        if (Cesium.defined(pick) && pick.id.name) {
-            $("#avyMouseHoverTitle").hide();
-
-            var selectedAvalanche = pick.id;
-            var avalancheUrl = "/avalanche/" + selectedAvalanche.id;
-            var editKeyParam = this.getRequestParam("edit");
-            if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
-
-            $.getJSON(avalancheUrl, function(data) {
-                if (pick.id.billboard) {
-                    // click on a pin, add the path and fly to it
-                    this.removeAllEntities();
-                    this.avalancheSpotlight = true;
-                    this.addAvalancheAndFlyTo(data);
-                } else {
-                    // click on a path, display details
-                    $("#cesiumContainer").css("cursor", "wait");
-                    if (data.hasOwnProperty("viewable")) {
-                        this.form.enableAdminControls().then(function () {
-                            this.form.displayReadWriteForm(data);
-                            this.currentReport = new AvyReport(this);
-                        }.bind(this));
-                    } else if (data.hasOwnProperty("submitterEmail")) {
-                        this.form.displayReadWriteForm(data);
-                        this.currentReport = new AvyReport(this);
-                    } else {
-                        this.form.displayReadOnlyForm(movement.position, data);
-                    }
-                }
-            }.bind(this)).fail(function(jqxhr, textStatus, error) {
-                console.log("AvyEyes error: " + error);
-            });
-        }
-    }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-}
+// AvyEyesView.prototype.setAvyMouseEventHandlers = function() {
+//     this.cesiumEventHandler.setInputAction(function(movement) {
+//         if ($("#cesiumContainer").css("cursor") === "wait") return; // in the process of opening a report
+//
+//         $("#avyMouseHoverTitle").hide();
+//         var pick = this.cesiumViewer.scene.pick(movement.endPosition);
+//
+//         if (Cesium.defined(pick) && pick.id.name) {
+//             $("#avyMouseHoverTitle").text(pick.id.name);
+//             $("#avyMouseHoverTitle").css({
+//                 "left": movement.endPosition.x + 12,
+//                 "top": movement.endPosition.y + 10
+//             });
+//             $("#avyMouseHoverTitle").show();
+//             $("#cesiumContainer").css("cursor", "pointer");
+//         } else {
+//             $("#cesiumContainer").css("cursor", "default");
+//         }
+//     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+//
+//     this.cesiumEventHandler.setInputAction(function(movement) {
+//         this.form.hideReadOnlyForm();
+//
+//         var pick = this.cesiumViewer.scene.pick(movement.position);
+//         if (Cesium.defined(pick) && pick.id.name) {
+//             $("#avyMouseHoverTitle").hide();
+//
+//             var selectedAvalanche = pick.id;
+//             var avalancheUrl = "/avalanche/" + selectedAvalanche.id;
+//             var editKeyParam = this.getRequestParam("edit");
+//             if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
+//
+//             $.getJSON(avalancheUrl, function(data) {
+//                 if (pick.id.billboard) {
+//                     // click on a pin, add the path and fly to it
+//                     this.removeAllEntities();
+//                     this.avalancheSpotlight = true;
+//                     this.addAvalancheAndFlyTo(data);
+//                 } else {
+//                     // click on a path, display details
+//                     $("#cesiumContainer").css("cursor", "wait");
+//                     if (data.hasOwnProperty("viewable")) {
+//                         this.form.enableAdminControls().then(function () {
+//                             this.form.displayReadWriteForm(data);
+//                             this.currentReport = new AvyReport(this);
+//                         }.bind(this));
+//                     } else if (data.hasOwnProperty("submitterEmail")) {
+//                         this.form.displayReadWriteForm(data);
+//                         this.currentReport = new AvyReport(this);
+//                     } else {
+//                         this.form.displayReadOnlyForm(movement.position, data);
+//                     }
+//                 }
+//             }.bind(this)).fail(function(jqxhr, textStatus, error) {
+//                 console.log("AvyEyes error: " + error);
+//             });
+//         }
+//     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+// }
 
 // AvyEyesView.prototype.addEntity = function(entity) {
 //   entity.createdBy = "AvyEyes";
@@ -169,20 +169,20 @@ AvyEyesView.prototype.removeAllEntities = function() {
     $.each(entitiesToRemove, function(idx, entity) { this.removeEntity(entity); }.bind(this));
 }
 
-AvyEyesView.prototype.showControls = function(divId) {
-    var controlContentDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
-    if ($(controlContentDiv).css("display") == "none") {
-        return this.hideControls().then(function() {
-            return $(controlContentDiv).slideDown("slow").promise();
-        });
-    } else {
-        return Promise.resolve();
-    }
-}
-
-AvyEyesView.prototype.hideControls = function() {
-    return $('#aeControlsSearchForm, #aeControlsReportInstructions').slideUp("slow").promise();
-}
+// AvyEyesView.prototype.showControls = function(divId) {
+//     var controlContentDiv = typeof divId == "undefined" ? "#aeControlsSearchForm" : divId;
+//     if ($(controlContentDiv).css("display") == "none") {
+//         return this.hideControls().then(function() {
+//             return $(controlContentDiv).slideDown("slow").promise();
+//         });
+//     } else {
+//         return Promise.resolve();
+//     }
+// }
+//
+// AvyEyesView.prototype.hideControls = function() {
+//     return $('#aeControlsSearchForm, #aeControlsReportInstructions').slideUp("slow").promise();
+// }
 
 AvyEyesView.prototype.showModalDialog = function(msg) {
     $("#multiDialog").html(msg);
