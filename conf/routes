@@ -1,7 +1,3 @@
-# Templates
-GET     /                           com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "", edit: Option[String])
-GET     /admin                      com.jamiesampey.avyeyes.controllers.TemplateController.admin
-
 # Avalanche report
 GET     /api/s3config                   com.jamiesampey.avyeyes.controllers.ReportController.s3config
 GET     /api/avalanche/newReportId      com.jamiesampey.avyeyes.controllers.ReportController.newReportId
@@ -22,7 +18,9 @@ PUT     /api/avalanche/:extId/images               com.jamiesampey.avyeyes.contr
 DELETE  /api/avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.controllers.ImageController.delete(extId, filename, edit: Option[String])
 
 # Templates
-GET     /:extId                     com.jamiesampey.avyeyes.controllers.TemplateController.index(extId, edit: Option[String])
+GET     /                         com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "")
+GET     /$extId<[a-zA-Z0-9]{8}>   com.jamiesampey.avyeyes.controllers.TemplateController.index(extId)
+GET     /admin                    com.jamiesampey.avyeyes.controllers.TemplateController.admin
 
 # Public assets
 GET     /assets/*file        controllers.Assets.versioned(path = "/public", file: Asset)

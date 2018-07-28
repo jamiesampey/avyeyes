@@ -279,30 +279,30 @@ AvyEyesView.prototype.resetView = function() {
 //     this.addEntity(getEntity());
 // }
 
-AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
-    this.addAvalanche(a);
-    var boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
-    this.ui.raiseTheCurtain();
-
-    this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
-        duration: 4.0,
-        offset: toHeadingPitchRange(0, -89.9, 4000),
-        complete: function() {
-            this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
-                duration: 4.0,
-                offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
-                complete: function() {
-                    showClickPathClue("Click on the red avalanche path for the details").then(function() {
-                        showCesiumHelpClue();
-                    });
-                    this.clickPathClueShown = true;
-                    setTimeout(function() {
-                        this.avalancheSpotlight = false;
-                    }.bind(this), 5000);
-                }.bind(this)
-        });}.bind(this)
-    });
-}
+// AvyEyesView.prototype.addAvalancheAndFlyTo = function(a) {
+//     this.addAvalanche(a);
+//     var boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
+//     this.ui.raiseTheCurtain();
+//
+//     this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
+//         duration: 4.0,
+//         offset: toHeadingPitchRange(0, -89.9, 4000),
+//         complete: function() {
+//             this.cesiumViewer.camera.flyToBoundingSphere(boundingSphere, {
+//                 duration: 4.0,
+//                 offset: toHeadingPitchRange(flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
+//                 complete: function() {
+//                     showClickPathClue("Click on the red avalanche path for the details").then(function() {
+//                         showCesiumHelpClue();
+//                     });
+//                     this.clickPathClueShown = true;
+//                     setTimeout(function() {
+//                         this.avalancheSpotlight = false;
+//                     }.bind(this), 5000);
+//                 }.bind(this)
+//         });}.bind(this)
+//     });
+// }
 
 // AvyEyesView.prototype.geolocateAndFlyTo = function() {
 //     var heading = 0.0;
@@ -561,16 +561,16 @@ function showCesiumHelpClue() {
 //     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
 // }
 
-function flyToHeadingFromAspect(aspect) {
-    if (aspect === "N") return 180.0;
-    else if (aspect === "NE") return 225.0;
-    else if (aspect === "E") return 270.0;
-    else if (aspect === "SE") return 315.0;
-    else if (aspect === "SW") return 45.0;
-    else if (aspect === "W") return 90.0;
-    else if (aspect === "NW") return 135.0;
-    else return 0.0;
-}
+// function flyToHeadingFromAspect(aspect) {
+//     if (aspect === "N") return 180.0;
+//     else if (aspect === "NE") return 225.0;
+//     else if (aspect === "E") return 270.0;
+//     else if (aspect === "SE") return 315.0;
+//     else if (aspect === "SW") return 45.0;
+//     else if (aspect === "W") return 90.0;
+//     else if (aspect === "NW") return 135.0;
+//     else return 0.0;
+// }
 
 
 return AvyEyesView;

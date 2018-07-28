@@ -37,18 +37,34 @@ class AvyEyesClient extends React.Component {
 
     this.setState({
       menuOpen: false,
-      initAvalanche: false,
     });
   }
 
   componentDidMount() {
-    if (this.state.initAvalanche) {
-      // this.avalancheSpotlight = true;
-      // console.debug("Flying to avalanche " + initAvalanche.extId);
-      // this.addAvalancheAndFlyTo(initAvalanche);
-    } else {
+    let extIdUrlParam = window.location.pathname.substr(1); // remove initial path slash
+
+    if (!extIdUrlParam) {
       this.controller.geolocateAndFlyTo();
+      return;
     }
+
+    fetch(`/api/avalanche/${extIdUrlParam}`)
+      .then(response => {
+        if (response.status === 200) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText)
+        }
+      })
+      .then(data => {
+        this.setState({
+          avalancheSpotlight: true,
+        });
+        this.controller.addAvalancheAndFlyTo(data);
+      })
+      .catch(error => {
+        this.controller.geolocateAndFlyTo();
+      });
   }
 
   toggleMenu() {

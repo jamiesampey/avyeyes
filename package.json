@@ -2,7 +2,7 @@
   "name": "avyeyes-client",
   "version": "0.0.1",
   "description": "React JS client for AvyEyes",
-  "main": "client.js",
+  "main": "avyeyes.js",
   "author": "Jamie Sampey",
   "scripts": {
     "clean": "rm -rf app/assets/javascripts/build",
@@ -21,7 +21,8 @@
     "classnames": "^2.2.6",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

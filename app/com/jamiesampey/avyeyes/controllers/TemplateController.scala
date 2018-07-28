@@ -11,7 +11,6 @@ import org.json4s.JsonAST
 import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
 
@@ -22,11 +21,8 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
 
   import authorizations._
 
-  def index(extId: String, editKeyOpt: Option[String]) = UserAwareAction { implicit request =>
-    val avalancheJsonOpt: Option[String] = if (isAuthorizedToView(extId, request.user))
-      dao.getAvalanche(extId).map(a => writeJson(avalanchePathSearchResult(a))) else None
-
-    Ok(com.jamiesampey.avyeyes.views.html.index(autocompleteSources, avalancheJsonOpt, if (isAdmin(request.user)) request.user else None))
+  def index(extId: String) = UserAwareAction { implicit request =>
+    Ok(com.jamiesampey.avyeyes.views.html.index(if (isAdmin(request.user)) request.user else None))
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>

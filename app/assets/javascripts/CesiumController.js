@@ -62,6 +62,33 @@ class CesiumController {
     }
   }
 
+  addAvalancheAndFlyTo(a) {
+    this.addAvalanche(a);
+    let boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
+
+    this.viewer.camera.flyToBoundingSphere(boundingSphere, {
+      duration: 4.0,
+      offset: this.toHeadingPitchRange(0, -89.9, 4000),
+      complete: () => {
+        this.viewer.camera.flyToBoundingSphere(boundingSphere, {
+          duration: 4.0,
+          offset: this.toHeadingPitchRange(this.flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
+          complete: () => {
+            // TODO show clues
+            // showClickPathClue("Click on the red avalanche path for the details").then(() => {
+            //   showCesiumHelpClue();
+            // });
+
+            // TODO is the below state needed?
+            // this.clickPathClueShown = true;
+            // setTimeout(() => {
+            //   this.avalancheSpotlight = false;
+            // }, 5000);
+          }
+        });}
+    });
+  }
+
   addAvalanches(avalancheArray) {
     let self = this;
     let viewer = this.viewer;
@@ -137,6 +164,17 @@ class CesiumController {
 
   toHeadingPitchRange(heading, pitch, range) {
     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
+  }
+
+  flyToHeadingFromAspect(aspect) {
+    if (aspect === "N") return 180.0;
+    else if (aspect === "NE") return 225.0;
+    else if (aspect === "E") return 270.0;
+    else if (aspect === "SE") return 315.0;
+    else if (aspect === "SW") return 45.0;
+    else if (aspect === "W") return 90.0;
+    else if (aspect === "NW") return 135.0;
+    else return 0.0;
   }
 }
 
