@@ -32,7 +32,7 @@ class ResetViewButton extends React.Component {
   resetView() {
     let camPos = this.props.controller.viewer.camera.positionCartographic;
     let target = this.props.controller.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
-    this.props.controller.flyTo(target, 0.0, -89.9, 500000);
+    this.props.controller.flyTo(target, 0.0, -89.9, 1000000);
   }
 
   render() {
