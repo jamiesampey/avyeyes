@@ -17,16 +17,6 @@ const styles = theme => ({
 class MouseBee extends React.Component {
 
   componentWillMount() {
-    this.setState({
-      beeStyle: {
-        display: 'none',
-      },
-      beeText: '',
-    })
-  }
-
-  componentDidMount() {
-    console.log("MouseBee componentDidMount");
     this.props.eventHandler.setInputAction((movement) => {
       if (this.props.cursorStyle === "wait") return; // in the process of opening a report
 
@@ -47,10 +37,17 @@ class MouseBee extends React.Component {
           beeStyle: {
             display: 'none',
           },
-          beeText: "",
+          beeText: '',
         });
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
+    this.setState({
+      beeStyle: {
+        display: 'none',
+      },
+      beeText: '',
+    });
   }
 
   render() {
