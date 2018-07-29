@@ -98,6 +98,7 @@ class AvyEyesClient extends React.Component {
 
 
     this.setState({
+      loading: true,
       menuOpen: false,
       avalancheSpotlight: false,
       currentReport: '',
@@ -107,24 +108,25 @@ class AvyEyesClient extends React.Component {
   componentDidMount() {
     let extIdUrlParam = window.location.pathname.substr(1); // remove initial path slash
 
-    if (!extIdUrlParam) {
+    if (extIdUrlParam) {
+      fetch(`/api/avalanche/${extIdUrlParam}`)
+        .then(response => {
+          return parseApiResponse(response);
+        })
+        .then(data => {
+          this.setState({
+            avalancheSpotlight: true,
+          });
+          this.controller.addAvalancheAndFlyTo(data);
+        })
+        .catch(error => {
+          this.controller.geolocateAndFlyTo();
+        });
+    } else {
       this.controller.geolocateAndFlyTo();
-      return;
     }
 
-    fetch(`/api/avalanche/${extIdUrlParam}`)
-      .then(response => {
-        return parseApiResponse(response);
-      })
-      .then(data => {
-        this.setState({
-          avalancheSpotlight: true,
-        });
-        this.controller.addAvalancheAndFlyTo(data);
-      })
-      .catch(error => {
-        this.controller.geolocateAndFlyTo();
-      });
+    this.setState({ loading: false });
   }
 
   filterAvalanches() {
@@ -172,6 +174,7 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
+        {/*<Loading loading={this.state.loading} />*/}
         <MenuDrawer showDrawer={menuOpen} menuToggle={this.toggleMenu} />
         <MenuButton menuToggle={this.toggleMenu} />
         <EyeAltitude viewer={this.viewer} />

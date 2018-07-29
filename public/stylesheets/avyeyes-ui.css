@@ -197,31 +197,31 @@ li.ui-autocomplete-category {
     margin: 0 0 1em 0;
 }
 
-#loadingDiv {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 9999;
-    background-color: black;
-}
+/*#loadingDiv {*/
+    /*position: absolute;*/
+    /*left: 0;*/
+    /*top: 0;*/
+    /*bottom: 0;*/
+    /*right: 0;*/
+    /*z-index: 9999;*/
+    /*background-color: black;*/
+/*}*/
 
-#loadingSplash {
-    position: absolute;
-    margin: auto;
-    height: 200px;
-    top: -100px; left: 0; bottom: 0; right: 0;
-    text-align: center;
-    background-image: url("../images/spinner-init-loading.gif");
-    background-repeat: no-repeat;
-    background-position: center;
-}
+/*#loadingSplash {*/
+    /*position: absolute;*/
+    /*margin: auto;*/
+    /*height: 200px;*/
+    /*top: -100px; left: 0; bottom: 0; right: 0;*/
+    /*text-align: center;*/
+    /*background-image: url("../images/spinner-init-loading.gif");*/
+    /*background-repeat: no-repeat;*/
+    /*background-position: center;*/
+/*}*/
 
-#loadingSplashTitle {
-    width: 170px;
-    padding-top: 75px;
-}
+/*#loadingSplashTitle {*/
+    /*width: 170px;*/
+    /*padding-top: 75px;*/
+/*}*/
 
 .avyOverlay {
     display: none;

@@ -15,11 +15,11 @@ function AvyEyesUI(view) {
     });
 };
 
-AvyEyesUI.prototype.raiseTheCurtain = function() {
-    if ($('#loadingDiv').is(':visible')) {
-        $('#loadingDiv').fadeOut(500);
-    }
-}
+// AvyEyesUI.prototype.raiseTheCurtain = function() {
+//     if ($('#loadingDiv').is(':visible')) {
+//         $('#loadingDiv').fadeOut(500);
+//     }
+// }
 
 function wireMainMenu(view) {
     $('#aeControlsMenu').menu().position({
@@ -241,24 +241,24 @@ function wireButtons(view) {
 
 	$('.avyButton').button();
 
-	$('#avyFilterButton').click(function() {
-        var boundingBox = view.getBoundingBox();
-
-        var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
-           + "&camAlt=" + view.cesiumViewer.camera.positionCartographic.height
-           + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
-           + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
-           + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
-           + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
-           + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
-           + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
-
-        $.getJSON(searchQueryString).done(function(searchResults) {
-            view.addAvalanches(searchResults);
-        }).fail(function(jqxhr) {
-            console.error("Avalanche search failed: " + jqxhr.responseText);
-        });
-	});
+	// $('#avyFilterButton').click(function() {
+  //       var boundingBox = view.getBoundingBox();
+  //
+  //       var searchQueryString = "/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
+  //          + "&camAlt=" + view.cesiumViewer.camera.positionCartographic.height
+  //          + "&camLng=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.longitude)
+  //          + "&camLat=" + Cesium.Math.toDegrees(view.cesiumViewer.camera.positionCartographic.latitude)
+  //          + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
+  //          + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
+  //          + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
+  //          + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val()
+  //
+  //       $.getJSON(searchQueryString).done(function(searchResults) {
+  //           view.addAvalanches(searchResults);
+  //       }).fail(function(jqxhr) {
+  //           console.error("Avalanche search failed: " + jqxhr.responseText);
+  //       });
+	// });
 
 	$('#avyFilterResetButton').click(function() {
         $('#avyFilterDetailsTable').find('input:text').val('');
