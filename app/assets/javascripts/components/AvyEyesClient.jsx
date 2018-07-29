@@ -13,7 +13,7 @@ import '../../stylesheets/AvyEyesClient.scss';
 
 import {withStyles} from '@material-ui/core/styles';
 import CesiumController from "../CesiumController";
-
+import { getRequestParam, parseApiResponse } from "../Util";
 
 const styles = theme => ({
   root: {
@@ -38,44 +38,55 @@ class AvyEyesClient extends React.Component {
     this.controller = new CesiumController(this.viewer);
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
-    // this.eventHandler.setInputAction((movement) => {
-    //   // this.form.hideReadOnlyForm();
-    //
-    //   let pick = this.viewer.scene.pick(movement.position);
-    //   if (Cesium.defined(pick) && pick.id.name) {
-    //     $("#avyMouseHoverTitle").hide();
-    //
-    //     let selectedAvalanche = pick.id;
-    //     let avalancheUrl = "/avalanche/" + selectedAvalanche.id;
-    //     let editKeyParam = this.getRequestParam("edit");
-    //     if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
-    //
-    //     $.getJSON(avalancheUrl, (data) => {
-    //       if (pick.id.billboard) {
-    //         // click on a pin, add the path and fly to it
-    //         this.removeAllEntities();
-    //         this.avalancheSpotlight = true;
-    //         this.addAvalancheAndFlyTo(data);
-    //       } else {
-    //         // click on a path, display details
-    //         $("#cesiumContainer").css("cursor", "wait");
-    //         if (data.hasOwnProperty("viewable")) {
-    //           this.form.enableAdminControls().then(function () {
-    //             this.form.displayReadWriteForm(data);
-    //             this.currentReport = new AvyReport(this);
-    //           }.bind(this));
-    //         } else if (data.hasOwnProperty("submitterEmail")) {
-    //           this.form.displayReadWriteForm(data);
-    //           this.currentReport = new AvyReport(this);
-    //         } else {
-    //           this.form.displayReadOnlyForm(movement.position, data);
-    //         }
-    //       }
-    //     }).fail(function(jqxhr, textStatus, error) {
-    //       console.log("AvyEyes error: " + error);
-    //     });
-    //   }
-    // }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    this.eventHandler.setInputAction((movement) => {
+      // this.form.hideReadOnlyForm();
+
+      let pick = this.viewer.scene.pick(movement.position);
+      if (Cesium.defined(pick) && pick.id.name) {
+        // $("#avyMouseHoverTitle").hide();
+
+        let selectedAvalanche = pick.id;
+        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
+        let editKeyParam = getRequestParam("edit");
+        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
+
+        fetch(avalancheUrl)
+          .then(response => {
+            return parseApiResponse(response);
+          })
+          .then(data => {
+            if (pick.id.billboard) {
+              // clicked on a pin, add the path and fly to it
+              this.controller.removeAllEntities();
+              // this.avalancheSpotlight = true;
+              this.addAvalancheAndFlyTo(data);
+
+            } else {
+              // clicked on a path, display details
+              this.setCursorStyle("wait");
+
+              if (data.hasOwnProperty("viewable")) {
+                console.info(`Received admin details for avalanche ${selectedAvalanche.id}`);
+                // this.form.enableAdminControls().then(() => {
+                // this.form.displayReadWriteForm(data);
+                // this.currentReport = new AvyReport(this);
+                // });
+              } else if (data.hasOwnProperty("submitterEmail")) {
+                console.info(`Received read-write details for avalanche ${selectedAvalanche.id}`);
+                // this.form.displayReadWriteForm(data);
+                // this.currentReport = new AvyReport(this);
+              } else {
+                console.info(`Received read-only details for avalanche ${selectedAvalanche.id}`);
+                // this.form.displayReadOnlyForm(movement.position, data);
+              }
+            }
+          })
+          .catch(error => {
+            console.error(`Failed to fetch details for avalanche ${selectedAvalanche.id}. Error: ${error}`);
+          });
+
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 
     this.setState({
@@ -93,11 +104,7 @@ class AvyEyesClient extends React.Component {
 
     fetch(`/api/avalanche/${extIdUrlParam}`)
       .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error(response.statusText)
-        }
+        return parseApiResponse(response);
       })
       .then(data => {
         this.setState({

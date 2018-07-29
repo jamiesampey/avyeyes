@@ -23,6 +23,12 @@ class CesiumController {
     return this.viewer.entities.remove(entity);
   }
 
+  removeAllEntities() {
+    this.viewer.entities.values.forEach((entity) => {
+      if (entity.createdBy && entity.createdBy === "AvyEyes") this.removeEntity(entity);
+    });
+  }
+
   flyTo(targetEntity, heading, pitch, range) {
     return this.viewer.flyTo(targetEntity, {
       duration: 4.0,
