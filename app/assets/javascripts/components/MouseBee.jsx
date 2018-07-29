@@ -17,7 +17,7 @@ const styles = theme => ({
 class MouseBee extends React.Component {
 
   componentWillMount() {
-    this.props.eventHandler.setInputAction((movement) => {
+    this.props.eventHandler.setInputAction(movement => {
       if (this.props.cursorStyle === "wait") return; // in the process of opening a report
 
       let pick = this.props.viewer.scene.pick(movement.endPosition);

@@ -420,31 +420,31 @@ AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
 //     }
 // }
 
-AvyEyesView.prototype.getBoundingBox = function() {
-    var getCoordsAtWindowPos = function(x, y) {
-        var ray = this.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
-        var cart3 = this.cesiumViewer.scene.globe.pick(ray, this.cesiumViewer.scene);
-        if (cart3) {
-            return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
-        }
-    }.bind(this);
-
-    var UL = getCoordsAtWindowPos(0, 0);
-    var UR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, 0);
-    var LR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, this._viewer.canvas.clientHeight);
-    var LL = getCoordsAtWindowPos(0, this.cesiumViewer.canvas.clientHeight);
-
-    if (!UL || !UR || !LR || !LL) {
-        return ['','','',''];
-    }
-
-    return [
-        Cesium.Math.toDegrees(Math.max(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
-        Cesium.Math.toDegrees(Math.min(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
-        Cesium.Math.toDegrees(Math.max(UL.longitude, UR.longitude, LR.longitude, LL.longitude)),
-        Cesium.Math.toDegrees(Math.min(UL.longitude, UR.longitude, LR.longitude, LL.longitude))
-    ];
-}
+// AvyEyesView.prototype.getBoundingBox = function() {
+//     var getCoordsAtWindowPos = function(x, y) {
+//         var ray = this.cesiumViewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
+//         var cart3 = this.cesiumViewer.scene.globe.pick(ray, this.cesiumViewer.scene);
+//         if (cart3) {
+//             return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
+//         }
+//     }.bind(this);
+//
+//     var UL = getCoordsAtWindowPos(0, 0);
+//     var UR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, 0);
+//     var LR = getCoordsAtWindowPos(this.cesiumViewer.canvas.clientWidth, this._viewer.canvas.clientHeight);
+//     var LL = getCoordsAtWindowPos(0, this.cesiumViewer.canvas.clientHeight);
+//
+//     if (!UL || !UR || !LR || !LL) {
+//         return ['','','',''];
+//     }
+//
+//     return [
+//         Cesium.Math.toDegrees(Math.max(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+//         Cesium.Math.toDegrees(Math.min(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+//         Cesium.Math.toDegrees(Math.max(UL.longitude, UR.longitude, LR.longitude, LL.longitude)),
+//         Cesium.Math.toDegrees(Math.min(UL.longitude, UR.longitude, LR.longitude, LL.longitude))
+//     ];
+// }
 
 // AvyEyesView.prototype.getRequestParam = function(paramName) {
 //   paramName = paramName.replace(/[\[\]]/g, "\\$&");

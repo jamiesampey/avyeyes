@@ -24,9 +24,12 @@ class CesiumController {
   }
 
   removeAllEntities() {
-    this.viewer.entities.values.forEach((entity) => {
-      if (entity.createdBy && entity.createdBy === "AvyEyes") this.removeEntity(entity);
+    let entitiesToRemove = [];
+    this.viewer.entities.values.forEach(entity => {
+      if (entity.createdBy && entity.createdBy === "AvyEyes") entitiesToRemove.push(entity);
     });
+
+    entitiesToRemove.forEach(entity => { this.removeEntity(entity); });
   }
 
   flyTo(targetEntity, heading, pitch, range) {
@@ -41,7 +44,7 @@ class CesiumController {
     let pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
     let range = 1000000;
 
-    let finishUp = (flyToEntity) => {
+    let finishUp = flyToEntity => {
       this.removeEntity(flyToEntity);
       // TODO show clues
       // showZoomInClue().then(function() {
@@ -57,7 +60,7 @@ class CesiumController {
     };
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
+      navigator.geolocation.getCurrentPosition(pos => {
         let geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
         this.flyTo(geolocatedTarget, 0.0, pitch, range).then(() => {
           finishUp(geolocatedTarget);
@@ -107,9 +110,9 @@ class CesiumController {
     });
 
     // remove any old avalanches that do not exist in the new set
-    oldAvalancheIds.filter((oldId) => {
+    oldAvalancheIds.filter(oldId => {
       return newAvalancheIds.indexOf(oldId) < 0;
-    }).forEach((oldIdToRemove) => {
+    }).forEach(oldIdToRemove => {
       viewer.entities.removeById(oldIdToRemove);
     });
 
@@ -119,12 +122,12 @@ class CesiumController {
       return !noUpdateNeeded;
     };
 
-    avalancheArray.forEach((a) => {
-      let existingEntity = viewer.entities.getById(a.extId);
+    avalancheArray.forEach(avalanche => {
+      let existingEntity = viewer.entities.getById(avalanche.extId);
 
-      if (updateEntity(existingEntity, a)) {
+      if (updateEntity(existingEntity, avalanche)) {
         self.removeEntity(existingEntity);
-        self.addAvalanche(a);
+        self.addAvalanche(avalanche);
         // TODO show the 'click on the red path' notify
         // if (a.coords) {
         //   showClickPathClue("Click on any red avalanche path for the details");
@@ -166,6 +169,32 @@ class CesiumController {
       position: Cesium.Cartesian3.fromDegrees(lng, lat, alt),
       billboard: {image: "/assets/images/flyto-pixel.png"}
     });
+  }
+
+  getBoundingBox() {
+    let getCoordsAtWindowPos = (x, y) => {
+      let ray = this.viewer.camera.getPickRay(new Cesium.Cartesian2(x, y));
+      let cart3 = this.viewer.scene.globe.pick(ray, this.viewer.scene);
+      if (cart3) {
+        return Cesium.Ellipsoid.WGS84.cartesianToCartographic(cart3);
+      }
+    };
+
+    let UL = getCoordsAtWindowPos(0, 0);
+    let UR = getCoordsAtWindowPos(this.viewer.canvas.clientWidth, 0);
+    let LR = getCoordsAtWindowPos(this.viewer.canvas.clientWidth, this._viewer.canvas.clientHeight);
+    let LL = getCoordsAtWindowPos(0, this.viewer.canvas.clientHeight);
+
+    if (!UL || !UR || !LR || !LL) {
+      return ['','','',''];
+    }
+
+    return [
+      Cesium.Math.toDegrees(Math.max(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+      Cesium.Math.toDegrees(Math.min(UL.latitude, UR.latitude, LR.latitude, LL.latitude)),
+      Cesium.Math.toDegrees(Math.max(UL.longitude, UR.longitude, LR.longitude, LL.longitude)),
+      Cesium.Math.toDegrees(Math.min(UL.longitude, UR.longitude, LR.longitude, LL.longitude))
+    ];
   }
 
   toHeadingPitchRange(heading, pitch, range) {

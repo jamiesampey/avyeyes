@@ -20,7 +20,7 @@ const styles = theme => ({
   },
 });
 
-const MenuButton = (props) => {
+const MenuButton = props => {
   const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>

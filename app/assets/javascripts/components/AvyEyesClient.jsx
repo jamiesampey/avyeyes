@@ -29,6 +29,8 @@ class AvyEyesClient extends React.Component {
   constructor() {
     super();
     this.cesiumContainer = document.getElementById('cesiumContainer');
+
+    this.filterAvalanches = this.filterAvalanches.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
   }
@@ -38,7 +40,13 @@ class AvyEyesClient extends React.Component {
     this.controller = new CesiumController(this.viewer);
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
-    this.eventHandler.setInputAction((movement) => {
+    this.viewer.camera.moveEnd.addEventListener(() => {
+      if (!(this.state.currentReport || this.state.avalancheSpotlight)) {
+        this.filterAvalanches();
+      }
+    });
+
+    this.eventHandler.setInputAction(movement => {
       // this.form.hideReadOnlyForm();
 
       let pick = this.viewer.scene.pick(movement.position);
@@ -59,7 +67,7 @@ class AvyEyesClient extends React.Component {
               // clicked on a pin, add the path and fly to it
               this.controller.removeAllEntities();
               // this.avalancheSpotlight = true;
-              this.addAvalancheAndFlyTo(data);
+              this.controller.addAvalancheAndFlyTo(data);
 
             } else {
               // clicked on a path, display details
@@ -91,6 +99,8 @@ class AvyEyesClient extends React.Component {
 
     this.setState({
       menuOpen: false,
+      avalancheSpotlight: false,
+      currentReport: '',
     });
   }
 
@@ -114,6 +124,31 @@ class AvyEyesClient extends React.Component {
       })
       .catch(error => {
         this.controller.geolocateAndFlyTo();
+      });
+  }
+
+  filterAvalanches() {
+    let boundingBox = this.controller.getBoundingBox();
+
+    let searchQueryString = "/api/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
+      + "&camAlt=" + this.viewer.camera.positionCartographic.height
+      + "&camLng=" + Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)
+      + "&camLat=" + Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude);
+      // TODO get avalanche filter fields working once the filter form is setup
+      // + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
+      // + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
+      // + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
+      // + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val();
+
+    fetch(searchQueryString)
+      .then(response => {
+        return parseApiResponse(response);
+      })
+      .then(data => {
+        this.controller.addAvalanches(data);
+      })
+      .catch(error => {
+        console.error(`Failed to filter avalanches. Error ${error}`);
       });
   }
 

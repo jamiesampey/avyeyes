@@ -35,9 +35,6 @@ class EyeAltitude extends React.Component {
 
     this.props.viewer.camera.moveEnd.addEventListener(() => {
       clearInterval(eyeAltSetter);
-      if (!self.currentReport && !self.avalancheSpotlight) {
-        // TODO avyFilterButton.trigger('click'); to re-filter avalanches
-      }
     });
 
     // set the initial altitude

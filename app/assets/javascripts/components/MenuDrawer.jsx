@@ -26,7 +26,7 @@ const styles = theme => ({
   },
 });
 
-const MenuDrawer = (props) => {
+const MenuDrawer = props => {
   const { classes, theme, showDrawer, menuToggle } = props;
 
   return (

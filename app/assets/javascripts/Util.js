@@ -1,6 +1,6 @@
 module.exports = {
 
-  getRequestParam: (paramName) => {
+  getRequestParam: paramName => {
     paramName = paramName.replace(/[\[\]]/g, "\\$&");
     let regex = new RegExp("[?&]" + paramName + "(=([^&#]*)|&|#|$)"),
     results = regex.exec(window.location.href);
