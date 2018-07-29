@@ -4,6 +4,7 @@ class CesiumController {
 
   constructor(cesiumViewer) {
     this.viewer = cesiumViewer;
+    this.CreatedByAvyEyes = "AvyEyes";
   }
 
   get viewer() {
@@ -15,7 +16,7 @@ class CesiumController {
   }
 
   addEntity(entity) {
-    entity.createdBy = "AvyEyes";
+    entity.createdBy = this.CreatedByAvyEyes;
     return this.viewer.entities.add(entity);
   }
 
@@ -26,7 +27,7 @@ class CesiumController {
   removeAllEntities() {
     let entitiesToRemove = [];
     this.viewer.entities.values.forEach(entity => {
-      if (entity.createdBy && entity.createdBy === "AvyEyes") entitiesToRemove.push(entity);
+      if (entity.createdBy && entity.createdBy === this.CreatedByAvyEyes) entitiesToRemove.push(entity);
     });
 
     entitiesToRemove.forEach(entity => { this.removeEntity(entity); });
@@ -98,38 +99,30 @@ class CesiumController {
     });
   }
 
-  addAvalanches(avalancheArray) {
-    let self = this;
-    let viewer = this.viewer;
-
-    let oldAvalancheIds = viewer.entities.values.map(function(entity) {
-      return entity.id;
-    });
-    let newAvalancheIds = avalancheArray.map(function(a) {
-      return a.extId;
-    });
+  addAvalanches(avalanches) {
+    let newAvalancheIds = avalanches.map(avalanche => { return avalanche.extId; });
 
     // remove any old avalanches that do not exist in the new set
-    oldAvalancheIds.filter(oldId => {
-      return newAvalancheIds.indexOf(oldId) < 0;
-    }).forEach(oldIdToRemove => {
-      viewer.entities.removeById(oldIdToRemove);
+    this.viewer.entities.values.filter(entity => {
+      return entity.createdBy === this.CreatedByAvyEyes && newAvalancheIds.indexOf(entity.id) < 0;
+    }).forEach(oldEntityToRemove => {
+      this.removeEntity(oldEntityToRemove);
     });
 
-    // does the entity need to be updated? I.e. pin->path or path->pin?
-    let updateEntity = (entity, avalanche) => {
-      let noUpdateNeeded = (entity && entity.polygon && avalanche.coords) || (entity && entity.billboard && avalanche.location);
-      return !noUpdateNeeded;
+    // does an avalanche entity need to be replaced? I.e. pin->path or path->pin?
+    let replaceEntity = (entity, avalanche) => {
+      if (!entity) return true;
+      return (entity.polygon && !avalanche.coords) || (!entity.polygon && avalanche.coords);
     };
 
-    avalancheArray.forEach(avalanche => {
-      let existingEntity = viewer.entities.getById(avalanche.extId);
+    avalanches.forEach(avalanche => {
+      let existingEntity = this.viewer.entities.getById(avalanche.extId);
 
-      if (updateEntity(existingEntity, avalanche)) {
-        self.removeEntity(existingEntity);
-        self.addAvalanche(avalanche);
+      if (replaceEntity(existingEntity, avalanche)) {
+        this.removeEntity(existingEntity);
+        this.addAvalanche(avalanche);
         // TODO show the 'click on the red path' notify
-        // if (a.coords) {
+        // if (avalanche.coords) {
         //   showClickPathClue("Click on any red avalanche path for the details");
         //   this.clickPathClueShown = true;
         // }
