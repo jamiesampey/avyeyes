@@ -2,22 +2,49 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogActions from "@material-ui/core/DialogActions";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import ViewListIcon from "@material-ui/icons/ViewList";
+import ImageIcon from "@material-ui/icons/Image";
+import CommentsIcon from "@material-ui/icons/InsertComment";
 
 const styles = theme => ({
-  root: {
-    background: 'white',
-    color: 'black',
-    borderRadius: 5,
+  dialog: {
+
   },
+  formRoot: {
+    height: 430,
+    width: 500,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  title: {
+    flex: 1,
+    paddingLeft: 15,
+  },
+  closeIcon: {
+    color: 'white',
+  },
+  drawerPaper: {
+    position: 'relative',
+  },
+  content: {
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+    minWidth: 0, // So the Typography noWrap works
+  },
+  toolbar: theme.mixins.toolbar,
   hiddenForm: {
     display: 'none',
-  }
+  },
 });
 
 class AvyFormDialog extends React.Component {
@@ -43,30 +70,43 @@ class AvyFormDialog extends React.Component {
 
     return (
       <Dialog
-        className={classes.root}
+        className={classes.dialog}
         open={avalanche !== null}
         onClose={closeCallback}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">{avalanche.title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {avalanche.extId}
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeCallback} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
+        <div className={classes.formRoot}>
+          <AppBar position="absolute" className={classes.appBar}>
+            <Toolbar disableGutters={true}>
+              <Typography variant="title" color="inherit" noWrap className={classes.title}>
+                {avalanche.title}
+              </Typography>
+              <IconButton className={classes.button} aria-label="Close" onClick={closeCallback}>
+                <CloseIcon className={classes.closeIcon} />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.toolbar} />
+            <IconButton className={classes.button} aria-label="SWAG Details">
+              <ViewListIcon />
+            </IconButton>
+            <IconButton className={classes.button} aria-label="Avalanche Images">
+              <ImageIcon />
+            </IconButton>
+            <IconButton className={classes.button} aria-label="Submitter's Comments">
+              <CommentsIcon />
+            </IconButton>
+          </Drawer>
+          <main>
+            <Typography noWrap>main avalanche content</Typography>
+          </main>
+        </div>
       </Dialog>
     );
   };
