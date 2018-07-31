@@ -14,6 +14,7 @@ import '../../stylesheets/AvyEyesClient.scss';
 import {withStyles} from '@material-ui/core/styles';
 import CesiumController from "../CesiumController";
 import { getRequestParam, parseApiResponse } from "../Util";
+import AvalancheFormDialog from "./AvyFormDialog";
 
 const styles = theme => ({
   root: {
@@ -33,6 +34,7 @@ class AvyEyesClient extends React.Component {
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
+    this.onAvalancheFormClose = this.onAvalancheFormClose.bind(this);
   }
 
   componentWillMount() {
@@ -41,9 +43,7 @@ class AvyEyesClient extends React.Component {
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
     this.viewer.camera.moveEnd.addEventListener(() => {
-      if (!(this.state.currentReport || this.state.avalancheSpotlight)) {
-        this.filterAvalanches();
-      }
+      this.filterAvalanches();
     });
 
     this.eventHandler.setInputAction(movement => {
@@ -51,7 +51,11 @@ class AvyEyesClient extends React.Component {
 
       let pick = this.viewer.scene.pick(movement.position);
       if (Cesium.defined(pick) && pick.id.name) {
-        // $("#avyMouseHoverTitle").hide();
+
+        if (!pick.id.billboard) {
+          // clicked on a path, set wait cursor
+          this.setCursorStyle("wait");
+        }
 
         let selectedAvalanche = pick.id;
         let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
@@ -66,27 +70,12 @@ class AvyEyesClient extends React.Component {
             if (pick.id.billboard) {
               // clicked on a pin, add the path and fly to it
               this.controller.removeAllEntities();
-              // this.avalancheSpotlight = true;
               this.controller.addAvalancheAndFlyTo(data);
-
             } else {
               // clicked on a path, display details
-              this.setCursorStyle("wait");
-
-              if (data.hasOwnProperty("viewable")) {
-                console.info(`Received admin details for avalanche ${selectedAvalanche.id}`);
-                // this.form.enableAdminControls().then(() => {
-                // this.form.displayReadWriteForm(data);
-                // this.currentReport = new AvyReport(this);
-                // });
-              } else if (data.hasOwnProperty("submitterEmail")) {
-                console.info(`Received read-write details for avalanche ${selectedAvalanche.id}`);
-                // this.form.displayReadWriteForm(data);
-                // this.currentReport = new AvyReport(this);
-              } else {
-                console.info(`Received read-only details for avalanche ${selectedAvalanche.id}`);
-                // this.form.displayReadOnlyForm(movement.position, data);
-              }
+              this.setState({
+                currentAvalanche: data,
+              });
             }
           })
           .catch(error => {
@@ -98,10 +87,8 @@ class AvyEyesClient extends React.Component {
 
 
     this.setState({
-      loading: true,
       menuOpen: false,
-      avalancheSpotlight: false,
-      currentReport: '',
+      currentAvalanche: null,
     });
   }
 
@@ -114,9 +101,6 @@ class AvyEyesClient extends React.Component {
           return parseApiResponse(response);
         })
         .then(data => {
-          this.setState({
-            avalancheSpotlight: true,
-          });
           this.controller.addAvalancheAndFlyTo(data);
         })
         .catch(error => {
@@ -125,12 +109,15 @@ class AvyEyesClient extends React.Component {
     } else {
       this.controller.geolocateAndFlyTo();
     }
-
-    this.setState({ loading: false });
   }
 
   filterAvalanches() {
-    let boundingBox = this.controller.getBoundingBox();
+    let boundingBox = [];
+    try {
+      boundingBox = this.controller.getBoundingBox();
+    } catch(error) {
+      return;
+    }
 
     let searchQueryString = "/api/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
       + "&camAlt=" + this.viewer.camera.positionCartographic.height
@@ -163,9 +150,12 @@ class AvyEyesClient extends React.Component {
 
   setCursorStyle(style) {
     this.cesiumContainer.style.cursor = style;
+  }
+
+  onAvalancheFormClose() {
     this.setState({
-      cursorStyle: style,
-    })
+      currentAvalanche: null,
+    });
   }
 
   render() {
@@ -174,12 +164,12 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
-        {/*<Loading loading={this.state.loading} />*/}
         <MenuDrawer showDrawer={menuOpen} menuToggle={this.toggleMenu} />
         <MenuButton menuToggle={this.toggleMenu} />
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
-        <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.state.cursorStyle} setCursorStyle={this.setCursorStyle} />
+        <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
+        <AvalancheFormDialog avalanche={this.state.currentAvalanche} closeCallback={this.onAvalancheFormClose} setCursorStyle={this.setCursorStyle} />
       </div>
     );
   }

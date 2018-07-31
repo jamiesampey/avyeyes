@@ -179,7 +179,7 @@ class CesiumController {
     let LL = getCoordsAtWindowPos(0, this.viewer.canvas.clientHeight);
 
     if (!UL || !UR || !LR || !LL) {
-      return ['','','',''];
+      throw new Error("Could not calculate bounding box");
     }
 
     return [
