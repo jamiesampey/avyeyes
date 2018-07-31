@@ -50,10 +50,10 @@ const styles = theme => ({
 class AvyFormDialog extends React.Component {
 
   render() {
-    const { classes, avalanche, closeCallback } = this.props;
+    const { classes, avalanche, closeCallback, setCursorStyle } = this.props;
     if (avalanche === null) return (<div className={classes.hiddenForm} />);
 
-    this.props.setCursorStyle("default");
+    setCursorStyle("default");
 
     if (avalanche.hasOwnProperty("viewable")) {
       console.info(`Received ADMIN details for avalanche ${JSON.stringify(avalanche)}`);

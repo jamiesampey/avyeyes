@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {withStyles} from '@material-ui/core/styles';
 import Cesium from 'cesium/Cesium';
 import Config from '../Config';
 import MenuButton from "./MenuButton";
@@ -7,14 +8,14 @@ import MenuDrawer from "./MenuDrawer";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
+import AvyCard from "./AvyCard";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import {withStyles} from '@material-ui/core/styles';
 import CesiumController from "../CesiumController";
 import { getRequestParam, parseApiResponse } from "../Util";
-import AvalancheFormDialog from "./AvyFormDialog";
+
 
 const styles = theme => ({
   root: {
@@ -34,7 +35,7 @@ class AvyEyesClient extends React.Component {
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
-    this.onAvalancheFormClose = this.onAvalancheFormClose.bind(this);
+    this.onAvyCardClose = this.onAvyCardClose.bind(this);
   }
 
   componentWillMount() {
@@ -142,17 +143,14 @@ class AvyEyesClient extends React.Component {
   }
 
   toggleMenu() {
-    let previousMenuState = this.state.menuOpen;
-    this.setState({
-      menuOpen: !previousMenuState,
-    });
+    this.setState(prevState => ({menuOpen: !prevState.menuOpen}));
   }
 
   setCursorStyle(style) {
     this.cesiumContainer.style.cursor = style;
   }
 
-  onAvalancheFormClose() {
+  onAvyCardClose() {
     this.setState({
       currentAvalanche: null,
     });
@@ -169,7 +167,7 @@ class AvyEyesClient extends React.Component {
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
         <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
-        <AvalancheFormDialog avalanche={this.state.currentAvalanche} closeCallback={this.onAvalancheFormClose} setCursorStyle={this.setCursorStyle} />
+        <AvyCard avalanche={this.state.currentAvalanche} closeCallback={this.onAvyCardClose} setCursorStyle={this.setCursorStyle} />
       </div>
     );
   }
