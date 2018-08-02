@@ -12,11 +12,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
 import CloseIcon from "@material-ui/icons/Close";
+import FullScreenIcon from "@material-ui/icons/Fullscreen";
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from "@material-ui/core/Dialog";
 
-import {parseApiDateString} from "../Util";
+import {parseApiDateString, parseApiResponse} from "../Util";
 
 const styles = theme => ({
   card: {
@@ -58,6 +59,17 @@ class AvyCard extends React.Component {
   }
 
   componentWillMount() {
+    fetch('/api/s3config')
+      .then(response => {
+        return parseApiResponse(response);
+      })
+      .then(data => {
+        this.setState({ s3config: data.s3 });
+      })
+      .catch(error => {
+        console.error(`Unable to retrieve s3 config from server. Error: ${error}`);
+      });
+
     this.setState({
       expanded: false,
     });
@@ -71,9 +83,19 @@ class AvyCard extends React.Component {
     const {classes, avalanche, closeCallback, setCursorStyle} = this.props;
     if (avalanche === null) return (<div className={classes.hiddenCard}/>);
 
+    const {s3config} = this.state;
+
     setCursorStyle("default");
 
-    console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
+//    console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
+
+    let imageUrls = avalanche.images.map(image => {
+      return `//${s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
+    });
+
+    imageUrls.forEach(url => {
+      console.info(url);
+    });
 
     return (
       <Dialog
@@ -95,9 +117,9 @@ class AvyCard extends React.Component {
             />
             <CardMedia
               className={classes.media}
-              image="/static/images/cards/paella.jpg"
-              title="Contemplative Reptile"
-            />
+              image={imageUrls[0]}
+            >
+            </CardMedia>
             <CardContent>
               <Typography component="p">
                 This impressive paella is a perfect party dish and a fun meal to cook together with
