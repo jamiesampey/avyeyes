@@ -43,9 +43,6 @@ const styles = theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  avatar: {
-    backgroundColor: red[500],
-  },
   hiddenCard: {
     display: 'none',
   }
@@ -56,6 +53,8 @@ class AvyCard extends React.Component {
   constructor() {
     super();
     this.toggleExpanded = this.toggleExpanded.bind(this);
+    this.startImageRotation = this.startImageRotation.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   componentWillMount() {
@@ -72,6 +71,7 @@ class AvyCard extends React.Component {
 
     this.setState({
       expanded: false,
+      cardImageIdx: 0,
     });
   }
 
@@ -79,36 +79,52 @@ class AvyCard extends React.Component {
     this.setState(prevState => ({expanded: !prevState.expanded}));
   }
 
+  startImageRotation(imageUrls) {
+    if (imageUrls.length > 1 && !this.state.cardImageUrl) {
+      this.cardImageInterval = setInterval(() => {
+        let newIndex = ++this.state.cardImageIdx % imageUrls.length;
+        console.info(`changing to image ${newIndex}: ${imageUrls[newIndex]}`);
+
+        this.setState({
+          cardImageIdx: newIndex,
+          cardImageUrl: imageUrls[newIndex]
+        });
+      }, 5000);
+    }
+  }
+
+  handleClose() {
+    if (this.cardImageInterval) clearInterval(this.cardImageInterval);
+    this.props.closeCallback();
+  }
+
   render() {
-    const {classes, avalanche, closeCallback, setCursorStyle} = this.props;
+    const {classes, avalanche, setCursorStyle} = this.props;
     if (avalanche === null) return (<div className={classes.hiddenCard}/>);
 
-    const {s3config} = this.state;
+    //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
+
+    const {s3config, cardImageUrl} = this.state;
 
     setCursorStyle("default");
-
-//    console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
 
     let imageUrls = avalanche.images.map(image => {
       return `//${s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
     });
-
-    imageUrls.forEach(url => {
-      console.info(url);
-    });
+    this.startImageRotation(imageUrls);
 
     return (
       <Dialog
         className={classes.dialog}
         open={avalanche !== null}
-        onClose={closeCallback}
+        onClose={this.handleClose}
         aria-labelledby="form-dialog-title"
       >
         <div>
           <Card className={classes.card}>
             <CardHeader
               action={
-                <IconButton onClick={closeCallback}>
+                <IconButton onClick={this.handleClose}>
                   <CloseIcon/>
                 </IconButton>
               }
@@ -117,7 +133,7 @@ class AvyCard extends React.Component {
             />
             <CardMedia
               className={classes.media}
-              image={imageUrls[0]}
+              image={cardImageUrl ? cardImageUrl : imageUrls[0]}
             >
             </CardMedia>
             <CardContent>
