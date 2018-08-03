@@ -11,15 +11,16 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from "@material-ui/icons/Close";
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
 
 import {parseApiDateString, parseApiResponse} from "../Util";
 
+
 const styles = theme => ({
   card: {
-    maxWidth: 500,
+    maxWidth: 600,
   },
   media: {
     height: 0,
@@ -28,17 +29,19 @@ const styles = theme => ({
   actions: {
     display: 'flex',
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+  moreInfoButton: {
     marginLeft: 'auto',
     [theme.breakpoints.up('sm')]: {
       marginRight: -8,
     },
   },
-  expandOpen: {
+  expand: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+  expandedIcon: {
     transform: 'rotate(180deg)',
   }
 });
@@ -83,26 +86,26 @@ class AvyCard extends React.Component {
 
   startCardMediaRotation(avalanche) {
     if (!this.state.rotatingCardMedia && avalanche.images.length > 1) {
+      let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); });
 
-      let landscapeImageUrls = [];
-
-      let addLandscapeImageUrl = (url) => {
+      imageUrls.forEach(url => {
         let img = new Image();
         img.src = url;
-        img.addEventListener("load", function(){
-          if (this.naturalWidth > this.naturalHeight ) landscapeImageUrls.push(url);
+        img.addEventListener("load", function() {
+          // remove portrait-oriented images from the rotating CardMedia
+          if (this.naturalHeight > this.naturalWidth) {
+            imageUrls.splice(imageUrls.indexOf(url), 1);
+          }
         });
-      };
-
-      avalanche.images.forEach(image => { addLandscapeImageUrl(this.constructImageUrl(avalanche, image)) });
+      });
 
       this.cardMediaInterval = setInterval(() => {
-        let newIndex = ++this.state.rotatingImageIdx % landscapeImageUrls.length;
+        let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
 //        console.info(`changing to image ${newIndex}: ${landscapeImageUrls[newIndex]}`);
 
         this.setState({
           rotatingImageIdx: newIndex,
-          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={landscapeImageUrls[newIndex]} />,
+          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={imageUrls[newIndex]} />,
         });
       }, imageRotateInverval);
     }
@@ -110,6 +113,10 @@ class AvyCard extends React.Component {
 
   handleClose() {
     if (this.cardMediaInterval) clearInterval(this.cardMediaInterval);
+    this.setState({
+      rotatingImageIdx: 0,
+      rotatingCardMedia: null,
+    });
     this.props.closeCallback();
   }
 
@@ -157,19 +164,15 @@ class AvyCard extends React.Component {
               </Typography>
             </CardContent>
             <CardActions className={classes.actions} disableActionSpacing>
-              <IconButton aria-label="Share">
-                <ShareIcon/>
-              </IconButton>
-              <IconButton
-                className={classnames(classes.expand, {
-                  [classes.expandOpen]: this.state.expanded,
-                })}
-                onClick={this.toggleExpanded}
-                aria-expanded={this.state.expanded}
-                aria-label="Show more"
-              >
-                <ExpandMoreIcon/>
-              </IconButton>
+              <Button size="small" color="primary" className={classes.shareButton}>
+                Share
+              </Button>
+              <Button size="small" color="primary" className={classes.moreInfoButton} onClick={this.toggleExpanded}>
+                {this.state.expanded ? "Less Info" : "More Info"}
+                <ExpandMoreIcon
+                  className={classnames(classes.expand, { [classes.expandedIcon]: this.state.expanded, })}
+                />
+              </Button>
             </CardActions>
             <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
               <CardContent>
