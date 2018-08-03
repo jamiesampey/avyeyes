@@ -10,9 +10,7 @@ import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
 import CloseIcon from "@material-ui/icons/Close";
-import FullScreenIcon from "@material-ui/icons/Fullscreen";
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from "@material-ui/core/Dialog";
@@ -54,7 +52,7 @@ class AvyCard extends React.Component {
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.constructImageUrl = this.constructImageUrl.bind(this);
-    this.startImageRotation = this.startImageRotation.bind(this);
+    this.startCardMediaRotation = this.startCardMediaRotation.bind(this);
   }
 
   componentWillMount() {
@@ -83,37 +81,35 @@ class AvyCard extends React.Component {
     return `//${this.state.s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   }
 
-  imagesPreloadElement(avalanche) {
-    return (!avalanche.images || avalanche.images.length === 0) ? null : (
-      <div style={{display: 'none'}}>
-        {
-          avalanche.images.map(image => {
-            return (<link key={image.filename} rel="preload" as="image" href={this.constructImageUrl(avalanche, image)} />);
-          })
-        }
-      </div>
-    );
-  }
-
-  startImageRotation(avalanche) {
+  startCardMediaRotation(avalanche) {
     if (!this.state.rotatingCardMedia && avalanche.images.length > 1) {
 
-      let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image) });
+      let landscapeImageUrls = [];
 
-      this.cardImageInterval = setInterval(() => {
-        let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
-        console.info(`changing to image ${newIndex}: ${imageUrls[newIndex]}`);
+      let addLandscapeImageUrl = (url) => {
+        let img = new Image();
+        img.src = url;
+        img.addEventListener("load", function(){
+          if (this.naturalWidth > this.naturalHeight ) landscapeImageUrls.push(url);
+        });
+      };
+
+      avalanche.images.forEach(image => { addLandscapeImageUrl(this.constructImageUrl(avalanche, image)) });
+
+      this.cardMediaInterval = setInterval(() => {
+        let newIndex = ++this.state.rotatingImageIdx % landscapeImageUrls.length;
+//        console.info(`changing to image ${newIndex}: ${landscapeImageUrls[newIndex]}`);
 
         this.setState({
           rotatingImageIdx: newIndex,
-          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={imageUrls[newIndex]} />,
+          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={landscapeImageUrls[newIndex]} />,
         });
       }, imageRotateInverval);
     }
   }
 
   handleClose() {
-    if (this.cardImageInterval) clearInterval(this.cardImageInterval);
+    if (this.cardMediaInterval) clearInterval(this.cardMediaInterval);
     this.props.closeCallback();
   }
 
@@ -126,7 +122,7 @@ class AvyCard extends React.Component {
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
 
     const {rotatingCardMedia} = this.state;
-    this.startImageRotation(avalanche);
+    this.startCardMediaRotation(avalanche);
     let currentCardMedia = null;
     if (rotatingCardMedia) {
       currentCardMedia = rotatingCardMedia;
@@ -143,7 +139,6 @@ class AvyCard extends React.Component {
         aria-labelledby="form-dialog-title"
       >
         <div>
-          {this.imagesPreloadElement(avalanche)}
           <Card className={classes.card}>
             <CardHeader
               action={
