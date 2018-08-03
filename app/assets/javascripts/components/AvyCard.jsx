@@ -46,7 +46,6 @@ const styles = theme => ({
 });
 
 const imageRotateInverval = 5000;
-const placeHolderImage = "/assets/images/avyeyes.jpg";
 
 class AvyCard extends React.Component {
 
@@ -97,16 +96,17 @@ class AvyCard extends React.Component {
   }
 
   startImageRotation(avalanche) {
-    if (!this.state.rotatingImageUrl && avalanche.images.length > 1) {
+    if (!this.state.rotatingCardMedia && avalanche.images.length > 1) {
 
       let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image) });
 
       this.cardImageInterval = setInterval(() => {
         let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
+        console.info(`changing to image ${newIndex}: ${imageUrls[newIndex]}`);
 
         this.setState({
           rotatingImageIdx: newIndex,
-          rotatingImageUrl: imageUrls[newIndex]
+          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={imageUrls[newIndex]} />,
         });
       }, imageRotateInverval);
     }
@@ -125,14 +125,14 @@ class AvyCard extends React.Component {
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
 
-    const {rotatingImageUrl} = this.state;
+    const {rotatingCardMedia} = this.state;
     this.startImageRotation(avalanche);
-    let currentCardImage = placeHolderImage;
-    if (rotatingImageUrl) {
-      currentCardImage = rotatingImageUrl;
-    } else if (avalanche.images.length > 0 && !rotatingImageUrl) {
+    let currentCardMedia = null;
+    if (rotatingCardMedia) {
+      currentCardMedia = rotatingCardMedia;
+    } else if (avalanche.images.length > 0 && !rotatingCardMedia) {
       // Single image, or image rotation hasn't yet started
-      currentCardImage = this.constructImageUrl(avalanche, avalanche.images[0]);
+      currentCardMedia = <CardMedia className={classes.media} image={this.constructImageUrl(avalanche, avalanche.images[0])} />;
     }
 
     return (
@@ -154,11 +154,7 @@ class AvyCard extends React.Component {
               title={avalanche.areaName}
               subheader={parseApiDateString(avalanche.date)}
             />
-            <CardMedia
-              className={classes.media}
-              image={currentCardImage}
-            >
-            </CardMedia>
+            {currentCardMedia}
             <CardContent>
               <Typography component="p">
                 This impressive paella is a perfect party dish and a fun meal to cook together with
