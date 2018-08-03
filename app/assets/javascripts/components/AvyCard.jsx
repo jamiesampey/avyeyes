@@ -42,19 +42,20 @@ const styles = theme => ({
   },
   expandOpen: {
     transform: 'rotate(180deg)',
-  },
-  hiddenCard: {
-    display: 'none',
   }
 });
+
+const imageRotateInverval = 5000;
+const placeHolderImage = "/assets/images/avyeyes.jpg";
 
 class AvyCard extends React.Component {
 
   constructor() {
     super();
     this.toggleExpanded = this.toggleExpanded.bind(this);
-    this.startImageRotation = this.startImageRotation.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.constructImageUrl = this.constructImageUrl.bind(this);
+    this.startImageRotation = this.startImageRotation.bind(this);
   }
 
   componentWillMount() {
@@ -71,7 +72,7 @@ class AvyCard extends React.Component {
 
     this.setState({
       expanded: false,
-      cardImageIdx: 0,
+      rotatingImageIdx: 0,
     });
   }
 
@@ -79,17 +80,35 @@ class AvyCard extends React.Component {
     this.setState(prevState => ({expanded: !prevState.expanded}));
   }
 
-  startImageRotation(imageUrls) {
-    if (imageUrls.length > 1 && !this.state.cardImageUrl) {
+  constructImageUrl(avalanche, image) {
+    return `//${this.state.s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
+  }
+
+  imagesPreloadElement(avalanche) {
+    return (!avalanche.images || avalanche.images.length === 0) ? null : (
+      <div style={{display: 'none'}}>
+        {
+          avalanche.images.map(image => {
+            return (<link key={image.filename} rel="preload" as="image" href={this.constructImageUrl(avalanche, image)} />);
+          })
+        }
+      </div>
+    );
+  }
+
+  startImageRotation(avalanche) {
+    if (!this.state.rotatingImageUrl && avalanche.images.length > 1) {
+
+      let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image) });
+
       this.cardImageInterval = setInterval(() => {
-        let newIndex = ++this.state.cardImageIdx % imageUrls.length;
-        console.info(`changing to image ${newIndex}: ${imageUrls[newIndex]}`);
+        let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
 
         this.setState({
-          cardImageIdx: newIndex,
-          cardImageUrl: imageUrls[newIndex]
+          rotatingImageIdx: newIndex,
+          rotatingImageUrl: imageUrls[newIndex]
         });
-      }, 5000);
+      }, imageRotateInverval);
     }
   }
 
@@ -100,18 +119,21 @@ class AvyCard extends React.Component {
 
   render() {
     const {classes, avalanche, setCursorStyle} = this.props;
-    if (avalanche === null) return (<div className={classes.hiddenCard}/>);
-
-    //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
-
-    const {s3config, cardImageUrl} = this.state;
+    if (avalanche === null) return null;
 
     setCursorStyle("default");
 
-    let imageUrls = avalanche.images.map(image => {
-      return `//${s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
-    });
-    this.startImageRotation(imageUrls);
+    //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
+
+    const {rotatingImageUrl} = this.state;
+    this.startImageRotation(avalanche);
+    let currentCardImage = placeHolderImage;
+    if (rotatingImageUrl) {
+      currentCardImage = rotatingImageUrl;
+    } else if (avalanche.images.length > 0 && !rotatingImageUrl) {
+      // Single image, or image rotation hasn't yet started
+      currentCardImage = this.constructImageUrl(avalanche, avalanche.images[0]);
+    }
 
     return (
       <Dialog
@@ -121,6 +143,7 @@ class AvyCard extends React.Component {
         aria-labelledby="form-dialog-title"
       >
         <div>
+          {this.imagesPreloadElement(avalanche)}
           <Card className={classes.card}>
             <CardHeader
               action={
@@ -133,7 +156,7 @@ class AvyCard extends React.Component {
             />
             <CardMedia
               className={classes.media}
-              image={cardImageUrl ? cardImageUrl : imageUrls[0]}
+              image={currentCardImage}
             >
             </CardMedia>
             <CardContent>

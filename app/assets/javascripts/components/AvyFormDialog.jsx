@@ -42,16 +42,13 @@ const styles = theme => ({
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,
-  hiddenForm: {
-    display: 'none',
-  },
 });
 
 class AvyFormDialog extends React.Component {
 
   render() {
     const { classes, avalanche, closeCallback, setCursorStyle } = this.props;
-    if (avalanche === null) return (<div className={classes.hiddenForm} />);
+    if (avalanche === null) return null;
 
     setCursorStyle("default");
 
