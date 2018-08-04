@@ -15,7 +15,7 @@ import securesocial.core.SecureSocial
 
 
 @Singleton
-class TemplateController @Inject()(val configService: ConfigurationService, val logger: Logger, val messagesApi: MessagesApi,
+class TemplateController @Inject()(val configService: ConfigurationService, val log: Logger, val messagesApi: MessagesApi,
                                    val dao: CachedDao, authorizations: Authorizations, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
 
@@ -29,16 +29,18 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     Ok(com.jamiesampey.avyeyes.views.html.admin(request.user))
   }
 
-  private val autocompleteSources = Map(
-    enumSimpleName(AvalancheType) -> enumToJsonArray(AvalancheType),
-    enumSimpleName(AvalancheTrigger) -> enumToJsonArray(AvalancheTrigger),
-    enumSimpleName(AvalancheTriggerModifier) -> enumToJsonArray(AvalancheTriggerModifier),
-    enumSimpleName(AvalancheInterface) -> enumToJsonArray(AvalancheInterface),
-    enumSimpleName(Direction) -> enumToJsonArray(Direction),
-    enumSimpleName(WindSpeed) -> enumToJsonArray(WindSpeed),
-    enumSimpleName(ModeOfTravel) -> enumToJsonArray(ModeOfTravel),
-    enumSimpleName(ExperienceLevel) -> enumToJsonArray(ExperienceLevel)
-  )
+  def dataCodes = UserAwareAction { implicit request =>
+    Ok(writeJson(
+      (enumSimpleName(AvalancheType) -> enumToJsonArray(AvalancheType)) ~
+      (enumSimpleName(AvalancheTrigger) -> enumToJsonArray(AvalancheTrigger)) ~
+      (enumSimpleName(AvalancheTriggerModifier) -> enumToJsonArray(AvalancheTriggerModifier)) ~
+      (enumSimpleName(AvalancheInterface) -> enumToJsonArray(AvalancheInterface)) ~
+      (enumSimpleName(Direction) -> enumToJsonArray(Direction)) ~
+      (enumSimpleName(WindSpeed) -> enumToJsonArray(WindSpeed)) ~
+      (enumSimpleName(ModeOfTravel) -> enumToJsonArray(ModeOfTravel)) ~
+      (enumSimpleName(ExperienceLevel) -> enumToJsonArray(ExperienceLevel))
+    ))
+  }
 
   private def enumToJsonArray(acEnum: AutocompleteEnum): String = {
     def getLocalizedLabel(tokens: Array[String]): String = {

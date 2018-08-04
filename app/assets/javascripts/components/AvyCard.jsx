@@ -11,6 +11,8 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from "@material-ui/icons/Close";
+import ShareIcon from '@material-ui/icons/Share';
+import ImagesIcon from '@material-ui/icons/Collections';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from "@material-ui/core/Dialog";
 import Button from "@material-ui/core/Button";
@@ -20,11 +22,16 @@ import {parseApiDateString, parseApiResponse} from "../Util";
 
 const styles = theme => ({
   card: {
+    minWidth: 450,
     maxWidth: 600,
   },
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
+  },
+  introTextContent: {
+    marginBottom: 0,
+    paddingBottom: 0,
   },
   actions: {
     display: 'flex',
@@ -47,6 +54,7 @@ const styles = theme => ({
 });
 
 const imageRotateInverval = 5000;
+const introWordCount = 50;
 
 class AvyCard extends React.Component {
 
@@ -68,6 +76,17 @@ class AvyCard extends React.Component {
       })
       .catch(error => {
         console.error(`Unable to retrieve s3 config from server. Error: ${error}`);
+      });
+
+    fetch('/api/dataCodes')
+      .then(response => {
+        return parseApiResponse(response);
+      })
+      .then(data => {
+        this.setState({ dataCodes: data });
+      })
+      .catch(error => {
+        console.error(`Unable to retrieve SWAG data codes from server. Error: ${error}`);
       });
 
     this.setState({
@@ -111,9 +130,16 @@ class AvyCard extends React.Component {
     }
   }
 
+  static introText(text) {
+    if (!text || text.length === 0) return <i>no description</i>;
+    let words = text.split(' ');
+    return words.length <= introWordCount ? text : `${words.slice(0, introWordCount).join(' ')}...`;
+  }
+
   handleClose() {
     if (this.cardMediaInterval) clearInterval(this.cardMediaInterval);
     this.setState({
+      expanded: false,
       rotatingImageIdx: 0,
       rotatingCardMedia: null,
     });
@@ -127,6 +153,8 @@ class AvyCard extends React.Component {
     setCursorStyle("default");
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
+
+    console.info(`data codes are: ${JSON.stringify(this.state.dataCodes)}`);
 
     const {rotatingCardMedia} = this.state;
     this.startCardMediaRotation(avalanche);
@@ -157,16 +185,18 @@ class AvyCard extends React.Component {
               subheader={parseApiDateString(avalanche.date)}
             />
             {currentCardMedia}
-            <CardContent>
-              <Typography component="p">
-                This impressive paella is a perfect party dish and a fun meal to cook together with
-                your guests. Add 1 cup of frozen peas along with the mussels, if you like.
+            <CardContent className={classes.introTextContent}>
+              <Typography paragraph>
+                {AvyCard.introText(avalanche.comments)}
               </Typography>
             </CardContent>
             <CardActions className={classes.actions} disableActionSpacing>
-              <Button size="small" color="primary" className={classes.shareButton}>
-                Share
-              </Button>
+              <IconButton title="Share">
+                <ShareIcon/>
+              </IconButton>
+              <IconButton title="Images">
+                <ImagesIcon/>
+              </IconButton>
               <Button size="small" color="primary" className={classes.moreInfoButton} onClick={this.toggleExpanded}>
                 {this.state.expanded ? "Less Info" : "More Info"}
                 <ExpandMoreIcon
@@ -176,30 +206,14 @@ class AvyCard extends React.Component {
             </CardActions>
             <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
               <CardContent>
-                <Typography paragraph variant="body2">
-                  Method:
+                <Typography variant="body2">
+                  Full Comments:
                 </Typography>
                 <Typography paragraph>
-                  Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-                  minutes.
+                  {avalanche.comments}
                 </Typography>
                 <Typography paragraph>
-                  Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over medium-high
-                  heat. Add chicken, shrimp and chorizo, and cook, stirring occasionally until lightly
-                  browned, 6 to 8 minutes. Transfer shrimp to a large plate and set aside, leaving
-                  chicken and chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes, onion,
-                  salt and pepper, and cook, stirring often until thickened and fragrant, about 10
-                  minutes. Add saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-                </Typography>
-                <Typography paragraph>
-                  Add rice and stir very gently to distribute. Top with artichokes and peppers, and
-                  cook without stirring, until most of the liquid is absorbed, 15 to 18 minutes.
-                  Reduce heat to medium-low, add reserved shrimp and mussels, tucking them down into
-                  the rice, and cook again without stirring, until mussels have opened and rice is
-                  just tender, 5 to 7 minutes more. (Discard any mussels that don’t open.)
-                </Typography>
-                <Typography>
-                  Set aside off of the heat to let rest for 10 minutes, and then serve.
+                  <i>Submitter: {avalanche.submitterExp}</i>
                 </Typography>
               </CardContent>
             </Collapse>

@@ -21,6 +21,7 @@ DELETE  /api/avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.contr
 GET     /                         com.jamiesampey.avyeyes.controllers.TemplateController.index(extId = "")
 GET     /$extId<[a-zA-Z0-9]{8}>   com.jamiesampey.avyeyes.controllers.TemplateController.index(extId)
 GET     /admin                    com.jamiesampey.avyeyes.controllers.TemplateController.admin
+GET     /api/dataCodes            com.jamiesampey.avyeyes.controllers.TemplateController.dataCodes
 
 # Public assets
 GET     /assets/*file        controllers.Assets.versioned(path = "/public", file: Asset)
