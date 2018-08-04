@@ -1,12 +1,8 @@
 package com.jamiesampey.avyeyes.model
 
 package object enums {
-  val CompositeLabelEnums = Seq(
-    enumSimpleName(AvalancheInterface),
-    enumSimpleName(AvalancheTrigger),
-    enumSimpleName(AvalancheTriggerModifier),
-    enumSimpleName(AvalancheType)
-  )
-
-  def enumSimpleName(enum: AutocompleteEnum) = enum.getClass.getSimpleName.replace("$", "")
+  def enumSimpleName(enum: AutocompleteEnum): String = {
+    val name = enum.getClass.getSimpleName.replace("$", "")
+    s"${name.head.toLower}${name.tail}" // camelCase
+  }
 }

@@ -18,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class SearchController @Inject()(val configService: ConfigurationService, val logger: Logger,
+class SearchController @Inject()(val configService: ConfigurationService, val log: Logger,
                                  val dao: CachedDao, authorizations: Authorizations,
                                  val messagesApi: MessagesApi, implicit val env: UserEnvironment)
   extends SecureSocial with Json4sMethods with I18nSupport {
@@ -32,17 +32,17 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
   }
 
   private[controllers] def findAvalanche(extId: String, editKeyOpt: Option[String], user: Option[AvyEyesUser]) = {
-    logger.debug(s"Requested avalanche $extId")
+    log.debug(s"Requested avalanche $extId")
 
     dao.getAvalanche(extId).map { avalanche => dao.getAvalancheImages(extId).map { images =>
       if (isAdmin(user)) {
-        logger.debug(s"Sending admin data for avalanche $extId")
+        log.debug(s"Sending admin data for avalanche $extId")
         Ok(writeJson(avalancheAdminData(avalanche, images)))
       } else if (isAuthorizedToEdit(extId, user, editKeyOpt)) {
-        logger.debug(s"Sending read-write data for avalanche $extId")
+        log.debug(s"Sending read-write data for avalanche $extId")
         Ok(writeJson(avalancheReadWriteData(avalanche, images)))
       } else if (isAuthorizedToView(extId, user)) {
-        logger.debug(s"Sending read-only data for avalanche $extId")
+        log.debug(s"Sending read-only data for avalanche $extId")
         Ok(writeJson(avalancheReadOnlyData(avalanche, images)))
       } else NotFound
     }}.getOrElse(Future { NotFound })
@@ -63,7 +63,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
           }
         case Failure(ex) =>
           val errorMsg = "Failed to retrieve avalanches in view"
-          logger.error(errorMsg, ex)
+          log.error(errorMsg, ex)
           InternalServerError(errorMsg)
       }
     }
@@ -73,7 +73,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
     Try(dao.getAvalanchesAdmin(query)) match {
       case Success(result) => Ok(writeAdminTableJson(result))
       case Failure(ex) =>
-        logger.error("Failed to retrieve avalanches for table", ex)
+        log.error("Failed to retrieve avalanches for table", ex)
         InternalServerError
     }
   }

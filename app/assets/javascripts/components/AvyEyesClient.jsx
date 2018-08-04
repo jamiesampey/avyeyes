@@ -43,6 +43,17 @@ class AvyEyesClient extends React.Component {
     this.controller = new CesiumController(this.viewer);
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
+    fetch('/api/clientData')
+      .then(response => {
+        return parseApiResponse(response);
+      })
+      .then(data => {
+        this.setState({ clientData: data });
+      })
+      .catch(error => {
+        console.error(`Unable to retrieve client data bundle from server. Error: ${error}`);
+      });
+
     this.viewer.camera.moveEnd.addEventListener(() => {
       this.filterAvalanches();
     });
@@ -167,7 +178,7 @@ class AvyEyesClient extends React.Component {
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
         <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
-        <AvyCard avalanche={this.state.currentAvalanche} closeCallback={this.onAvyCardClose} setCursorStyle={this.setCursorStyle} />
+        <AvyCard avalanche={this.state.currentAvalanche} clientData={this.state.clientData} closeCallback={this.onAvyCardClose} setCursorStyle={this.setCursorStyle} />
       </div>
     );
   }

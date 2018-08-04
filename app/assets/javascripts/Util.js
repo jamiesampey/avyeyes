@@ -25,4 +25,18 @@ module.exports = {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   },
+
+  /**
+   * Returns the first found object in the array with a value field equal to code.
+   * Returns empty string if no matching object is found.
+   */
+  labelForDataCode: (array, code) => {
+    let match = array.find(obj => { return obj.value === code });
+    return match ? match.label : "";
+  },
+
+  compositeLabelForDataCode: (array, code) => {
+    let match = array.find(obj => { return obj.value === code });
+    return match ? `${match.value} - ${match.label}` : "";
+  },
 };

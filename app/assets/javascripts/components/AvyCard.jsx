@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Dialog from "@material-ui/core/Dialog";
 import Button from "@material-ui/core/Button";
 
-import {parseApiDateString, parseApiResponse} from "../Util";
+import {parseApiDateString, labelForDataCode} from "../Util";
 
 
 const styles = theme => ({
@@ -67,28 +67,6 @@ class AvyCard extends React.Component {
   }
 
   componentWillMount() {
-    fetch('/api/s3config')
-      .then(response => {
-        return parseApiResponse(response);
-      })
-      .then(data => {
-        this.setState({ s3config: data.s3 });
-      })
-      .catch(error => {
-        console.error(`Unable to retrieve s3 config from server. Error: ${error}`);
-      });
-
-    fetch('/api/dataCodes')
-      .then(response => {
-        return parseApiResponse(response);
-      })
-      .then(data => {
-        this.setState({ dataCodes: data });
-      })
-      .catch(error => {
-        console.error(`Unable to retrieve SWAG data codes from server. Error: ${error}`);
-      });
-
     this.setState({
       expanded: false,
       rotatingImageIdx: 0,
@@ -100,7 +78,7 @@ class AvyCard extends React.Component {
   }
 
   constructImageUrl(avalanche, image) {
-    return `//${this.state.s3config.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
+    return `//${this.props.clientData.s3.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   }
 
   startCardMediaRotation(avalanche) {
@@ -153,8 +131,7 @@ class AvyCard extends React.Component {
     setCursorStyle("default");
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
-
-    console.info(`data codes are: ${JSON.stringify(this.state.dataCodes)}`);
+    // console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
 
     const {rotatingCardMedia} = this.state;
     this.startCardMediaRotation(avalanche);
@@ -206,14 +183,14 @@ class AvyCard extends React.Component {
             </CardActions>
             <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
               <CardContent>
-                <Typography variant="body2">
+                <Typography paragraph variant="body2">
                   Full Comments:
                 </Typography>
                 <Typography paragraph>
                   {avalanche.comments}
                 </Typography>
                 <Typography paragraph>
-                  <i>Submitter: {avalanche.submitterExp}</i>
+                  <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)}</i>
                 </Typography>
               </CardContent>
             </Collapse>
