@@ -25,9 +25,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Divider from "@material-ui/core/Divider";
+import Table from "@material-ui/core/Table";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
 
 import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet} from "../Util";
-
 
 const styles = theme => ({
   card: {
@@ -70,16 +73,18 @@ const styles = theme => ({
       paddingLeft: 5,
       paddingRight: 0,
     },
+    '& p': {
+      marginBottom: 0,
+    },
     '& svg': {
       marginBottom: 'auto',
     },
   },
-  nestedClassificationList: {
-    paddingLeft: 5,
-    '& li': {
-      paddingTop: 0,
-      paddingBottom: 5,
-    },
+  swagTable: {
+    marginLeft: 5,
+    '& tr': {
+      height: 30,
+    }
   },
 });
 
@@ -219,59 +224,59 @@ class AvyCard extends React.Component {
                     <ListItemIcon>
                       <LandscapeIcon/>
                     </ListItemIcon>
-                    <ListItemText>
-                      {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
+                    <ListItemText disableTypography>
+                      <Typography paragraph>
+                        {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
+                      </Typography>
                     </ListItemText>
                   </ListItem>
                   <ListItem disableGutters>
                     <ListItemIcon>
                       <ViewListIcon/>
                     </ListItemIcon>
-                    <List disablePadding className={classes.nestedClassificationList}>
-                      <ListItem disableGutters>
-                        <ListItemText primary="Type" />
-                        <ListItemText>
-                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheType, avalanche.classification.avyType)}
-                        </ListItemText>
-                      </ListItem>
-                      <ListItem disableGutters>
-                        <ListItemText primary="Trigger" />
-                        <ListItemText>
-                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheTrigger, avalanche.classification.trigger)}
-                        </ListItemText>
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Modifier" />
-                        <ListItemText>
-                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheTriggerModifier, avalanche.classification.triggerModifier)}
-                        </ListItemText>
-                      </ListItem>
-                      <ListItem disableGutters>
-                        <ListItemText primary="Interface" />
-                        <ListItemText>
-                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheInterface, avalanche.classification.interface)}
-                        </ListItemText>
-                      </ListItem>
-                      <ListItem disableGutters>
-                        <ListItemText primary="Size" />
-                        <ListItemText>
-                          R{avalanche.classification.rSize} / D{avalanche.classification.dSize}
-                        </ListItemText>
-                      </ListItem>
-                    </List>
+                    <Table className={classes.swagTable}>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell padding="none">Type</TableCell>
+                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheType, avalanche.classification.avyType)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell padding="none">Trigger</TableCell>
+                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTrigger, avalanche.classification.trigger)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell padding="none">Modifier</TableCell>
+                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTriggerModifier, avalanche.classification.triggerModifier)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell padding="none">Interface</TableCell>
+                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheInterface, avalanche.classification.interface)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell padding="none">Size</TableCell>
+                          <TableCell padding="none">R{avalanche.classification.rSize} / D{avalanche.classification.dSize}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
                   </ListItem>
                   <ListItem disableGutters>
                     <ListItemIcon>
                       <CommentsIcon/>
                     </ListItemIcon>
-                    <ListItemText primary={avalanche.comments} />
+                    <ListItemText disableTypography>
+                      <Typography paragraph>
+                        {avalanche.comments}
+                      </Typography>
+                    </ListItemText>
                   </ListItem>
                   <ListItem disableGutters>
                     <ListItemIcon>
                       <PersonIcon/>
                     </ListItemIcon>
-                    <ListItemText>
-                      <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
+                    <ListItemText disableTypography>
+                      <Typography paragraph>
+                        <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
+                      </Typography>
                     </ListItemText>
                   </ListItem>
                 </List>
