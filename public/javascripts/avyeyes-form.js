@@ -517,49 +517,49 @@ AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
   }
 }
 
-AvyForm.prototype.expLevelFromCode = function(code) {
-    return enumObjFromCode(window.AutoCompleteSources["ExperienceLevel"], code);
-}
+// AvyForm.prototype.expLevelFromCode = function(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["ExperienceLevel"], code);
+// }
+//
+// function directionFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["Direction"], code);
+// }
+//
+// function windSpeedFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["WindSpeed"], code);
+// }
+//
+// function avyTypeFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["AvalancheType"], code);
+// }
+//
+// function avyTriggerFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["AvalancheTrigger"], code);
+// }
+//
+// function avyTriggerModifierFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["AvalancheTriggerModifier"], code);
+// }
+//
+// function avyInterfaceFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["AvalancheInterface"], code);
+// }
+//
+// function modeOfTravelFromCode(code) {
+//     return enumObjFromCode(window.AutoCompleteSources["ModeOfTravel"], code);
+// }
+//
+// function enumObjFromCode(enumObjArray, code) {
+//     var matches = $(enumObjArray).filter(function() {
+//         return this.value == code;
+//     });
+//
+//     return matches.length > 0 ? matches[0] : { label: "", value: "empty" };
+// }
 
-function directionFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["Direction"], code);
-}
-
-function windSpeedFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["WindSpeed"], code);
-}
-
-function avyTypeFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["AvalancheType"], code);
-}
-
-function avyTriggerFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["AvalancheTrigger"], code);
-}
-
-function avyTriggerModifierFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["AvalancheTriggerModifier"], code);
-}
-
-function avyInterfaceFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["AvalancheInterface"], code);
-}
-
-function modeOfTravelFromCode(code) {
-    return enumObjFromCode(window.AutoCompleteSources["ModeOfTravel"], code);
-}
-
-function enumObjFromCode(enumObjArray, code) {
-    var matches = $(enumObjArray).filter(function() {
-        return this.value == code;
-    });
-
-    return matches.length > 0 ? matches[0] : { label: "", value: "empty" };
-}
-
-function metersToFeet(meters) {
-    return Math.round(meters * 3.28084);
-}
+// function metersToFeet(meters) {
+//     return Math.round(meters * 3.28084);
+// }
 
 return AvyForm;
 });

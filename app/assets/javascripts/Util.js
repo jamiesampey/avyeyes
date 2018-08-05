@@ -1,3 +1,5 @@
+const NotSpecified = "not specified";
+
 module.exports = {
 
   getRequestParam: paramName => {
@@ -32,11 +34,15 @@ module.exports = {
    */
   labelForDataCode: (array, code) => {
     let match = array.find(obj => { return obj.value === code });
-    return match ? match.label : "";
+    return match ? match.label : NotSpecified;
   },
 
   compositeLabelForDataCode: (array, code) => {
     let match = array.find(obj => { return obj.value === code });
-    return match ? `${match.value} - ${match.label}` : "";
+    return match ? `${match.value} - ${match.label}` : NotSpecified;
+  },
+
+  metersToFeet: (meters) => {
+    return Math.round(meters * 3.28084);
   },
 };

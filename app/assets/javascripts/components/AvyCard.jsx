@@ -14,10 +14,19 @@ import CloseIcon from "@material-ui/icons/Close";
 import ShareIcon from '@material-ui/icons/Share';
 import ImagesIcon from '@material-ui/icons/Collections';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LandscapeIcon from '@material-ui/icons/Landscape';
+import ViewListIcon from "@material-ui/icons/ViewList";
+import CommentsIcon from "@material-ui/icons/InsertComment";
+import PersonIcon from "@material-ui/icons/Person";
 import Dialog from "@material-ui/core/Dialog";
 import Button from "@material-ui/core/Button";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Divider from "@material-ui/core/Divider";
 
-import {parseApiDateString, labelForDataCode} from "../Util";
+import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet} from "../Util";
 
 
 const styles = theme => ({
@@ -35,6 +44,7 @@ const styles = theme => ({
   },
   actions: {
     display: 'flex',
+    paddingBottom: 0,
   },
   moreInfoButton: {
     marginLeft: 'auto',
@@ -48,9 +58,29 @@ const styles = theme => ({
       duration: theme.transitions.duration.shortest,
     }),
   },
-  expandedIcon: {
-    transform: 'rotate(180deg)',
-  }
+  expandedCardContent: {
+    paddingTop: 10,
+    paddingBottom: 0,
+  },
+  expandedCardList: {
+    '& li': {
+      paddingBottom: 0,
+    },
+    '& div': {
+      paddingLeft: 5,
+      paddingRight: 0,
+    },
+    '& svg': {
+      marginBottom: 'auto',
+    },
+  },
+  nestedClassificationList: {
+    paddingLeft: 5,
+    '& li': {
+      paddingTop: 0,
+      paddingBottom: 5,
+    },
+  },
 });
 
 const imageRotateInverval = 5000;
@@ -182,16 +212,69 @@ class AvyCard extends React.Component {
               </Button>
             </CardActions>
             <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <Typography paragraph variant="body2">
-                  Full Comments:
-                </Typography>
-                <Typography paragraph>
-                  {avalanche.comments}
-                </Typography>
-                <Typography paragraph>
-                  <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)}</i>
-                </Typography>
+              <Divider/>
+              <CardContent className={classes.expandedCardContent}>
+                <List disablePadding className={classes.expandedCardList}>
+                  <ListItem disableGutters>
+                    <ListItemIcon>
+                      <LandscapeIcon/>
+                    </ListItemIcon>
+                    <ListItemText>
+                      {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
+                    </ListItemText>
+                  </ListItem>
+                  <ListItem disableGutters>
+                    <ListItemIcon>
+                      <ViewListIcon/>
+                    </ListItemIcon>
+                    <List disablePadding className={classes.nestedClassificationList}>
+                      <ListItem disableGutters>
+                        <ListItemText primary="Type" />
+                        <ListItemText>
+                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheType, avalanche.classification.avyType)}
+                        </ListItemText>
+                      </ListItem>
+                      <ListItem disableGutters>
+                        <ListItemText primary="Trigger" />
+                        <ListItemText>
+                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheTrigger, avalanche.classification.trigger)}
+                        </ListItemText>
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Modifier" />
+                        <ListItemText>
+                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheTriggerModifier, avalanche.classification.triggerModifier)}
+                        </ListItemText>
+                      </ListItem>
+                      <ListItem disableGutters>
+                        <ListItemText primary="Interface" />
+                        <ListItemText>
+                          {compositeLabelForDataCode(this.props.clientData.codes.avalancheInterface, avalanche.classification.interface)}
+                        </ListItemText>
+                      </ListItem>
+                      <ListItem disableGutters>
+                        <ListItemText primary="Size" />
+                        <ListItemText>
+                          R{avalanche.classification.rSize} / D{avalanche.classification.dSize}
+                        </ListItemText>
+                      </ListItem>
+                    </List>
+                  </ListItem>
+                  <ListItem disableGutters>
+                    <ListItemIcon>
+                      <CommentsIcon/>
+                    </ListItemIcon>
+                    <ListItemText primary={avalanche.comments} />
+                  </ListItem>
+                  <ListItem disableGutters>
+                    <ListItemIcon>
+                      <PersonIcon/>
+                    </ListItemIcon>
+                    <ListItemText>
+                      <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
+                    </ListItemText>
+                  </ListItem>
+                </List>
               </CardContent>
             </Collapse>
           </Card>
