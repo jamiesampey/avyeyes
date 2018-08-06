@@ -16,7 +16,9 @@ const styles = theme => ({
 
 class MouseBee extends React.Component {
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     this.props.eventHandler.setInputAction(movement => {
       if (this.props.cursorStyle === "wait") return; // in the process of opening a report
 
@@ -42,12 +44,12 @@ class MouseBee extends React.Component {
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
-    this.setState({
+    this.state = {
       beeStyle: {
         display: 'none',
       },
       beeText: '',
-    });
+    };
   }
 
   render() {

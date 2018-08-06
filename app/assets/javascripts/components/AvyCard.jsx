@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import classnames from 'classnames';
+import ImageLightbox from './ImageLightbox';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -93,19 +94,21 @@ const introWordCount = 50;
 
 class AvyCard extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.renderLightbox = this.renderLightbox.bind(this);
     this.constructImageUrl = this.constructImageUrl.bind(this);
     this.startCardMediaRotation = this.startCardMediaRotation.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       expanded: false,
       rotatingImageIdx: 0,
-    });
+      rotatingCardMedia: null,
+      lightboxOpen: false,
+    };
   }
 
   toggleExpanded() {
@@ -150,25 +153,39 @@ class AvyCard extends React.Component {
   }
 
   handleClose() {
-    if (this.cardMediaInterval) clearInterval(this.cardMediaInterval);
+    if (this.cardMediaInterval) {
+      clearInterval(this.cardMediaInterval);
+    }
+
     this.setState({
       expanded: false,
       rotatingImageIdx: 0,
       rotatingCardMedia: null,
     });
+
     this.props.closeCallback();
+  }
+
+  renderLightbox(avalanche) {
+    console.info("rendering image lightbox");
+    return (
+      <ImageLightbox
+        images={avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); })}
+        closeCallback={() => { this.setState({ lightboxOpen: false }) }}
+      />
+    )
   }
 
   render() {
     const {classes, avalanche, setCursorStyle} = this.props;
-    if (avalanche === null) return null;
 
     setCursorStyle("default");
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
-    // console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
+    //console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
 
     const {rotatingCardMedia} = this.state;
+
     this.startCardMediaRotation(avalanche);
     let currentCardMedia = null;
     if (rotatingCardMedia) {
@@ -179,112 +196,115 @@ class AvyCard extends React.Component {
     }
 
     return (
-      <Dialog
-        className={classes.dialog}
-        open={avalanche !== null}
-        onClose={this.handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <div>
-          <Card className={classes.card}>
-            <CardHeader
-              action={
-                <IconButton onClick={this.handleClose}>
-                  <CloseIcon/>
-                </IconButton>
-              }
-              title={avalanche.areaName}
-              subheader={parseApiDateString(avalanche.date)}
-            />
-            {currentCardMedia}
-            <CardContent className={classes.introTextContent}>
-              <Typography paragraph>
-                {AvyCard.introText(avalanche.comments)}
-              </Typography>
-            </CardContent>
-            <CardActions className={classes.actions} disableActionSpacing>
-              <IconButton title="Share">
-                <ShareIcon/>
-              </IconButton>
-              <IconButton title="Images">
-                <ImagesIcon/>
-              </IconButton>
-              <Button size="small" color="primary" className={classes.moreInfoButton} onClick={this.toggleExpanded}>
-                {this.state.expanded ? "Less Info" : "More Info"}
-                <ExpandMoreIcon
-                  className={classnames(classes.expand, { [classes.expandedIcon]: this.state.expanded, })}
-                />
-              </Button>
-            </CardActions>
-            <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-              <Divider/>
-              <CardContent className={classes.expandedCardContent}>
-                <List disablePadding className={classes.expandedCardList}>
-                  <ListItem disableGutters>
-                    <ListItemIcon>
-                      <LandscapeIcon/>
-                    </ListItemIcon>
-                    <ListItemText disableTypography>
-                      <Typography paragraph>
-                        {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
-                      </Typography>
-                    </ListItemText>
-                  </ListItem>
-                  <ListItem disableGutters>
-                    <ListItemIcon>
-                      <ViewListIcon/>
-                    </ListItemIcon>
-                    <Table className={classes.swagTable}>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell padding="none">Type</TableCell>
-                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheType, avalanche.classification.avyType)}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell padding="none">Trigger</TableCell>
-                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTrigger, avalanche.classification.trigger)}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell padding="none">Modifier</TableCell>
-                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTriggerModifier, avalanche.classification.triggerModifier)}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell padding="none">Interface</TableCell>
-                          <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheInterface, avalanche.classification.interface)}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell padding="none">Size</TableCell>
-                          <TableCell padding="none">R{avalanche.classification.rSize} / D{avalanche.classification.dSize}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </ListItem>
-                  <ListItem disableGutters>
-                    <ListItemIcon>
-                      <CommentsIcon/>
-                    </ListItemIcon>
-                    <ListItemText disableTypography>
-                      <Typography paragraph>
-                        {avalanche.comments}
-                      </Typography>
-                    </ListItemText>
-                  </ListItem>
-                  <ListItem disableGutters>
-                    <ListItemIcon>
-                      <PersonIcon/>
-                    </ListItemIcon>
-                    <ListItemText disableTypography>
-                      <Typography paragraph>
-                        <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
-                      </Typography>
-                    </ListItemText>
-                  </ListItem>
-                </List>
+      <div>
+        {this.state.lightboxOpen && this.renderLightbox(avalanche)}
+        <Dialog
+          className={classes.dialog}
+          open={avalanche !== null}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <div>
+            <Card className={classes.card}>
+              <CardHeader
+                action={
+                  <IconButton onClick={this.handleClose}>
+                    <CloseIcon/>
+                  </IconButton>
+                }
+                title={avalanche.areaName}
+                subheader={parseApiDateString(avalanche.date)}
+              />
+              {currentCardMedia}
+              <CardContent className={classes.introTextContent}>
+                <Typography paragraph>
+                  {AvyCard.introText(avalanche.comments)}
+                </Typography>
               </CardContent>
-            </Collapse>
-          </Card>
-        </div>
-      </Dialog>
+              <CardActions className={classes.actions} disableActionSpacing>
+                <IconButton title="Share">
+                  <ShareIcon/>
+                </IconButton>
+                <IconButton title="Images" onClick={() => { this.setState({ lightboxOpen: true }) }}>
+                  <ImagesIcon/>
+                </IconButton>
+                <Button size="small" color="primary" className={classes.moreInfoButton} onClick={this.toggleExpanded}>
+                  {this.state.expanded ? "Less Info" : "More Info"}
+                  <ExpandMoreIcon
+                    className={classnames(classes.expand, { [classes.expandedIcon]: this.state.expanded, })}
+                  />
+                </Button>
+              </CardActions>
+              <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                <Divider/>
+                <CardContent className={classes.expandedCardContent}>
+                  <List disablePadding className={classes.expandedCardList}>
+                    <ListItem disableGutters>
+                      <ListItemIcon>
+                        <LandscapeIcon/>
+                      </ListItemIcon>
+                      <ListItemText disableTypography>
+                        <Typography paragraph>
+                          {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
+                        </Typography>
+                      </ListItemText>
+                    </ListItem>
+                    <ListItem disableGutters>
+                      <ListItemIcon>
+                        <ViewListIcon/>
+                      </ListItemIcon>
+                      <Table className={classes.swagTable}>
+                        <TableBody>
+                          <TableRow>
+                            <TableCell padding="none">Type</TableCell>
+                            <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheType, avalanche.classification.avyType)}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell padding="none">Trigger</TableCell>
+                            <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTrigger, avalanche.classification.trigger)}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell padding="none">Modifier</TableCell>
+                            <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheTriggerModifier, avalanche.classification.triggerModifier)}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell padding="none">Interface</TableCell>
+                            <TableCell padding="none">{compositeLabelForDataCode(this.props.clientData.codes.avalancheInterface, avalanche.classification.interface)}</TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell padding="none">Size</TableCell>
+                            <TableCell padding="none">R{avalanche.classification.rSize} / D{avalanche.classification.dSize}</TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </ListItem>
+                    <ListItem disableGutters>
+                      <ListItemIcon>
+                        <CommentsIcon/>
+                      </ListItemIcon>
+                      <ListItemText disableTypography>
+                        <Typography paragraph>
+                          {avalanche.comments}
+                        </Typography>
+                      </ListItemText>
+                    </ListItem>
+                    <ListItem disableGutters>
+                      <ListItemIcon>
+                        <PersonIcon/>
+                      </ListItemIcon>
+                      <ListItemText disableTypography>
+                        <Typography paragraph>
+                          <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
+                        </Typography>
+                      </ListItemText>
+                    </ListItem>
+                  </List>
+                </CardContent>
+              </Collapse>
+            </Card>
+          </div>
+        </Dialog>
+      </div>
     );
   }
 }

@@ -24,8 +24,8 @@ const styles = theme => ({
 
 class ResetViewButton extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.resetView = this.resetView.bind(this);
   }
 

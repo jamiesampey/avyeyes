@@ -28,20 +28,18 @@ const styles = theme => ({
 
 class AvyEyesClient extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
     this.cesiumContainer = document.getElementById('cesiumContainer');
+    this.viewer = new Cesium.Viewer(this.cesiumContainer, Config.cesiumViewerOptions);
+    this.controller = new CesiumController(this.viewer);
+    this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
-    this.onAvyCardClose = this.onAvyCardClose.bind(this);
-  }
-
-  componentWillMount() {
-    this.viewer = new Cesium.Viewer(this.cesiumContainer, Config.cesiumViewerOptions);
-    this.controller = new CesiumController(this.viewer);
-    this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    this.renderAvyCard = this.renderAvyCard.bind(this);
 
     fetch('/api/clientData')
       .then(response => {
@@ -98,10 +96,10 @@ class AvyEyesClient extends React.Component {
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
 
-    this.setState({
+    this.state = {
       menuOpen: false,
       currentAvalanche: null,
-    });
+    };
   }
 
   componentDidMount() {
@@ -161,10 +159,15 @@ class AvyEyesClient extends React.Component {
     this.cesiumContainer.style.cursor = style;
   }
 
-  onAvyCardClose() {
-    this.setState({
-      currentAvalanche: null,
-    });
+  renderAvyCard() {
+    return (
+      <AvyCard
+        avalanche={this.state.currentAvalanche}
+        clientData={this.state.clientData}
+        setCursorStyle={this.setCursorStyle}
+        closeCallback={() => { this.setState({ currentAvalanche: null }) }}
+      />
+    )
   }
 
   render() {
@@ -178,7 +181,7 @@ class AvyEyesClient extends React.Component {
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
         <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
-        <AvyCard avalanche={this.state.currentAvalanche} clientData={this.state.clientData} closeCallback={this.onAvyCardClose} setCursorStyle={this.setCursorStyle} />
+        {this.state.currentAvalanche && this.renderAvyCard()}
       </div>
     );
   }

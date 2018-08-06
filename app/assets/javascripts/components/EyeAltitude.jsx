@@ -17,7 +17,9 @@ const styles = theme => ({
 
 class EyeAltitude extends React.Component {
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
     let self = this;
     let eyeAltSetter = {};
 
@@ -38,9 +40,9 @@ class EyeAltitude extends React.Component {
     });
 
     // set the initial altitude
-    this.setState({
+    this.state = {
       eyeAltitude: toAltitudeString(this.props.viewer.camera.positionCartographic.height.toFixed(0)),
-    });
+    };
   }
 
   render() {
