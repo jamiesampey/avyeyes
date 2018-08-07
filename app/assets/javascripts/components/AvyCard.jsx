@@ -34,6 +34,9 @@ import TableBody from "@material-ui/core/TableBody";
 import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet} from "../Util";
 
 const styles = theme => ({
+  dialog: {
+    zIndex: 100,
+  },
   card: {
     minWidth: 450,
     maxWidth: 600,
@@ -41,6 +44,9 @@ const styles = theme => ({
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
+    '&:hover': {
+      cursor: 'zoom-in',
+    },
   },
   introTextContent: {
     marginBottom: 0,
@@ -99,28 +105,23 @@ class AvyCard extends React.Component {
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
     this.constructImageUrl = this.constructImageUrl.bind(this);
-    this.startCardMediaRotation = this.startCardMediaRotation.bind(this);
 
     this.state = {
       expanded: false,
       rotatingImageIdx: 0,
       rotatingCardMedia: null,
+      cardMediaInterval: null,
       lightboxOpen: false,
     };
   }
 
-  toggleExpanded() {
-    this.setState(prevState => ({expanded: !prevState.expanded}));
-  }
+  componentDidMount() {
+    let { avalanche } = this.props;
 
-  constructImageUrl(avalanche, image) {
-    return `//${this.props.clientData.s3.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
-  }
-
-  startCardMediaRotation(avalanche) {
-    if (!this.state.rotatingCardMedia && avalanche.images.length > 1) {
+    if (avalanche.images.length > 1 && !this.state.cardMediaInterval) {
       let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); });
 
       imageUrls.forEach(url => {
@@ -134,16 +135,28 @@ class AvyCard extends React.Component {
         });
       });
 
-      this.cardMediaInterval = setInterval(() => {
-        let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
-//        console.info(`changing to image ${newIndex}: ${landscapeImageUrls[newIndex]}`);
+      this.setState({
+        cardMediaInterval: setInterval(() => {
+          if (!this.state.lightboxOpen) {
+            let newIndex = ++this.state.rotatingImageIdx % imageUrls.length;
+            //console.info(`changing to image ${newIndex}: ${imageUrls[newIndex]}`);
 
-        this.setState({
-          rotatingImageIdx: newIndex,
-          rotatingCardMedia: <CardMedia className={this.props.classes.media} image={imageUrls[newIndex]} />,
-        });
-      }, imageRotateInverval);
+            this.setState({
+              rotatingImageIdx: newIndex,
+              rotatingCardMedia: this.renderCardMedia(avalanche, imageUrls[newIndex]),
+            });
+          }
+        }, imageRotateInverval)
+      })
     }
+  }
+
+  toggleExpanded() {
+    this.setState(prevState => ({expanded: !prevState.expanded}));
+  }
+
+  constructImageUrl(avalanche, image) {
+    return `//${this.props.clientData.s3.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   }
 
   static introText(text) {
@@ -153,21 +166,32 @@ class AvyCard extends React.Component {
   }
 
   handleClose() {
-    if (this.cardMediaInterval) {
-      clearInterval(this.cardMediaInterval);
+    if (this.state.cardMediaInterval) {
+      clearInterval(this.state.cardMediaInterval);
     }
 
     this.setState({
       expanded: false,
       rotatingImageIdx: 0,
       rotatingCardMedia: null,
+      cardMediaInterval: null,
+      lightboxOpen: false,
     });
 
     this.props.closeCallback();
   }
 
+  renderCardMedia(avalanche, imageUrl) {
+    return (
+      <CardMedia
+        className={this.props.classes.media}
+        image={imageUrl}
+        onClick={() => { this.setState({ lightboxOpen: true }) }}
+      />
+    );
+  }
+
   renderLightbox(avalanche) {
-    console.info("rendering image lightbox");
     return (
       <ImageLightbox
         images={avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); })}
@@ -185,14 +209,13 @@ class AvyCard extends React.Component {
     //console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
 
     const {rotatingCardMedia} = this.state;
-
-    this.startCardMediaRotation(avalanche);
     let currentCardMedia = null;
+
     if (rotatingCardMedia) {
       currentCardMedia = rotatingCardMedia;
     } else if (avalanche.images.length > 0 && !rotatingCardMedia) {
       // Single image, or image rotation hasn't yet started
-      currentCardMedia = <CardMedia className={classes.media} image={this.constructImageUrl(avalanche, avalanche.images[0])} />;
+      currentCardMedia = this.renderCardMedia(avalanche, this.constructImageUrl(avalanche, avalanche.images[0]));
     }
 
     return (
