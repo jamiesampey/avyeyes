@@ -7,39 +7,35 @@ export default class ImageLightbox extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleClose = this.handleClose.bind(this);
-
     this.state = {
-      imageIndex: 0,
-    };
+      imageIdx: 0,
+    }
   }
 
-  handleClose() {
+  componentDidMount() {
     this.setState({
-      imageIndex: 0,
+      imageIdx: 0,
     });
-
-    this.props.closeCallback();
   }
 
   render() {
-    const { images } = this.props;
-    const { imageIndex } = this.state;
+    const { images, closeCallback } = this.props;
+    const { imageIdx } = this.state;
 
     return (
         <Lightbox
-          mainSrc={images[imageIndex]}
-          nextSrc={images[(imageIndex + 1) % images.length]}
-          prevSrc={images[(imageIndex + images.length - 1) % images.length]}
-          onCloseRequest={this.handleClose}
+          mainSrc={images[imageIdx]}
+          nextSrc={images[(imageIdx + 1) % images.length]}
+          prevSrc={images[(imageIdx + images.length - 1) % images.length]}
+          onCloseRequest={closeCallback}
           onMovePrevRequest={() =>
             this.setState({
-              imageIndex: (imageIndex + images.length - 1) % images.length,
+              imageIdx: (imageIdx + images.length - 1) % images.length,
             })
           }
           onMoveNextRequest={() =>
             this.setState({
-              imageIndex: (imageIndex + 1) % images.length,
+              imageIdx: (imageIdx + 1) % images.length,
             })
           }
         />
