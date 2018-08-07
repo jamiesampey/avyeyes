@@ -119,9 +119,17 @@ class AvyCard extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({
+      expanded: false,
+      rotatingImageIdx: 0,
+      rotatingCardMedia: null,
+      cardMediaInterval: null,
+      lightboxOpen: false,
+    });
+
     let { avalanche } = this.props;
 
-    if (avalanche.images.length > 1 && !this.state.cardMediaInterval) {
+    if (avalanche.images.length > 1) {
       let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); });
 
       imageUrls.forEach(url => {
@@ -151,10 +159,6 @@ class AvyCard extends React.Component {
     }
   }
 
-  toggleExpanded() {
-    this.setState(prevState => ({expanded: !prevState.expanded}));
-  }
-
   constructImageUrl(avalanche, image) {
     return `//${this.props.clientData.s3.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   }
@@ -165,18 +169,14 @@ class AvyCard extends React.Component {
     return words.length <= introWordCount ? text : `${words.slice(0, introWordCount).join(' ')}...`;
   }
 
+  toggleExpanded() {
+    this.setState(prevState => ({expanded: !prevState.expanded}));
+  }
+
   handleClose() {
     if (this.state.cardMediaInterval) {
       clearInterval(this.state.cardMediaInterval);
     }
-
-    this.setState({
-      expanded: false,
-      rotatingImageIdx: 0,
-      rotatingCardMedia: null,
-      cardMediaInterval: null,
-      lightboxOpen: false,
-    });
 
     this.props.closeCallback();
   }
@@ -225,7 +225,7 @@ class AvyCard extends React.Component {
           className={classes.dialog}
           open={avalanche !== null}
           onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
+          disableEnforceFocus={true} // needed to enable arrow keys on lightbox
         >
           <div>
             <Card className={classes.card}>
