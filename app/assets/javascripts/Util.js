@@ -30,6 +30,10 @@ module.exports = {
     return new Date(dateString).toLocaleDateString('en-US', options);
   },
 
+  constructImageUrl(s3Bucket, avalanche, image) {
+    return `//${s3Bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
+  },
+
   /**
    * Returns the first found object in the array with a value field equal to code.
    * Returns empty string if no matching object is found.

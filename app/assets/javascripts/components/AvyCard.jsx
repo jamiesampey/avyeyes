@@ -31,7 +31,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 
-import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet} from "../Util";
+import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet, constructImageUrl} from "../Util";
 
 const styles = theme => ({
   dialog: {
@@ -45,7 +45,7 @@ const styles = theme => ({
     height: 0,
     paddingTop: '56.25%', // 16:9
     '&:hover': {
-      cursor: 'zoom-in',
+      cursor: 'pointer',
     },
   },
   introTextContent: {
@@ -107,7 +107,6 @@ class AvyCard extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
-    this.constructImageUrl = this.constructImageUrl.bind(this);
 
     this.state = {
       expanded: false,
@@ -130,7 +129,7 @@ class AvyCard extends React.Component {
     let { avalanche } = this.props;
 
     if (avalanche.images.length > 1) {
-      let imageUrls = avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); });
+      let imageUrls = avalanche.images.map(image => { return constructImageUrl(this.props.clientData.s3.bucket, avalanche, image); });
 
       imageUrls.forEach(url => {
         let img = new Image();
@@ -157,10 +156,6 @@ class AvyCard extends React.Component {
         }, imageRotateInverval)
       })
     }
-  }
-
-  constructImageUrl(avalanche, image) {
-    return `//${this.props.clientData.s3.bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   }
 
   static introText(text) {
@@ -194,7 +189,8 @@ class AvyCard extends React.Component {
   renderLightbox(avalanche) {
     return (
       <ImageLightbox
-        images={avalanche.images.map(image => { return this.constructImageUrl(avalanche, image); })}
+        avalanche={avalanche}
+        s3Bucket={this.props.clientData.s3.bucket}
         closeCallback={() => { this.setState({ lightboxOpen: false }) }}
       />
     )
@@ -215,7 +211,7 @@ class AvyCard extends React.Component {
       currentCardMedia = rotatingCardMedia;
     } else if (avalanche.images.length > 0 && !rotatingCardMedia) {
       // Single image, or image rotation hasn't yet started
-      currentCardMedia = this.renderCardMedia(avalanche, this.constructImageUrl(avalanche, avalanche.images[0]));
+      currentCardMedia = this.renderCardMedia(avalanche, constructImageUrl(this.props.clientData.s3.bucket, avalanche, avalanche.images[0]));
     }
 
     return (
