@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import classnames from 'classnames';
 import ImageLightbox from './ImageLightbox';
+import SocialMenu from "./SocialMenu";
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -107,6 +108,7 @@ class AvyCard extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
+    this.renderSocialMenu = this.renderSocialMenu.bind(this);
 
     this.state = {
       expanded: false,
@@ -123,6 +125,7 @@ class AvyCard extends React.Component {
       rotatingImageIdx: 0,
       rotatingCardMedia: null,
       cardMediaInterval: null,
+      socialMenuAnchor: null,
       lightboxOpen: false,
     });
 
@@ -196,6 +199,17 @@ class AvyCard extends React.Component {
     )
   }
 
+  renderSocialMenu(avalanche) {
+    return (
+      <SocialMenu
+        avalanche={avalanche}
+        s3Bucket={this.props.clientData.s3.bucket}
+        anchorEl={this.state.socialMenuAnchor}
+        closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
+      />
+    )
+  }
+
   render() {
     const {classes, avalanche, setCursorStyle} = this.props;
 
@@ -216,6 +230,7 @@ class AvyCard extends React.Component {
 
     return (
       <div>
+        {this.state.socialMenuAnchor && this.renderSocialMenu(avalanche)}
         {this.state.lightboxOpen && this.renderLightbox(avalanche)}
         <Dialog
           className={classes.dialog}
@@ -241,7 +256,7 @@ class AvyCard extends React.Component {
                 </Typography>
               </CardContent>
               <CardActions className={classes.actions} disableActionSpacing>
-                <IconButton title="Share">
+                <IconButton title="Share" onClick={event => { this.setState({ socialMenuAnchor: event.currentTarget }) }}>
                   <ShareIcon/>
                 </IconButton>
                 <IconButton title="Images" onClick={() => { this.setState({ lightboxOpen: true }) }}>
