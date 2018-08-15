@@ -52,13 +52,13 @@ function AvyEyesView(socialMode) {
     this.form = new AvyForm(this);
     this.ui = new AvyEyesUI(this);
 
-    if (this.socialEnabled) {
-        FB.init({
-            appId: this.facebookAppId,
-            xfbml: true,
-            version: "v2.10"
-        });
-    }
+    // if (this.socialEnabled) {
+    //     FB.init({
+    //         appId: this.facebookAppId,
+    //         xfbml: true,
+    //         version: "v2.10"
+    //     });
+    // }
 
     this.clickPathClueShown = false;
     this.avalancheSpotlight = false;

@@ -7,13 +7,13 @@ define(['jquery',
 function AvyForm(avyEyesView, mockS3Promise) {
     this.view = avyEyesView;
 
-    this.s3Config = mockS3Promise ? mockS3Promise : new Promise(function(resolve) {
-        $.getJSON("/s3config", function (data) {
-            resolve(data.s3);
-        }).fail(function (jqxhr) {
-            console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
-        });
-    });
+    // this.s3Config = mockS3Promise ? mockS3Promise : new Promise(function(resolve) {
+    //     $.getJSON("/s3config", function (data) {
+    //         resolve(data.s3);
+    //     }).fail(function (jqxhr) {
+    //         console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
+    //     });
+    // });
 
     this.s3Config.then(function(s3) {
         this.s3Client = new AWS.S3({
@@ -27,40 +27,40 @@ function AvyForm(avyEyesView, mockS3Promise) {
 }
 
 AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
-	$("#roAvyFormTitle").text(a.title);
-	$("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
+	// $("#roAvyFormTitle").text(a.title);
+	// $("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
 
 	$("#roAvyFormExtLink").attr("href", a.extUrl);
 	$("#roAvyFormExtLink").text(a.extUrl);
 
-    if (this.view.socialEnabled) {
-        $("#roAvyFormFacebookButton").click(function() {
-            this.s3Config.then(function(s3) {
-                FB.ui({
-                    method: 'share_open_graph',
-                    action_type: 'og.shares',
-                    action_properties: JSON.stringify({
-                        object: {
-                            'og:url': a.extUrl,
-                            'og:title': a.title,
-                            'og:description': a.comments,
-                            'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
-                            "og:image:width": 800,
-                            "og:image:height": 600
-                        }
-                    })
-                });
-            })
-        }.bind(this));
+    // if (this.view.socialEnabled) {
+        // $("#roAvyFormFacebookButton").click(function() {
+        //     this.s3Config.then(function(s3) {
+        //         FB.ui({
+        //             method: 'share_open_graph',
+        //             action_type: 'og.shares',
+        //             action_properties: JSON.stringify({
+        //                 object: {
+        //                     'og:url': a.extUrl,
+        //                     'og:title': a.title,
+        //                     'og:description': a.comments,
+        //                     'og:image': "https://" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/screenshot.jpg",
+        //                     "og:image:width": 800,
+        //                     "og:image:height": 600
+        //                 }
+        //             })
+        //         });
+        //     })
+        // }.bind(this));
 
-        var twttrContainer = $("#roAvyFormSocialTwitterContainer");
-        twttrContainer.empty();
-        twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
-            + "' href='//twitter.com/share' data-count='horizontal' />");
-        twttr.widgets.load();
-    } else {
-        $("#roAvyFormSocialButtonsTable").hide();
-    }
+        // var twttrContainer = $("#roAvyFormSocialTwitterContainer");
+        // twttrContainer.empty();
+        // twttrContainer.append("<a class='twitter-share-button' data-url='" + a.extUrl + "' data-text='" + a.title
+        //     + "' href='//twitter.com/share' data-count='horizontal' />");
+        // twttr.widgets.load();
+    // } else {
+    //     $("#roAvyFormSocialButtonsTable").hide();
+    // }
 
 	$("#roAvyFormElevation").text(a.slope.elevation + " m");
 	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
