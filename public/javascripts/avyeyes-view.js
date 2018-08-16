@@ -5,8 +5,8 @@ define(['avyeyes-ui',
         ], function(AvyEyesUI, AvyForm, AvyReport) {
 
 function AvyEyesView(socialMode) {
-    this.socialEnabled = socialMode;
-    console.info("Starting AvyEyes view. Social plugins loaded == " + socialMode);
+    // this.socialEnabled = socialMode;
+    // console.info("Starting AvyEyes view. Social plugins loaded == " + socialMode);
 
     // this.bingKey = "AiXcgClqr_8DxjhvM5bal45QdMumBNOllccwdibv5ViVRKR1xTh9iA5GugmmINPr";
     // this.facebookAppId = "541063359326610";
@@ -43,7 +43,7 @@ function AvyEyesView(socialMode) {
     //
     // this.setCameraMoveEventListener();
     // this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
-    this.setAvyMouseEventHandlers();
+    // this.setAvyMouseEventHandlers();
 
     window.addEventListener("keydown", function() {
         $("#helpOverlay").hide();

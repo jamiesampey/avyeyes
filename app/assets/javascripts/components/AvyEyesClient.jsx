@@ -95,9 +95,7 @@ class AvyEyesClient extends React.Component {
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
-    // if (this.socialEnabled) {
-      this.loadSocialAPIs();
-    // }
+    this.loadFacebookAPI();
 
     this.state = {
       menuOpen: false,
@@ -124,13 +122,14 @@ class AvyEyesClient extends React.Component {
     }
   }
 
-  loadSocialAPIs() {
+  loadFacebookAPI() {
     window.fbAsyncInit = function() {
       FB.init({
         appId: Config.facebookAppId,
         xfbml: true,
         version: 'v3.1',
       });
+      console.debug('Facebook async init succeeded');
     };
 
     (function(d, s, id) {
@@ -140,24 +139,6 @@ class AvyEyesClient extends React.Component {
       js.src = "//connect.facebook.net/en_US/sdk.js";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-
-    // TODO: is window.twttr needed for a basic share?
-    // window.twttr = (function(d, s, id) {
-    //   let js, fjs = d.getElementsByTagName(s)[0],
-    //     t = window.twttr || {};
-    //   if (d.getElementById(id)) return t;
-    //   js = d.createElement(s);
-    //   js.id = id;
-    //   js.src = "//platform.twitter.com/widgets.js";
-    //   fjs.parentNode.insertBefore(js, fjs);
-    //
-    //   t._e = [];
-    //   t.ready = function(f) {
-    //     t._e.push(f);
-    //   };
-    //
-    //   return t;
-    // }(document, "script", "twitter-wjs"));
   }
 
   filterAvalanches() {

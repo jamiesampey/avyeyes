@@ -30,8 +30,8 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	// $("#roAvyFormTitle").text(a.title);
 	// $("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
 
-	$("#roAvyFormExtLink").attr("href", a.extUrl);
-	$("#roAvyFormExtLink").text(a.extUrl);
+	// $("#roAvyFormExtLink").attr("href", a.extUrl);
+	// $("#roAvyFormExtLink").text(a.extUrl);
 
     // if (this.view.socialEnabled) {
         // $("#roAvyFormFacebookButton").click(function() {
@@ -62,10 +62,10 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     //     $("#roAvyFormSocialButtonsTable").hide();
     // }
 
-	$("#roAvyFormElevation").text(a.slope.elevation + " m");
-	$("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
-	$("#roAvyFormAspect").text(directionFromCode(a.slope.aspect).label);
-	$("#roAvyFormAngle").text(a.slope.angle);
+	// $("#roAvyFormElevation").text(a.slope.elevation + " m");
+	// $("#roAvyFormElevationFt").text(metersToFeet(a.slope.elevation) + " ft");
+	// $("#roAvyFormAspect").text(directionFromCode(a.slope.aspect).label);
+	// $("#roAvyFormAngle").text(a.slope.angle);
 
  	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
 
@@ -82,12 +82,12 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
         $("#roAvyFormRecentWindDirection").show();
     }
 
-	setReadOnlyAutoCompleteVal("#roAvyFormType", avyTypeFromCode(a.classification.avyType));
-	setReadOnlyAutoCompleteVal("#roAvyFormTrigger", avyTriggerFromCode(a.classification.trigger));
-	setReadOnlyAutoCompleteVal("#roAvyFormTriggerModifier", avyTriggerModifierFromCode(a.classification.triggerModifier));
-	setReadOnlyAutoCompleteVal("#roAvyFormInterface", avyInterfaceFromCode(a.classification.interface));
-	setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
-	setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
+	// setReadOnlyAutoCompleteVal("#roAvyFormType", avyTypeFromCode(a.classification.avyType));
+	// setReadOnlyAutoCompleteVal("#roAvyFormTrigger", avyTriggerFromCode(a.classification.trigger));
+	// setReadOnlyAutoCompleteVal("#roAvyFormTriggerModifier", avyTriggerModifierFromCode(a.classification.triggerModifier));
+	// setReadOnlyAutoCompleteVal("#roAvyFormInterface", avyInterfaceFromCode(a.classification.interface));
+	// setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
+	// setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
 
 	setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
 	setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
@@ -100,60 +100,60 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     var showComments = a.comments.length > 0;
     var showImages = a.images.length > 0;
 
-	if (showComments) {
-		$("#roAvyFormCommentsRow").show();
-		$("#roAvyFormComments").val(a.comments);
-        $("#roAvyFormCommentsLightboxDiv textarea").val(a.comments);
-        $(".commentsFancybox").fancybox({padding: 0, openEffect: "fade", closeEffect: "fade"});
-	} else {
-	    $("#roAvyFormCommentsRow").hide();
-	}
+	// if (showComments) {
+	// 	$("#roAvyFormCommentsRow").show();
+	// 	$("#roAvyFormComments").val(a.comments);
+  //       $("#roAvyFormCommentsLightboxDiv textarea").val(a.comments);
+  //       $(".commentsFancybox").fancybox({padding: 0, openEffect: "fade", closeEffect: "fade"});
+	// } else {
+	//     $("#roAvyFormCommentsRow").hide();
+	// }
+  //
+	// if (showImages) {
+	//     $("#roAvyFormImageList").empty();
+	//     $("#roAvyFormImageRow").show();
+  //
+  //       this.s3Config.then(function(s3) {
+  //           $.each(a.images, function(i, image) {
+  //               var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
+  //               var caption = (typeof image.caption != "undefined") ? image.caption : "";
+  //               $("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
+  //                   + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
+  //                   + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
+  //           });
+  //       });
+  //
+  //       setImageFancyBox('.roAvyFormImageAnchor');
+	// } else {
+	//     $("#roAvyFormImageRow").hide();
+	// }
 
-	if (showImages) {
-	    $("#roAvyFormImageList").empty();
-	    $("#roAvyFormImageRow").show();
-
-        this.s3Config.then(function(s3) {
-            $.each(a.images, function(i, image) {
-                var imgUrl = "//" + s3.bucket + ".s3.amazonaws.com/avalanches/" + a.extId + "/images/" + image.filename;
-                var caption = (typeof image.caption != "undefined") ? image.caption : "";
-                $("#roAvyFormImageList").append("<li class='roAvyFormImageListItem'>"
-                    + "<a href='" + imgUrl + "' class='roAvyFormImageAnchor' rel='roAvyFormImages'><img src='" + imgUrl + "' /></a>"
-                    + "<div class='captionContainer' style='display: none;'>" + caption + "</div></li>");
-            });
-        });
-
-        setImageFancyBox('.roAvyFormImageAnchor');
-	} else {
-	    $("#roAvyFormImageRow").hide();
-	}
-
-    $("#cesiumContainer").css("cursor", "default");
-    $("#roAvyFormDialog").dialog("open");
-
-    $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
-        var baseHeight = 280;
-        var commentsHeight = showComments ? 200 : 0;
-        var imagesHeight = showImages ? 135 : 0;
-        return baseHeight + commentsHeight + imagesHeight;
-    });
-
-    $("#roAvyFormDialog").dialog("option", "position", {
-        my: "center bottom-20",
-        at: "center top",
-        of: $.Event("click", {pageX: mousePos.x, pageY: mousePos.y}),
-        collision: "fit"
-    });
+    // $("#cesiumContainer").css("cursor", "default");
+    // $("#roAvyFormDialog").dialog("open");
+    //
+    // $("#roAvyFormDialog, .roAvyFormDialog").height(function (index, height) {
+    //     var baseHeight = 280;
+    //     var commentsHeight = showComments ? 200 : 0;
+    //     var imagesHeight = showImages ? 135 : 0;
+    //     return baseHeight + commentsHeight + imagesHeight;
+    // });
+    //
+    // $("#roAvyFormDialog").dialog("option", "position", {
+    //     my: "center bottom-20",
+    //     at: "center top",
+    //     of: $.Event("click", {pageX: mousePos.x, pageY: mousePos.y}),
+    //     collision: "fit"
+    // });
 }
 
-AvyForm.prototype.hideReadOnlyForm = function() {
-    if($('#roAvyFormDialog').is(':visible')) {
-        $('#roAvyFormCommentsRow').hide();
-        $('#roAvyFormImageList').empty();
-        $('#roAvyFormImageRow').hide();
-        $('#roAvyFormDialog').dialog('close');
-	}
-}
+// AvyForm.prototype.hideReadOnlyForm = function() {
+//     if($('#roAvyFormDialog').is(':visible')) {
+//         $('#roAvyFormCommentsRow').hide();
+//         $('#roAvyFormImageList').empty();
+//         $('#roAvyFormImageRow').hide();
+//         $('#roAvyFormDialog').dialog('close');
+// 	}
+// }
 
 AvyForm.prototype.displayReadWriteForm = function(a) {
     if (!a) { // new report case

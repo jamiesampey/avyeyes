@@ -18,12 +18,12 @@ require.config({
 requirejs(["jquery", "avyeyes-view", "facebook", "twitter"], function($, AvyEyesView) {
     $(document).ready(function() { if (!avyEyesView) avyEyesView = new AvyEyesView(true); });
 }, function(err) {
-    var failedModule = err.requireModules[0];
-    if ((failedModule === "facebook" || failedModule === "twitter") && !avyEyesView) {
-        requirejs.undef("facebook");
-        requirejs.undef("twitter");
-        requirejs(["jquery", "avyeyes-view"], function($, AvyEyesView) {
-            $(document).ready(function() { if (!avyEyesView) avyEyesView = new AvyEyesView(false); });
-        });
-    }
+    // var failedModule = err.requireModules[0];
+    // if ((failedModule === "facebook" || failedModule === "twitter") && !avyEyesView) {
+    //     requirejs.undef("facebook");
+    //     requirejs.undef("twitter");
+    //     requirejs(["jquery", "avyeyes-view"], function($, AvyEyesView) {
+    //         $(document).ready(function() { if (!avyEyesView) avyEyesView = new AvyEyesView(false); });
+    //     });
+    // }
 });
