@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -22,11 +23,12 @@ class SocialMenu extends React.Component {
 
     this.openFacebookDialog = this.openFacebookDialog.bind(this);
     this.openTwitterDialog = this.openTwitterDialog.bind(this);
-    this.copyLink = this.copyLink.bind(this);
   }
 
   openFacebookDialog() {
     let { avalanche, s3Bucket, closeCallback } = this.props;
+
+    closeCallback();
 
     FB.ui({
       method: 'share_open_graph',
@@ -42,12 +44,12 @@ class SocialMenu extends React.Component {
         }
       })
     });
-
-    closeCallback();
   }
 
   openTwitterDialog() {
     let { avalanche, closeCallback } = this.props;
+
+    closeCallback();
 
     let shareURL = "http://twitter.com/share?";
 
@@ -63,26 +65,10 @@ class SocialMenu extends React.Component {
     let top = (window.screen.height / 2) - ((height / 2) + 50);
 
     window.open(shareURL, '', `left=${left},top=${top},width=${width},height=${height},menubar=0,toolbar=0,scrollbars=0,location=0,directories=0,resizable=0`);
-
-    closeCallback();
-  }
-
-  copyLink() {
-    console.info("copyLink fires");
-    let { avalanche, closeCallback } = this.props;
-
-    const textArea = document.createElement('textarea');
-    textArea.value = avalanche.extUrl;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-
-    closeCallback();
   }
 
   render() {
-    const {classes, anchorEl, closeCallback} = this.props;
+    const {classes, anchorEl, avalanche, closeCallback} = this.props;
 
     return (
       <div>
@@ -105,12 +91,14 @@ class SocialMenu extends React.Component {
             </SvgIcon>
             <ListItemText inset primary="Twitter"/>
           </MenuItem>
-          <MenuItem onClick={this.copyLink}>
-            <ListItemIcon>
-              <LinkIcon className={classes.shareIcon}/>
-            </ListItemIcon>
-            <ListItemText inset primary="Copy Link"/>
-          </MenuItem>
+          <CopyToClipboard text={avalanche.extUrl}>
+            <MenuItem onClick={closeCallback}>
+              <ListItemIcon>
+                <LinkIcon className={classes.shareIcon}/>
+              </ListItemIcon>
+              <ListItemText inset primary="Copy Link"/>
+            </MenuItem>
+          </CopyToClipboard>
         </Menu>
       </div>
     );
