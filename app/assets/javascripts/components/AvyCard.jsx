@@ -279,7 +279,7 @@ class AvyCard extends React.Component {
                       </ListItemIcon>
                       <ListItemText disableTypography>
                         <Typography paragraph>
-                          {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation} meters ({metersToFeet(avalanche.slope.elevation)} ft)
+                          {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation.toLocaleString()} meters ({metersToFeet(avalanche.slope.elevation).toLocaleString()} ft)
                         </Typography>
                       </ListItemText>
                     </ListItem>
