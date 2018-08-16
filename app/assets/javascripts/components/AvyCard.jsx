@@ -17,6 +17,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import ImagesIcon from '@material-ui/icons/Collections';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LandscapeIcon from '@material-ui/icons/Landscape';
+import CloudIcon from '@material-ui/icons/FilterDrama';
 import ViewListIcon from "@material-ui/icons/ViewList";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 import PersonIcon from "@material-ui/icons/Person";
@@ -32,7 +33,14 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 
-import {parseApiDateString, labelForDataCode, compositeLabelForDataCode, metersToFeet, constructImageUrl} from "../Util";
+import {
+  notSpecified,
+  parseApiDateString,
+  labelForDataCode,
+  compositeLabelForDataCode,
+  metersToFeet,
+  constructImageUrl
+} from "../Util";
 
 const styles = theme => ({
   dialog: {
@@ -106,6 +114,7 @@ class AvyCard extends React.Component {
 
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.weatherDesc = this.weatherDesc.bind(this);
     this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
     this.renderSocialMenu = this.renderSocialMenu.bind(this);
@@ -165,6 +174,24 @@ class AvyCard extends React.Component {
     if (!text || text.length === 0) return <i>no description</i>;
     let words = text.split(' ');
     return words.length <= introWordCount ? text : `${words.slice(0, introWordCount).join(' ')}...`;
+  }
+
+  weatherDesc(weather) {
+    let { windSpeed, direction } = this.props.clientData.codes;
+    let desc = '';
+    const Empty = 'empty';
+
+    if (weather.recentSnow !== -1) {
+      desc += `${weather.recentSnow} cm of new snow`;
+    }
+
+    if (weather.recentWindSpeed !== Empty) {
+      if (desc.length > 0) desc += ' and ';
+      desc += `"${labelForDataCode(windSpeed, weather.recentWindSpeed)}" winds`;
+      if (weather.recentWindDirection !== Empty) desc += ` from the ${labelForDataCode(direction, weather.recentWindDirection)}`;
+    }
+
+    return desc.length > 0 ? desc : notSpecified;
   }
 
   toggleExpanded() {
@@ -311,6 +338,16 @@ class AvyCard extends React.Component {
                           </TableRow>
                         </TableBody>
                       </Table>
+                    </ListItem>
+                    <ListItem disableGutters>
+                      <ListItemIcon>
+                        <CloudIcon/>
+                      </ListItemIcon>
+                      <ListItemText disableTypography>
+                        <Typography paragraph>
+                          {this.weatherDesc(avalanche.weather)}
+                        </Typography>
+                      </ListItemText>
                     </ListItem>
                     <ListItem disableGutters>
                       <ListItemIcon>

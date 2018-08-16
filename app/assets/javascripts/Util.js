@@ -3,6 +3,7 @@ import React from "react";
 const NotSpecified = <i>not specified</i>;
 
 module.exports = {
+  notSpecified: NotSpecified,
 
   getRequestParam: paramName => {
     paramName = paramName.replace(/[\[\]]/g, "\\$&");
