@@ -141,7 +141,7 @@ class AvyEyesClient extends React.Component {
     }(document, 'script', 'facebook-jssdk'));
   }
 
-  filterAvalanches() {
+  filterAvalanches(params) {
     let boundingBox = [];
     try {
       boundingBox = this.controller.getBoundingBox();
@@ -149,15 +149,20 @@ class AvyEyesClient extends React.Component {
       return;
     }
 
-    let searchQueryString = "/api/avalanche/search?latMax=" + boundingBox[0] + "&latMin=" + boundingBox[1] + "&lngMax=" + boundingBox[2] + "&lngMin=" + boundingBox[3]
-      + "&camAlt=" + this.viewer.camera.positionCartographic.height
-      + "&camLng=" + Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)
-      + "&camLat=" + Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude);
-      // TODO get avalanche filter fields working once the filter form is setup
-      // + "&fromDate=" + $("#avyFilterFromDate").val() + "&toDate=" + $("#avyFilterToDate").val()
+    // TODO get avalanche filter fields working once the filter form is setup
+    let searchQueryString = `/api/avalanche/search?latMax=${boundingBox[0]}&latMin=${boundingBox[1]}&lngMax=${boundingBox[2]}&lngMin=${boundingBox[3]} \
+      &camAlt=${this.viewer.camera.positionCartographic.height} \
+      &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
+      &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
+
+    if (params) {
+      if (params.fromDate) searchQueryString += `&fromDate=${params.fromDate}`;
+      if (params.toDate) searchQueryString += `&toDate=${params.toDate}`;
+
       // + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
       // + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
       // + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val();
+    }
 
     fetch(searchQueryString)
       .then(response => {
@@ -191,7 +196,7 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
-        <MenuDrawer menuPanel={this.state.currentMenuPanel} changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }} />
+        <MenuDrawer menuPanel={this.state.currentMenuPanel} changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }} filter={this.filterAvalanches} />
         <MenuButton menuToggle={() => { this.setState({currentMenuPanel: FilterMenuPanel}) }} />
         <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
         <EyeAltitude viewer={this.viewer} />

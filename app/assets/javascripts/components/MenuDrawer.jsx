@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -10,6 +9,7 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import Typography from "@material-ui/core/Typography";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FilterForm from "./FilterForm";
 import { FilterMenuPanel, ReportMenuPanel, HelpMenuPanel } from "../Constants";
 
 const drawerWidth = 300;
@@ -47,7 +47,7 @@ class MenuDrawer extends React.Component {
   }
 
   render() {
-    const {classes, menuPanel, changeMenuPanel} = this.props;
+    const {classes, menuPanel, changeMenuPanel, filter} = this.props;
 
     return (
       <div className={classes.root}>
@@ -55,28 +55,26 @@ class MenuDrawer extends React.Component {
           variant="temporary"
           anchor="left"
           open={Boolean(menuPanel)}
-          ModalProps={{onBackdropClick: (event) => changeMenuPanel(null)}}
+          ModalProps={{onBackdropClick: () => changeMenuPanel(null)}}
           classes={{
             paper: classes.drawerPaper,
           }}
         >
           <div className={classes.drawerAppTitle}>
             AvyEyes
-            <IconButton className={classes.closeMenuButton} onClick={(event) => changeMenuPanel(null)}>
+            <IconButton className={classes.closeMenuButton} onClick={() => changeMenuPanel(null)}>
               <ChevronLeftIcon/>
             </IconButton>
           </div>
-          <ExpansionPanel expanded={menuPanel === FilterMenuPanel} onClick={(event) => changeMenuPanel(FilterMenuPanel)}>
+          <ExpansionPanel expanded={menuPanel === FilterMenuPanel} onClick={() => changeMenuPanel(FilterMenuPanel)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
               <Typography className={classes.drawerSectionHeading}>Avalanche Filter</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <Typography>
-                a bunch of filter controls
-              </Typography>
+              <FilterForm filterAvalanches={filter} />
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel expanded={menuPanel === ReportMenuPanel} onClick={(event) => changeMenuPanel(ReportMenuPanel)}>
+          <ExpansionPanel expanded={menuPanel === ReportMenuPanel} onClick={() => changeMenuPanel(ReportMenuPanel)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
               <Typography className={classes.drawerSectionHeading}>Report an Avalanche</Typography>
             </ExpansionPanelSummary>
@@ -86,7 +84,7 @@ class MenuDrawer extends React.Component {
               </Typography>
             </ExpansionPanelDetails>
           </ExpansionPanel>
-          <ExpansionPanel expanded={menuPanel === HelpMenuPanel} onClick={(event) => changeMenuPanel(HelpMenuPanel)}>
+          <ExpansionPanel expanded={menuPanel === HelpMenuPanel} onClick={() => changeMenuPanel(HelpMenuPanel)}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
               <Typography className={classes.drawerSectionHeading}>AvyEyes Help</Typography>
             </ExpansionPanelSummary>
