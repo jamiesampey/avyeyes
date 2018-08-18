@@ -12,11 +12,13 @@ const styles = theme => ({
     right: 10,
   },
   button: {
+    color: 'white',
     background: 'red',
     margin: theme.spacing.unit,
   },
   addIcon: {
     color: 'white',
+    marginRight: theme.spacing.unit,
   },
 });
 
@@ -25,13 +27,12 @@ const ReportButton = props => {
   return (
     <div className={classes.root}>
       <Button
-        variant="fab"
-        mini={true}
+        variant="extendedFab"
         onClick={startReport}
         className={classes.button}
       >
         <AddIcon className={classes.addIcon} />
-        Report Avalanche
+        New Avalanche
       </Button>
     </div>
   );
