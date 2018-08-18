@@ -14,7 +14,7 @@ const Config = {
     },
     animation: false,
     baseLayerPicker: false,
-    fullscreenButton: true,
+    fullscreenButton: false,
     geocoder: false,
     homeButton: false,
     infoBox: false,

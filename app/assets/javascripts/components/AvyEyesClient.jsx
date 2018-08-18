@@ -5,6 +5,7 @@ import Cesium from 'cesium/Cesium';
 import Config from '../Config';
 import MenuButton from "./MenuButton";
 import MenuDrawer from "./MenuDrawer";
+import ReportButton from "./ReportButton";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
@@ -15,7 +16,7 @@ import '../../stylesheets/AvyEyesClient.scss';
 
 import CesiumController from "../CesiumController";
 import { getRequestParam, parseApiResponse } from "../Util";
-
+import { FilterMenuPanel, ReportMenuPanel } from "../Constants";
 
 const styles = theme => ({
   root: {
@@ -37,7 +38,6 @@ class AvyEyesClient extends React.Component {
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
     this.filterAvalanches = this.filterAvalanches.bind(this);
-    this.toggleMenu = this.toggleMenu.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
     this.renderAvyCard = this.renderAvyCard.bind(this);
 
@@ -98,7 +98,7 @@ class AvyEyesClient extends React.Component {
     this.loadFacebookAPI();
 
     this.state = {
-      menuOpen: false,
+      currentMenuPanel: FilterMenuPanel,
       currentAvalanche: null,
     };
   }
@@ -171,10 +171,6 @@ class AvyEyesClient extends React.Component {
       });
   }
 
-  toggleMenu() {
-    this.setState(prevState => ({menuOpen: !prevState.menuOpen}));
-  }
-
   setCursorStyle(style) {
     this.cesiumContainer.style.cursor = style;
   }
@@ -191,13 +187,13 @@ class AvyEyesClient extends React.Component {
   }
 
   render() {
-    const { classes, theme } = this.props;
-    const { menuOpen } = this.state;
+    const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <MenuDrawer showDrawer={menuOpen} menuToggle={this.toggleMenu} />
-        <MenuButton menuToggle={this.toggleMenu} />
+        <MenuDrawer menuPanel={this.state.currentMenuPanel} changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }} />
+        <MenuButton menuToggle={() => { this.setState({currentMenuPanel: FilterMenuPanel}) }} />
+        <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
         <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
