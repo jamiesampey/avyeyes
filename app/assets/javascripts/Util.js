@@ -24,10 +24,10 @@ module.exports = {
 
   /**
    * parse a date string in the form MM-dd-yyyy to a string in the format "day, Month date, year"
-   * e.g. "04-12-2017" parses to "Wednesday, April 12, 2017"
+   * e.g. "2017-04-12" parses to "Wednesday, April 12, 2017"
    */
   parseApiDateString: (dateString) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { timeZone: 'UTC', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   },
 

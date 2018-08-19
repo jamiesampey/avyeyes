@@ -12,24 +12,24 @@ class AvalancheDaoFilterSelectTest extends DatabaseTest {
   implicit val subject = injector.instanceOf[AvalancheDao]
 
   "Date filtering" should {
-    val jan1Avalanche = genAvalanche.generate.copy(viewable = true, date = strToDate("01-01-2014"))
-    val jan5Avalanche = genAvalanche.generate.copy(viewable = true, date = strToDate("01-05-2014"))
+    val jan1Avalanche = genAvalanche.generate.copy(viewable = true, date = strToDate("2014-01-01"))
+    val jan5Avalanche = genAvalanche.generate.copy(viewable = true, date = strToDate("2014-01-05"))
 
     "from date filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(jan1Avalanche, jan5Avalanche)
-      val fromDateQuery = AvalancheSpatialQuery(fromDate = Some(strToDate("01-03-2014")))
+      val fromDateQuery = AvalancheSpatialQuery(fromDate = Some(strToDate("2014-01-03")))
       verifySingleResult(fromDateQuery, jan5Avalanche.extId)
     }
 
     "to date filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(jan1Avalanche, jan5Avalanche)
-      val toDateQuery = AvalancheSpatialQuery(toDate = Some(strToDate("01-03-2014")))
+      val toDateQuery = AvalancheSpatialQuery(toDate = Some(strToDate("2014-01-03")))
       verifySingleResult(toDateQuery, jan1Avalanche.extId)
     }
 
     "date filtering spanning year boundary" in new WithApplication(appBuilder.build) {
       insertAvalanches(jan1Avalanche, jan5Avalanche)
-      val dateQuery = AvalancheSpatialQuery(fromDate = Some(strToDate("12-25-2013")), toDate = Some(strToDate("01-04-2014")))
+      val dateQuery = AvalancheSpatialQuery(fromDate = Some(strToDate("2013-12-25")), toDate = Some(strToDate("2014-01-04")))
       verifySingleResult(dateQuery, jan1Avalanche.extId)
     }
   }

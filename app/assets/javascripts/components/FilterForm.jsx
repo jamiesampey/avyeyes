@@ -25,12 +25,6 @@ class FilterForm extends React.Component {
     };
   }
 
-  static dateToString(date) {
-    let month = date.getMonth() < 9 ? `0${date.getMonth()+1}` : (date.getMonth()+1).toString();
-    let day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate().toString();
-    return `${date.getFullYear()}-${month}-${day}`;
-  };
-
   render() {
     const { classes, filterAvalanches } = this.props;
 
@@ -40,16 +34,20 @@ class FilterForm extends React.Component {
           id="fromDate"
           label="From"
           type="date"
-          defaultValue="1970-01-01"
           className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
           onChange={e => { this.setState({fromDate: e.target.value}, () => filterAvalanches(this.state)) }}
         />
         <TextField
           id="toDate"
           label="To"
           type="date"
-          defaultValue={FilterForm.dateToString(new Date())}
           className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
           onChange={e => { this.setState({toDate: e.target.value}, () => filterAvalanches(this.state)) }}
         />
       </form>
