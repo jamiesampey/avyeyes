@@ -155,16 +155,17 @@ class AvyEyesClient extends React.Component {
       &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
       &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
 
+    //console.info(`calling spatial search. params is ${JSON.stringify(params)}`);
+
     if (params) {
       if (params.fromDate) searchQueryString += `&fromDate=${params.fromDate}`;
       if (params.toDate) searchQueryString += `&toDate=${params.toDate}`;
 
       // + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
       // + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
-      // + "&numCaught=" + $("#avyFilterNumCaught").val() + "&numKilled=" + $("#avyFilterNumKilled").val();
     }
 
-    fetch(searchQueryString)
+    fetch(encodeURI(searchQueryString))
       .then(response => {
         return parseApiResponse(response);
       })

@@ -42,7 +42,7 @@ class FilterForm extends React.Component {
           type="date"
           defaultValue="1970-01-01"
           className={classes.textField}
-          onChange={e => { this.setState({fromDate: e.target.value}, filterAvalanches(this.state)) }}
+          onChange={e => { this.setState({fromDate: e.target.value}, () => filterAvalanches(this.state)) }}
         />
         <TextField
           id="toDate"
@@ -50,7 +50,7 @@ class FilterForm extends React.Component {
           type="date"
           defaultValue={FilterForm.dateToString(new Date())}
           className={classes.textField}
-          onChange={e => { this.setState({toDate: e.target.value}, filterAvalanches(this.state)) }}
+          onChange={e => { this.setState({toDate: e.target.value}, () => filterAvalanches(this.state)) }}
         />
       </form>
     )
