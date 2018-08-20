@@ -26,7 +26,7 @@ function AvyForm(avyEyesView, mockS3Promise) {
     }.bind(this));
 }
 
-AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
+// AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	// $("#roAvyFormTitle").text(a.title);
 	// $("#roAvyFormSubmitterExp").text(this.expLevelFromCode(a.submitterExp).label);
 
@@ -67,20 +67,20 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	// $("#roAvyFormAspect").text(directionFromCode(a.slope.aspect).label);
 	// $("#roAvyFormAngle").text(a.slope.angle);
 
- 	setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
-
-   	var recentWindSpeedEnumObj = windSpeedFromCode(a.weather.recentWindSpeed);
-   	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", recentWindSpeedEnumObj);
-   	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection);
-
-    if (recentWindSpeedEnumObj.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
-        $("#roAvyFormRecentWindDirectionText").hide();
-        $("#roAvyFormRecentWindDirection").hide();
-    } else {
-        $("#roAvyFormRecentWindDirection").text(recentWindDirectionEnumObj.label);
-        $("#roAvyFormRecentWindDirectionText").show();
-        $("#roAvyFormRecentWindDirection").show();
-    }
+ 	// setReadOnlySpinnerVal("#roAvyFormRecentSnow", a.weather.recentSnow, "cm");
+   //
+   // 	var recentWindSpeedEnumObj = windSpeedFromCode(a.weather.recentWindSpeed);
+   // 	setReadOnlyAutoCompleteVal("#roAvyFormRecentWindSpeed", recentWindSpeedEnumObj);
+   // 	var recentWindDirectionEnumObj = directionFromCode(a.weather.recentWindDirection);
+   //
+   //  if (recentWindSpeedEnumObj.value == 'empty' || recentWindDirectionEnumObj.value == 'empty') {
+   //      $("#roAvyFormRecentWindDirectionText").hide();
+   //      $("#roAvyFormRecentWindDirection").hide();
+   //  } else {
+   //      $("#roAvyFormRecentWindDirection").text(recentWindDirectionEnumObj.label);
+   //      $("#roAvyFormRecentWindDirectionText").show();
+   //      $("#roAvyFormRecentWindDirection").show();
+   //  }
 
 	// setReadOnlyAutoCompleteVal("#roAvyFormType", avyTypeFromCode(a.classification.avyType));
 	// setReadOnlyAutoCompleteVal("#roAvyFormTrigger", avyTriggerFromCode(a.classification.trigger));
@@ -89,16 +89,16 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	// setReadOnlySliderVal("#roAvyFormRSize", a.classification.rSize);
 	// setReadOnlySliderVal("#roAvyFormDSize", a.classification.dSize);
 
-	setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
-	setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
-	setReadOnlySpinnerVal("#roAvyFormNumFullyBuried", a.humanNumbers.fullyBuried);
-	setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
-	setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
-
-	setReadOnlyAutoCompleteVal("#roAvyFormModeOfTravel", modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
-
-    var showComments = a.comments.length > 0;
-    var showImages = a.images.length > 0;
+	// setReadOnlySpinnerVal("#roAvyFormNumCaught", a.humanNumbers.caught);
+	// setReadOnlySpinnerVal("#roAvyFormNumPartiallyBuried", a.humanNumbers.partiallyBuried);
+	// setReadOnlySpinnerVal("#roAvyFormNumFullyBuried", a.humanNumbers.fullyBuried);
+	// setReadOnlySpinnerVal("#roAvyFormNumInjured", a.humanNumbers.injured);
+	// setReadOnlySpinnerVal("#roAvyFormNumKilled", a.humanNumbers.killed);
+  //
+	// setReadOnlyAutoCompleteVal("#roAvyFormModeOfTravel", modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
+  //
+  //   var showComments = a.comments.length > 0;
+  //   var showImages = a.images.length > 0;
 
 	// if (showComments) {
 	// 	$("#roAvyFormCommentsRow").show();
@@ -144,7 +144,7 @@ AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
     //     of: $.Event("click", {pageX: mousePos.x, pageY: mousePos.y}),
     //     collision: "fit"
     // });
-}
+// }
 
 // AvyForm.prototype.hideReadOnlyForm = function() {
 //     if($('#roAvyFormDialog').is(':visible')) {

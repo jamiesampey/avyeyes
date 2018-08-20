@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import ImageLightbox from './ImageLightbox';
 import SocialMenu from "./SocialMenu";
 import Card from '@material-ui/core/Card';
@@ -292,7 +292,7 @@ class AvyCard extends React.Component {
                 <Button size="small" color="primary" className={classes.moreInfoButton} onClick={this.toggleExpanded}>
                   {this.state.expanded ? "Less Info" : "More Info"}
                   <ExpandMoreIcon
-                    className={classnames(classes.expand, { [classes.expandedIcon]: this.state.expanded, })}
+                    className={classNames(classes.expand, { [classes.expandedIcon]: this.state.expanded, })}
                   />
                 </Button>
               </CardActions>

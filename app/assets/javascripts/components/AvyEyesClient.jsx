@@ -149,7 +149,6 @@ class AvyEyesClient extends React.Component {
       return;
     }
 
-    // TODO get avalanche filter fields working once the filter form is setup
     let searchQueryString = `/api/avalanche/search?latMax=${boundingBox[0]}&latMin=${boundingBox[1]}&lngMax=${boundingBox[2]}&lngMin=${boundingBox[3]} \
       &camAlt=${this.viewer.camera.positionCartographic.height} \
       &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
@@ -160,9 +159,11 @@ class AvyEyesClient extends React.Component {
     if (params) {
       if (params.fromDate) searchQueryString += `&fromDate=${params.fromDate}`;
       if (params.toDate) searchQueryString += `&toDate=${params.toDate}`;
-
-      // + "&avyType=" + $("#avyFilterType").val() + "&trigger=" + $("#avyFilterTrigger").val() + "&interface=" + $("#avyFilterInterface").val()
-      // + "&rSize=" + $("#avyFilterRsizeValue").val() + "&dSize=" + $("#avyFilterDsizeValue").val()
+      if (params.avyType) searchQueryString += `&avyType=${params.avyType}`;
+      if (params.trigger) searchQueryString += `&trigger=${params.trigger}`;
+      if (params.interface) searchQueryString += `&interface=${params.interface}`;
+      if (params.rSize) searchQueryString += `&rSize=${params.rSize}`;
+      if (params.dSize) searchQueryString += `&dSize=${params.dSize}`;
     }
 
     fetch(encodeURI(searchQueryString))
@@ -197,12 +198,25 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
-        <MenuDrawer menuPanel={this.state.currentMenuPanel} changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }} filter={this.filterAvalanches} />
         <MenuButton menuToggle={() => { this.setState({currentMenuPanel: FilterMenuPanel}) }} />
         <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
-        <MouseBee viewer={this.viewer} eventHandler={this.eventHandler} cursorStyle={this.cesiumContainer.style.cursor} setCursorStyle={this.setCursorStyle} />
+
+        <MenuDrawer
+          menuPanel={this.state.currentMenuPanel}
+          changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }}
+          clientData={this.state.clientData}
+          filter={this.filterAvalanches}
+        />
+
+        <MouseBee
+          viewer={this.viewer}
+          eventHandler={this.eventHandler}
+          cursorStyle={this.cesiumContainer.style.cursor}
+          setCursorStyle={this.setCursorStyle}
+        />
+
         {this.state.currentAvalanche && this.renderAvyCard()}
       </div>
     );

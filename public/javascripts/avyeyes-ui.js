@@ -22,56 +22,56 @@ function AvyEyesUI(view) {
 // }
 
 function wireMainMenu(view) {
-    $('#aeControlsMenu').menu().position({
-        my: 'left top',
-        at: 'right top',
-        of: $('#aeControlsMenuButtonContainer'),
-        collision: 'none none'
-    });
-
-    var menuBlurTimer;
-
-    $('#aeControlsMenu').on('menufocus', function() {
-        clearTimeout(menuBlurTimer);
-    });
-
-    $('#aeControlsMenu').on('menublur', function() {
-        menuBlurTimer = setTimeout(function() {
-            $('#aeControlsMenu').hide('slide', 400);
-        }, 200);
-    });
-
-    $('#aeControlsMenu').on('menuselect', function(){
-        $('#aeControlsMenu').hide('slide', 400);
-    });
-
-    $('#aeControlsMenu').hide();
-
-    $('#aeControlsMenuButton').click(function(){
-        $('#aeControlsMenu').show('slide', 400);
-        menuBlurTimer = setTimeout(function() {
-            $('#aeControlsMenu').hide('slide', 400);
-        }, 4000);
-    });
-
-    $('#reportMenuItem').parent("li").click(function(e){
-        e.preventDefault();
-        view.doReport();
-    });
-
-    $('#filterMenuItem').parent("li").click(function(e){
-        e.preventDefault();
-        view.showControls();
-    });
-
-    $('#aboutMenuItem').parent("li").click(function(e){
-        e.preventDefault();
-        view.showHelp(2);
-    });
-
-    $('#howItWorks').click(function(){
-        view.showHelp(0);
-    });
+    // $('#aeControlsMenu').menu().position({
+    //     my: 'left top',
+    //     at: 'right top',
+    //     of: $('#aeControlsMenuButtonContainer'),
+    //     collision: 'none none'
+    // });
+    //
+    // var menuBlurTimer;
+    //
+    // $('#aeControlsMenu').on('menufocus', function() {
+    //     clearTimeout(menuBlurTimer);
+    // });
+    //
+    // $('#aeControlsMenu').on('menublur', function() {
+    //     menuBlurTimer = setTimeout(function() {
+    //         $('#aeControlsMenu').hide('slide', 400);
+    //     }, 200);
+    // });
+    //
+    // $('#aeControlsMenu').on('menuselect', function(){
+    //     $('#aeControlsMenu').hide('slide', 400);
+    // });
+    //
+    // $('#aeControlsMenu').hide();
+    //
+    // $('#aeControlsMenuButton').click(function(){
+    //     $('#aeControlsMenu').show('slide', 400);
+    //     menuBlurTimer = setTimeout(function() {
+    //         $('#aeControlsMenu').hide('slide', 400);
+    //     }, 4000);
+    // });
+    //
+    // $('#reportMenuItem').parent("li").click(function(e){
+    //     e.preventDefault();
+    //     view.doReport();
+    // });
+    //
+    // $('#filterMenuItem').parent("li").click(function(e){
+    //     e.preventDefault();
+    //     view.showControls();
+    // });
+    //
+    // $('#aboutMenuItem').parent("li").click(function(e){
+    //     e.preventDefault();
+    //     view.showHelp(2);
+    // });
+    //
+    // $('#howItWorks').click(function(){
+    //     view.showHelp(0);
+    // });
 
     $('#helpOverlayText').tabs();
 
@@ -169,17 +169,17 @@ function wireAutoCompletes(view) {
     });
 }
 
-function wireDatePickers() {
-    $('.avyDate').datepicker({
-        dateFormat: "mm-dd-yy",
-        constrainInput: true,
-        changeMonth: true,
-        stepMonths: 1,
-        changeYear: true,
-        maxDate: 0,
-        yearRange: "1970:+0"
-    });
-}
+// function wireDatePickers() {
+//     $('.avyDate').datepicker({
+//         dateFormat: "mm-dd-yy",
+//         constrainInput: true,
+//         changeMonth: true,
+//         stepMonths: 1,
+//         changeYear: true,
+//         maxDate: 0,
+//         yearRange: "1970:+0"
+//     });
+// }
 
 function wireSliders() {
     $('.avyRSlider').slider({
@@ -233,13 +233,13 @@ function wireSpinners() {
 }
 
 function wireButtons(view) {
-    $("#northButton").click(function() {
-        var camPos = view.cesiumViewer.camera.positionCartographic;
-        var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
-        view.flyTo(target, 0.0, -89.9, 500000);
-    });
-
-	$('.avyButton').button();
+  //   $("#northButton").click(function() {
+  //       var camPos = view.cesiumViewer.camera.positionCartographic;
+  //       var target = view.targetEntityFromCoords(Cesium.Math.toDegrees(camPos.longitude), Cesium.Math.toDegrees(camPos.latitude), false);
+  //       view.flyTo(target, 0.0, -89.9, 500000);
+  //   });
+  //
+	// $('.avyButton').button();
 
 	// $('#avyFilterButton').click(function() {
   //       var boundingBox = view.getBoundingBox();
