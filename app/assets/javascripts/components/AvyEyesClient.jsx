@@ -100,6 +100,15 @@ class AvyEyesClient extends React.Component {
     this.state = {
       currentMenuPanel: FilterMenuPanel,
       currentAvalanche: null,
+      avalancheFilter: {
+        fromDate: '',
+        toDate: '',
+        avyType: '',
+        trigger: '',
+        interface: '',
+        rSize: '',
+        dSize: '',
+      }
     };
   }
 
@@ -141,7 +150,7 @@ class AvyEyesClient extends React.Component {
     }(document, 'script', 'facebook-jssdk'));
   }
 
-  filterAvalanches(params) {
+  filterAvalanches(filter) {
     let boundingBox = [];
     try {
       boundingBox = this.controller.getBoundingBox();
@@ -154,19 +163,21 @@ class AvyEyesClient extends React.Component {
       &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
       &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
 
-    //console.info(`calling spatial search. params is ${JSON.stringify(params)}`);
+    //console.info(`calling spatial search. filter is ${JSON.stringify(filter)}`);
 
-    if (params) {
-      if (params.fromDate) searchQueryString += `&fromDate=${params.fromDate}`;
-      if (params.toDate) searchQueryString += `&toDate=${params.toDate}`;
-      if (params.avyType) searchQueryString += `&avyType=${params.avyType}`;
-      if (params.trigger) searchQueryString += `&trigger=${params.trigger}`;
-      if (params.interface) searchQueryString += `&interface=${params.interface}`;
-      if (params.rSize) searchQueryString += `&rSize=${params.rSize}`;
-      if (params.dSize) searchQueryString += `&dSize=${params.dSize}`;
+    if (filter) {
+      if (filter.fromDate) searchQueryString += `&fromDate=${filter.fromDate}`;
+      if (filter.toDate) searchQueryString += `&toDate=${filter.toDate}`;
+      if (filter.avyType) searchQueryString += `&avyType=${filter.avyType}`;
+      if (filter.trigger) searchQueryString += `&trigger=${filter.trigger}`;
+      if (filter.interface) searchQueryString += `&interface=${filter.interface}`;
+      if (filter.rSize) searchQueryString += `&rSize=${filter.rSize}`;
+      if (filter.dSize) searchQueryString += `&dSize=${filter.dSize}`;
+
+      this.setState({avalancheFilter: filter});
     }
 
-    fetch(encodeURI(searchQueryString))
+    fetch(searchQueryString)
       .then(response => {
         return parseApiResponse(response);
       })
@@ -207,7 +218,8 @@ class AvyEyesClient extends React.Component {
           menuPanel={this.state.currentMenuPanel}
           changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }}
           clientData={this.state.clientData}
-          filter={this.filterAvalanches}
+          filter={this.state.avalancheFilter}
+          applyFilter={this.filterAvalanches}
         />
 
         <MouseBee

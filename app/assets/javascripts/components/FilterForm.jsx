@@ -20,15 +20,7 @@ class FilterForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      fromDate: '',
-      toDate: '',
-      avyType: '',
-      trigger: '',
-      interface: '',
-      rSize: '',
-      dSize: '',
-    };
+    this.applyFilterToView = this.applyFilterToView.bind(this);
   }
 
   static dataCodeMenuItems(dataCodes) {
@@ -38,10 +30,18 @@ class FilterForm extends React.Component {
     ));
   }
 
-  render() {
-    const { classes, clientData, filterAvalanches } = this.props;
+  applyFilterToView(field, value) {
+    let { filter, applyFilter } = this.props;
+    filter[field] = value;
+    applyFilter(filter);
+  }
 
-    if (typeof clientData === 'undefined') return null;
+  render() {
+    const { classes, clientData, filter } = this.props;
+
+    if (typeof clientData === 'undefined' || typeof filter === 'undefined') return null;
+
+    //console.info(`client.filter is ${JSON.stringify(filter)}`);
 
     return (
       <form className={classes.root} noValidate>
@@ -49,28 +49,30 @@ class FilterForm extends React.Component {
           id="fromDate"
           label="From"
           type="date"
+          value={filter.fromDate}
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
-          onChange={e => { this.setState({fromDate: e.target.value}, () => filterAvalanches(this.state)) }}
+          onChange={e => { this.applyFilterToView('fromDate', e.target.value) }}
         />
         <TextField
           id="toDate"
           label="To"
           type="date"
           className={classes.textField}
+          value={filter.toDate}
           InputLabelProps={{
             shrink: true,
           }}
-          onChange={e => { this.setState({toDate: e.target.value}, () => filterAvalanches(this.state)) }}
+          onChange={e => { this.applyFilterToView('toDate', e.target.value) }}
         />
         <TextField
           select
           label="Avalanche Type"
-          value=''
+          value={filter.avyType}
           className={classNames(classes.margin, classes.textField)}
-          onChange={e => { this.setState({avyType: e.target.value}, () => filterAvalanches(this.state)) }}
+          onChange={e => { this.applyFilterToView('avyType', e.target.value) }}
           InputLabelProps={{
             shrink: true,
           }}
@@ -80,9 +82,9 @@ class FilterForm extends React.Component {
         <TextField
           select
           label="Avalanche Trigger"
-          value=''
+          value={filter.trigger}
           className={classNames(classes.margin, classes.textField)}
-          onChange={e => { this.setState({avyType: e.target.value}, () => filterAvalanches(this.state)) }}
+          onChange={e => { this.applyFilterToView('trigger', e.target.value) }}
           InputLabelProps={{
             shrink: true,
           }}
@@ -93,9 +95,9 @@ class FilterForm extends React.Component {
         <TextField
           select
           label="Avalanche Interface"
-          value=''
+          value={filter.interface}
           className={classNames(classes.margin, classes.textField)}
-          onChange={e => { this.setState({interface: e.target.value}, () => filterAvalanches(this.state)) }}
+          onChange={e => { this.applyFilterToView('interface', e.target.value) }}
           InputLabelProps={{
             shrink: true,
           }}
