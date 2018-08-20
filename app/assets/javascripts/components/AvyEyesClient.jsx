@@ -103,9 +103,9 @@ class AvyEyesClient extends React.Component {
       avalancheFilter: {
         fromDate: '',
         toDate: '',
-        avyType: '',
-        trigger: '',
-        interface: '',
+        avyType: [],
+        trigger: [],
+        interface: [],
         rSize: '',
         dSize: '',
       }
@@ -163,19 +163,19 @@ class AvyEyesClient extends React.Component {
       &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
       &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
 
-    //console.info(`calling spatial search. filter is ${JSON.stringify(filter)}`);
-
     if (filter) {
       if (filter.fromDate) searchQueryString += `&fromDate=${filter.fromDate}`;
       if (filter.toDate) searchQueryString += `&toDate=${filter.toDate}`;
-      if (filter.avyType) searchQueryString += `&avyType=${filter.avyType}`;
-      if (filter.trigger) searchQueryString += `&trigger=${filter.trigger}`;
-      if (filter.interface) searchQueryString += `&interface=${filter.interface}`;
+      if (filter.avyType.length > 0) searchQueryString += `&avyType=${filter.avyType.join(',')}`;
+      if (filter.trigger.length > 0) searchQueryString += `&trigger=${filter.trigger.join(',')}`;
+      if (filter.interface.length > 0) searchQueryString += `&interface=${filter.interface.join(',')}`;
       if (filter.rSize) searchQueryString += `&rSize=${filter.rSize}`;
       if (filter.dSize) searchQueryString += `&dSize=${filter.dSize}`;
 
       this.setState({avalancheFilter: filter});
     }
+
+    //console.info(`searchQueryString is ${searchQueryString}`);
 
     fetch(searchQueryString)
       .then(response => {
