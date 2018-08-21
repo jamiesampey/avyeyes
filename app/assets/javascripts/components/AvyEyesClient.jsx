@@ -103,9 +103,9 @@ class AvyEyesClient extends React.Component {
       avalancheFilter: {
         fromDate: '',
         toDate: '',
-        avyType: [],
-        trigger: [],
-        interface: [],
+        avyTypes: [],
+        triggers: [],
+        interfaces: [],
         rSize: '',
         dSize: '',
       }
@@ -150,7 +150,7 @@ class AvyEyesClient extends React.Component {
     }(document, 'script', 'facebook-jssdk'));
   }
 
-  filterAvalanches(filter) {
+  filterAvalanches(updatedFilter) {
     let boundingBox = [];
     try {
       boundingBox = this.controller.getBoundingBox();
@@ -163,19 +163,25 @@ class AvyEyesClient extends React.Component {
       &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
       &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
 
-    if (filter) {
-      if (filter.fromDate) searchQueryString += `&fromDate=${filter.fromDate}`;
-      if (filter.toDate) searchQueryString += `&toDate=${filter.toDate}`;
-      if (filter.avyType.length > 0) searchQueryString += `&avyType=${filter.avyType.join(',')}`;
-      if (filter.trigger.length > 0) searchQueryString += `&trigger=${filter.trigger.join(',')}`;
-      if (filter.interface.length > 0) searchQueryString += `&interface=${filter.interface.join(',')}`;
-      if (filter.rSize) searchQueryString += `&rSize=${filter.rSize}`;
-      if (filter.dSize) searchQueryString += `&dSize=${filter.dSize}`;
+    let appendFilter = (filter) => {
+      if (!filter) return;
+      if (filter.fromDate) searchQueryString += `&fromDate=${updatedFilter.fromDate}`;
+      if (filter.toDate) searchQueryString += `&toDate=${updatedFilter.toDate}`;
+      if (filter.avyTypes.length > 0) searchQueryString += `&avyTypes=${updatedFilter.avyTypes.join(',')}`;
+      if (filter.triggers.length > 0) searchQueryString += `&triggers=${updatedFilter.triggers.join(',')}`;
+      if (filter.interfaces.length > 0) searchQueryString += `&interfaces=${updatedFilter.interfaces.join(',')}`;
+      if (filter.rSize) searchQueryString += `&rSize=${updatedFilter.rSize}`;
+      if (filter.dSize) searchQueryString += `&dSize=${updatedFilter.dSize}`;
+    };
 
-      this.setState({avalancheFilter: filter});
+    if (updatedFilter) {
+      this.setState({avalancheFilter: updatedFilter});
+      appendFilter(updatedFilter);
+    } else {
+      appendFilter(this.state.avalancheFilter);
     }
 
-    //console.info(`searchQueryString is ${searchQueryString}`);
+    //console.info(`sending searchQueryString ${searchQueryString}`);
 
     fetch(searchQueryString)
       .then(response => {

@@ -29,13 +29,11 @@ object SpatialQueryBinder {
         geoBounds = geoBoundsOpt,
         fromDate = firstNonEmptyValue(params.get("fromDate")).map(strToDate),
         toDate = firstNonEmptyValue(params.get("toDate")).map(strToDate),
-        avyType = firstNonEmptyValue(params.get("avyType")).map(AvalancheType.fromCode),
-        trigger = firstNonEmptyValue(params.get("trigger")).map(AvalancheTrigger.fromCode),
-        interface = firstNonEmptyValue(params.get("interface")).map(AvalancheInterface.fromCode),
+        avyTypes = firstNonEmptyValue(params.get("avyTypes")).map(_.split(',').map(AvalancheType.fromCode)),
+        triggers = firstNonEmptyValue(params.get("triggers")).map(_.split(',').map(AvalancheTrigger.fromCode)),
+        interfaces = firstNonEmptyValue(params.get("interfaces")).map(_.split(',').map(AvalancheInterface.fromCode)),
         rSize = firstNonEmptyValue(params.get("rSize")).map(_.toDouble),
         dSize = firstNonEmptyValue(params.get("dSize")).map(_.toDouble),
-        numCaught = firstNonEmptyValue(params.get("numCaught")).map(_.toInt),
-        numKilled = firstNonEmptyValue(params.get("numKilled")).map(_.toInt),
         order = List((OrderField.Date, OrderDirection.desc))
       )
     } match {

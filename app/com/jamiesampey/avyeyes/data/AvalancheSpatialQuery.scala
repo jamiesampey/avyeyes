@@ -11,29 +11,25 @@ case class AvalancheSpatialQuery(
   geoBounds: Option[GeoBounds] = None,
   fromDate: Option[DateTime] = None,
   toDate: Option[DateTime] = None,
-  avyType: Option[AvalancheType] = None,
-  trigger: Option[AvalancheTrigger] = None,
-  interface: Option[AvalancheInterface] = None,
+  avyTypes: Option[Seq[AvalancheType]] = None,
+  triggers: Option[Seq[AvalancheTrigger]] = None,
+  interfaces: Option[Seq[AvalancheInterface]] = None,
   rSize: Option[Double] = None,
   dSize: Option[Double] = None,
-  numCaught: Option[Int] = None,
-  numKilled: Option[Int] = None,
   order: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.CreateTime, OrderDirection.desc)),
   offset: Int = 0,
   limit: Int = Int.MaxValue)
-  extends OrderedAvalancheQuery {
+extends OrderedAvalancheQuery {
 
   lazy val predicates = viewablePredicate(viewable) ::
     geoBoundsPredicate(geoBounds) ::
     fromDatePredicate(fromDate) ::
     toDatePredicate(toDate) ::
-    avyTypePredicate(avyType) ::
-    triggerPredicate(trigger) ::
-    interfacePredicate(interface) ::
+    avyTypesPredicate(avyTypes) ::
+    triggersPredicate(triggers) ::
+    interfacesPredicate(interfaces) ::
     rSizePredicate(rSize) ::
-    dSizePredicate(dSize) ::
-    caughtPredicate(numCaught) ::
-    killedPredicate(numKilled) :: Nil
+    dSizePredicate(dSize) :: Nil
 
   def toPredicate = predicates.collect({case Some(predicate) => predicate}) match {
     case definedPredicates if definedPredicates.nonEmpty => and(definedPredicates)

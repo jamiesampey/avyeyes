@@ -34,18 +34,18 @@ private[data] object AvalanchePredicates {
     case None => None
   }
 
-  def avyTypePredicate(valueOption: Option[AvalancheType]): Option[AvalanchePredicate] = valueOption match {
-    case Some(avyType) => Some(_.classification.avyType == avyType)
+  def avyTypesPredicate(valueOptions: Option[Seq[AvalancheType]]): Option[AvalanchePredicate] = valueOptions match {
+    case Some(avyTypes) => Some(a => avyTypes.contains(a.classification.avyType))
     case None => None
   }
 
-  def triggerPredicate(valueOption: Option[AvalancheTrigger]): Option[AvalanchePredicate] = valueOption match {
-    case Some(trigger) => Some(_.classification.trigger == trigger)
+  def triggersPredicate(valueOptions: Option[Seq[AvalancheTrigger]]): Option[AvalanchePredicate] = valueOptions match {
+    case Some(triggers) => Some(a => triggers.contains(a.classification.trigger))
     case None => None
   }
 
-  def interfacePredicate(valueOption: Option[AvalancheInterface]): Option[AvalanchePredicate] = valueOption match {
-    case Some(interface) => Some(_.classification.interface == interface)
+  def interfacesPredicate(valueOptions: Option[Seq[AvalancheInterface]]): Option[AvalanchePredicate] = valueOptions match {
+    case Some(interfaces) => Some(a => interfaces.contains(a.classification.interface))
     case None => None
   }
 
@@ -56,16 +56,6 @@ private[data] object AvalanchePredicates {
 
   def dSizePredicate(valueOption: Option[Double]): Option[AvalanchePredicate] = valueOption match {
     case Some(dSize) => Some(_.classification.dSize >= dSize)
-    case None => None
-  }
-
-  def caughtPredicate(valueOption: Option[Int]): Option[AvalanchePredicate] = valueOption match {
-    case Some(caught) => Some(_.humanNumbers.caught >= caught)
-    case None => None
-  }
-
-  def killedPredicate(valueOption: Option[Int]): Option[AvalanchePredicate] = valueOption match {
-    case Some(killed) => Some(_.humanNumbers.killed >= killed)
     case None => None
   }
 

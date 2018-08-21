@@ -42,25 +42,25 @@ class AvalancheDaoFilterSelectTest extends DatabaseTest {
 
     "type filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
-      val wsTypeQuery = AvalancheSpatialQuery(avyType = Some(AvalancheType.WS))
+      val wsTypeQuery = AvalancheSpatialQuery(avyTypes = Some(List(AvalancheType.WS)))
       verifySingleResult(wsTypeQuery, wsNeAvalanche.extId)
     }
 
     "trigger filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
-      val asTriggerQuery = AvalancheSpatialQuery(trigger = Some(AvalancheTrigger.AS))
+      val asTriggerQuery = AvalancheSpatialQuery(triggers = Some(List(AvalancheTrigger.AS)))
       verifySingleResult(asTriggerQuery, hsAsAvalanche.extId)
     }
 
     "interface filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
-      val gInterfaceQuery = AvalancheSpatialQuery(interface = Some(AvalancheInterface.G))
+      val gInterfaceQuery = AvalancheSpatialQuery(interfaces = Some(List(AvalancheInterface.G)))
       verifySingleResult(gInterfaceQuery, wsNeAvalanche.extId)
     }
 
     "type, trigger, and interface filtering" in new WithApplication(appBuilder.build) {
       insertAvalanches(hsAsAvalanche, wsNeAvalanche)
-      val hsAsOQuery = AvalancheSpatialQuery(avyType = Some(AvalancheType.HS), trigger = Some(AvalancheTrigger.AS), interface = Some(AvalancheInterface.O))
+      val hsAsOQuery = AvalancheSpatialQuery(avyTypes = Some(List(AvalancheType.HS)), triggers = Some(List(AvalancheTrigger.AS)), interfaces = Some(List(AvalancheInterface.O)))
       verifySingleResult(hsAsOQuery, hsAsAvalanche.extId)
     }
   }
@@ -87,31 +87,6 @@ class AvalancheDaoFilterSelectTest extends DatabaseTest {
       insertAvalanches(r4d15Avalanche, r15d3Avalanche)
       val r3d1Query = AvalancheSpatialQuery(rSize = Some(3.0), dSize = Some(1.0))
       verifySingleResult(r3d1Query, r4d15Avalanche.extId)
-    }
-  }
-
-  "Human numbers filtering" should {
-    val c4k0Avalanche = genAvalanche.generate.copy(viewable = true,
-      humanNumbers = genHumanNumbers.sample.get.copy(caught = 4, killed = 0))
-    val c3k2Avalanche = genAvalanche.generate.copy(viewable = true,
-      humanNumbers = genHumanNumbers.sample.get.copy(caught = 3, killed = 2))
-
-    "number caught filtering" in new WithApplication(appBuilder.build) {
-      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
-      val c4Query = AvalancheSpatialQuery(numCaught = Some(4))
-      verifySingleResult(c4Query, c4k0Avalanche.extId)
-    }
-
-    "number killed filtering" in new WithApplication(appBuilder.build) {
-      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
-      val k1Query = AvalancheSpatialQuery(numKilled = Some(1))
-      verifySingleResult(k1Query, c3k2Avalanche.extId)
-    }
-
-    "number caught and killed filtering" in new WithApplication(appBuilder.build) {
-      insertAvalanches(c4k0Avalanche, c3k2Avalanche)
-      val c2k2Query = AvalancheSpatialQuery(numCaught = Some(2), numKilled = Some(2))
-      verifySingleResult(c2k2Query, c3k2Avalanche.extId)
     }
   }
 

@@ -15,7 +15,7 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  formControl: {
+  formField: {
     margin: theme.spacing.unit,
     width: 240,
   },
@@ -98,7 +98,7 @@ class FilterForm extends React.Component {
           label="From"
           type="date"
           value={filter.fromDate}
-          className={classes.textField}
+          className={classes.formField}
           InputLabelProps={{
             shrink: true,
           }}
@@ -108,19 +108,19 @@ class FilterForm extends React.Component {
           id="toDate"
           label="To"
           type="date"
-          className={classes.textField}
+          className={classes.formField}
           value={filter.toDate}
           InputLabelProps={{
             shrink: true,
           }}
           onChange={e => { this.applyFilterToView('toDate', e.target.value) }}
         />
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formField}>
           <InputLabel htmlFor="multi-select-avytype" shrink={true}>Avalanche Type</InputLabel>
           <Select
             multiple
-            value={filter.avyType}
-            onChange={e => this.applyFilterToView('avyType', e.target.value)}
+            value={filter.avyTypes}
+            onChange={e => this.applyFilterToView('avyTypes', e.target.value)}
             input={<Input id="multi-select-avytype" />}
             renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheType)}
             MenuProps={MenuProps}
@@ -128,12 +128,12 @@ class FilterForm extends React.Component {
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheType)}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formField}>
           <InputLabel htmlFor="multi-select-trigger" shrink={true}>Avalanche Trigger</InputLabel>
           <Select
             multiple
-            value={filter.trigger}
-            onChange={e => this.applyFilterToView('trigger', e.target.value)}
+            value={filter.triggers}
+            onChange={e => this.applyFilterToView('triggers', e.target.value)}
             input={<Input id="multi-select-trigger" />}
             renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheTrigger)}
             MenuProps={MenuProps}
@@ -141,12 +141,12 @@ class FilterForm extends React.Component {
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheTrigger)}
           </Select>
         </FormControl>
-        <FormControl className={classes.formControl}>
+        <FormControl className={classes.formField}>
           <InputLabel htmlFor="multi-select-interface" shrink={true}>Avalanche Interface</InputLabel>
           <Select
             multiple
-            value={filter.interface}
-            onChange={e => this.applyFilterToView('interface', e.target.value)}
+            value={filter.interfaces}
+            onChange={e => this.applyFilterToView('interfaces', e.target.value)}
             input={<Input id="multi-select-interface" />}
             renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheInterface)}
             MenuProps={MenuProps}
