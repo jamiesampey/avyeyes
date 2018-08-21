@@ -106,8 +106,8 @@ class AvyEyesClient extends React.Component {
         avyTypes: [],
         triggers: [],
         interfaces: [],
-        rSize: '',
-        dSize: '',
+        rSize: 0,
+        dSize: 0,
       }
     };
   }
@@ -170,8 +170,8 @@ class AvyEyesClient extends React.Component {
       if (filter.avyTypes.length > 0) searchQueryString += `&avyTypes=${updatedFilter.avyTypes.join(',')}`;
       if (filter.triggers.length > 0) searchQueryString += `&triggers=${updatedFilter.triggers.join(',')}`;
       if (filter.interfaces.length > 0) searchQueryString += `&interfaces=${updatedFilter.interfaces.join(',')}`;
-      if (filter.rSize) searchQueryString += `&rSize=${updatedFilter.rSize}`;
-      if (filter.dSize) searchQueryString += `&dSize=${updatedFilter.dSize}`;
+      if (filter.rSize > 0) searchQueryString += `&rSize=${updatedFilter.rSize}`;
+      if (filter.dSize > 0) searchQueryString += `&dSize=${updatedFilter.dSize}`;
     };
 
     if (updatedFilter) {

@@ -8,7 +8,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
+import Slider from "@material-ui/lab/Slider";
+import Button from "@material-ui/core/Button";
 import { compositeLabelForDataCode } from "../Util";
+
 
 const styles = theme => ({
   root: {
@@ -25,7 +28,16 @@ const styles = theme => ({
   },
   chip: {
     margin: theme.spacing.unit / 4,
-  }
+  },
+  slider: {
+    marginLeft: 0,
+    marginTop: 12,
+    width: 230,
+  },
+  clearButton: {
+    margin: theme.spacing.unit,
+    marginLeft: 'auto',
+  },
 });
 
 const ITEM_HEIGHT = 48;
@@ -85,7 +97,7 @@ class FilterForm extends React.Component {
   }
 
   render() {
-    const { classes, clientData, filter } = this.props;
+    const { classes, clientData, filter, applyFilter } = this.props;
 
     if (typeof clientData === 'undefined' || typeof filter === 'undefined') return null;
 
@@ -154,6 +166,37 @@ class FilterForm extends React.Component {
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheInterface)}
           </Select>
         </FormControl>
+        <FormControl className={classes.formField} style={{marginTop: 16}}>
+          <InputLabel shrink={true}>Relative Size</InputLabel>
+          <Slider
+            className={classes.slider}
+            value={filter.rSize}
+            min={0}
+            max={5}
+            step={1}
+            onChange={(e, v) => { this.applyFilterToView('rSize', v) }}
+          />
+        </FormControl>
+        <FormControl className={classes.formField}>
+          <InputLabel shrink={true}>Destructive Size</InputLabel>
+          <Slider
+            className={classes.slider}
+            value={filter.dSize}
+            min={0}
+            max={5}
+            step={.5}
+            onChange={(e, v) => { this.applyFilterToView('dSize', v) }}
+          />
+        </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.clearButton}
+          onClick={ () => applyFilter({ fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 }) }
+        >
+          Clear Filter
+        </Button>
       </form>
     )
   }
