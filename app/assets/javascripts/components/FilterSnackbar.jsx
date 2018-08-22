@@ -7,16 +7,27 @@ import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
-  snackbar: {
-
+  filterTableTitle: {
+    color: 'white',
+    marginBottom: 10,
   },
   filterTable: {
-
+    '& tr': {
+      height: 25,
+    },
+    '& tr td': {
+      color: 'white',
+      padding: 0,
+      border: 0,
+      paddingRight: 10,
+    }
   },
-  labelCell: {
-    marginLeft: 5,
+  clearFilterButton: {
+    height: 'auto',
+    marginBottom: 'auto',
   },
 });
 
@@ -35,57 +46,59 @@ const FilterSnackbar = props => {
   };
 
   let filterTable = (
-    <Table className={classes.filterTable}>
-      <TableBody>
-        { (filter.fromDate.length > 0 || filter.toDate.length > 0) &&
-          <TableRow>
-            <TableCell className={classes.labelCell}>Avalanche Dates:</TableCell>
-            <TableCell padding="none">
-              {filter.fromDate.length > 0 ? filter.fromDate : <span>&infin;</span>} to {filter.toDate.length > 0 ? filter.toDate : <span>&infin;</span>}
-            </TableCell>
-          </TableRow>
-        }
-        { filter.avyTypes.length > 0 &&
-          <TableRow>
-            <TableCell padding="none" className={classes.labelCell}>Avalanche Type:</TableCell>
-            <TableCell padding="none">{filter.avyTypes.join(', ')}</TableCell>
-          </TableRow>
-        }
-        { filter.triggers.length > 0 &&
-          <TableRow>
-            <TableCell padding="none" className={classes.labelCell}>Avalanche Trigger:</TableCell>
-            <TableCell padding="none">{filter.triggers.join(', ')}</TableCell>
-          </TableRow>
-        }
-        { filter.interfaces.length > 0 &&
-          <TableRow>
-            <TableCell padding="none" className={classes.labelCell}>Avalanche Interface:</TableCell>
-            <TableCell padding="none">{filter.interfaces.join(', ')}</TableCell>
-          </TableRow>
-        }
-        { (filter.rSize > 0 || filter.dSize > 0) &&
-          <TableRow>
-            <TableCell padding="none" className={classes.labelCell}>Avalanche Size:</TableCell>
-            <TableCell padding="none">
-              {filter.rSize > 0 ? `R${filter.rSize}` : ''} {filter.dSize > 0 ? `D${filter.dSize}` : ''}
-            </TableCell>
-          </TableRow>
-        }
-      </TableBody>
-    </Table>
+    <div>
+      <Typography variant="title" className={classes.filterTableTitle}>Filter</Typography>
+      <Table className={classes.filterTable}>
+        <TableBody>
+          { (filter.fromDate.length > 0 || filter.toDate.length > 0) &&
+            <TableRow>
+              <TableCell>Avalanche Dates:</TableCell>
+              <TableCell>
+                {filter.fromDate.length > 0 ? filter.fromDate : <span>&infin;</span>} to {filter.toDate.length > 0 ? filter.toDate : <span>&infin;</span>}
+              </TableCell>
+            </TableRow>
+          }
+          { filter.avyTypes.length > 0 &&
+            <TableRow>
+              <TableCell>Avalanche Type:</TableCell>
+              <TableCell>{filter.avyTypes.join(', ')}</TableCell>
+            </TableRow>
+          }
+          { filter.triggers.length > 0 &&
+            <TableRow>
+              <TableCell>Avalanche Trigger:</TableCell>
+              <TableCell>{filter.triggers.join(', ')}</TableCell>
+            </TableRow>
+          }
+          { filter.interfaces.length > 0 &&
+            <TableRow>
+              <TableCell>Avalanche Interface:</TableCell>
+              <TableCell>{filter.interfaces.join(', ')}</TableCell>
+            </TableRow>
+          }
+          { (filter.rSize > 0 || filter.dSize > 0) &&
+            <TableRow>
+              <TableCell>Avalanche Size:</TableCell>
+              <TableCell>
+                {filter.rSize > 0 ? `R${filter.rSize}` : ''} {filter.dSize > 0 ? `D${filter.dSize}` : ''}
+              </TableCell>
+            </TableRow>
+          }
+        </TableBody>
+      </Table>
+    </div>
   );
 
   return (
     <Snackbar
-      className={classes.snackbar}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={filterInEffect()}
-      onClose={() => {}}
       message={filterTable}
       action={[
         <Button
+          className={classes.clearFilterButton}
           key="clearFilter"
-          color="secondary"
+          color="primary"
           size="small"
           onClick={clearFilter}
         >
