@@ -25,11 +25,18 @@ const styles = theme => ({
       paddingRight: 10,
     }
   },
-  clearFilterButton: {
-    height: 'auto',
+  snackbarRoot: {
+    backgroundColor: "#303336",
+  },
+  snackbarAction: {
     marginBottom: 'auto',
+    marginRight: -20,
+  },
+  clearFilterButton: {
+    color: 'white',
   },
 });
+
 
 const FilterSnackbar = props => {
   const { classes, filter, clearFilter } = props;
@@ -93,12 +100,17 @@ const FilterSnackbar = props => {
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       open={filterInEffect()}
+      ContentProps={{
+        classes: {
+          root: classes.snackbarRoot,
+          action: classes.snackbarAction,
+        }
+      }}
       message={filterTable}
       action={[
         <Button
           className={classes.clearFilterButton}
           key="clearFilter"
-          color="primary"
           size="small"
           onClick={clearFilter}
         >
