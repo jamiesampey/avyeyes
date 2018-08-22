@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Cesium from 'cesium/Cesium';
+import CesiumController from "../CesiumController";
 import Config from '../Config';
 import MenuButton from "./MenuButton";
 import MenuDrawer from "./MenuDrawer";
@@ -9,12 +10,12 @@ import ReportButton from "./ReportButton";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
+import FilterSnackbar from "./FilterSnackbar";
 import AvyCard from "./AvyCard";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import CesiumController from "../CesiumController";
 import { getRequestParam, parseApiResponse } from "../Util";
 import { FilterMenuPanel, ReportMenuPanel } from "../Constants";
 
@@ -38,6 +39,7 @@ class AvyEyesClient extends React.Component {
     this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
 
     this.filterAvalanches = this.filterAvalanches.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
     this.renderAvyCard = this.renderAvyCard.bind(this);
 
@@ -195,6 +197,10 @@ class AvyEyesClient extends React.Component {
       });
   }
 
+  clearFilter() {
+    this.filterAvalanches({fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 });
+  }
+
   setCursorStyle(style) {
     this.cesiumContainer.style.cursor = style;
   }
@@ -226,6 +232,7 @@ class AvyEyesClient extends React.Component {
           clientData={this.state.clientData}
           filter={this.state.avalancheFilter}
           applyFilter={this.filterAvalanches}
+          clearFilter={this.clearFilter}
         />
 
         <MouseBee
@@ -233,6 +240,11 @@ class AvyEyesClient extends React.Component {
           eventHandler={this.eventHandler}
           cursorStyle={this.cesiumContainer.style.cursor}
           setCursorStyle={this.setCursorStyle}
+        />
+
+        <FilterSnackbar
+          filter={this.state.avalancheFilter}
+          clearFilter={this.clearFilter}
         />
 
         {this.state.currentAvalanche && this.renderAvyCard()}

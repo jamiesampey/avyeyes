@@ -47,7 +47,7 @@ class MenuDrawer extends React.Component {
   }
 
   render() {
-    const {classes, menuPanel, changeMenuPanel, clientData, filter, applyFilter} = this.props;
+    const {classes, menuPanel, changeMenuPanel, clientData, filter, applyFilter, clearFilter} = this.props;
 
     return (
       <div className={classes.root}>
@@ -71,7 +71,12 @@ class MenuDrawer extends React.Component {
               <Typography className={classes.drawerSectionHeading}>Avalanche Filter</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-              <FilterForm clientData={clientData} filter={filter} applyFilter={applyFilter} />
+              <FilterForm
+                clientData={clientData}
+                filter={filter}
+                applyFilter={applyFilter}
+                clearFilter={clearFilter}
+              />
             </ExpansionPanelDetails>
           </ExpansionPanel>
           <ExpansionPanel expanded={menuPanel === ReportMenuPanel} onClick={() => changeMenuPanel(ReportMenuPanel)}>

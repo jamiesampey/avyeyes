@@ -97,7 +97,7 @@ class FilterForm extends React.Component {
   }
 
   render() {
-    const { classes, clientData, filter, applyFilter } = this.props;
+    const { classes, clientData, filter, clearFilter } = this.props;
 
     if (typeof clientData === 'undefined' || typeof filter === 'undefined') return null;
 
@@ -193,7 +193,7 @@ class FilterForm extends React.Component {
           color="primary"
           size="small"
           className={classes.clearButton}
-          onClick={ () => applyFilter({ fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 }) }
+          onClick={clearFilter}
         >
           Clear Filter
         </Button>
