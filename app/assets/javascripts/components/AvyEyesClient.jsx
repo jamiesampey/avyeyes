@@ -243,6 +243,7 @@ class AvyEyesClient extends React.Component {
         />
 
         <FilterSnackbar
+          menuPanel={this.state.currentMenuPanel}
           filter={this.state.avalancheFilter}
           clearFilter={this.clearFilter}
         />

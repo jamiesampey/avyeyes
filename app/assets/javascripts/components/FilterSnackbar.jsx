@@ -39,7 +39,7 @@ const styles = theme => ({
 
 
 const FilterSnackbar = props => {
-  const { classes, filter, clearFilter } = props;
+  const { classes, menuPanel, filter, clearFilter } = props;
 
   let filterInEffect = () => {
     if (!filter) return false;
@@ -99,7 +99,7 @@ const FilterSnackbar = props => {
   return (
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      open={filterInEffect()}
+      open={menuPanel === null && filterInEffect()}
       ContentProps={{
         classes: {
           root: classes.snackbarRoot,
