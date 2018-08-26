@@ -26,7 +26,6 @@ const MenuButton = props => {
     <div className={classes.root}>
       <Button
         variant="fab"
-        mini={true}
         onClick={menuToggle}
         className={classes.button}
       >
