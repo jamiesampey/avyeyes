@@ -17,7 +17,7 @@ const styles = theme => ({
 });
 
 const SocialMenu = props => {
-  const {classes, anchorEl, s3Bucket, avalanche, closeCallback} = props;
+  const {classes, anchorEl, s3Bucket, avalanche, linkCopyCallback, closeCallback} = props;
 
   let openFacebookDialog = () => {
     closeCallback();
@@ -79,7 +79,7 @@ const SocialMenu = props => {
           <ListItemText inset primary="Twitter"/>
         </MenuItem>
         <CopyToClipboard text={avalanche.extUrl}>
-          <MenuItem onClick={closeCallback}>
+          <MenuItem onClick={linkCopyCallback}>
             <ListItemIcon>
               <LinkIcon className={classes.shareIcon}/>
             </ListItemIcon>

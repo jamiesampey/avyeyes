@@ -32,6 +32,7 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import {
   notSpecified,
@@ -102,6 +103,9 @@ const styles = theme => ({
       height: 30,
     }
   },
+  linkCopySnackbarRoot: {
+    backgroundColor: 'red',
+  },
 });
 
 const imageRotateInverval = 5000;
@@ -118,6 +122,7 @@ class AvyCard extends React.Component {
     this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
     this.renderSocialMenu = this.renderSocialMenu.bind(this);
+    this.renderLinkCopySnackbar = this.renderLinkCopySnackbar.bind(this);
 
     this.state = {
       expanded: false,
@@ -125,6 +130,7 @@ class AvyCard extends React.Component {
       rotatingCardMedia: null,
       cardMediaInterval: null,
       lightboxOpen: false,
+      linkCopyOpen: false,
     };
   }
 
@@ -136,6 +142,7 @@ class AvyCard extends React.Component {
       cardMediaInterval: null,
       socialMenuAnchor: null,
       lightboxOpen: false,
+      linkCopyOpen: false,
     });
 
     let { avalanche } = this.props;
@@ -232,7 +239,25 @@ class AvyCard extends React.Component {
         avalanche={avalanche}
         s3Bucket={this.props.clientData.s3.bucket}
         anchorEl={this.state.socialMenuAnchor}
+        linkCopyCallback={() => this.setState({linkCopyOpen: true, socialMenuAnchor: null }) }
         closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
+      />
+    )
+  }
+
+  renderLinkCopySnackbar() {
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        open={this.state.linkCopyOpen}
+        autoHideDuration={5000}
+        onClose={() => this.setState({linkCopyOpen: false})}
+        ContentProps={{
+          classes: {
+            root: this.props.classes.linkCopySnackbarRoot,
+          }
+        }}
+        message="Avalanche URL copied to clipboard"
       />
     )
   }
@@ -259,6 +284,7 @@ class AvyCard extends React.Component {
       <div>
         {this.state.socialMenuAnchor && this.renderSocialMenu(avalanche)}
         {this.state.lightboxOpen && this.renderLightbox(avalanche)}
+        {this.state.linkCopyOpen && this.renderLinkCopySnackbar()}
         <Dialog
           className={classes.dialog}
           open={avalanche !== null}
