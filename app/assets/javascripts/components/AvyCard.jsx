@@ -121,8 +121,6 @@ class AvyCard extends React.Component {
     this.weatherDesc = this.weatherDesc.bind(this);
     this.renderCardMedia = this.renderCardMedia.bind(this);
     this.renderLightbox = this.renderLightbox.bind(this);
-    this.renderSocialMenu = this.renderSocialMenu.bind(this);
-    this.renderLinkCopySnackbar = this.renderLinkCopySnackbar.bind(this);
 
     this.state = {
       expanded: false,
@@ -130,7 +128,6 @@ class AvyCard extends React.Component {
       rotatingCardMedia: null,
       cardMediaInterval: null,
       lightboxOpen: false,
-      linkCopyOpen: false,
     };
   }
 
@@ -142,7 +139,6 @@ class AvyCard extends React.Component {
       cardMediaInterval: null,
       socialMenuAnchor: null,
       lightboxOpen: false,
-      linkCopyOpen: false,
     });
 
     let { avalanche } = this.props;
@@ -233,46 +229,16 @@ class AvyCard extends React.Component {
     )
   }
 
-  renderSocialMenu(avalanche) {
-    return (
-      <SocialMenu
-        avalanche={avalanche}
-        s3Bucket={this.props.clientData.s3.bucket}
-        anchorEl={this.state.socialMenuAnchor}
-        linkCopyCallback={() => this.setState({linkCopyOpen: true, socialMenuAnchor: null }) }
-        closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
-      />
-    )
-  }
-
-  renderLinkCopySnackbar() {
-    return (
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        open={this.state.linkCopyOpen}
-        autoHideDuration={5000}
-        onClose={() => this.setState({linkCopyOpen: false})}
-        ContentProps={{
-          classes: {
-            root: this.props.classes.linkCopySnackbarRoot,
-          }
-        }}
-        message="Avalanche URL copied to clipboard"
-      />
-    )
-  }
-
   render() {
-    const {classes, avalanche, setCursorStyle} = this.props;
+    const { classes, clientData, avalanche, setCursorStyle } = this.props;
+    const { rotatingCardMedia, socialMenuAnchor } = this.state;
 
     setCursorStyle("default");
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
     //console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
 
-    const {rotatingCardMedia} = this.state;
     let currentCardMedia = null;
-
     if (rotatingCardMedia) {
       currentCardMedia = rotatingCardMedia;
     } else if (avalanche.images.length > 0 && !rotatingCardMedia) {
@@ -282,9 +248,13 @@ class AvyCard extends React.Component {
 
     return (
       <div>
-        {this.state.socialMenuAnchor && this.renderSocialMenu(avalanche)}
         {this.state.lightboxOpen && this.renderLightbox(avalanche)}
-        {this.state.linkCopyOpen && this.renderLinkCopySnackbar()}
+        <SocialMenu
+          avalanche={avalanche}
+          s3Bucket={clientData.s3.bucket}
+          anchorEl={socialMenuAnchor}
+          closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
+        />
         <Dialog
           className={classes.dialog}
           open={avalanche !== null}
