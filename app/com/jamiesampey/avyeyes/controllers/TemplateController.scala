@@ -27,7 +27,9 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     Ok(com.jamiesampey.avyeyes.views.html.admin(request.user))
   }
 
-  def clientDataBundle = UserAwareAction { implicit request => Ok(writeJson(s3config ~ dataCodes)) }
+  def clientDataBundle = UserAwareAction { implicit request =>
+    Ok(writeJson(s3config ~ dataCodes ~ tooltips ~ helpText))
+  }
 
   private val s3config = "s3" ->
     ("bucket" -> configService.getProperty("s3.bucket")) ~
@@ -44,7 +46,6 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     (enumSimpleName(ModeOfTravel) -> enumToJsonArray(ModeOfTravel)) ~
     (enumSimpleName(ExperienceLevel) -> enumToJsonArray(ExperienceLevel))
 
-
   private def enumToJsonArray(acEnum: AutocompleteEnum) = {
     def toLocalizedLabel(tokens: Array[String]): String = Messages(s"enum.${tokens.mkString(".")}")
 
@@ -56,4 +57,8 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
       }
     }
   }
+
+  private val tooltips = "tooltips" -> messagesApi.messages("default").filterKeys(_.startsWith("tooltip")).map { case (k, v) => (k.split('.').last, v) }
+
+  private val helpText = "help" -> messagesApi.messages("default").filterKeys(_.startsWith("help")).map { case (k, v) => (k.split('.').last, v) }
 }

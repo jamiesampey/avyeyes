@@ -10,6 +10,7 @@ import Input from "@material-ui/core/Input";
 import Chip from "@material-ui/core/Chip";
 import Slider from "@material-ui/lab/Slider";
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import { compositeLabelForDataCode } from "../Util";
 
 
@@ -103,6 +104,9 @@ class FilterForm extends React.Component {
 
     //console.info(`client.filter is ${JSON.stringify(filter)}`);
 
+    let dSizeToolTipObject = document.createElement('div');
+    dSizeToolTipObject.innerHTML = clientData.tooltips.avyFilterDsize;
+
     return (
       <form className={classes.root} noValidate>
         <TextField
@@ -178,7 +182,9 @@ class FilterForm extends React.Component {
           />
         </FormControl>
         <FormControl className={classes.formField}>
-          <InputLabel shrink={true}>Destructive Size</InputLabel>
+          <Tooltip disableFocusListener placement="right" title={<div><p>jamie</p><p>was here</p></div>}>
+            <InputLabel shrink={true}>Destructive Size</InputLabel>
+          </Tooltip>
           <Slider
             className={classes.slider}
             value={filter.dSize}
