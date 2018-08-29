@@ -23,6 +23,14 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     width: 240,
   },
+  fieldLabel: {
+    '&:hover': {
+      cursor: 'help',
+    },
+  },
+  dateInput: {
+    marginLeft: 0,
+  },
   chips: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -102,37 +110,36 @@ class FilterForm extends React.Component {
 
     if (typeof clientData === 'undefined' || typeof filter === 'undefined') return null;
 
-    //console.info(`client.filter is ${JSON.stringify(filter)}`);
-
-    let dSizeToolTipObject = document.createElement('div');
-    dSizeToolTipObject.innerHTML = clientData.tooltips.avyFilterDsize;
-
     return (
       <form className={classes.root} noValidate>
-        <TextField
-          id="fromDate"
-          label="From"
-          type="date"
-          value={filter.fromDate}
-          className={classes.formField}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={e => { this.applyFilterToView('fromDate', e.target.value) }}
-        />
-        <TextField
-          id="toDate"
-          label="To"
-          type="date"
-          className={classes.formField}
-          value={filter.toDate}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={e => { this.applyFilterToView('toDate', e.target.value) }}
-        />
         <FormControl className={classes.formField}>
-          <InputLabel htmlFor="multi-select-avytype" shrink={true}>Avalanche Type</InputLabel>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterFromDate}>
+            <InputLabel className={classes.fieldLabel} htmlFor="textfield-fromDate" shrink={true}>From</InputLabel>
+          </Tooltip>
+          <Input
+            id="textfield-fromDate"
+            type="date"
+            className={classes.dateInput}
+            value={filter.fromDate}
+            onChange={e => { this.applyFilterToView('fromDate', e.target.value) }}
+          />
+        </FormControl>
+        <FormControl className={classes.formField}>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterToDate}>
+            <InputLabel className={classes.fieldLabel} htmlFor="textfield-toDate" shrink={true}>To</InputLabel>
+          </Tooltip>
+          <Input
+            id="textfield-toDate"
+            type="date"
+            className={classes.dateInput}
+            value={filter.toDate}
+            onChange={e => { this.applyFilterToView('toDate', e.target.value) }}
+          />
+        </FormControl>
+        <FormControl className={classes.formField}>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterType}>
+            <InputLabel className={classes.fieldLabel} htmlFor="multi-select-avytype" shrink={true}>Avalanche Type</InputLabel>
+          </Tooltip>
           <Select
             multiple
             value={filter.avyTypes}
@@ -145,7 +152,9 @@ class FilterForm extends React.Component {
           </Select>
         </FormControl>
         <FormControl className={classes.formField}>
-          <InputLabel htmlFor="multi-select-trigger" shrink={true}>Avalanche Trigger</InputLabel>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterTrigger}>
+            <InputLabel className={classes.fieldLabel} htmlFor="multi-select-trigger" shrink={true}>Avalanche Trigger</InputLabel>
+          </Tooltip>
           <Select
             multiple
             value={filter.triggers}
@@ -158,7 +167,9 @@ class FilterForm extends React.Component {
           </Select>
         </FormControl>
         <FormControl className={classes.formField}>
-          <InputLabel htmlFor="multi-select-interface" shrink={true}>Avalanche Interface</InputLabel>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterInterface}>
+            <InputLabel className={classes.fieldLabel} htmlFor="multi-select-interface" shrink={true}>Avalanche Interface</InputLabel>
+          </Tooltip>
           <Select
             multiple
             value={filter.interfaces}
@@ -171,7 +182,9 @@ class FilterForm extends React.Component {
           </Select>
         </FormControl>
         <FormControl className={classes.formField} style={{marginTop: 16}}>
-          <InputLabel shrink={true}>Relative Size</InputLabel>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterRsize}>
+            <InputLabel className={classes.fieldLabel} shrink={true}>Relative Size</InputLabel>
+          </Tooltip>
           <Slider
             className={classes.slider}
             value={filter.rSize}
@@ -182,8 +195,8 @@ class FilterForm extends React.Component {
           />
         </FormControl>
         <FormControl className={classes.formField}>
-          <Tooltip disableFocusListener placement="right" title={<div><p>jamie</p><p>was here</p></div>}>
-            <InputLabel shrink={true}>Destructive Size</InputLabel>
+          <Tooltip placement="right" title={clientData.tooltips.avyFilterDsize}>
+            <InputLabel className={classes.fieldLabel} shrink={true}>Destructive Size</InputLabel>
           </Tooltip>
           <Slider
             className={classes.slider}
