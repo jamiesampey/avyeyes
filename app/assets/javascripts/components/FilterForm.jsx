@@ -74,28 +74,16 @@ class FilterForm extends React.Component {
     ));
   }
 
-  dataCodeChips(dataCodes, dataCodeObjects) {
+  dataCodeChips(dataCodes) {
     let { classes } = this.props;
 
-    const maxChipLength = 30;
-
-    if (dataCodes.length === 1) {
-      let compositeLabel = compositeLabelForDataCode(dataCodeObjects, dataCodes[0]);
-      if (compositeLabel.length > maxChipLength) compositeLabel = `${compositeLabel.substring(0, maxChipLength)}...`;
-      return (
-        <div className={classes.chips}>
-          <Chip key={dataCodes[0]} label={compositeLabel} className={classes.chip}/>
-        </div>
-      );
-    } else {
-      return (
-        <div className={classes.chips}>
-          {dataCodes.map(dataCode => (
-            <Chip key={dataCode} label={dataCode} className={classes.chip} />
-          ))}
-        </div>
-      );
-    }
+    return (
+      <div className={classes.chips}>
+        {dataCodes.map(dataCode => (
+          <Chip key={dataCode} label={dataCode} className={classes.chip} />
+        ))}
+      </div>
+    );
   }
 
   applyFilterToView(field, value) {
@@ -144,7 +132,7 @@ class FilterForm extends React.Component {
             value={filter.avyTypes}
             onChange={e => this.applyFilterToView('avyTypes', e.target.value)}
             input={<Input id="multi-select-avytype" />}
-            renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheType)}
+            renderValue={selected => this.dataCodeChips(selected)}
             MenuProps={MenuProps}
           >
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheType)}
@@ -159,7 +147,7 @@ class FilterForm extends React.Component {
             value={filter.triggers}
             onChange={e => this.applyFilterToView('triggers', e.target.value)}
             input={<Input id="multi-select-trigger" />}
-            renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheTrigger)}
+            renderValue={selected => this.dataCodeChips(selected)}
             MenuProps={MenuProps}
           >
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheTrigger)}
@@ -174,7 +162,7 @@ class FilterForm extends React.Component {
             value={filter.interfaces}
             onChange={e => this.applyFilterToView('interfaces', e.target.value)}
             input={<Input id="multi-select-interface" />}
-            renderValue={selected => this.dataCodeChips(selected, clientData.codes.avalancheInterface)}
+            renderValue={selected => this.dataCodeChips(selected)}
             MenuProps={MenuProps}
           >
             {FilterForm.dataCodeMenuItems(clientData.codes.avalancheInterface)}
