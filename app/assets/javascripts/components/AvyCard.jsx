@@ -32,7 +32,7 @@ import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Snackbar from "@material-ui/core/Snackbar";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import {
   notSpecified,
@@ -78,6 +78,9 @@ const styles = theme => ({
       duration: theme.transitions.duration.shortest,
     }),
   },
+  expandedIcon: {
+    transform: 'rotate(180deg)',
+  },
   expandedCardContent: {
     paddingTop: 10,
     paddingBottom: 0,
@@ -95,6 +98,11 @@ const styles = theme => ({
     },
     '& svg': {
       marginBottom: 'auto',
+    },
+  },
+  fieldIcon: {
+    '&:hover': {
+      cursor: 'help',
     },
   },
   swagTable: {
@@ -297,9 +305,11 @@ class AvyCard extends React.Component {
                 <CardContent className={classes.expandedCardContent}>
                   <List disablePadding className={classes.expandedCardList}>
                     <ListItem disableGutters>
-                      <ListItemIcon>
-                        <LandscapeIcon/>
-                      </ListItemIcon>
+                      <Tooltip placement="top-start" title={clientData.tooltips.avyCardSlope}>
+                        <ListItemIcon>
+                            <LandscapeIcon className={classes.fieldIcon}/>
+                        </ListItemIcon>
+                      </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
                           {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation.toLocaleString()} meters ({metersToFeet(avalanche.slope.elevation).toLocaleString()} ft)
@@ -307,9 +317,11 @@ class AvyCard extends React.Component {
                       </ListItemText>
                     </ListItem>
                     <ListItem disableGutters>
-                      <ListItemIcon>
-                        <ViewListIcon/>
-                      </ListItemIcon>
+                      <Tooltip placement="top-start" title={clientData.tooltips.avyCardSWAG}>
+                        <ListItemIcon>
+                          <ViewListIcon className={classes.fieldIcon}/>
+                        </ListItemIcon>
+                      </Tooltip>
                       <Table className={classes.swagTable}>
                         <TableBody>
                           <TableRow>
@@ -336,9 +348,11 @@ class AvyCard extends React.Component {
                       </Table>
                     </ListItem>
                     <ListItem disableGutters>
-                      <ListItemIcon>
-                        <CloudIcon/>
-                      </ListItemIcon>
+                      <Tooltip placement="top-start" title={clientData.tooltips.avyCardWeather}>
+                        <ListItemIcon>
+                          <CloudIcon className={classes.fieldIcon}/>
+                        </ListItemIcon>
+                      </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
                           {this.weatherDesc(avalanche.weather)}
@@ -346,9 +360,11 @@ class AvyCard extends React.Component {
                       </ListItemText>
                     </ListItem>
                     <ListItem disableGutters>
-                      <ListItemIcon>
-                        <CommentsIcon/>
-                      </ListItemIcon>
+                      <Tooltip placement="top-start" title={clientData.tooltips.avyCardComments}>
+                        <ListItemIcon>
+                          <CommentsIcon className={classes.fieldIcon}/>
+                        </ListItemIcon>
+                      </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
                           {avalanche.comments}
@@ -356,9 +372,11 @@ class AvyCard extends React.Component {
                       </ListItemText>
                     </ListItem>
                     <ListItem disableGutters>
-                      <ListItemIcon>
-                        <PersonIcon/>
-                      </ListItemIcon>
+                      <Tooltip placement="top-start" title={clientData.tooltips.avyCardSubmitter}>
+                        <ListItemIcon>
+                          <PersonIcon className={classes.fieldIcon}/>
+                        </ListItemIcon>
+                      </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
                           <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
