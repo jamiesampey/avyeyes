@@ -36,7 +36,6 @@ trait Json4sMethods {
     ("weather" -> Extraction.decompose(a.weather)) ~
     ("slope" -> Extraction.decompose(a.slope)) ~
     ("classification" -> Extraction.decompose(a.classification)) ~
-    ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
     ("images" -> Extraction.decompose(images)) ~
     ("coords" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))

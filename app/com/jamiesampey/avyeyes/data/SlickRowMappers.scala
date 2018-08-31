@@ -42,18 +42,7 @@ private[data] trait SlickRowMappers { self: AvyEyesDatabase =>
       dSize = avalanche.classification.dSize
     )
 
-  implicit def toHumanRow(avalanche: Avalanche): AvalancheHumanTableRow =
-    AvalancheHumanTableRow(
-      avalanche = avalanche.extId,
-      modeOfTravel = avalanche.humanNumbers.modeOfTravel,
-      caught = avalanche.humanNumbers.caught,
-      partiallyBuried = avalanche.humanNumbers.partiallyBuried,
-      fullyBuried = avalanche.humanNumbers.fullyBuried,
-      injured = avalanche.humanNumbers.injured,
-      killed = avalanche.humanNumbers.killed
-    )
-
-  def avalancheFromData(data: (AvalancheTableRow, AvalancheWeatherTableRow, AvalancheClassificationTableRow, AvalancheHumanTableRow)): Avalanche =
+  def avalancheFromData(data: (AvalancheTableRow, AvalancheWeatherTableRow, AvalancheClassificationTableRow)): Avalanche =
     Avalanche(
       createTime = data._1.createTime,
       updateTime = data._1.updateTime,
@@ -67,7 +56,6 @@ private[data] trait SlickRowMappers { self: AvyEyesDatabase =>
       weather = Weather(recentSnow = data._2.recentSnow, recentWindSpeed = data._2.recentWindSpeed, recentWindDirection = data._2.recentWindDirection),
       slope = Slope(aspect = data._1.aspect, angle = data._1.angle, elevation = data._1.elevation),
       classification = Classification(avyType = data._3.avalancheType, trigger = data._3.trigger, triggerModifier = data._3.triggerModifier, interface = data._3.interface, rSize = data._3.rSize, dSize = data._3.dSize),
-      humanNumbers = HumanNumbers(modeOfTravel = data._4.modeOfTravel, caught = data._4.caught, partiallyBuried = data._4.partiallyBuried, fullyBuried = data._4.fullyBuried, injured = data._4.injured, killed = data._4.killed),
       perimeter = data._1.perimeter,
       comments = data._1.comments
     )

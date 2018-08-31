@@ -7,7 +7,6 @@ import com.jamiesampey.avyeyes.model.enums.AvalancheTriggerModifier.AvalancheTri
 import com.jamiesampey.avyeyes.model.enums.AvalancheType.AvalancheType
 import com.jamiesampey.avyeyes.model.enums.Direction.Direction
 import com.jamiesampey.avyeyes.model.enums.ExperienceLevel.ExperienceLevel
-import com.jamiesampey.avyeyes.model.enums.ModeOfTravel.ModeOfTravel
 import com.jamiesampey.avyeyes.model.enums.WindSpeed.WindSpeed
 import org.joda.time.DateTime
 import play.api.db.slick.HasDatabaseConfigProvider
@@ -27,7 +26,6 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
   private[data] val AvalancheRows = TableQuery[AvalancheTable]
   private[data] val AvalancheWeatherRows = TableQuery[AvalancheWeatherTable]
   private[data] val AvalancheClassificationRows = TableQuery[AvalancheClassificationTable]
-  private[data] val AvalancheHumanRows = TableQuery[AvalancheHumanTable]
   private[data] val AvalancheImageRows = TableQuery[AvalancheImageTable]
   private[data] val AppUserRows = TableQuery[AppUserTable]
   private[data] val AppUserRoleAssignmentRows = TableQuery[AppUserRoleAssignmentTable]
@@ -87,23 +85,6 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
       a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
   }
 
-  private[data] case class AvalancheHumanTableRow(avalanche: String, modeOfTravel: ModeOfTravel, caught: Int, partiallyBuried: Int, fullyBuried: Int, injured: Int, killed: Int)
-  class AvalancheHumanTable(tag: Tag) extends Table[AvalancheHumanTableRow](tag, "avalanche_human") {
-    def avalanche = column[String]("avalanche")
-    def modeOfTravel = column[ModeOfTravel]("mode_of_travel")
-    def caught = column[Int]("caught")
-    def partiallyBuried = column[Int]("partially_buried")
-    def fullyBuried = column[Int]("fully_buried")
-    def injured = column[Int]("injured")
-    def killed = column[Int]("killed")
-
-    def * = (avalanche, modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed) <> (AvalancheHumanTableRow.tupled, AvalancheHumanTableRow.unapply)
-
-    def idx = index("avalanche_humans_extid_idx", avalanche, unique = true)
-    def avalancheFk = foreignKey("avalanche_human_extid_fk", avalanche, AvalancheRows)(a =>
-      a.extId, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
-  }
-
   class AvalancheImageTable(tag: Tag) extends Table[AvalancheImage](tag, "avalanche_image") {
     def createTime = column[DateTime]("create_time")
     def avalanche = column[String]("avalanche")
@@ -151,7 +132,6 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
     AvalancheRows.schema ++
     AvalancheWeatherRows.schema ++
     AvalancheClassificationRows.schema ++
-    AvalancheHumanRows.schema ++
     AvalancheImageRows.schema ++
     AppUserRows.schema ++
     AppUserRoleAssignmentRows.schema
@@ -161,7 +141,6 @@ trait AvyEyesDatabase extends HasDatabaseConfigProvider[JdbcProfile] with SlickC
   private[data] def deleteAllRows: Future[Int] = db.run(
     AvalancheWeatherRows.delete >>
     AvalancheClassificationRows.delete >>
-    AvalancheHumanRows.delete >>
     AvalancheImageRows.delete >>
     AvalancheRows.delete >>
     AppUserRoleAssignmentRows.delete >>

@@ -45,15 +45,6 @@ trait Generators {
     dSize <- Gen.oneOf(0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0)
   } yield Classification(avyType, trigger, triggerModifier, interface, rSize, dSize)
 
-  protected def genHumanNumbers = for {
-    modeOfTravel <- Gen.oneOf(ModeOfTravel.values.toSeq)
-    caught <- Gen.choose(-1, 50)
-    partiallyBuried <- Gen.choose(-1, 50)
-    fullyBuried <- Gen.choose(-1, 50)
-    injured <- Gen.choose(-1, 50)
-    killed <- Gen.choose(-1, 50)
-  } yield HumanNumbers(modeOfTravel, caught, partiallyBuried, fullyBuried, injured, killed)
-
   protected def genAvalanche: Gen[Avalanche] = for {
       createTime <- genDateTime()
       updateTime <- genDateTime(createTime.getMillis)
@@ -67,7 +58,6 @@ trait Generators {
       weather <- genWeather
       slope <- genSlope
       classification <- genClassification
-      humanNumbers <- genHumanNumbers
       perimeter <- Gen.nonEmptyListOf(genCoordinate)
       comments <- Gen.option(Gen.alphaStr)
     } yield Avalanche(
@@ -83,7 +73,6 @@ trait Generators {
       weather = weather,
       slope = slope.copy(elevation = location.altitude.toInt),
       classification = classification,
-      humanNumbers = humanNumbers,
       perimeter = perimeter,
       comments = comments
     )

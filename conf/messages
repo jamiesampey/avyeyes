@@ -135,15 +135,6 @@ enum.WindSpeed.StrongBreeze=Strong breeze
 enum.WindSpeed.Gale=Gale
 enum.WindSpeed.Storm=Storm
 
-enum.ModeOfTravel.Skier=Skier
-enum.ModeOfTravel.Snowboarder=Snowboarder
-enum.ModeOfTravel.Snowmobiler=Snowmobiler
-enum.ModeOfTravel.Snowshoer=Snowshoer
-enum.ModeOfTravel.Hiker=Hiker
-enum.ModeOfTravel.Climber=Climber
-enum.ModeOfTravel.Motorist=Motorist
-enum.ModeOfTravel.Other=Other
-
 enum.ExperienceLevel.A0=Amateur with little or no avalanche education
 enum.ExperienceLevel.A1=Amateur with Level 1 education
 enum.ExperienceLevel.A2=Amateur with Level 2 education

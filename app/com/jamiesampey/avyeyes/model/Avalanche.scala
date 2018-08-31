@@ -17,7 +17,6 @@ case class Avalanche(
   slope: Slope,
   weather: Weather,
   classification: Classification,
-  humanNumbers: HumanNumbers,
   perimeter: Seq[Coordinate],
   comments: Option[String]) {
 

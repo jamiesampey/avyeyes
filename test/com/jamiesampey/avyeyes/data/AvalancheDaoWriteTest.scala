@@ -33,7 +33,6 @@ class AvalancheDaoWriteTest extends DatabaseTest {
       result.slope.angle mustEqual updatedAvalanche.slope.angle
       result.slope.elevation mustEqual origAvalanche.slope.elevation
       result.classification mustEqual updatedAvalanche.classification
-      result.humanNumbers mustEqual updatedAvalanche.humanNumbers
       result.comments mustEqual updatedAvalanche.comments
       result.perimeter mustEqual origAvalanche.perimeter
     }

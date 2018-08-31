@@ -43,7 +43,6 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     (enumSimpleName(AvalancheInterface) -> enumToJsonArray(AvalancheInterface)) ~
     (enumSimpleName(Direction) -> enumToJsonArray(Direction)) ~
     (enumSimpleName(WindSpeed) -> enumToJsonArray(WindSpeed)) ~
-    (enumSimpleName(ModeOfTravel) -> enumToJsonArray(ModeOfTravel)) ~
     (enumSimpleName(ExperienceLevel) -> enumToJsonArray(ExperienceLevel))
 
   private def enumToJsonArray(acEnum: AutocompleteEnum) = {

@@ -24,7 +24,6 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
       slope = (json \ "slope").extract[Slope],
       weather = (json \ "weather").extract[Weather],
       classification = (json \ "classification").extract[Classification],
-      humanNumbers = (json \ "humanNumbers").extract[HumanNumbers],
       perimeter = (json \ "perimeter").extract[String] match {
         case perim if perim.nonEmpty => perim.trim.split(" ").toSeq.map(Coordinate(_))
         case _ => Seq.empty
@@ -48,7 +47,6 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
     ("slope" -> Extraction.decompose(a.slope)) ~
     ("weather" -> Extraction.decompose(a.weather)) ~
     ("classification" -> Extraction.decompose(a.classification)) ~
-    ("humanNumbers" -> Extraction.decompose(a.humanNumbers)) ~
     ("perimeter" -> Extraction.decompose(a.perimeter)) ~
     ("comments" -> Extraction.decompose(a.comments))
   }

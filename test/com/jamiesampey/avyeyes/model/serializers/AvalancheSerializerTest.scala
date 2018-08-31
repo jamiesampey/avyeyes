@@ -28,7 +28,6 @@ class AvalancheSerializerTest extends BaseSpec {
       (json \ "slope").extract[Slope] mustEqual avalanche.slope
       (json \ "weather").extract[Weather] mustEqual avalanche.weather
       (json \ "classification").extract[Classification] mustEqual avalanche.classification
-      (json \ "humanNumbers").extract[HumanNumbers] mustEqual avalanche.humanNumbers
       (json \ "perimeter").extract[Seq[Coordinate]] mustEqual avalanche.perimeter
       (json \ "comments").extractOpt[String] mustEqual avalanche.comments
     }
@@ -53,7 +52,6 @@ class AvalancheSerializerTest extends BaseSpec {
       extractedAvalanche.slope mustEqual avalanche.slope
       extractedAvalanche.weather mustEqual avalanche.weather
       extractedAvalanche.classification mustEqual avalanche.classification
-      extractedAvalanche.humanNumbers mustEqual avalanche.humanNumbers
       extractedAvalanche.perimeter mustEqual avalanche.perimeter
     }
 

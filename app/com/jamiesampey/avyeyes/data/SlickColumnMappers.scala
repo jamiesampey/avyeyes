@@ -38,6 +38,5 @@ private[data] trait SlickColumnMappers { self: HasDatabaseConfigProvider[JdbcPro
   implicit def avalancheTriggerModifierMapper = enumNameMapper(AvalancheTriggerModifier)
   implicit def avalancheTypeMapper = enumNameMapper(AvalancheType)
   implicit def experienceLevelMapper = enumNameMapper(ExperienceLevel)
-  implicit def modeOfTravelMapper = enumNameMapper(ModeOfTravel)
   implicit def windSpeedMapper = enumNameMapper(WindSpeed)
 }

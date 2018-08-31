@@ -44,8 +44,7 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
       avalanche <- AvalancheRows
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
       classification <- AvalancheClassificationRows if classification.avalanche === avalanche.extId
-      human <- AvalancheHumanRows if human.avalanche === avalanche.extId
-    } yield (avalanche, weather, classification, human)
+    } yield (avalanche, weather, classification)
 
     db.run(query.result).map(_.map(avalancheFromData))
   }
@@ -55,14 +54,13 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
       avalanche <- AvalancheRows.filter(_.extId === extId)
       weather <- AvalancheWeatherRows if weather.avalanche === avalanche.extId
       classification <- AvalancheClassificationRows if classification.avalanche === avalanche.extId
-      human <- AvalancheHumanRows if human.avalanche === avalanche.extId
-    } yield (avalanche, weather, classification, human)
+    } yield (avalanche, weather, classification)
 
     db.run(query.result.headOption).map(_.map(avalancheFromData))
   }
 
   def insertAvalanche(avalanche: Avalanche) = {
-    val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche) >> (AvalancheHumanRows += avalanche)
+    val avalancheInserts = (AvalancheRows += avalanche) >> (AvalancheWeatherRows += avalanche) >> (AvalancheClassificationRows += avalanche)
 
     db.run(
       AppUserRows.filter(_.email === avalanche.submitterEmail).exists.result
@@ -79,13 +77,11 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
     val avalancheUpdateQuery = AvalancheRows.filter(_.extId === update.extId).map(a => (a.updateTime, a.viewable, a.submitterEmail, a.submitterExp, a.areaName, a.date, a.aspect, a.angle, a.comments))
     val sceneUpdateQuery = AvalancheWeatherRows.filter(_.avalanche === update.extId).map(w => (w.recentSnow, w.recentWindDirection, w.recentWindSpeed))
     val classificationUpdateQuery = AvalancheClassificationRows.filter(_.avalanche === update.extId).map(c => (c.avalancheType, c.trigger, c.triggerModifier, c.interface, c.rSize, c.dSize))
-    val humanUpdateQuery = AvalancheHumanRows.filter(_.avalanche === update.extId).map(h => (h.modeOfTravel, h.caught, h.partiallyBuried, h.fullyBuried, h.injured, h.killed))
 
     db.run {
       avalancheUpdateQuery.update((DateTime.now, update.viewable, update.submitterEmail, update.submitterExp, update.areaName, update.date, update.slope.aspect, update.slope.angle, update.comments)) >>
       sceneUpdateQuery.update((update.weather.recentSnow, update.weather.recentWindDirection, update.weather.recentWindSpeed)) >>
-      classificationUpdateQuery.update((update.classification.avyType, update.classification.trigger, update.classification.triggerModifier, update.classification.interface, update.classification.rSize, update.classification.dSize)) >>
-      humanUpdateQuery.update((update.humanNumbers.modeOfTravel, update.humanNumbers.caught, update.humanNumbers.partiallyBuried, update.humanNumbers.fullyBuried, update.humanNumbers.injured, update.humanNumbers.killed))
+      classificationUpdateQuery.update((update.classification.avyType, update.classification.trigger, update.classification.triggerModifier, update.classification.interface, update.classification.rSize, update.classification.dSize))
     }
     .map(_ => getAvalancheFromDisk(update.extId).map {
       case Some(a) => avalancheMap += (a.extId -> a)
@@ -100,7 +96,6 @@ class AvalancheDao @Inject()(val dbConfigProvider: DatabaseConfigProvider, avala
       AvalancheImageRows.filter(_.avalanche === extId).delete >>
       AvalancheWeatherRows.filter(_.avalanche === extId).delete >>
       AvalancheClassificationRows.filter(_.avalanche === extId).delete >>
-      AvalancheHumanRows.filter(_.avalanche === extId).delete >>
       AvalancheRows.filter(_.extId === extId).delete
     )
   }

@@ -10,7 +10,6 @@ package object serializers {
     DateTimeSerializer +
     CoordinateSerializer +
     ClassificationSerializer +
-    HumanNumbersSerializer +
     SlopeSerializer +
     WeatherSerializer +
     AvalancheImageSerializer +
