@@ -10,8 +10,6 @@ import Chip from "@material-ui/core/Chip";
 import Slider from "@material-ui/lab/Slider";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
-import { compositeLabelForDataCode } from "../Util";
-
 
 const styles = theme => ({
   root: {

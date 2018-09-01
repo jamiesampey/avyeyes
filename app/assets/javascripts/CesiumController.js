@@ -82,7 +82,7 @@ class CesiumController {
       complete: () => {
         this.viewer.camera.flyToBoundingSphere(boundingSphere, {
           duration: 4.0,
-          offset: this.toHeadingPitchRange(this.flyToHeadingFromAspect(a.slope.aspect), -25, 1200),
+          offset: this.toHeadingPitchRange(this.flyToHeadingFromAspect(a.slope.aspect), -35, 1200),
           complete: () => {
             // TODO show clues
             // showClickPathClue("Click on the red avalanche path for the details").then(() => {

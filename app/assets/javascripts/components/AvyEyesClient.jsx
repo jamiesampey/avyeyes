@@ -12,6 +12,7 @@ import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
 import FilterSnackbar from "./FilterSnackbar";
 import AvyCard from "./AvyCard";
+import InfoBar from "./InfoBar";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
@@ -101,6 +102,7 @@ class AvyEyesClient extends React.Component {
 
     this.state = {
       currentMenuPanel: FilterMenuPanel,
+      infoMessage: null,
       currentAvalanche: null,
       avalancheFilter: {
         fromDate: '',
@@ -157,6 +159,9 @@ class AvyEyesClient extends React.Component {
     try {
       boundingBox = this.controller.getBoundingBox();
     } catch(error) {
+      this.setState({
+        infoMessage: this.state.clientData.help.horizonInView
+      });
       return;
     }
 
@@ -225,6 +230,14 @@ class AvyEyesClient extends React.Component {
         <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
         <EyeAltitude viewer={this.viewer} />
         <ResetViewButton controller={this.controller} />
+
+        <InfoBar
+          open={Boolean(this.state.infoMessage)}
+          message={this.state.infoMessage}
+          duration={15}
+          closeable
+          closeCallback={() => this.setState({ infoMessage: null }) }
+        />
 
         <MenuDrawer
           menuPanel={this.state.currentMenuPanel}

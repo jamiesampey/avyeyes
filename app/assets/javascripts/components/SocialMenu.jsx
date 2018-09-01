@@ -8,7 +8,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import LinkIcon from "@material-ui/icons/Link";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import Snackbar from "@material-ui/core/Snackbar";
+import InfoBar from "./InfoBar";
 
 
 const styles = theme => ({
@@ -29,12 +29,12 @@ class SocialMenu extends React.Component {
     this.openTwitterDialog = this.openTwitterDialog.bind(this);
 
     this.state = {
-      linkCopyOpen: false,
+      copyLinkOpen: false,
     }
   }
 
   openFacebookDialog() {
-    const { avalanche, s3Bucket, closeCallback } = this.props;
+    const { avalanche, clientData, closeCallback } = this.props;
 
     closeCallback();
 
@@ -46,7 +46,7 @@ class SocialMenu extends React.Component {
           'og:url': avalanche.extUrl,
           'og:title': avalanche.title,
           'og:description': avalanche.comments,
-          'og:image': "https://" + s3Bucket + ".s3.amazonaws.com/avalanches/" + avalanche.extId + "/screenshot.jpg",
+          'og:image': "https://" + clientData.s3.bucket + ".s3.amazonaws.com/avalanches/" + avalanche.extId + "/screenshot.jpg",
           "og:image:width": 800,
           "og:image:height": 600
         }
@@ -76,8 +76,7 @@ class SocialMenu extends React.Component {
   };
 
   render() {
-    const { classes, anchorEl, avalanche, closeCallback } = this.props;
-    const { linkCopyOpen } = this.state;
+    const { classes, anchorEl, clientData, avalanche, closeCallback } = this.props;
 
     return (
       <div>
@@ -103,7 +102,7 @@ class SocialMenu extends React.Component {
             <ListItemText inset primary="Twitter"/>
           </MenuItem>
           <CopyToClipboard text={avalanche.extUrl}>
-            <MenuItem onClick={() => this.setState({ linkCopyOpen: true, }, closeCallback)}>
+            <MenuItem onClick={() => this.setState({ copyLinkOpen: true, }, closeCallback)}>
               <ListItemIcon>
                 <LinkIcon className={classes.shareIcon}/>
               </ListItemIcon>
@@ -111,17 +110,11 @@ class SocialMenu extends React.Component {
             </MenuItem>
           </CopyToClipboard>
         </Menu>
-        <Snackbar
-          anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-          open={linkCopyOpen}
-          autoHideDuration={6000}
-          onClose={() => this.setState({ linkCopyOpen: false }) }
-          ContentProps={{
-            classes: {
-              root: classes.snackbarRoot,
-            }
-          }}
-          message="Avalanche URL copied to clipboard"
+        <InfoBar
+          open={this.state.copyLinkOpen}
+          message={clientData.help.copyLinkMessage}
+          duration={5}
+          closeCallback={() => this.setState({copyLinkOpen: false})}
         />
       </div>
     );

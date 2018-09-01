@@ -259,7 +259,7 @@ class AvyCard extends React.Component {
         {this.state.lightboxOpen && this.renderLightbox(avalanche)}
         <SocialMenu
           avalanche={avalanche}
-          s3Bucket={clientData.s3.bucket}
+          clientData={clientData}
           anchorEl={socialMenuAnchor}
           closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
         />
