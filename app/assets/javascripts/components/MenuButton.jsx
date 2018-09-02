@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
 const styles = theme => ({
@@ -10,9 +10,15 @@ const styles = theme => ({
     position: 'absolute',
     top: 10,
     left: 10,
+    width: 260,
+    height: 62,
+    background: '#153570',
+    borderRadius: 5,
   },
   button: {
-    background: '#153570',
+    position: 'absolute',
+    right: 0,
+    marginRight: 4,
     margin: theme.spacing.unit,
   },
   menuIcon: {
@@ -24,13 +30,10 @@ const MenuButton = props => {
   const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>
-      <Button
-        variant="fab"
-        onClick={menuToggle}
-        className={classes.button}
-      >
+      <img src="/assets/images/title.png"/>
+      <IconButton onClick={menuToggle} className={classes.button}>
         <MenuIcon className={classes.menuIcon} />
-      </Button>
+      </IconButton>
     </div>
   );
 };
