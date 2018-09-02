@@ -5,7 +5,7 @@ import Cesium from 'cesium/Cesium';
 import CesiumController from "../CesiumController";
 import Config from '../Config';
 import MenuButton from "./MenuButton";
-import MenuDrawer from "./MenuDrawer";
+import MainMenu from "./MainMenu";
 import ReportButton from "./ReportButton";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
@@ -13,6 +13,7 @@ import MouseBee from "./MouseBee";
 import FilterSnackbar from "./FilterSnackbar";
 import AvyCard from "./AvyCard";
 import InfoBar from "./InfoBar";
+import HelpDialog from "./HelpDialog";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
@@ -42,7 +43,7 @@ class AvyEyesClient extends React.Component {
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
     this.setCursorStyle = this.setCursorStyle.bind(this);
-    this.renderAvyCard = this.renderAvyCard.bind(this);
+    this.showHelp = this.showHelp.bind(this);
 
     fetch('/api/clientData')
       .then(response => {
@@ -101,8 +102,9 @@ class AvyEyesClient extends React.Component {
     this.loadFacebookAPI();
 
     this.state = {
-      currentMenuPanel: FilterMenuPanel,
+      currentMenuPanel: null,
       infoMessage: null,
+      help: null,
       currentAvalanche: null,
       avalancheFilter: {
         fromDate: '',
@@ -210,15 +212,14 @@ class AvyEyesClient extends React.Component {
     this.cesiumContainer.style.cursor = style;
   }
 
-  renderAvyCard() {
-    return (
-      <AvyCard
-        avalanche={this.state.currentAvalanche}
-        clientData={this.state.clientData}
-        setCursorStyle={this.setCursorStyle}
-        closeCallback={() => { this.setState({ currentAvalanche: null }) }}
-      />
-    )
+  showHelp(params) {
+    this.setState({
+      currentMenuPanel: null,
+      help: {
+        title: params.title,
+        content: params.content,
+      }
+    })
   }
 
   render() {
@@ -226,10 +227,32 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
-        <MenuButton menuToggle={() => { this.setState({currentMenuPanel: FilterMenuPanel}) }} />
-        <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
-        <EyeAltitude viewer={this.viewer} />
-        <ResetViewButton controller={this.controller} />
+        { this.state.currentAvalanche &&
+          <AvyCard
+            avalanche={this.state.currentAvalanche}
+            clientData={this.state.clientData}
+            setCursorStyle={this.setCursorStyle}
+            closeCallback={() => { this.setState({ currentAvalanche: null }) }}
+          />
+        }
+
+        <MainMenu
+          menuPanel={this.state.currentMenuPanel}
+          changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }}
+          clientData={this.state.clientData}
+          filter={this.state.avalancheFilter}
+          applyFilter={this.filterAvalanches}
+          clearFilter={this.clearFilter}
+          showHelp={this.showHelp}
+        />
+
+        { this.state.help &&
+          <HelpDialog
+            title={this.state.help.title}
+            contentString={this.state.help.content}
+            closeCallback={() => this.setState({ help: null }) }
+          />
+        }
 
         <InfoBar
           open={Boolean(this.state.infoMessage)}
@@ -237,15 +260,6 @@ class AvyEyesClient extends React.Component {
           duration={15}
           closeable
           closeCallback={() => this.setState({ infoMessage: null }) }
-        />
-
-        <MenuDrawer
-          menuPanel={this.state.currentMenuPanel}
-          changeMenuPanel={(panel) => { this.setState({currentMenuPanel: panel}) }}
-          clientData={this.state.clientData}
-          filter={this.state.avalancheFilter}
-          applyFilter={this.filterAvalanches}
-          clearFilter={this.clearFilter}
         />
 
         <MouseBee
@@ -261,7 +275,10 @@ class AvyEyesClient extends React.Component {
           clearFilter={this.clearFilter}
         />
 
-        {this.state.currentAvalanche && this.renderAvyCard()}
+        <MenuButton menuToggle={() => { this.setState({currentMenuPanel: FilterMenuPanel}) }} />
+        <ReportButton startReport={() => { this.setState({currentMenuPanel: ReportMenuPanel}) }} />
+        <EyeAltitude viewer={this.viewer} />
+        <ResetViewButton controller={this.controller} />
       </div>
     );
   }

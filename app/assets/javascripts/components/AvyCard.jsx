@@ -100,11 +100,6 @@ const styles = theme => ({
       marginBottom: 'auto',
     },
   },
-  fieldIcon: {
-    '&:hover': {
-      cursor: 'help',
-    },
-  },
   swagTable: {
     marginLeft: 5,
     '& tr': {
@@ -307,7 +302,7 @@ class AvyCard extends React.Component {
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardSlope}>
                         <ListItemIcon>
-                            <LandscapeIcon className={classes.fieldIcon}/>
+                            <LandscapeIcon/>
                         </ListItemIcon>
                       </Tooltip>
                       <ListItemText disableTypography>
@@ -319,7 +314,7 @@ class AvyCard extends React.Component {
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardSWAG}>
                         <ListItemIcon>
-                          <ViewListIcon className={classes.fieldIcon}/>
+                          <ViewListIcon/>
                         </ListItemIcon>
                       </Tooltip>
                       <Table className={classes.swagTable}>
@@ -350,7 +345,7 @@ class AvyCard extends React.Component {
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardWeather}>
                         <ListItemIcon>
-                          <CloudIcon className={classes.fieldIcon}/>
+                          <CloudIcon/>
                         </ListItemIcon>
                       </Tooltip>
                       <ListItemText disableTypography>
@@ -362,7 +357,7 @@ class AvyCard extends React.Component {
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardComments}>
                         <ListItemIcon>
-                          <CommentsIcon className={classes.fieldIcon}/>
+                          <CommentsIcon/>
                         </ListItemIcon>
                       </Tooltip>
                       <ListItemText disableTypography>
@@ -374,12 +369,12 @@ class AvyCard extends React.Component {
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardSubmitter}>
                         <ListItemIcon>
-                          <PersonIcon className={classes.fieldIcon}/>
+                          <PersonIcon/>
                         </ListItemIcon>
                       </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
-                          <i>Submitter: {labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
+                          <i>{labelForDataCode(this.props.clientData.codes.experienceLevel, avalanche.submitterExp)} </i>
                         </Typography>
                       </ListItemText>
                     </ListItem>
