@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {withStyles} from '@material-ui/core/styles';
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
@@ -24,22 +23,11 @@ const styles = theme => ({
     width: drawerWidth,
     backgroundColor: '#EAEAEA',
   },
-  drawerAppTitle: {
-    display: 'flex',
-    alignItems: 'left',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    fontSize: theme.typography.pxToRem(35),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
   panelDetails: {
     paddingTop: 0,
   },
-  closeMenuButton: {
-    marginLeft: 'auto',
-  },
   drawerSectionHeading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: '1.2rem',
     fontWeight: theme.typography.fontWeightRegular,
   },
   helpIconButton: {
@@ -64,14 +52,8 @@ const MainMenu = props => {
           paper: classes.drawerPaper,
         }}
       >
-        <div className={classes.drawerAppTitle}>
-          AvyEyes
-          <IconButton className={classes.closeMenuButton} onClick={() => changeMenuPanel(null)}>
-            <ChevronLeftIcon/>
-          </IconButton>
-        </div>
         <ExpansionPanel expanded={menuPanel === FilterMenuPanel} onClick={() => changeMenuPanel(FilterMenuPanel)}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+          <ExpansionPanelSummary expandIcon={menuPanel !== FilterMenuPanel ? <ExpandMoreIcon/> : null}>
             <Typography className={classes.drawerSectionHeading}>
               Avalanche Filter
               <IconButton
@@ -94,7 +76,7 @@ const MainMenu = props => {
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel expanded={menuPanel === ReportMenuPanel} onClick={() => changeMenuPanel(ReportMenuPanel)}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+          <ExpansionPanelSummary expandIcon={menuPanel !== ReportMenuPanel ? <ExpandMoreIcon/> : null}>
             <Typography className={classes.drawerSectionHeading}>Report an Avalanche</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.panelDetails}>

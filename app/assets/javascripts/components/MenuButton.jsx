@@ -8,11 +8,11 @@ const styles = theme => ({
   root: {
     zIndex: 1,
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: 4,
+    left: 6,
     width: 260,
     height: 62,
-    background: '#153570',
+    background: '#303336',
     borderRadius: 5,
   },
   button: {
