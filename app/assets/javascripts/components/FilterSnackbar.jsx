@@ -27,6 +27,7 @@ const styles = theme => ({
   },
   snackbarRoot: {
     backgroundColor: "#303336",
+    opacity: .85,
   },
   snackbarAction: {
     marginBottom: 'auto',

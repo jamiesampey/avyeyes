@@ -11,9 +11,10 @@ const styles = theme => ({
     top: 4,
     left: 6,
     width: 260,
-    height: 62,
+    height: 60,
     background: '#303336',
     borderRadius: 5,
+    opacity: .85,
   },
   button: {
     position: 'absolute',

@@ -12,6 +12,7 @@ const styles = theme => ({
     background: '#303336',
     color: '#edffff',
     borderRadius: 5,
+    opacity: .85,
   },
 });
 
