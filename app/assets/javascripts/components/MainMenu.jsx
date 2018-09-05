@@ -30,11 +30,6 @@ const styles = theme => ({
     fontSize: '1.2rem',
     fontWeight: theme.typography.fontWeightRegular,
   },
-  helpIconButton: {
-    height: 24,
-    width: 24,
-    marginLeft: 10,
-  }
 });
 
 const MainMenu = props => {
@@ -59,7 +54,6 @@ const MainMenu = props => {
               <IconButton
                 size="small"
                 disableRipple
-                className={classes.helpIconButton}
                 onClick={(e) => {e.stopPropagation(); showHelp({ title: "Avalanche Filter Help", content: clientData.help.filterHelpContent })} }
               >
                 <HelpIcon/>
