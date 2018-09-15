@@ -38,9 +38,23 @@ class CesiumController {
   }
 
   flyToDest(dest) {
-    this.viewer.camera.flyTo({
-      destination: dest,
-    });
+    let flyToEntity;
+
+    if (dest instanceof Cesium.Cartesian3) {
+      let cartographic  = Cesium.Ellipsoid.WGS84.cartesianToCartographic(dest);
+      flyToEntity = this.targetEntityFromCoords(Cesium.Math.toDegrees(cartographic.longitude), Cesium.Math.toDegrees(cartographic.latitude));
+    } else if (dest instanceof Cesium.Rectangle) {
+      let center = Cesium.Rectangle.center(dest);
+      flyToEntity = this.targetEntityFromCoords(Cesium.Math.toDegrees(center.longitude), Cesium.Math.toDegrees(center.latitude));
+    }
+
+    if (flyToEntity) {
+      this.flyTo(flyToEntity, 0.0, -89.9, 15000).then(() => {
+        this.removeEntity(flyToEntity);
+      });
+    } else {
+      console.error(`Failed to fly to destination`);
+    }
   }
 
   flyTo(targetEntity, heading, pitch, range) {
