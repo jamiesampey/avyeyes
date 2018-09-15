@@ -184,16 +184,16 @@ function AvyEyesView(socialMode) {
 //     return $('#aeControlsSearchForm, #aeControlsReportInstructions').slideUp("slow").promise();
 // }
 
-AvyEyesView.prototype.showModalDialog = function(msg) {
-    $("#multiDialog").html(msg);
-    $("#multiDialog").dialog("option", "title", "Info");
-    $("#multiDialog").dialog("open");
-}
-
-AvyEyesView.prototype.showHelp = function(tab) {
-	$("#helpOverlayText").tabs("option", "active", tab);
-	$("#helpOverlay").show();
-}
+// AvyEyesView.prototype.showModalDialog = function(msg) {
+//     $("#multiDialog").html(msg);
+//     $("#multiDialog").dialog("option", "title", "Info");
+//     $("#multiDialog").dialog("open");
+// }
+//
+// AvyEyesView.prototype.showHelp = function(tab) {
+// 	$("#helpOverlayText").tabs("option", "active", tab);
+// 	$("#helpOverlay").show();
+// }
 
 AvyEyesView.prototype.doReport = function() {
 	this.removeAllEntities();
@@ -371,28 +371,28 @@ AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
     }.bind(this), geocodeFailure);
 }
 
-AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
-    if (!address) return;
-
-    var boundingBox = this.getBoundingBox();
-    var dataObj = { key: this.bingKey, q: address };
-    if (boundingBox[0] && boundingBox[1] && boundingBox[2] && boundingBox[3]) {
-        dataObj.umv = boundingBox[1] + "," + boundingBox[3] + "," + boundingBox[0] + "," + boundingBox[2];
-    }
-
-    $.ajax({
-        url: "//dev.virtualearth.net/REST/v1/Locations",
-        dataType: "jsonp",
-        data: dataObj,
-        jsonp: "jsonp",
-        success: function(data) {
-            onSuccess(data);
-        },
-        error: function(e) {
-            onFailure(e);
-        }
-    });
-}
+// AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
+//     if (!address) return;
+//
+//     var boundingBox = this.getBoundingBox();
+//     var dataObj = { key: this.bingKey, q: address };
+//     if (boundingBox[0] && boundingBox[1] && boundingBox[2] && boundingBox[3]) {
+//         dataObj.umv = boundingBox[1] + "," + boundingBox[3] + "," + boundingBox[0] + "," + boundingBox[2];
+//     }
+//
+//     $.ajax({
+//         url: "//dev.virtualearth.net/REST/v1/Locations",
+//         dataType: "jsonp",
+//         data: dataObj,
+//         jsonp: "jsonp",
+//         success: function(data) {
+//             onSuccess(data);
+//         },
+//         error: function(e) {
+//             onFailure(e);
+//         }
+//     });
+// }
 
 // AvyEyesView.prototype.targetEntityFromCoords = function(lng, lat) {
 //     var alt = this.cesiumViewer.scene.globe.getHeight(Cesium.Cartographic.fromDegrees(lng, lat));

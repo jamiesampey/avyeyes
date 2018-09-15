@@ -10,6 +10,8 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import HelpIcon from '@material-ui/icons/Help';
 import FilterForm from "./FilterForm";
+import ReportSteps from "./ReportSteps";
+
 import { FilterMenuPanel, ReportMenuPanel } from "../Constants";
 
 const drawerWidth = 300;
@@ -23,8 +25,14 @@ const styles = theme => ({
     width: drawerWidth,
     backgroundColor: '#EAEAEA',
   },
-  panelDetails: {
+  filterPanelDetails: {
     paddingTop: 0,
+  },
+  reportPanelDetails: {
+    paddingTop: 0,
+    paddingLeft: 16,
+    paddingRight: 0,
+    fontSize: '.9rem',
   },
   drawerSectionHeading: {
     fontSize: '1.2rem',
@@ -34,7 +42,17 @@ const styles = theme => ({
 
 const MainMenu = props => {
 
-  const { classes, menuPanel, changeMenuPanel, clientData, filter, applyFilter, clearFilter, showHelp } = props;
+  const {
+    classes,
+    menuPanel,
+    changeMenuPanel,
+    clientData,
+    filter,
+    applyFilter,
+    clearFilter,
+    showHelp,
+    controller,
+  } = props;
 
   return (
     <div className={classes.root}>
@@ -60,7 +78,7 @@ const MainMenu = props => {
               </IconButton>
             </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.panelDetails}>
+          <ExpansionPanelDetails className={classes.filterPanelDetails}>
             <FilterForm
               clientData={clientData}
               filter={filter}
@@ -73,10 +91,11 @@ const MainMenu = props => {
           <ExpansionPanelSummary expandIcon={menuPanel !== ReportMenuPanel ? <ExpandMoreIcon/> : null}>
             <Typography className={classes.drawerSectionHeading}>Report an Avalanche</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.panelDetails}>
-            <Typography>
-              Vertical stepper for creating a report
-            </Typography>
+          <ExpansionPanelDetails className={classes.reportPanelDetails}>
+            <ReportSteps
+              clientData={clientData}
+              cesiumController={controller}
+            />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Drawer>

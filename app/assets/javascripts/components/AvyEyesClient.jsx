@@ -244,6 +244,7 @@ class AvyEyesClient extends React.Component {
           applyFilter={this.filterAvalanches}
           clearFilter={this.clearFilter}
           showHelp={this.showHelp}
+          controller={this.controller}
         />
 
         { this.state.help &&

@@ -4,6 +4,10 @@ class CesiumController {
 
   constructor(cesiumViewer) {
     this.viewer = cesiumViewer;
+    this.geocoder = new Cesium.IonGeocoderService({
+      scene: cesiumViewer.scene,
+      accessToken: Cesium.Ion.defaultAccessToken,
+    });
     this.CreatedByAvyEyes = "AvyEyes";
   }
 
@@ -33,10 +37,16 @@ class CesiumController {
     entitiesToRemove.forEach(entity => { this.removeEntity(entity); });
   }
 
+  flyToDest(dest) {
+    this.viewer.camera.flyTo({
+      destination: dest,
+    });
+  }
+
   flyTo(targetEntity, heading, pitch, range) {
     return this.viewer.flyTo(targetEntity, {
       duration: 4.0,
-      offset: this.toHeadingPitchRange(heading, pitch, range)
+      offset: CesiumController.toHeadingPitchRange(heading, pitch, range)
     });
   }
 
@@ -78,11 +88,11 @@ class CesiumController {
 
     this.viewer.camera.flyToBoundingSphere(boundingSphere, {
       duration: 4.0,
-      offset: this.toHeadingPitchRange(0, -89.9, 4000),
+      offset: CesiumController.toHeadingPitchRange(0, -89.9, 4000),
       complete: () => {
         this.viewer.camera.flyToBoundingSphere(boundingSphere, {
           duration: 4.0,
-          offset: this.toHeadingPitchRange(this.flyToHeadingFromAspect(a.slope.aspect), -35, 1200),
+          offset: CesiumController.toHeadingPitchRange(CesiumController.flyToHeadingFromAspect(a.slope.aspect), -35, 1200),
           complete: () => {
             // TODO show clues
             // showClickPathClue("Click on the red avalanche path for the details").then(() => {
@@ -190,11 +200,15 @@ class CesiumController {
     ];
   }
 
-  toHeadingPitchRange(heading, pitch, range) {
+  geocode(partialLocation) {
+    return this.geocoder.geocode(partialLocation, Cesium.GeocodeType.AUTOCOMPLETE);
+  }
+
+  static toHeadingPitchRange(heading, pitch, range) {
     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);
   }
 
-  flyToHeadingFromAspect(aspect) {
+  static flyToHeadingFromAspect(aspect) {
     if (aspect === "N") return 180.0;
     else if (aspect === "NE") return 225.0;
     else if (aspect === "E") return 270.0;
