@@ -23,7 +23,10 @@ const styles = theme => ({
 });
 
 const ReportButton = props => {
-  const { classes, startReport } = props;
+  const { classes, visible, startReport } = props;
+
+  if (!visible) return null;
+
   return (
     <div className={classes.root}>
       <Button

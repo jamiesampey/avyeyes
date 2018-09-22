@@ -1,5 +1,5 @@
 
 module.exports = {
-  FilterMenuPanel: 'filterPanel',
-  ReportMenuPanel: 'reportPanel',
+  FilterDrawerName: 'filterDrawer',
+  ReportDrawerName: 'reportDrawer',
 };

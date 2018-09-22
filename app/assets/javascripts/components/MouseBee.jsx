@@ -20,8 +20,6 @@ class MouseBee extends React.Component {
     super(props);
 
     this.props.eventHandler.setInputAction(movement => {
-      if (this.props.cursorStyle === "wait") return; // in the process of opening a report
-
       let pick = this.props.viewer.scene.pick(movement.endPosition);
       if (Cesium.defined(pick) && pick.id.name) {
         this.props.setCursorStyle("pointer");
