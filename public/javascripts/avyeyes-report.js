@@ -5,124 +5,124 @@ function AvyReport(avyEyesView) {
 	this.drawingPolygon;
 }
 
-AvyReport.prototype.reserveExtId = function() {
-	$.getJSON('/avalanche/newReportId', function(data) {
-		$("#rwAvyFormExtId").val(data.extId);
-	}.bind(this)).fail(function(jqxhr, textStatus, error) {
-	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
-	    this.view.resetView();
-	}.bind(this));
-}
+// AvyReport.prototype.reserveExtId = function() {
+// 	$.getJSON('/avalanche/newReportId', function(data) {
+// 		$("#rwAvyFormExtId").val(data.extId);
+// 	}.bind(this)).fail(function(jqxhr, textStatus, error) {
+// 	    console.error("AvyEyes failed to reserve a new report ID: " + textStatus + ", " + error);
+// 	    this.view.resetView();
+// 	}.bind(this));
+// }
+//
+// AvyReport.prototype.beginReport = function() {
+// 	this.reserveExtId();
+//     $('#avyReportInitLocation').val('');
+//     $('#avyReportStep1').show(function() {
+//     	this.view.showControls('#aeControlsReportInstructions');
+//     }.bind(this));
+// }
 
-AvyReport.prototype.beginReport = function() {
-	this.reserveExtId();
-    $('#avyReportInitLocation').val('');
-    $('#avyReportStep1').show(function() {
-    	this.view.showControls('#aeControlsReportInstructions');
-    }.bind(this));
-}
-
-AvyReport.prototype.startDrawing = function() {
-    this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-    $('#cesiumContainer').css('cursor','crosshair');
-
-    var isDrawing = false;
-    var cartesian3Array = [];
-    var drawingPolyline;
-    var drawingPolylineColor = Cesium.Color.RED;
-    var drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
-
-    this.view.cesiumEventHandler.setInputAction(function(click) {
-        if (isDrawing) {
-            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-            this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-            this.view.setAvyMouseEventHandlers();
-
-            $('#cesiumContainer').css('cursor','default');
-
-            this.drawingPolygon = this.view.addEntity({
-                polygon: {
-                    hierarchy: {
-                        positions: cartesian3Array
-                    },
-                    perPositionHeight: true,
-                    material: drawingPolygonColor,
-                    outline: false
-                }
-            });
-            this.view.removeEntity(drawingPolyline);
-
-            this.digestDrawing(cartesian3Array);
-
-            $("#avyReportStep3").hide("slide", {"direction":"down"}, 600, function() {
-                $("#avyReportStep4").slideDown("slow");
-            });
-        } else {
-            drawingPolyline = this.view.addEntity({
-                polyline: {
-                    positions: new Cesium.CallbackProperty(function() {
-                        return cartesian3Array;
-                    }, false),
-                    material: drawingPolylineColor,
-                    width: 3
-                }
-            });
-        }
-
-        isDrawing = !isDrawing;
-    }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-    this.view.cesiumEventHandler.setInputAction(function(movement) {
-        if (!isDrawing) return;
-
-        var ray = this.view.cesiumViewer.camera.getPickRay(movement.endPosition);
-        var cartesianPos = this.view.cesiumViewer.scene.globe.pick(ray, this.view.cesiumViewer.scene);
-
-        if (Cesium.defined(cartesianPos)) {
-            if (cartesian3Array.length == 0) {
-                cartesian3Array.push(cartesianPos);
-            } else if (Cesium.Cartesian3.distance(cartesian3Array[cartesian3Array.length - 1], cartesianPos) > 4) {
-                cartesian3Array.push(cartesianPos);
-            }
-        }
-    }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-}
-
-AvyReport.prototype.digestDrawing = function(cartesian3Array) {
-    var coordStr = "";
-    var highestCartesian;
-    var highestCartographic;
-    var lowestCartesian;
-    var lowestCartographic;
-
-    $.each(cartesian3Array, function(i, cartesianPos) {
-        var cartographicPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesianPos);
-
-        if (!highestCartographic || cartographicPos.height > highestCartographic.height) {
-            highestCartesian = cartesianPos;
-            highestCartographic = cartographicPos;
-        }
-        if (!lowestCartographic || cartographicPos.height < lowestCartographic.height) {
-            lowestCartesian = cartesianPos;
-            lowestCartographic = cartographicPos;
-        }
-
-        coordStr += Cesium.Math.toDegrees(cartographicPos.longitude).toFixed(8)
-        + "," + Cesium.Math.toDegrees(cartographicPos.latitude).toFixed(8)
-        + "," + cartographicPos.height.toFixed(2) + " ";
-    });
-
-    var hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
-    var opposite = highestCartographic.height - lowestCartographic.height;
-
-    this.view.form.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
-        Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
-        Math.round(highestCartographic.height),
-        getAspect(highestCartographic, lowestCartographic),
-        Math.round(Cesium.Math.toDegrees(Math.asin(opposite/hypotenuse))),
-        coordStr.trim());
-}
+// AvyReport.prototype.startDrawing = function() {
+//     this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+//
+//     $('#cesiumContainer').css('cursor','crosshair');
+//
+//     var isDrawing = false;
+//     var cartesian3Array = [];
+//     var drawingPolyline;
+//     var drawingPolylineColor = Cesium.Color.RED;
+//     var drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
+//
+//     this.view.cesiumEventHandler.setInputAction(function(click) {
+//         if (isDrawing) {
+//             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+//             this.view.cesiumEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+//             this.view.setAvyMouseEventHandlers();
+//
+//             $('#cesiumContainer').css('cursor','default');
+//
+//             this.drawingPolygon = this.view.addEntity({
+//                 polygon: {
+//                     hierarchy: {
+//                         positions: cartesian3Array
+//                     },
+//                     perPositionHeight: true,
+//                     material: drawingPolygonColor,
+//                     outline: false
+//                 }
+//             });
+//             this.view.removeEntity(drawingPolyline);
+//
+//             this.digestDrawing(cartesian3Array);
+//
+//             $("#avyReportStep3").hide("slide", {"direction":"down"}, 600, function() {
+//                 $("#avyReportStep4").slideDown("slow");
+//             });
+//         } else {
+//             drawingPolyline = this.view.addEntity({
+//                 polyline: {
+//                     positions: new Cesium.CallbackProperty(function() {
+//                         return cartesian3Array;
+//                     }, false),
+//                     material: drawingPolylineColor,
+//                     width: 3
+//                 }
+//             });
+//         }
+//
+//         isDrawing = !isDrawing;
+//     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+//
+//     this.view.cesiumEventHandler.setInputAction(function(movement) {
+//         if (!isDrawing) return;
+//
+//         var ray = this.view.cesiumViewer.camera.getPickRay(movement.endPosition);
+//         var cartesianPos = this.view.cesiumViewer.scene.globe.pick(ray, this.view.cesiumViewer.scene);
+//
+//         if (Cesium.defined(cartesianPos)) {
+//             if (cartesian3Array.length == 0) {
+//                 cartesian3Array.push(cartesianPos);
+//             } else if (Cesium.Cartesian3.distance(cartesian3Array[cartesian3Array.length - 1], cartesianPos) > 4) {
+//                 cartesian3Array.push(cartesianPos);
+//             }
+//         }
+//     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+// }
+//
+// AvyReport.prototype.digestDrawing = function(cartesian3Array) {
+//     var coordStr = "";
+//     var highestCartesian;
+//     var highestCartographic;
+//     var lowestCartesian;
+//     var lowestCartographic;
+//
+//     $.each(cartesian3Array, function(i, cartesianPos) {
+//         var cartographicPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesianPos);
+//
+//         if (!highestCartographic || cartographicPos.height > highestCartographic.height) {
+//             highestCartesian = cartesianPos;
+//             highestCartographic = cartographicPos;
+//         }
+//         if (!lowestCartographic || cartographicPos.height < lowestCartographic.height) {
+//             lowestCartesian = cartesianPos;
+//             lowestCartographic = cartographicPos;
+//         }
+//
+//         coordStr += Cesium.Math.toDegrees(cartographicPos.longitude).toFixed(8)
+//         + "," + Cesium.Math.toDegrees(cartographicPos.latitude).toFixed(8)
+//         + "," + cartographicPos.height.toFixed(2) + " ";
+//     });
+//
+//     var hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
+//     var opposite = highestCartographic.height - lowestCartographic.height;
+//
+//     this.view.form.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+//         Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
+//         Math.round(highestCartographic.height),
+//         getAspect(highestCartographic, lowestCartographic),
+//         Math.round(Cesium.Math.toDegrees(Math.asin(opposite/hypotenuse))),
+//         coordStr.trim());
+// }
 
 AvyReport.prototype.submitReport = function() {
     var view = this.view;

@@ -19,10 +19,10 @@ class MouseBee extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.eventHandler.setInputAction(movement => {
-      let pick = this.props.viewer.scene.pick(movement.endPosition);
+    this.props.controller.eventHandler.setInputAction(movement => {
+      let pick = this.props.controller.viewer.scene.pick(movement.endPosition);
       if (Cesium.defined(pick) && pick.id.name) {
-        this.props.setCursorStyle("pointer");
+        this.props.controller.setCursorStyle("pointer");
         this.setState({
           beeStyle: {
             display: 'block',
@@ -32,7 +32,7 @@ class MouseBee extends React.Component {
           beeText: pick.id.name,
         });
       } else {
-        this.props.setCursorStyle("default");
+        this.props.controller.setCursorStyle("default");
         this.setState({
           beeStyle: {
             display: 'none',
@@ -63,6 +63,7 @@ class MouseBee extends React.Component {
 
 MouseBee.propTypes = {
   classes: PropTypes.object.isRequired,
+  controller: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(MouseBee);

@@ -1,14 +1,20 @@
 import Cesium from 'cesium/Cesium';
+import {getRequestParam, parseApiResponse} from "./Util";
+import Config from "./Config";
 
 class CesiumController {
 
-  constructor(cesiumViewer) {
-    this.viewer = cesiumViewer;
+  constructor(cesiumContainer) {
+    this.viewer = new Cesium.Viewer(cesiumContainer, Config.cesiumViewerOptions);
+    this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
     this.geocoder = new Cesium.IonGeocoderService({
-      scene: cesiumViewer.scene,
+      scene: this.viewer.scene,
       accessToken: Cesium.Ion.defaultAccessToken,
     });
+
     this.CreatedByAvyEyes = "AvyEyes";
+
+    this.setAvalancheSelectHandler();
   }
 
   get viewer() {
@@ -17,6 +23,55 @@ class CesiumController {
 
   set viewer(cesiumViewer) {
     this._viewer = cesiumViewer;
+  }
+
+  get eventHandler() {
+    return this._eventHandler;
+  }
+
+  set eventHandler(eventHandler) {
+    this._eventHandler = eventHandler;
+  }
+
+  setAvalancheSelectHandler() {
+    this.eventHandler.setInputAction(movement => {
+      // this.form.hideReadOnlyForm();
+
+      let pick = this.viewer.scene.pick(movement.position);
+      if (Cesium.defined(pick) && pick.id.name) {
+
+        if (!pick.id.billboard) {
+          // clicked on a path, set wait cursor
+          this.controller.setCursorStyle("wait");
+        }
+
+        let selectedAvalanche = pick.id;
+        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
+        let editKeyParam = getRequestParam("edit");
+        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
+
+        fetch(avalancheUrl)
+          .then(response => {
+            return parseApiResponse(response);
+          })
+          .then(data => {
+            if (pick.id.billboard) {
+              // clicked on a pin, add the path and fly to it
+              this.controller.removeAllEntities();
+              this.controller.addAvalancheAndFlyTo(data);
+            } else {
+              // clicked on a path, display details
+              this.setState({
+                currentAvalanche: data,
+              });
+            }
+          })
+          .catch(error => {
+            console.error(`Failed to fetch details for avalanche ${selectedAvalanche.id}. Error: ${error}`);
+          });
+
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
   }
 
   addEntity(entity) {
@@ -216,6 +271,10 @@ class CesiumController {
 
   geocode(partialLocation) {
     return this.geocoder.geocode(partialLocation, Cesium.GeocodeType.AUTOCOMPLETE);
+  }
+
+  setCursorStyle(style) {
+    this.viewer.container.style.cursor = style;
   }
 
   static toHeadingPitchRange(heading, pitch, range) {

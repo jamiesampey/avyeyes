@@ -43,7 +43,6 @@ class CesiumView extends React.Component {
     this.renderCesiumDecorators = this.renderCesiumDecorators.bind(this);
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
-    this.setCursorStyle = this.setCursorStyle.bind(this);
 
     this.state = {
       cesiumInitialized: false,
@@ -62,52 +61,11 @@ class CesiumView extends React.Component {
   }
 
   componentDidMount() {
-    this.viewer = new Cesium.Viewer(this.cesiumRef.current, Config.cesiumViewerOptions);
-    this.controller = new CesiumController(this.viewer);
-    this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    this.controller = new CesiumController(this.cesiumRef.current);
 
-    this.viewer.camera.moveEnd.addEventListener(() => {
+    this.controller.viewer.camera.moveEnd.addEventListener(() => {
       this.filterAvalanches();
     });
-
-    this.eventHandler.setInputAction(movement => {
-      // this.form.hideReadOnlyForm();
-
-      let pick = this.viewer.scene.pick(movement.position);
-      if (Cesium.defined(pick) && pick.id.name) {
-
-        if (!pick.id.billboard) {
-          // clicked on a path, set wait cursor
-          this.setCursorStyle("wait");
-        }
-
-        let selectedAvalanche = pick.id;
-        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
-        let editKeyParam = getRequestParam("edit");
-        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
-
-        fetch(avalancheUrl)
-          .then(response => {
-            return parseApiResponse(response);
-          })
-          .then(data => {
-            if (pick.id.billboard) {
-              // clicked on a pin, add the path and fly to it
-              this.controller.removeAllEntities();
-              this.controller.addAvalancheAndFlyTo(data);
-            } else {
-              // clicked on a path, display details
-              this.setState({
-                currentAvalanche: data,
-              });
-            }
-          })
-          .catch(error => {
-            console.error(`Failed to fetch details for avalanche ${selectedAvalanche.id}. Error: ${error}`);
-          });
-
-      }
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     this.props.initialized(this.controller);
     this.setState({ cesiumInitialized: true });
@@ -142,9 +100,9 @@ class CesiumView extends React.Component {
     }
 
     let searchQueryString = `/api/avalanche/search?latMax=${boundingBox[0]}&latMin=${boundingBox[1]}&lngMax=${boundingBox[2]}&lngMin=${boundingBox[3]} \
-      &camAlt=${this.viewer.camera.positionCartographic.height} \
-      &camLng=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.longitude)} \
-      &camLat=${Cesium.Math.toDegrees(this.viewer.camera.positionCartographic.latitude)}`;
+      &camAlt=${this.controller.viewer.camera.positionCartographic.height} \
+      &camLng=${Cesium.Math.toDegrees(this.controller.viewer.camera.positionCartographic.longitude)} \
+      &camLat=${Cesium.Math.toDegrees(this.controller.viewer.camera.positionCartographic.latitude)}`;
 
     let appendFilter = (filter) => {
       if (!filter) return;
@@ -180,9 +138,7 @@ class CesiumView extends React.Component {
     this.filterAvalanches({fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 });
   }
 
-  setCursorStyle(style) {
-    this.cesiumRef.current.style.cursor = style;
-  }
+
 
   renderCesiumDecorators() {
     const { clientData, showHelp } = this.props;
@@ -194,7 +150,7 @@ class CesiumView extends React.Component {
           <AvyCard
             avalanche={currentAvalanche}
             clientData={clientData}
-            setCursorStyle={this.setCursorStyle}
+            setCursorStyle={this.controller.setCursorStyle}
             closeCallback={() => {
               this.setState({currentAvalanche: null})
             }}
@@ -211,20 +167,15 @@ class CesiumView extends React.Component {
           showHelp={showHelp}
         />
 
-        <MouseBee
-          viewer={this.viewer}
-          eventHandler={this.eventHandler}
-          setCursorStyle={this.setCursorStyle}
-        />
-
         <FilterSnackbar
           drawerOpen={filterDrawerOpen}
           filter={avalancheFilter}
           clearFilter={this.clearFilter}
         />
 
+        <MouseBee controller={this.controller}/>
         <MenuButton menuToggle={() => { this.setState({filterDrawerOpen: true}) }} />
-        <EyeAltitude viewer={this.viewer} />
+        <EyeAltitude viewer={this.controller.viewer} />
         <ResetViewButton controller={this.controller} />
       </div>
     );

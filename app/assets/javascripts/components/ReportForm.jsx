@@ -44,7 +44,7 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
-class AvyFormDialog extends React.Component {
+class ReportForm extends React.Component {
 
   render() {
     const { classes, avalanche, closeCallback, setCursorStyle } = this.props;
@@ -109,8 +109,8 @@ class AvyFormDialog extends React.Component {
   };
 }
 
-AvyFormDialog.propTypes = {
+ReportForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(AvyFormDialog);
+export default withStyles(styles)(ReportForm);
