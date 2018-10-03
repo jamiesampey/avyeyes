@@ -416,16 +416,16 @@ AvyForm.prototype.clearReportFields = function() {
 	$('#rwAvyFormImageGrid').empty();
 }
 
-AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
-	$('#rwAvyFormLng').val(lng);
-	$('#rwAvyFormLat').val(lat);
-	$('#rwAvyFormElevation').val(elevation);
-	$('#rwAvyFormElevationFt').val(metersToFeet(elevation));
-	$('#rwAvyFormAspectAC').val(aspect);
-	$('#rwAvyFormAspect').val(aspect);
-	$('#rwAvyFormAngle').val(angle);
-	$('#rwAvyFormCoords').val(coordStr);
-}
+// AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
+// 	$('#rwAvyFormLng').val(lng);
+// 	$('#rwAvyFormLat').val(lat);
+// 	$('#rwAvyFormElevation').val(elevation);
+// 	$('#rwAvyFormElevationFt').val(metersToFeet(elevation));
+// 	$('#rwAvyFormAspectAC').val(aspect);
+// 	$('#rwAvyFormAspect').val(aspect);
+// 	$('#rwAvyFormAngle').val(angle);
+// 	$('#rwAvyFormCoords').val(coordStr);
+// }
 
 AvyForm.prototype.closeReportForm = function() {
     $('#rwAvyFormOverlay').css('visibility', 'hidden');

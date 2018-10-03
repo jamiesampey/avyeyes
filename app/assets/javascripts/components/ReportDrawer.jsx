@@ -61,7 +61,7 @@ class ReportDrawer extends React.Component {
       activeStep: 0,
       locationOptions: [],
       reportExtId: null,
-      drawingPolygon: null,
+      drawing: null,
     };
   }
 
@@ -140,42 +140,40 @@ class ReportDrawer extends React.Component {
     let drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
 
     eventHandler.setInputAction(function() {
-      if (isDrawing) {
+      if (!isDrawing) {
+        isDrawing = true;
 
-        // reset Cesium ScreenSpace event handlers
-        eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-        eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        this.props.controller.setAvalancheSelectHandler();
-
-        this.props.controller.setCursorStyle('default');
-
-        this.setState({ drawingPolygon: this.props.controller.addEntity({
-            polygon: {
-              hierarchy: {
-                positions: cartesian3Array
-              },
-              perPositionHeight: true,
-              material: drawingPolygonColor,
-              outline: false
-            }
-          })
-        });
-
-        this.props.controller.removeEntity(drawingPolyline);
-        this.digestDrawing(cartesian3Array);
-        isDrawing = false;
-      } else {
         drawingPolyline = this.props.controller.addEntity({
           polyline: {
-            positions: new Cesium.CallbackProperty(function() {
+            positions: new Cesium.CallbackProperty(function () {
               return cartesian3Array;
             }, false),
             material: drawingPolylineColor,
             width: 3
           }
         });
+      } else {
+        isDrawing = false;
 
-        isDrawing = true;
+        // Finished with the drawing, reset the normal Cesium event handlers and save the drawing
+        eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+        this.props.controller.setAvalancheSelectHandler();
+        this.props.controller.setCursorStyle('default');
+
+        let newPolygonEntity = this.props.controller.addEntity({
+          polygon: {
+            hierarchy: {
+              positions: cartesian3Array
+            },
+            perPositionHeight: true,
+            material: drawingPolygonColor,
+            outline: false
+          }
+        });
+
+        this.props.controller.removeEntity(drawingPolyline);
+        this.digestDrawing(cartesian3Array, newPolygonEntity);
       }
     }.bind(this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
@@ -195,39 +193,63 @@ class ReportDrawer extends React.Component {
     }.bind(this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   }
 
-  digestDrawing(cartesian3Array) {
+  digestDrawing(cartesian3Array, drawingEntity) {
     let coordStr = "";
-    let highestCartesian;
-    let highestCartographic;
-    let lowestCartesian;
-    let lowestCartographic;
+    let highestCartesian = null;
+    let highestCartographic = null;
+    let lowestCartesian = null;
+    let lowestCartographic = null;
 
-    cartesian3Array.forEach((i, cartesianPos) => {
-      let cartographicPos = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesianPos);
+    cartesian3Array.forEach(cartesian => {
+      let cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian);
 
-      if (!highestCartographic || cartographicPos.height > highestCartographic.height) {
-        highestCartesian = cartesianPos;
-        highestCartographic = cartographicPos;
+      if (!highestCartographic || cartographic.height > highestCartographic.height) {
+        highestCartesian = cartesian;
+        highestCartographic = cartographic;
       }
-      if (!lowestCartographic || cartographicPos.height < lowestCartographic.height) {
-        lowestCartesian = cartesianPos;
-        lowestCartographic = cartographicPos;
+      if (!lowestCartographic || cartographic.height < lowestCartographic.height) {
+        lowestCartesian = cartesian;
+        lowestCartographic = cartographic;
       }
 
-      coordStr += Cesium.Math.toDegrees(cartographicPos.longitude).toFixed(8)
-        + "," + Cesium.Math.toDegrees(cartographicPos.latitude).toFixed(8)
-        + "," + cartographicPos.height.toFixed(2) + " ";
+      coordStr += Cesium.Math.toDegrees(cartographic.longitude).toFixed(8)
+        + "," + Cesium.Math.toDegrees(cartographic.latitude).toFixed(8)
+        + "," + cartographic.height.toFixed(2) + " ";
     });
 
     let hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
     let opposite = highestCartographic.height - lowestCartographic.height;
 
-    // this.view.form.setReportDrawingInputs(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
-    //   Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
-    //   Math.round(highestCartographic.height),
-    //   getAspect(highestCartographic, lowestCartographic),
-    //   Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),
-    //   coordStr.trim());
+    this.setState({
+      drawing: {
+        entity: drawingEntity,
+        latitude: Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
+        longitude: Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+        elevation: Math.round(highestCartographic.height),
+        aspect: ReportDrawer.getDrawingAspect(highestCartographic, lowestCartographic),
+        angle: Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),
+        perimeter: coordStr.trim(),
+      }
+    }, this.stepForward);
+  }
+
+  static getDrawingAspect(highestCartographic, lowestCartographic) {
+    let lat1 = highestCartographic.latitude;
+    let lat2 = lowestCartographic.latitude;
+    let dLon = lowestCartographic.longitude - highestCartographic.longitude;
+
+    let y = Math.sin(dLon) * Math.cos(lat2);
+    let x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    let heading = (Cesium.Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+
+    if (heading > 22.5 && heading <= 67.5) return "NE";
+    if (heading > 67.5 && heading <= 112.5) return "E";
+    if (heading > 112.5 && heading <= 157.5) return "SE";
+    if (heading > 157.5 && heading <= 202.5) return "S";
+    if (heading > 202.5 && heading <= 247.5) return "SW";
+    if (heading > 247.5 && heading <= 292.5) return "W";
+    if (heading > 292.5 && heading <= 337.5) return "NW";
+    return "N";
   }
 
   render() {

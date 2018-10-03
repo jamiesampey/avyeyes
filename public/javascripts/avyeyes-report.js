@@ -222,24 +222,24 @@ function parseReportForm(reportExtId) {
       };
 }
 
-function getAspect(highestCartographic, lowestCartographic) {
-    var lat1 = highestCartographic.latitude;
-    var lat2 = lowestCartographic.latitude;
-    var dLon = lowestCartographic.longitude - highestCartographic.longitude;
-
-    var y = Math.sin(dLon) * Math.cos(lat2);
-    var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-    var heading = (Cesium.Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
-
-	if (heading > 22.5 && heading <= 67.5) return "NE";
-	if (heading > 67.5 && heading <= 112.5) return "E";
-	if (heading > 112.5 && heading <= 157.5) return "SE";
-	if (heading > 157.5 && heading <= 202.5) return "S";
-	if (heading > 202.5 && heading <= 247.5) return "SW";
-	if (heading > 247.5 && heading <= 292.5) return "W";
-	if (heading > 292.5 && heading <= 337.5) return "NW";
-	return "N";
-}
+// function getAspect(highestCartographic, lowestCartographic) {
+//     var lat1 = highestCartographic.latitude;
+//     var lat2 = lowestCartographic.latitude;
+//     var dLon = lowestCartographic.longitude - highestCartographic.longitude;
+//
+//     var y = Math.sin(dLon) * Math.cos(lat2);
+//     var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+//     var heading = (Cesium.Math.toDegrees(Math.atan2(y, x)) + 360) % 360;
+//
+// 	if (heading > 22.5 && heading <= 67.5) return "NE";
+// 	if (heading > 67.5 && heading <= 112.5) return "E";
+// 	if (heading > 112.5 && heading <= 157.5) return "SE";
+// 	if (heading > 157.5 && heading <= 202.5) return "S";
+// 	if (heading > 202.5 && heading <= 247.5) return "SW";
+// 	if (heading > 247.5 && heading <= 292.5) return "W";
+// 	if (heading > 292.5 && heading <= 337.5) return "NW";
+// 	return "N";
+// }
 
 AvyReport.prototype.clearDrawing = function() {
 	this.view.form.setReportDrawingInputs('', '', '', '', '', '');
