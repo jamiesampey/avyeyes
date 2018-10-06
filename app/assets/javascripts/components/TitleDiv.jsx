@@ -8,8 +8,8 @@ const styles = theme => ({
   root: {
     zIndex: 1,
     position: 'absolute',
-    top: 4,
-    left: 6,
+    top: 8,
+    left: 8,
     width: 260,
     height: 60,
     background: '#303336',
@@ -27,7 +27,7 @@ const styles = theme => ({
   },
 });
 
-const MenuButton = props => {
+const TitleDiv = props => {
   const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>
@@ -39,8 +39,8 @@ const MenuButton = props => {
   );
 };
 
-MenuButton.propTypes = {
+TitleDiv.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MenuButton);
+export default withStyles(styles)(TitleDiv);

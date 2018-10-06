@@ -34,10 +34,10 @@ help.avyReportStepTwoLabel=Get the Slope in View
 help.avyReportStepTwoContent=Now use the mouse to zoom, tilt, and rotate the 3D view to get a close-up look at the slope.</p><p>See the Cesium navigation instructions in the upper right hand corner for help moving the view.</p><p>Once you have a close-up view of the slope, click the button below to start tracing the avalanche path.</p>
 
 help.avyReportStepThreeLabel=Trace the Avalanche Path
-help.avyReportStepThreeContent=The mouse is now set to draw. Trace the avalanche path perimeter on the 3D map.<p>The first left-click (click and release) begins the trace of the avalanche path perimeter.</p><p>A second left-click (click and release) completes the perimeter trace.</p>
+help.avyReportStepThreeContent=<b>The mouse is now set to draw.</b> Trace the avalanche path perimeter on the 3D map.<p>The first left-click (click and release) begins the trace of the avalanche path perimeter.</p><p>A second left-click (click and release) completes the perimeter trace.</p>
 
 help.avyReportStepFourLabel=Confirm the Drawing
-help.avyReportStepFourContent=Are you satisfied with the drawing?<p>Click "Accept Drawing" to keep the current drawing and continue on to enter the avalanche details.</p><p>Click "Redraw" to erase the current drawing and try again.</p><p>You can redraw as many times as needed to get it right, but once you accept the drawing <i>it cannot be modified.</i></p>
+help.avyReportStepFourContent=<b>Are you satisfied with the drawing?</b><p>Click Accept Drawing to keep the current drawing and enter the avalanche details.</p><p>Click Redraw to erase the current drawing and try again.</p><p>You can redraw as many times as needed to get it right, but once you accept the drawing <b>it cannot be modified.</b></p>
 
 help.avyReportSubmitEmailAdminSubject=New Report by {0}
 help.avyReportSubmitEmailAdminBody={0} has submitted a new avalanche report ({1}).<br/><br/>{2}<br/>{3}

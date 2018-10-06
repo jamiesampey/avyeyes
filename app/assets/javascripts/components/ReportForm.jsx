@@ -47,41 +47,20 @@ const styles = theme => ({
 class ReportForm extends React.Component {
 
   render() {
-    const { classes, avalanche, closeCallback, setCursorStyle } = this.props;
-    if (avalanche === null) return null;
-
-    setCursorStyle("default");
-
-    if (avalanche.hasOwnProperty("viewable")) {
-      console.info(`Received ADMIN details for avalanche ${JSON.stringify(avalanche)}`);
-      // this.form.enableAdminControls().then(() => {
-      // this.form.displayReadWriteForm(data);
-      // });
-    } else if (avalanche.hasOwnProperty("submitterEmail")) {
-      console.info(`Received READ-WRITE details for avalanche ${JSON.stringify(avalanche)}`);
-      // this.form.displayReadWriteForm(data);
-    } else {
-      console.info(`Received READ-ONLY details for avalanche ${JSON.stringify(avalanche)}`);
-      // this.form.displayReadOnlyForm(movement.position, data);
-    }
+    const { classes, openReport, drawing, callback } = this.props;
 
     return (
       <Dialog
         className={classes.dialog}
-        open={avalanche !== null}
-        onClose={closeCallback}
+        open={openReport}
+        onClose={callback}
         aria-labelledby="form-dialog-title"
       >
         <div className={classes.formRoot}>
           <AppBar position="absolute" className={classes.appBar}>
-            <Toolbar disableGutters={true}>
-              <Typography variant="title" color="inherit" noWrap className={classes.title}>
-                {avalanche.title}
-              </Typography>
-              <IconButton className={classes.button} aria-label="Close" onClick={closeCallback}>
-                <CloseIcon className={classes.closeIcon} />
-              </IconButton>
-            </Toolbar>
+            <Typography variant="title" color="inherit" noWrap className={classes.title}>
+              Avalanche Report
+            </Typography>
           </AppBar>
           <Drawer
             variant="permanent"
