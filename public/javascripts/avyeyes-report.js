@@ -241,13 +241,13 @@ function parseReportForm(reportExtId) {
 // 	return "N";
 // }
 
-AvyReport.prototype.clearDrawing = function() {
-	this.view.form.setReportDrawingInputs('', '', '', '', '', '');
-	if (this.drawingPolygon) {
-    	this.view.removeEntity(this.drawingPolygon);
-    	this.drawingPolygon = null;
-	}
-}
+// AvyReport.prototype.clearDrawing = function() {
+// 	this.view.form.setReportDrawingInputs('', '', '', '', '', '');
+// 	if (this.drawingPolygon) {
+//     	this.view.removeEntity(this.drawingPolygon);
+//     	this.drawingPolygon = null;
+// 	}
+// }
 
 return AvyReport;
 });

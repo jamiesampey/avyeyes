@@ -463,36 +463,36 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
     }
 }
 
-function setReadOnlyAutoCompleteVal(inputElem, obj) {
-    if (obj.value == 'empty') {
-        $(inputElem).css('color', 'gray');
-        $(inputElem).text('unspecified');
-    } else {
-        $(inputElem).css('color', 'white');
-        $(inputElem).text(obj.label);
-    }
-}
-
-function setReadOnlySliderVal(inputElem, value) {
-    if (value <= 0) {
-        $(inputElem).css('color', 'gray');
-        $(inputElem).text('unspecified');
-    } else {
-        $(inputElem).css('color', 'white');
-        $(inputElem).text(value);
-    }
-}
-
-function setReadOnlySpinnerVal(inputElem, value, unit) {
-    if (value === -1) {
-        $(inputElem).css('color', 'gray');
-        $(inputElem).text('unspecified');
-    } else {
-        $(inputElem).css('color', 'white');
-        if (unit) $(inputElem).text(value + " " + unit);
-        else $(inputElem).text(value);
-    }
-}
+// function setReadOnlyAutoCompleteVal(inputElem, obj) {
+//     if (obj.value == 'empty') {
+//         $(inputElem).css('color', 'gray');
+//         $(inputElem).text('unspecified');
+//     } else {
+//         $(inputElem).css('color', 'white');
+//         $(inputElem).text(obj.label);
+//     }
+// }
+//
+// function setReadOnlySliderVal(inputElem, value) {
+//     if (value <= 0) {
+//         $(inputElem).css('color', 'gray');
+//         $(inputElem).text('unspecified');
+//     } else {
+//         $(inputElem).css('color', 'white');
+//         $(inputElem).text(value);
+//     }
+// }
+//
+// function setReadOnlySpinnerVal(inputElem, value, unit) {
+//     if (value === -1) {
+//         $(inputElem).css('color', 'gray');
+//         $(inputElem).text('unspecified');
+//     } else {
+//         $(inputElem).css('color', 'white');
+//         if (unit) $(inputElem).text(value + " " + unit);
+//         else $(inputElem).text(value);
+//     }
+// }
 
 AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, obj) {
   if (obj.value === 'empty') {

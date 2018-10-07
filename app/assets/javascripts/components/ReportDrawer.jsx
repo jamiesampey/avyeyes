@@ -66,12 +66,12 @@ class ReportDrawer extends React.Component {
       locationOptions: [],
       reportExtId: null,
       drawing: null,
-      drawingAccepted: false,
+      drawingAccepted: true,
     };
   }
 
   componentDidUpdate(prevProps, prevState, snapShot) {
-    if (this.props.drawerOpen && !this.state.reportExtId && !this.state.drawingAccepted) {
+    if (!this.state.reportExtId) {
       fetch('/api/avalanche/newReportId')
         .then(response => {
           return parseApiResponse(response);
@@ -257,7 +257,6 @@ class ReportDrawer extends React.Component {
 
   render() {
     const {classes, drawerOpen, clientData } = this.props;
-
     if (!clientData) return null;
 
     return (
@@ -341,9 +340,10 @@ class ReportDrawer extends React.Component {
           </Stepper>
         </Drawer>
         <ReportForm
+          clientData={clientData}
           openReport={this.state.drawingAccepted}
           drawing={this.state.drawing}
-          callback={this.resetReport}
+          closeCallback={this.resetReport}
         />
       </div>
     )

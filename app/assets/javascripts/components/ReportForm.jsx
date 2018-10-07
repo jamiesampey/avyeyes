@@ -1,24 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Dialog from "@material-ui/core/Dialog";
 import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
+import FormControl from "@material-ui/core/FormControl";
+import Tooltip from "@material-ui/core/Tooltip";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+
 import ViewListIcon from "@material-ui/icons/ViewList";
 import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
 const styles = theme => ({
-  dialog: {
-
-  },
   formRoot: {
-    height: 430,
-    width: 500,
+    height: 600,
+    width: 800,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -29,9 +31,6 @@ const styles = theme => ({
   title: {
     flex: 1,
     paddingLeft: 15,
-  },
-  closeIcon: {
-    color: 'white',
   },
   drawerPaper: {
     position: 'relative',
@@ -46,14 +45,24 @@ const styles = theme => ({
 
 class ReportForm extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      report: {}
+    };
+  }
+
   render() {
-    const { classes, openReport, drawing, callback } = this.props;
+    const { classes, clientData, openReport, drawing, closeCallback } = this.props;
+    if (!clientData) return null;
+
+    // console.info(`clientData is ${JSON.stringify(clientData)}`);
 
     return (
       <Dialog
-        className={classes.dialog}
         open={openReport}
-        onClose={callback}
+        onClose={closeCallback}
         aria-labelledby="form-dialog-title"
       >
         <div className={classes.formRoot}>
@@ -80,7 +89,38 @@ class ReportForm extends React.Component {
             </IconButton>
           </Drawer>
           <main>
-            <Typography noWrap>main avalanche content</Typography>
+            <form className={classes.formRoot}>
+              <FormControl className={classes.formField}>
+                <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
+                  <InputLabel className={classes.fieldLabel} htmlFor="submitterEmail" shrink={true}>Submitter Email</InputLabel>
+                </Tooltip>
+                <Input
+                  id="submitterEmail"
+                  type="text"
+                  value={this.state.report.submitterExp}
+                  // onChange={}
+                />
+              </FormControl>
+              <FormControl className={classes.formField}>
+                <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterExp}>
+                  <InputLabel className={classes.fieldLabel} htmlFor="submitterExp" shrink={true}>Submitter Experience Level</InputLabel>
+                </Tooltip>
+                <Select
+                  value={this.state.report.submitterExp}
+                  // onChange={}
+                  // inputProps={{
+                  //   name: 'age',
+                  //   id: 'age-simple',
+                  // }}
+                >
+                  {
+                    clientData.codes.experienceLevel.map( expLevel => {
+                      <MenuItem value={expLevel.value}>{expLevel.label}</MenuItem>
+                    })
+                  }
+                </Select>
+              </FormControl>
+            </form>
           </main>
         </div>
       </Dialog>
@@ -90,6 +130,10 @@ class ReportForm extends React.Component {
 
 ReportForm.propTypes = {
   classes: PropTypes.object.isRequired,
+  clientData: PropTypes.object,
+  openReport: PropTypes.bool.isRequired,
+  drawing: PropTypes.object,
+  closeCallback: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ReportForm);
