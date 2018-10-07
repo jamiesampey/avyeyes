@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
+import DialogContent from "@material-ui/core/DialogContent";
 import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
@@ -17,13 +21,20 @@ import ViewListIcon from "@material-ui/icons/ViewList";
 import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
+
 const styles = theme => ({
-  formRoot: {
-    height: 600,
-    width: 800,
+  dialog: {
+    maxWidth: 800,
+  },
+  dialogContent: {
+    flexGrow: 1,
     zIndex: 1,
+    width: 800,
+    height: 600,
+    padding: 0,
     overflow: 'hidden',
     position: 'relative',
+    display: 'flex',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -34,8 +45,11 @@ const styles = theme => ({
   },
   drawerPaper: {
     position: 'relative',
+    marginTop: 55,
   },
-  content: {
+  main: {
+    marginTop: 45,
+    flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     minWidth: 0, // So the Typography noWrap works
@@ -61,15 +75,17 @@ class ReportForm extends React.Component {
 
     return (
       <Dialog
+        className={classes.dialog}
         open={openReport}
         onClose={closeCallback}
-        aria-labelledby="form-dialog-title"
       >
-        <div className={classes.formRoot}>
+        <DialogContent className={classes.dialogContent}>
           <AppBar position="absolute" className={classes.appBar}>
-            <Typography variant="title" color="inherit" noWrap className={classes.title}>
-              Avalanche Report
-            </Typography>
+            <Toolbar disableGutters={true}>
+              <Typography variant="title" color="inherit" noWrap className={classes.title}>
+                Avalanche Report
+              </Typography>
+            </Toolbar>
           </AppBar>
           <Drawer
             variant="permanent"
@@ -77,19 +93,24 @@ class ReportForm extends React.Component {
               paper: classes.drawerPaper,
             }}
           >
-            <div className={classes.toolbar} />
-            <IconButton className={classes.button} aria-label="SWAG Details">
-              <ViewListIcon />
-            </IconButton>
-            <IconButton className={classes.button} aria-label="Avalanche Images">
-              <ImageIcon />
-            </IconButton>
-            <IconButton className={classes.button} aria-label="Submitter's Comments">
-              <CommentsIcon />
-            </IconButton>
+            <Tooltip placement="right" title={clientData.tooltips.avyFormSWAGFields}>
+              <IconButton className={classes.button}>
+                <ViewListIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip placement="right" title={clientData.tooltips.avyFormImages}>
+              <IconButton className={classes.button}>
+                <ImageIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip placement="right" title={clientData.tooltips.avyFormComments}>
+              <IconButton className={classes.button}>
+                <CommentsIcon />
+              </IconButton>
+            </Tooltip>
           </Drawer>
-          <main>
-            <form className={classes.formRoot}>
+          <main className={classes.main}>
+            <form>
               <FormControl className={classes.formField}>
                 <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
                   <InputLabel className={classes.fieldLabel} htmlFor="submitterEmail" shrink={true}>Submitter Email</InputLabel>
@@ -122,7 +143,15 @@ class ReportForm extends React.Component {
               </FormControl>
             </form>
           </main>
-        </div>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary">
+            Submit
+          </Button>
+          <Button color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   };
