@@ -96,7 +96,7 @@ class ReportForm extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (!this.state.avalanche && this.props.drawing) {
+    if (this.props.openReport && !this.state.avalanche) {
       let drawing = this.props.drawing;
       console.info(`initializing avalanche ${prevProps.reportExtId} from drawing`);
 
@@ -125,7 +125,7 @@ class ReportForm extends React.Component {
   }
 
   render() {
-    const { classes, clientData, openReport, closeCallback } = this.props;
+    const { classes, clientData, openReport, callback } = this.props;
     if (!clientData || !this.state || !this.state.avalanche) return null;
 
     console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
@@ -134,7 +134,7 @@ class ReportForm extends React.Component {
       <Dialog
         className={classes.dialog}
         open={openReport}
-        onClose={closeCallback}
+        onClose={callback}
       >
         <DialogContent className={classes.dialogContent}>
           <AppBar position="absolute" className={classes.appBar}>
@@ -194,10 +194,10 @@ class ReportForm extends React.Component {
         </DialogContent>
         <DialogActions>
           <Button color="primary">
-            Submit
+            Cancel
           </Button>
           <Button color="primary">
-            Cancel
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
@@ -211,7 +211,7 @@ ReportForm.propTypes = {
   openReport: PropTypes.bool.isRequired,
   reportExtId: PropTypes.string,
   drawing: PropTypes.object,
-  closeCallback: PropTypes.func.isRequired,
+  callback: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ReportForm);

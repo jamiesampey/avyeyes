@@ -74,7 +74,7 @@ class ReportDrawer extends React.Component {
       locationOptions: [],
       reportExtId: null,
       drawing: null,
-      drawingAccepted: true,
+      drawingAccepted: false,
     };
   }
 
@@ -264,7 +264,7 @@ class ReportDrawer extends React.Component {
       drawing: null,
       drawingAccepted: false,
     });
-    this.props.completed();
+    this.props.callback();
   }
 
   render() {
@@ -355,7 +355,7 @@ class ReportDrawer extends React.Component {
           openReport={this.state.drawingAccepted}
           reportExtId={this.state.reportExtId}
           drawing={this.state.drawing}
-          closeCallback={this.resetReport}
+          callback={this.resetReport}
         />
       </div>
     )
@@ -368,6 +368,7 @@ ReportDrawer.propTypes = {
   drawerOpen: PropTypes.bool.isRequired,
   clientData: PropTypes.object,
   controller: PropTypes.object,
+  callback: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(ReportDrawer);

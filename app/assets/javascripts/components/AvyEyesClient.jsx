@@ -117,7 +117,7 @@ class AvyEyesClient extends React.Component {
           drawerOpen={this.state.reportDrawerOpen}
           clientData={this.state.clientData}
           controller={this.state.cesiumController}
-          completed={() => this.setState({reportDrawerOpen: false})}
+          callback={() => this.setState({reportDrawerOpen: false})}
         />
         <main className={classNames(classes.content, classes.contentLeft, {
             [classes.contentShift]: this.state.reportDrawerOpen,
