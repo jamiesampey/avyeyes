@@ -127,7 +127,7 @@ class FilterDrawer extends React.Component {
       showHelp,
     } = this.props;
 
-    if (!clientData || !filter) return null;
+    if (!filter) return null;
 
     return (
       <div className={classes.root}>

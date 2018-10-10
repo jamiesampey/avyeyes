@@ -52,26 +52,83 @@ const styles = theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,
 });
+
+const initAvalanche = (extId, location, slope, perimeter) => {
+  return {
+    extId: extId,
+    location: location,
+    slope: slope,
+    perimeter: perimeter,
+    viewable: false,
+    submitterEmail: '',
+    submitterExp: '',
+    date: '',
+    areaName: '',
+    weather: {
+      recentSnow: -1,
+      recentWindSpeed: '',
+      recentWindDirection: '',
+    },
+    classification: {
+      avyType: '',
+      trigger: '',
+      triggerModifier: '',
+      interface: '',
+      rSize: -1,
+      dSize: -1.0,
+    },
+    comments: '',
+  }
+};
 
 class ReportForm extends React.Component {
 
   constructor(props) {
     super(props);
+    this.updateAvalanche = this.updateAvalanche.bind(this);
 
     this.state = {
-      report: {}
-    };
+      avalanche: null,
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!this.state.avalanche && this.props.drawing) {
+      let drawing = this.props.drawing;
+      console.info(`initializing avalanche ${prevProps.reportExtId} from drawing`);
+
+      let location = {
+        longitude: drawing.latitude,
+        latitude: drawing.longitude,
+        altitude: drawing.altitude,
+      };
+
+      let slope = {
+        aspect: drawing.aspect,
+        angle: drawing.angle,
+        elevation: drawing.altitude,
+      };
+
+      this.setState({
+        avalanche: initAvalanche(this.props.reportExtId, location, slope, drawing.perimeter),
+      });
+    }
+  }
+
+  updateAvalanche(field, value) {
+    let updated = this.state.avalanche;
+    updated[field] = value;
+    this.setState({avalanche: updated});
   }
 
   render() {
-    const { classes, clientData, openReport, drawing, closeCallback } = this.props;
-    if (!clientData) return null;
+    const { classes, clientData, openReport, closeCallback } = this.props;
+    if (!clientData || !this.state || !this.state.avalanche) return null;
 
-    // console.info(`clientData is ${JSON.stringify(clientData)}`);
+    console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
 
     return (
       <Dialog
@@ -116,10 +173,9 @@ class ReportForm extends React.Component {
                   <InputLabel className={classes.fieldLabel} htmlFor="submitterEmail" shrink={true}>Submitter Email</InputLabel>
                 </Tooltip>
                 <Input
-                  id="submitterEmail"
                   type="text"
-                  value={this.state.report.submitterExp}
-                  // onChange={}
+                  value={this.state.avalanche.submitterEmail}
+                  onChange={(event) => this.updateAvalanche("submitterEmail", event.target.value)}
                 />
               </FormControl>
               <FormControl className={classes.formField}>
@@ -127,18 +183,10 @@ class ReportForm extends React.Component {
                   <InputLabel className={classes.fieldLabel} htmlFor="submitterExp" shrink={true}>Submitter Experience Level</InputLabel>
                 </Tooltip>
                 <Select
-                  value={this.state.report.submitterExp}
-                  // onChange={}
-                  // inputProps={{
-                  //   name: 'age',
-                  //   id: 'age-simple',
-                  // }}
+                  value={this.state.avalanche.submitterExp}
+                  onChange={(event) => this.updateAvalanche("submitterExp", event.target.value)}
                 >
-                  {
-                    clientData.codes.experienceLevel.map( expLevel => {
-                      <MenuItem value={expLevel.value}>{expLevel.label}</MenuItem>
-                    })
-                  }
+                  { clientData.codes.experienceLevel.map(expLevel => <MenuItem key={expLevel.value} value={expLevel.value}>{expLevel.label}</MenuItem>) }
                 </Select>
               </FormControl>
             </form>
@@ -161,6 +209,7 @@ ReportForm.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object,
   openReport: PropTypes.bool.isRequired,
+  reportExtId: PropTypes.string,
   drawing: PropTypes.object,
   closeCallback: PropTypes.func.isRequired,
 };

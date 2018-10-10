@@ -45,7 +45,7 @@ help.avyReportSubmitEmailSubmitterSubject=Avalanche Report: {0}
 help.avyReportSubmitEmailSubmitterBody=AvyEyes has received a new avalanche report submitted by this email address:<br/><br/><b>{0}</b><br/><br/>The report is publicly viewable at: {1} (share this URL)<br/><br/>The report may be edited for up to seven (7) days using this private URL: {2} (don't share this URL)
 
 tooltip.avyFormSWAGFields=SWAG Fields
-tooltip.avyFormImages=Avalanche Images
+tooltip.avyFormImages=Image Upload
 tooltip.avyFormComments=Submitter Comments
 
 tooltip.avyFormSubmitterEmail=Your email address

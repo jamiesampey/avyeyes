@@ -30,6 +30,14 @@ const styles = theme => ({
   verticalStepper: {
     padding: 16,
   },
+  stepLabel: {
+    fontSize: '1.1em',
+    color: 'red',
+  },
+  instructions: {
+    fontSize: '1.1em',
+    color: 'black',
+  },
   buttonsContainer: {
     textAlign: 'center',
     '& button': {
@@ -71,7 +79,7 @@ class ReportDrawer extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapShot) {
-    if (!this.state.reportExtId) {
+    if (this.props.drawerOpen && !this.state.reportExtId) {
       fetch('/api/avalanche/newReportId')
         .then(response => {
           return parseApiResponse(response);
@@ -218,7 +226,7 @@ class ReportDrawer extends React.Component {
         entity: drawingEntity,
         latitude: Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
         longitude: Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
-        elevation: Math.round(highestCartographic.height),
+        altitude: Math.round(highestCartographic.height),
         aspect: ReportDrawer.getDrawingAspect(highestCartographic, lowestCartographic),
         angle: Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),
         perimeter: coordinates.join(' ').trim()
@@ -246,6 +254,10 @@ class ReportDrawer extends React.Component {
   }
 
   resetReport() {
+    if (this.state.drawing.entity) {
+      this.props.controller.removeEntity(this.state.drawing.entity);
+    }
+
     this.setState({
       activeStep: 0,
       reportExtId: null,
@@ -257,7 +269,6 @@ class ReportDrawer extends React.Component {
 
   render() {
     const {classes, drawerOpen, clientData } = this.props;
-    if (!clientData) return null;
 
     return (
       <div>
@@ -274,9 +285,9 @@ class ReportDrawer extends React.Component {
           </Typography>
           <Stepper orientation="vertical" className={classes.verticalStepper} activeStep={this.state.activeStep}>
             <Step key={clientData.help.avyReportStepOneLabel}>
-              <StepLabel>{clientData.help.avyReportStepOneLabel}</StepLabel>
+              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepOneLabel}</StepLabel>
               <StepContent>
-                <div dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepOneContent}}/>
+                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepOneContent}}/>
                 <div>
                   <Select
                     styles={locationSelectStyles}
@@ -289,9 +300,9 @@ class ReportDrawer extends React.Component {
               </StepContent>
             </Step>
             <Step key={clientData.help.avyReportStepTwoLabel}>
-              <StepLabel>{clientData.help.avyReportStepTwoLabel}</StepLabel>
+              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepTwoLabel}</StepLabel>
               <StepContent>
-                <div dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepTwoContent}}/>
+                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepTwoContent}}/>
                 <div className={classes.buttonsContainer}>
                   <Button
                     variant="contained"
@@ -305,15 +316,15 @@ class ReportDrawer extends React.Component {
               </StepContent>
             </Step>
             <Step key={clientData.help.avyReportStepThreeLabel}>
-              <StepLabel>{clientData.help.avyReportStepThreeLabel}</StepLabel>
+              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepThreeLabel}</StepLabel>
               <StepContent>
-                <div dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepThreeContent}}/>
+                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepThreeContent}}/>
               </StepContent>
             </Step>
             <Step key={clientData.help.avyReportStepFourLabel}>
-              <StepLabel>{clientData.help.avyReportStepFourLabel}</StepLabel>
+              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepFourLabel}</StepLabel>
               <StepContent>
-                <div dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepFourContent}}/>
+                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepFourContent}}/>
                 <div className={classes.buttonsContainer}>
                   <Button
                     variant="contained"
@@ -342,6 +353,7 @@ class ReportDrawer extends React.Component {
         <ReportForm
           clientData={clientData}
           openReport={this.state.drawingAccepted}
+          reportExtId={this.state.reportExtId}
           drawing={this.state.drawing}
           closeCallback={this.resetReport}
         />

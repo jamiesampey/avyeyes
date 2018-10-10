@@ -109,6 +109,7 @@ class AvyEyesClient extends React.Component {
 
   render() {
     const { classes } = this.props;
+    if (!this.state.clientData) return null;
 
     return (
       <div className={classes.root}>
