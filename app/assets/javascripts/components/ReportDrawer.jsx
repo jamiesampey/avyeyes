@@ -74,7 +74,7 @@ class ReportDrawer extends React.Component {
       locationOptions: [],
       reportExtId: null,
       drawing: null,
-      drawingAccepted: false,
+      drawingAccepted: true, // TODO set back to false after form dev
     };
   }
 
@@ -254,7 +254,7 @@ class ReportDrawer extends React.Component {
   }
 
   resetReport() {
-    if (this.state.drawing.entity) {
+    if (this.state.drawing) {
       this.props.controller.removeEntity(this.state.drawing.entity);
     }
 

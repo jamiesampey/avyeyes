@@ -21,16 +21,16 @@ import ViewListIcon from "@material-ui/icons/ViewList";
 import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
+import mockAvalanche from "../Constants"; // TODO remove after form dev
 
 const styles = theme => ({
-  dialog: {
-    maxWidth: 800,
+  dialogPaper: {
+    width: 800,
+    height: 600,
   },
   dialogContent: {
     flexGrow: 1,
     zIndex: 1,
-    width: 800,
-    height: 600,
     padding: 0,
     overflow: 'hidden',
     position: 'relative',
@@ -51,9 +51,16 @@ const styles = theme => ({
     marginTop: 45,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+    padding: 24,
   },
-  toolbar: theme.mixins.toolbar,
+  formField: {
+    width: 250,
+    margin: 10,
+  },
+  dialogActionsRoot: {
+    marginLeft: 50,
+    borderTop: '1px solid',
+  }
 });
 
 const initAvalanche = (extId, location, slope, perimeter) => {
@@ -91,7 +98,7 @@ class ReportForm extends React.Component {
     this.updateAvalanche = this.updateAvalanche.bind(this);
 
     this.state = {
-      avalanche: null,
+      avalanche: mockAvalanche, // TODO set back to null after form dev
     }
   }
 
@@ -125,16 +132,18 @@ class ReportForm extends React.Component {
   }
 
   render() {
-    const { classes, clientData, openReport, callback } = this.props;
+    const { classes, clientData } = this.props;
     if (!clientData || !this.state || !this.state.avalanche) return null;
 
     console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
 
     return (
       <Dialog
-        className={classes.dialog}
-        open={openReport}
-        onClose={callback}
+        classes={{paper: classes.dialogPaper}}
+        maxWidth={false}
+        open={this.props.openReport}
+        onBackdropClick={() => {}}
+        onEscapeKeyDown={() => {}}
       >
         <DialogContent className={classes.dialogContent}>
           <AppBar position="absolute" className={classes.appBar}>
@@ -144,12 +153,7 @@ class ReportForm extends React.Component {
               </Typography>
             </Toolbar>
           </AppBar>
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
+          <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
             <Tooltip placement="right" title={clientData.tooltips.avyFormSWAGFields}>
               <IconButton className={classes.button}>
                 <ViewListIcon />
@@ -192,7 +196,7 @@ class ReportForm extends React.Component {
             </form>
           </main>
         </DialogContent>
-        <DialogActions>
+        <DialogActions classes={{root: classes.dialogActionsRoot}} onClick={this.props.callback}>
           <Button color="primary">
             Cancel
           </Button>
