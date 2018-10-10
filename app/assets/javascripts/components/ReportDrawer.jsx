@@ -330,20 +330,20 @@ class ReportDrawer extends React.Component {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => this.setState({drawingAccepted: true})}
-                  >
-                    Accept Drawing
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
                     onClick={() => {
                       this.props.controller.removeEntity(this.state.drawing.entity);
                       this.setState({activeStep: 1, drawing: null});
                     }}
                   >
                     Redraw
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => this.setState({drawingAccepted: true})}
+                  >
+                    Accept Drawing
                   </Button>
                 </div>
               </StepContent>
