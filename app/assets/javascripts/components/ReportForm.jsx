@@ -55,7 +55,6 @@ const styles = theme => ({
   main: {
     marginTop: 45,
     paddingTop: 8,
-    paddingRight: 0,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: 24,
@@ -65,7 +64,6 @@ const styles = theme => ({
   },
   swagTableCell: {
     paddingTop: 8,
-    paddingRight: 0,
     paddingBottom: 8,
     paddingLeft: 0,
   },
@@ -73,8 +71,11 @@ const styles = theme => ({
     margin: 10,
   },
   dialogActionsRoot: {
-    marginLeft: 50,
-    borderTop: '1px solid',
+    height: 48,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 48,
+    borderTop: `1px solid ${theme.palette.divider}`,
   }
 });
 
@@ -191,7 +192,7 @@ class ReportForm extends React.Component {
               <Table>
                 <TableBody>
                   <TableRow className={classes.swagTableRow}>
-                    <TableCell className={classes.swagTableCell}>
+                    <TableCell className={classes.swagTableCell} style={{paddingRight: 0}}>
                       <FormControl className={classes.formField} style={{width: 500}}>
                         <Tooltip placement="right" title={clientData.tooltips.avyFormAreaName}>
                           <InputLabel className={classes.fieldLabel} shrink={true}>Area Name</InputLabel>
@@ -215,7 +216,7 @@ class ReportForm extends React.Component {
                     </TableCell>
                   </TableRow>
                   <TableRow className={classes.swagTableRow}>
-                    <TableCell className={classes.swagTableCell}>
+                    <TableCell className={classes.swagTableCell} style={{paddingRight: 0}}>
                       <FormControl className={classes.formField} style={{width: 350}}>
                         <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
                           <InputLabel className={classes.fieldLabel} shrink={true}>Submitter Email</InputLabel>
