@@ -21,6 +21,11 @@ import ViewListIcon from "@material-ui/icons/ViewList";
 import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
+import TableBody from "@material-ui/core/TableBody";
+import TableRow from "@material-ui/core/TableRow";
+import Table from "@material-ui/core/Table";
+import TableCell from "@material-ui/core/TableCell";
+
 import mockAvalanche from "../Constants"; // TODO remove after form dev
 
 const styles = theme => ({
@@ -49,12 +54,22 @@ const styles = theme => ({
   },
   main: {
     marginTop: 45,
+    paddingTop: 8,
+    paddingRight: 0,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: 24,
   },
+  swagTableRow: {
+    height: 30,
+  },
+  swagTableCell: {
+    paddingTop: 8,
+    paddingRight: 0,
+    paddingBottom: 8,
+    paddingLeft: 0,
+  },
   formField: {
-    width: 250,
     margin: 10,
   },
   dialogActionsRoot: {
@@ -135,7 +150,8 @@ class ReportForm extends React.Component {
     const { classes, clientData } = this.props;
     if (!clientData || !this.state || !this.state.avalanche) return null;
 
-    console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
+    let { avalanche } = this.state;
+    console.info(`avalanche is ${JSON.stringify(avalanche)}`);
 
     return (
       <Dialog
@@ -172,27 +188,59 @@ class ReportForm extends React.Component {
           </Drawer>
           <main className={classes.main}>
             <form>
-              <FormControl className={classes.formField}>
-                <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
-                  <InputLabel className={classes.fieldLabel} htmlFor="submitterEmail" shrink={true}>Submitter Email</InputLabel>
-                </Tooltip>
-                <Input
-                  type="text"
-                  value={this.state.avalanche.submitterEmail}
-                  onChange={(event) => this.updateAvalanche("submitterEmail", event.target.value)}
-                />
-              </FormControl>
-              <FormControl className={classes.formField}>
-                <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterExp}>
-                  <InputLabel className={classes.fieldLabel} htmlFor="submitterExp" shrink={true}>Submitter Experience Level</InputLabel>
-                </Tooltip>
-                <Select
-                  value={this.state.avalanche.submitterExp}
-                  onChange={(event) => this.updateAvalanche("submitterExp", event.target.value)}
-                >
-                  { clientData.codes.experienceLevel.map(expLevel => <MenuItem key={expLevel.value} value={expLevel.value}>{expLevel.label}</MenuItem>) }
-                </Select>
-              </FormControl>
+              <Table>
+                <TableBody>
+                  <TableRow className={classes.swagTableRow}>
+                    <TableCell className={classes.swagTableCell}>
+                      <FormControl className={classes.formField} style={{width: 500}}>
+                        <Tooltip placement="right" title={clientData.tooltips.avyFormAreaName}>
+                          <InputLabel className={classes.fieldLabel} shrink={true}>Area Name</InputLabel>
+                        </Tooltip>
+                        <Input
+                          type="text"
+                          value={avalanche.areaName}
+                          onChange={(event) => this.updateAvalanche("areaName", event.target.value)}
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formField} style={{width: 150, float: 'right'}}>
+                        <Tooltip placement="right" title={clientData.tooltips.avyFormDate}>
+                          <InputLabel className={classes.fieldLabel} shrink={true}>Avalanche Date</InputLabel>
+                        </Tooltip>
+                        <Input
+                          type="date"
+                          value={avalanche.areaName}
+                          onChange={(event) => this.updateAvalanche("date", event.target.value)}
+                        />
+                      </FormControl>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className={classes.swagTableRow}>
+                    <TableCell className={classes.swagTableCell}>
+                      <FormControl className={classes.formField} style={{width: 350}}>
+                        <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
+                          <InputLabel className={classes.fieldLabel} shrink={true}>Submitter Email</InputLabel>
+                        </Tooltip>
+                        <Input
+                          type="text"
+                          value={avalanche.submitterEmail}
+                          onChange={(event) => this.updateAvalanche("submitterEmail", event.target.value)}
+                        />
+                      </FormControl>
+                      <FormControl className={classes.formField} style={{width: 300, float: 'right'}}>
+                        <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterExp}>
+                          <InputLabel className={classes.fieldLabel} shrink={true}>Submitter Experience Level</InputLabel>
+                        </Tooltip>
+                        <Select
+                          value={avalanche.submitterExp}
+                          onChange={(event) => this.updateAvalanche("submitterExp", event.target.value)}
+                        >
+                          { clientData.codes.experienceLevel.map(expLevel => <MenuItem key={expLevel.value} value={expLevel.value}>{expLevel.label}</MenuItem>) }
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </form>
           </main>
         </DialogContent>
