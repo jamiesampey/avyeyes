@@ -48,17 +48,16 @@ tooltip.avyFormSWAGFields=Details and SWAG Fields
 tooltip.avyFormImages=Image Upload
 tooltip.avyFormComments=Submitter Comments
 
-tooltip.avyFormSubmitterEmail=Your email address
-tooltip.avyFormSubmitterExp=Your avalanche education and experience level
-
 tooltip.avyFormAreaName=The common or well-known name of the location where the avalanche occurred
 tooltip.avyFormDate=The date of the avalanche
-tooltip.avyFormType=The type classification of the avalanche. Leave blank if you are not sure of the avalanche type.
-tooltip.avyFormTrigger=The mechanism that caused the avalanche to release. Leave blank if you are not sure of the avalanche trigger.
-tooltip.avyFormTriggerModifier=An extra data field to further explain the avalanche trigger. The possible values for this field depend on the value specified for the avalanche trigger. Leave blank if you are not sure of the trigger modifier.
-tooltip.avyFormInterface=The interface or bed surface on which the avalanche slid. Leave blank if you are not sure of the avalanche interface.
-tooltip.avyFormRsizeValue=The relative (R) size of the avalanche. Leave the value at 0 (zero) if you are not sure of the R size.
-tooltip.avyFormDsizeValue=The destructive (D) size of the avalanche. Leave the value at 0 (zero) if you are not sure of the D size.
+tooltip.avyFormSubmitterEmail=Your email address
+tooltip.avyFormSubmitterExp=Your avalanche education and experience level
+tooltip.avyFormType=The SWAG avalanche type classification
+tooltip.avyFormTrigger=The SWAG avalanche trigger classification
+tooltip.avyFormTriggerModifier=The SWAG trigger modifier classification
+tooltip.avyFormInterface=The SWAG avalanche interface classification
+tooltip.avyFormRsizeValue=The relative (R) size of the avalanche
+tooltip.avyFormDsizeValue=The destructive (D) size of the avalanche
 tooltip.avyFormViewable=Whether or not this avalanche report is approved and viewable by the public
 tooltip.avyFormElevation=<p>The elevation at the top of the avalanche path.</p>This value is pre-populated from the avalanche drawing and is not modifiable.
 tooltip.avyFormAspect=<p>The aspect of the avalanche path.</p>This value is pre-populated from the avalanche drawing, but it is modifiable if you disagree with the pre-populated value.

@@ -14,7 +14,7 @@ import Cesium from "cesium/Cesium";
 import Select from "react-select";
 import Button from "@material-ui/core/Button/Button";
 import {parseApiResponse} from "../Util";
-import ReportForm from "./ReportForm";
+import ReportDialog from "./ReportDialog";
 
 const styles = theme => ({
   drawerPaper: {
@@ -350,7 +350,7 @@ class ReportDrawer extends React.Component {
             </Step>
           </Stepper>
         </Drawer>
-        <ReportForm
+        <ReportDialog
           clientData={clientData}
           openReport={this.state.drawingAccepted}
           reportExtId={this.state.reportExtId}

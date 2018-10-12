@@ -10,28 +10,20 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
-import FormControl from "@material-ui/core/FormControl";
 import Tooltip from "@material-ui/core/Tooltip";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 
 import ViewListIcon from "@material-ui/icons/ViewList";
 import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
-import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
+import ReportDetails from "./ReportDetails";
 
-import mockAvalanche from "../Constants"; // TODO remove after form dev
+import { mockAvalanche } from "../Constants"; // TODO remove after form dev
 
 const styles = theme => ({
   dialogPaper: {
     width: 800,
-    height: 600,
+    height: 700,
   },
   dialogContent: {
     flexGrow: 1,
@@ -53,22 +45,12 @@ const styles = theme => ({
     marginTop: 55,
   },
   main: {
+    width: 'inherit',
     marginTop: 45,
-    paddingTop: 8,
+    paddingTop: 16,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: 24,
-  },
-  swagTableRow: {
-    height: 30,
-  },
-  swagTableCell: {
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingLeft: 0,
-  },
-  formField: {
-    margin: 10,
   },
   dialogActionsRoot: {
     height: 48,
@@ -107,7 +89,7 @@ const initAvalanche = (extId, location, slope, perimeter) => {
   }
 };
 
-class ReportForm extends React.Component {
+class ReportDialog extends React.Component {
 
   constructor(props) {
     super(props);
@@ -121,7 +103,7 @@ class ReportForm extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.openReport && !this.state.avalanche) {
       let drawing = this.props.drawing;
-      console.info(`initializing avalanche ${prevProps.reportExtId} from drawing`);
+      console.info(`initializing avalanche report ${prevProps.reportExtId} from drawing`);
 
       let location = {
         longitude: drawing.latitude,
@@ -143,7 +125,11 @@ class ReportForm extends React.Component {
 
   updateAvalanche(field, value) {
     let updated = this.state.avalanche;
-    updated[field] = value;
+
+    let fields = field.split('.');
+    if (fields.length === 2) updated[fields[0]][fields[1]] = value;
+    else updated[field] = value;
+
     this.setState({avalanche: updated});
   }
 
@@ -151,8 +137,9 @@ class ReportForm extends React.Component {
     const { classes, clientData } = this.props;
     if (!clientData || !this.state || !this.state.avalanche) return null;
 
-    let { avalanche } = this.state;
-    console.info(`avalanche is ${JSON.stringify(avalanche)}`);
+    console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
+    console.info(`avalanche.classification is ${JSON.stringify(this.state.avalanche.classification)}`);
+    //console.info(`clientData is ${JSON.stringify(clientData)}`);
 
     return (
       <Dialog
@@ -188,61 +175,7 @@ class ReportForm extends React.Component {
             </Tooltip>
           </Drawer>
           <main className={classes.main}>
-            <form>
-              <Table>
-                <TableBody>
-                  <TableRow className={classes.swagTableRow}>
-                    <TableCell className={classes.swagTableCell} style={{paddingRight: 0}}>
-                      <FormControl className={classes.formField} style={{width: 500}}>
-                        <Tooltip placement="right" title={clientData.tooltips.avyFormAreaName}>
-                          <InputLabel className={classes.fieldLabel} shrink={true}>Area Name</InputLabel>
-                        </Tooltip>
-                        <Input
-                          type="text"
-                          value={avalanche.areaName}
-                          onChange={(event) => this.updateAvalanche("areaName", event.target.value)}
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formField} style={{width: 150, float: 'right'}}>
-                        <Tooltip placement="right" title={clientData.tooltips.avyFormDate}>
-                          <InputLabel className={classes.fieldLabel} shrink={true}>Avalanche Date</InputLabel>
-                        </Tooltip>
-                        <Input
-                          type="date"
-                          value={avalanche.areaName}
-                          onChange={(event) => this.updateAvalanche("date", event.target.value)}
-                        />
-                      </FormControl>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow className={classes.swagTableRow}>
-                    <TableCell className={classes.swagTableCell} style={{paddingRight: 0}}>
-                      <FormControl className={classes.formField} style={{width: 350}}>
-                        <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterEmail}>
-                          <InputLabel className={classes.fieldLabel} shrink={true}>Submitter Email</InputLabel>
-                        </Tooltip>
-                        <Input
-                          type="text"
-                          value={avalanche.submitterEmail}
-                          onChange={(event) => this.updateAvalanche("submitterEmail", event.target.value)}
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formField} style={{width: 300, float: 'right'}}>
-                        <Tooltip placement="right" title={clientData.tooltips.avyFormSubmitterExp}>
-                          <InputLabel className={classes.fieldLabel} shrink={true}>Submitter Experience Level</InputLabel>
-                        </Tooltip>
-                        <Select
-                          value={avalanche.submitterExp}
-                          onChange={(event) => this.updateAvalanche("submitterExp", event.target.value)}
-                        >
-                          { clientData.codes.experienceLevel.map(expLevel => <MenuItem key={expLevel.value} value={expLevel.value}>{expLevel.label}</MenuItem>) }
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </form>
+            <ReportDetails clientData={clientData} avalanche={this.state.avalanche} updateAvalanche={this.updateAvalanche} />
           </main>
         </DialogContent>
         <DialogActions classes={{root: classes.dialogActionsRoot}} onClick={this.props.callback}>
@@ -258,13 +191,13 @@ class ReportForm extends React.Component {
   };
 }
 
-ReportForm.propTypes = {
+ReportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
-  clientData: PropTypes.object,
+  clientData: PropTypes.object.isRequired,
   openReport: PropTypes.bool.isRequired,
   reportExtId: PropTypes.string,
   drawing: PropTypes.object,
   callback: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(ReportForm);
+export default withStyles(styles)(ReportDialog);
