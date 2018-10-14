@@ -48,23 +48,6 @@ tooltip.avyFormSWAGFields=Details and SWAG Fields
 tooltip.avyFormImages=Image Upload
 tooltip.avyFormComments=Submitter Comments
 
-tooltip.avyFormAreaName=The common or well-known name of the location where the avalanche occurred
-tooltip.avyFormDate=The date of the avalanche
-tooltip.avyFormSubmitterEmail=Your email address
-tooltip.avyFormSubmitterExp=Your avalanche education and experience level
-tooltip.avyFormType=The SWAG avalanche type classification
-tooltip.avyFormTrigger=The SWAG avalanche trigger classification
-tooltip.avyFormTriggerModifier=The SWAG trigger modifier classification
-tooltip.avyFormInterface=The SWAG avalanche interface classification
-tooltip.avyFormRsizeValue=The relative (R) size of the avalanche
-tooltip.avyFormDsizeValue=The destructive (D) size of the avalanche
-tooltip.avyFormViewable=Whether or not this avalanche report is approved and viewable by the public
-tooltip.avyFormElevation=<p>The elevation at the top of the avalanche path.</p>This value is pre-populated from the avalanche drawing and is not modifiable.
-tooltip.avyFormAspect=<p>The aspect of the avalanche path.</p>This value is pre-populated from the avalanche drawing, but it is modifiable if you disagree with the pre-populated value.
-tooltip.avyFormAngle=<p>The slope angle of the avalanche path.</p>This value is pre-populated from the avalanche drawing, but it is modifiable if you disagree with the pre-populated value.
-tooltip.avyFormRecentSnow=The amount of snow that fell (in centimeters) at the avalanche location during the week preceding the slide.
-tooltip.avyFormRecentWindSpeed=<p>The <i>predominant</i> wind speed and direction at the avalanche location during the week preceding the slide. If the predominant wind changed significantly during the week prior to the avalanche, note the wind characteristics closer to the day of the avalanche. Wind speed is measured on the Beaufort scale:</p><ul><li>Calm - less than 1 km/hour or .7 mph. Smoke rises vertically</li><li>Light breeze - 5-12 km/hour or 3-7 mph. Leaves rustle, wind vanes begin to move</li><li>Moderate breeze - 20-29 km/hour or 12-18 mph. Small branches begin to move</li><li>Strong breeze - 39-50 km/hour or 24-31 mph. Large branches in motion</li><li>Gale - 62-75 km/hour or 38-46 mph. Twigs broken from trees, progress on foot becomes difficult</li><li>Storm - 88-102 km/hour or 55-64 mph. Trees are broken off or uprooted, structural damage likely</li></ul><p>Wind direction is always the direction that the wind came <i>from</i>. For example, a NW wind blew from the northwest toward the southeast.</p>
-
 help.avyFormCommentsInstr=Write as much or as little as you want. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
 help.avyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/assets/images/img-edit-icon.png' /> to add a caption and the red <img src='/assets/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/assets/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
 
@@ -145,9 +128,9 @@ enum.WindSpeed.StrongBreeze=Strong breeze
 enum.WindSpeed.Gale=Gale
 enum.WindSpeed.Storm=Storm
 
-enum.ExperienceLevel.A0=Amateur with little or no avalanche education
+enum.ExperienceLevel.A0=Amateur with no avalanche education
 enum.ExperienceLevel.A1=Amateur with Level 1 education
 enum.ExperienceLevel.A2=Amateur with Level 2 education
-enum.ExperienceLevel.P0=On-snow pro with little or no avalanche education
-enum.ExperienceLevel.P1=On-snow pro with significant avalanche education
-enum.ExperienceLevel.P2=Professional avalanche forecaster or technician
+enum.ExperienceLevel.P0=Professional ski patroller or guide
+enum.ExperienceLevel.P1=Professional avalanche educator
+enum.ExperienceLevel.P2=Professional avalanche forecaster

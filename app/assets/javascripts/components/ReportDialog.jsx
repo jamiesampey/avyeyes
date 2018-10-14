@@ -43,6 +43,7 @@ const styles = theme => ({
   drawerPaper: {
     position: 'relative',
     marginTop: 55,
+    background: theme.palette.background.default,
   },
   main: {
     width: 'inherit',
@@ -58,6 +59,7 @@ const styles = theme => ({
     marginBottom: 0,
     marginLeft: 48,
     borderTop: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.background.default,
   }
 });
 
