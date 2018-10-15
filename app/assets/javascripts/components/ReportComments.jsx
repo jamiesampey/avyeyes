@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
+import TextField from "@material-ui/core/TextField";
 
 const styles = theme => ({
   instructions: {
-    marginBottom: 16,
+    marginBottom: 20,
+    color: theme.palette.text.primary,
   },
-  textInput: {
-
-  }
 });
 
 const ReportComments = props => {
@@ -20,18 +18,14 @@ const ReportComments = props => {
   return (
     <div>
       <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyFormCommentsInstr}} />
-      <OutlinedInput
-        className={classes.textInput}
+      <TextField
         fullWidth
         multiline
-        rows={21}
-        rowsMax={21}
-        name="my name"
-        label="my label"
-        id="my-id"
-        labelWidth={150}
+        label="Comments"
         value={avalanche.comments}
         onChange={(event) => updateAvalanche("comments", event.target.value)}
+        rows={21}
+        variant="outlined"
       />
     </div>
   );

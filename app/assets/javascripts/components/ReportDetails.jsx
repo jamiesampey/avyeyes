@@ -44,7 +44,7 @@ const styles = theme => ({
     marginTop: -16,
     padding: 5,
     width: 'fit-content',
-    color: theme.palette.primary.dark,
+    color: theme.palette.text.secondary,
     background: theme.palette.background.default,
   },
   formField: {
