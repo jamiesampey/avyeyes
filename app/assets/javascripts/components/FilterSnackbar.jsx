@@ -55,7 +55,7 @@ const FilterSnackbar = props => {
 
   let filterTable = (
     <div>
-      <Typography variant="title" className={classes.filterTableTitle}>Filter</Typography>
+      <Typography variant="h6" className={classes.filterTableTitle}>Filter</Typography>
       <Table className={classes.filterTable}>
         <TableBody>
           { (filter.fromDate.length > 0 || filter.toDate.length > 0) &&

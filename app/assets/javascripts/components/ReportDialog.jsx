@@ -17,8 +17,11 @@ import ImageIcon from "@material-ui/icons/Image";
 import CommentsIcon from "@material-ui/icons/InsertComment";
 
 import ReportDetails from "./ReportDetails";
+import ReportComments from "./ReportComments";
+import ReportImages from "./ReportImages";
 
-import { mockAvalanche } from "../Constants"; // TODO remove after form dev
+import {mockAvalanche} from "../Constants"; // TODO remove after form dev
+
 
 const styles = theme => ({
   dialogPaper: {
@@ -91,14 +94,22 @@ const initAvalanche = (extId, location, slope, perimeter) => {
   }
 };
 
+const MainContent = {
+  details: 0,
+  images: 1,
+  comments: 2,
+};
+
 class ReportDialog extends React.Component {
 
   constructor(props) {
     super(props);
     this.updateAvalanche = this.updateAvalanche.bind(this);
+    this.renderMainContent = this.renderMainContent.bind(this);
 
     this.state = {
       avalanche: mockAvalanche, // TODO set back to null after form dev
+      main: MainContent.details,
     }
   }
 
@@ -121,6 +132,7 @@ class ReportDialog extends React.Component {
 
       this.setState({
         avalanche: initAvalanche(this.props.reportExtId, location, slope, drawing.perimeter),
+        main: MainContent.details,
       });
     }
   }
@@ -135,13 +147,40 @@ class ReportDialog extends React.Component {
     this.setState({avalanche: updated});
   }
 
+  renderMainContent() {
+    switch (this.state.main) {
+      case MainContent.images:
+        return (
+          <ReportImages
+            clientData={this.props.clientData}
+            avalanche={this.state.avalanche}
+            updateAvalanche={this.updateAvalanche}
+          />
+        );
+      case MainContent.comments:
+        return (
+          <ReportComments
+            clientData={this.props.clientData}
+            avalanche={this.state.avalanche}
+            updateAvalanche={this.updateAvalanche}
+          />
+        );
+      default:
+        return (
+          <ReportDetails
+            clientData={this.props.clientData}
+            avalanche={this.state.avalanche}
+            updateAvalanche={this.updateAvalanche}
+          />
+        );
+    }
+  }
+
   render() {
     const { classes, clientData } = this.props;
     if (!clientData || !this.state || !this.state.avalanche) return null;
 
     console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
-    console.info(`avalanche.classification is ${JSON.stringify(this.state.avalanche.classification)}`);
-    //console.info(`clientData is ${JSON.stringify(clientData)}`);
 
     return (
       <Dialog
@@ -154,30 +193,30 @@ class ReportDialog extends React.Component {
         <DialogContent className={classes.dialogContent}>
           <AppBar position="absolute" className={classes.appBar}>
             <Toolbar disableGutters={true}>
-              <Typography variant="title" color="inherit" noWrap className={classes.title}>
+              <Typography variant="h6" color="inherit" noWrap className={classes.title}>
                 Avalanche Report
               </Typography>
             </Toolbar>
           </AppBar>
           <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
             <Tooltip placement="right" title={clientData.tooltips.avyFormSWAGFields}>
-              <IconButton className={classes.button}>
+              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.details})}>
                 <ViewListIcon />
               </IconButton>
             </Tooltip>
             <Tooltip placement="right" title={clientData.tooltips.avyFormImages}>
-              <IconButton className={classes.button}>
+              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.images})}>
                 <ImageIcon />
               </IconButton>
             </Tooltip>
             <Tooltip placement="right" title={clientData.tooltips.avyFormComments}>
-              <IconButton className={classes.button}>
+              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.comments})}>
                 <CommentsIcon />
               </IconButton>
             </Tooltip>
           </Drawer>
           <main className={classes.main}>
-            <ReportDetails clientData={clientData} avalanche={this.state.avalanche} updateAvalanche={this.updateAvalanche} />
+            { this.renderMainContent() }
           </main>
         </DialogContent>
         <DialogActions classes={{root: classes.dialogActionsRoot}} onClick={this.props.callback}>

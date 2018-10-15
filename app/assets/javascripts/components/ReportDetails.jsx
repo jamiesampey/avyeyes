@@ -63,7 +63,8 @@ const styles = theme => ({
   },
   slider: {
     marginLeft: 0,
-    marginTop: 12,
+    marginTop: 32,
+    paddingLeft: 6,
     width: 310,
   },
 });
@@ -174,7 +175,7 @@ const ReportDetails = props => {
                   onChange={(e, v) => { updateAvalanche('classification.rSize', v) }}
                 />
               </FormControl>
-              <FormControl className={classes.formField}>
+              <FormControl className={classes.formField} style={{marginTop: 24, paddingBottom: 16}}>
                 <InputLabel shrink={true}>Destructive (D) Size</InputLabel>
                 <Slider
                   className={classes.slider}

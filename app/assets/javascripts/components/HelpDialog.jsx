@@ -50,7 +50,7 @@ class HelpDialog extends React.Component {
           <div>
             <AppBar className={classes.appBar}>
               <Toolbar variant="dense" disableGutters={true}>
-                <Typography variant="title" color="inherit">
+                <Typography variant="h6" color="inherit">
                   {title}
                 </Typography>
                 <IconButton className={classes.closeButton} onClick={closeCallback} color="inherit">

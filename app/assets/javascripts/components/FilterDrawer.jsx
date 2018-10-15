@@ -58,7 +58,8 @@ const styles = theme => ({
   },
   slider: {
     marginLeft: 0,
-    marginTop: 12,
+    marginTop: 32,
+    paddingLeft: 6,
     width: 230,
   },
   clearButton: {
