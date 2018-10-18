@@ -10,7 +10,7 @@ import HelpDialog from "./HelpDialog";
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import {parseApiResponse} from "../Util";
+import {checkStatusAndParseJson} from "../Util";
 import ReportDrawer from "./ReportDrawer";
 import CesiumView from "./CesiumView";
 
@@ -64,7 +64,7 @@ class AvyEyesClient extends React.Component {
 
     fetch('/api/clientData')
       .then(response => {
-        return parseApiResponse(response);
+        return checkStatusAndParseJson(response);
       })
       .then(data => {
         this.setState({clientData: data});

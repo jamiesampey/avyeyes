@@ -20,12 +20,17 @@ module.exports = {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   },
 
-  parseApiResponse: (response) => {
-    if (response.status === 200) {
-      return response.json();
-    } else {
+  checkStatus: (response) => {
+    if (response.status !== 200) {
       throw new Error(response.statusText)
     }
+  },
+
+  checkStatusAndParseJson: (response) => {
+    if (response.status !== 200) {
+      throw new Error(response.statusText)
+    }
+    return response.json();
   },
 
   /**

@@ -1,5 +1,5 @@
 import Cesium from 'cesium/Cesium';
-import {getRequestParam, parseApiResponse} from "./Util";
+import {getRequestParam, checkStatusAndParseJson} from "./Util";
 import Config from "./Config";
 
 class CesiumController {
@@ -52,7 +52,7 @@ class CesiumController {
 
         fetch(avalancheUrl)
           .then(response => {
-            return parseApiResponse(response);
+            return checkStatusAndParseJson(response);
           })
           .then(data => {
             if (pick.id.billboard) {

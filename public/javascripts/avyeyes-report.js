@@ -124,22 +124,22 @@ function AvyReport(avyEyesView) {
 //         coordStr.trim());
 // }
 
-AvyReport.prototype.submitReport = function() {
-    var view = this.view;
-    if (!view.form.validateReportFields()) return;
-
-    var extId = $("#rwAvyFormExtId").val();
-    var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie();
-
-    $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(response) {
-        view.showModalDialog("Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='"
-            + response + "' target='_blank' style='text-decoration: none;'>" + response + "</a>");
-    }).fail(function(jqxhr) {
-        view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
-    }).always(function() {
-        view.resetView();
-    });
-}
+// AvyReport.prototype.submitReport = function() {
+//     var view = this.view;
+//     if (!view.form.validateReportFields()) return;
+//
+//     var extId = $("#rwAvyFormExtId").val();
+//     var reportSubmitUri = "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie();
+//
+//     $.post(reportSubmitUri, JSON.stringify(parseReportForm(extId))).done(function(response) {
+//         view.showModalDialog("Avalanche report successfully submitted. The report is viewable at:<br/><br/><a href='"
+//             + response + "' target='_blank' style='text-decoration: none;'>" + response + "</a>");
+//     }).fail(function(jqxhr) {
+//         view.showModalDialog("Error submitting report " + extId + ". Error: " + jqxhr.responseText);
+//     }).always(function() {
+//         view.resetView();
+//     });
+// }
 
 AvyReport.prototype.updateReport = function(editKey) {
     var view = this.view;
@@ -173,54 +173,54 @@ AvyReport.prototype.deleteReport = function() {
     });
 }
 
-function parseReportForm(reportExtId) {
-    var parseIntWithDefault = function(selector) {
-        var attemptedInt = parseInt($(selector).val());
-        return isNaN(attemptedInt) ? -1 : attemptedInt;
-    }
-
-    return {
-        extId: reportExtId,
-        viewable: $('#rwAvyFormViewable').is(":checked"),
-        submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
-        submitterExp: $('#rwAvyFormSubmitterExp').val(),
-        location: {
-          longitude: parseFloat($('#rwAvyFormLng').val()),
-          latitude: parseFloat($('#rwAvyFormLat').val()),
-          altitude: parseFloat($('#rwAvyFormElevation').val())
-        },
-        date: $("#rwAvyFormDate").val(),
-        areaName: $("#rwAvyFormAreaName").val(),
-        slope: {
-          aspect: $("#rwAvyFormAspect").val(),
-          angle: parseInt($("#rwAvyFormAngle").val()),
-          elevation: parseFloat($('#rwAvyFormElevation').val())
-        },
-        weather: {
-          recentSnow: parseIntWithDefault("#rwAvyFormRecentSnow"),
-          recentWindSpeed: $("#rwAvyFormRecentWindSpeed").val(),
-          recentWindDirection: $("#rwAvyFormRecentWindDirection").val()
-        },
-        classification: {
-          avyType: $("#rwAvyFormType").val(),
-          trigger: $("#rwAvyFormTrigger").val(),
-          triggerModifier: $("#rwAvyFormTriggerModifier").val(),
-          interface: $("#rwAvyFormInterface").val(),
-          rSize: parseFloat($("#rwAvyFormRsizeValue").val()),
-          dSize: parseFloat($("#rwAvyFormDsizeValue").val())
-        },
-        humanNumbers: {
-          modeOfTravel: $("#rwAvyFormModeOfTravel").val(),
-          caught: parseIntWithDefault("#rwAvyFormNumCaught"),
-          partiallyBuried: parseIntWithDefault("#rwAvyFormNumPartiallyBuried"),
-          fullyBuried: parseIntWithDefault("#rwAvyFormNumFullyBuried"),
-          injured: parseIntWithDefault("#rwAvyFormNumInjured"),
-          killed: parseIntWithDefault("#rwAvyFormNumKilled")
-        },
-        perimeter: $("#rwAvyFormCoords").val(),
-        comments: $("#rwAvyFormComments").val()
-      };
-}
+// function parseReportForm(reportExtId) {
+//     var parseIntWithDefault = function(selector) {
+//         var attemptedInt = parseInt($(selector).val());
+//         return isNaN(attemptedInt) ? -1 : attemptedInt;
+//     }
+//
+//     return {
+//         extId: reportExtId,
+//         viewable: $('#rwAvyFormViewable').is(":checked"),
+//         submitterEmail: $('#rwAvyFormSubmitterEmail').val(),
+//         submitterExp: $('#rwAvyFormSubmitterExp').val(),
+//         location: {
+//           longitude: parseFloat($('#rwAvyFormLng').val()),
+//           latitude: parseFloat($('#rwAvyFormLat').val()),
+//           altitude: parseFloat($('#rwAvyFormElevation').val())
+//         },
+//         date: $("#rwAvyFormDate").val(),
+//         areaName: $("#rwAvyFormAreaName").val(),
+//         slope: {
+//           aspect: $("#rwAvyFormAspect").val(),
+//           angle: parseInt($("#rwAvyFormAngle").val()),
+//           elevation: parseFloat($('#rwAvyFormElevation').val())
+//         },
+//         weather: {
+//           recentSnow: parseIntWithDefault("#rwAvyFormRecentSnow"),
+//           recentWindSpeed: $("#rwAvyFormRecentWindSpeed").val(),
+//           recentWindDirection: $("#rwAvyFormRecentWindDirection").val()
+//         },
+//         classification: {
+//           avyType: $("#rwAvyFormType").val(),
+//           trigger: $("#rwAvyFormTrigger").val(),
+//           triggerModifier: $("#rwAvyFormTriggerModifier").val(),
+//           interface: $("#rwAvyFormInterface").val(),
+//           rSize: parseFloat($("#rwAvyFormRsizeValue").val()),
+//           dSize: parseFloat($("#rwAvyFormDsizeValue").val())
+//         },
+//         humanNumbers: {
+//           modeOfTravel: $("#rwAvyFormModeOfTravel").val(),
+//           caught: parseIntWithDefault("#rwAvyFormNumCaught"),
+//           partiallyBuried: parseIntWithDefault("#rwAvyFormNumPartiallyBuried"),
+//           fullyBuried: parseIntWithDefault("#rwAvyFormNumFullyBuried"),
+//           injured: parseIntWithDefault("#rwAvyFormNumInjured"),
+//           killed: parseIntWithDefault("#rwAvyFormNumKilled")
+//         },
+//         perimeter: $("#rwAvyFormCoords").val(),
+//         comments: $("#rwAvyFormComments").val()
+//       };
+// }
 
 // function getAspect(highestCartographic, lowestCartographic) {
 //     var lat1 = highestCartographic.latitude;

@@ -14,7 +14,7 @@ import AvyCard from "./AvyCard";
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import {getRequestParam, parseApiResponse} from "../Util";
+import {checkStatusAndParseJson} from "../Util";
 
 const styles = theme => ({
   root: {
@@ -74,7 +74,7 @@ class CesiumView extends React.Component {
     if (extIdUrlParam) {
       fetch(`/api/avalanche/${extIdUrlParam}`)
         .then(response => {
-          return parseApiResponse(response);
+          return checkStatusAndParseJson(response);
         })
         .then(data => {
           this.controller.addAvalancheAndFlyTo(data);
@@ -123,7 +123,7 @@ class CesiumView extends React.Component {
 
     fetch(searchQueryString)
       .then(response => {
-        return parseApiResponse(response);
+        return checkStatusAndParseJson(response);
       })
       .then(data => {
         this.controller.addAvalanches(data);

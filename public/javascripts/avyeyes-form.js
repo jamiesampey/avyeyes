@@ -155,59 +155,59 @@ function AvyForm(avyEyesView, mockS3Promise) {
 // 	}
 // }
 
-AvyForm.prototype.displayReadWriteForm = function(a) {
-    if (!a) { // new report case
-        this.resetReadWriteImageUpload($('#rwAvyFormExtId').val());
-        $('#rwAvyFormOverlay').css('visibility', 'visible');
-        $('#rwAvyFormAreaName').focus();
-        return;
-    }
-
-    this.resetReadWriteImageUpload(a.extId);
-    $('#rwAvyFormExtId').val(a.extId);
-    $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
-
-    $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
-    this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', this.expLevelFromCode(a.submitterExp));
-
-    $('#rwAvyFormAreaName').val(a.areaName);
-    $('#rwAvyFormDate').val(a.date);
-
-    $('#rwAvyFormElevation').val(a.slope.elevation);
-    $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
-    this.setReadWriteAutocompleteVal('#rwAvyFormAspect', directionFromCode(a.slope.aspect));
-    $('#rwAvyFormAngle').val(a.slope.angle);
-
-    this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
-    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', windSpeedFromCode(a.weather.recentWindSpeed));
-    this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', directionFromCode(a.weather.recentWindDirection));
-
-    this.setReadWriteAutocompleteVal('#rwAvyFormType', avyTypeFromCode(a.classification.avyType));
-    this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', avyTriggerFromCode(a.classification.trigger));
-    this.setReadWriteAutocompleteVal('#rwAvyFormTriggerModifier', avyTriggerModifierFromCode(a.classification.triggerModifier));
-    this.setReadWriteAutocompleteVal('#rwAvyFormInterface', avyInterfaceFromCode(a.classification.interface));
-    this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
-    this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
-
-    this.setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
-    this.setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
-    this.setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
-    this.setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
-    this.setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
-    this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
-    
-    $('#rwAvyFormComments').val(a.comments);
-    
-    $.each(a.images, function(i, image) {
-        var imageCellId = getFileBaseName(image.filename);
-        this.appendImageCellToReadWriteForm(imageCellId);
-        this.setImageCellContent(imageCellId, a.extId, image);
-    }.bind(this));
-
-    $('#rwAvyFormDeleteBinding').val(a.extId);
-    $('#rwAvyFormOverlay').css('visibility', 'visible');
-    $("#cesiumContainer").css("cursor", "default");
-}
+// AvyForm.prototype.displayReadWriteForm = function(a) {
+//     if (!a) { // new report case
+//         this.resetReadWriteImageUpload($('#rwAvyFormExtId').val());
+//         $('#rwAvyFormOverlay').css('visibility', 'visible');
+//         $('#rwAvyFormAreaName').focus();
+//         return;
+//     }
+//
+//     this.resetReadWriteImageUpload(a.extId);
+//     $('#rwAvyFormExtId').val(a.extId);
+//     $('#rwAvyFormAdminTd').find(':checkbox').attr('checked', a.viewable);
+//
+//     $('#rwAvyFormSubmitterEmail').val(a.submitterEmail);
+//     this.setReadWriteAutocompleteVal('#rwAvyFormSubmitterExp', this.expLevelFromCode(a.submitterExp));
+//
+//     $('#rwAvyFormAreaName').val(a.areaName);
+//     $('#rwAvyFormDate').val(a.date);
+//
+//     $('#rwAvyFormElevation').val(a.slope.elevation);
+//     $('#rwAvyFormElevationFt').val(metersToFeet(a.slope.elevation));
+//     this.setReadWriteAutocompleteVal('#rwAvyFormAspect', directionFromCode(a.slope.aspect));
+//     $('#rwAvyFormAngle').val(a.slope.angle);
+//
+//     this.setReadWriteSpinnerVal('#rwAvyFormRecentSnow', a.weather.recentSnow);
+//     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindSpeed', windSpeedFromCode(a.weather.recentWindSpeed));
+//     this.setReadWriteAutocompleteVal('#rwAvyFormRecentWindDirection', directionFromCode(a.weather.recentWindDirection));
+//
+//     this.setReadWriteAutocompleteVal('#rwAvyFormType', avyTypeFromCode(a.classification.avyType));
+//     this.setReadWriteAutocompleteVal('#rwAvyFormTrigger', avyTriggerFromCode(a.classification.trigger));
+//     this.setReadWriteAutocompleteVal('#rwAvyFormTriggerModifier', avyTriggerModifierFromCode(a.classification.triggerModifier));
+//     this.setReadWriteAutocompleteVal('#rwAvyFormInterface', avyInterfaceFromCode(a.classification.interface));
+//     this.setReadWriteSliderVal('#rwAvyFormRsizeValue', a.classification.rSize);
+//     this.setReadWriteSliderVal('#rwAvyFormDsizeValue', a.classification.dSize);
+//
+//     this.setReadWriteSpinnerVal('#rwAvyFormNumCaught', a.humanNumbers.caught);
+//     this.setReadWriteSpinnerVal('#rwAvyFormNumPartiallyBuried', a.humanNumbers.partiallyBuried);
+//     this.setReadWriteSpinnerVal('#rwAvyFormNumFullyBuried', a.humanNumbers.fullyBuried);
+//     this.setReadWriteSpinnerVal('#rwAvyFormNumInjured', a.humanNumbers.injured);
+//     this.setReadWriteSpinnerVal('#rwAvyFormNumKilled', a.humanNumbers.killed);
+//     this.setReadWriteAutocompleteVal('#rwAvyFormModeOfTravel', modeOfTravelFromCode(a.humanNumbers.modeOfTravel));
+//
+//     $('#rwAvyFormComments').val(a.comments);
+//
+//     $.each(a.images, function(i, image) {
+//         var imageCellId = getFileBaseName(image.filename);
+//         this.appendImageCellToReadWriteForm(imageCellId);
+//         this.setImageCellContent(imageCellId, a.extId, image);
+//     }.bind(this));
+//
+//     $('#rwAvyFormDeleteBinding').val(a.extId);
+//     $('#rwAvyFormOverlay').css('visibility', 'visible');
+//     $("#cesiumContainer").css("cursor", "default");
+// }
 
 AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     $('#rwAvyFormImageGrid').empty();
@@ -370,51 +370,51 @@ AvyForm.prototype.enableAdminControls = function() {
     });
 }
 
-AvyForm.prototype.validateReportFields = function() {
-    this.resetReportErrorFields();
-    var invalidFields = false;
+// AvyForm.prototype.validateReportFields = function() {
+//     this.resetReportErrorFields();
+//     var invalidFields = false;
+//
+//     var markFieldInvalid = function(fieldId) {
+//         invalidFields = true;
+//         if (fieldId === 'rwAvyFormAngle') {
+//             $('#' + fieldId).parent().css('border', '1px solid red');
+//         } else {
+//             $('#' + fieldId).css('border', '1px solid red');
+//         }
+//     };
+//
+//     var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+//     if (!emailRegex.test($("#rwAvyFormSubmitterEmail").val())) markFieldInvalid("rwAvyFormSubmitterEmail");
+//
+//     var slopeAngle = parseInt($("#rwAvyFormAngle").val()) || -1;
+//     if (slopeAngle < 1 || slopeAngle > 90) markFieldInvalid("rwAvyFormAngle");
+//
+//     if (!$("#rwAvyFormSubmitterExp").val()) markFieldInvalid("rwAvyFormSubmitterExpAC");
+//     if (!$("#rwAvyFormAreaName").val()) markFieldInvalid("rwAvyFormAreaName");
+//     if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormDate");
+//     if (!$("#rwAvyFormAspect").val()) markFieldInvalid("rwAvyFormAspectAC");
+//
+//     if (invalidFields) this.view.showModalDialog("The highlighted fields need attention");
+//     return !invalidFields;
+// }
 
-    var markFieldInvalid = function(fieldId) {
-        invalidFields = true;
-        if (fieldId === 'rwAvyFormAngle') {
-            $('#' + fieldId).parent().css('border', '1px solid red');
-        } else {
-            $('#' + fieldId).css('border', '1px solid red');
-        }
-    };
+// AvyForm.prototype.resetReportErrorFields = function() {
+//     $('#rwAvyFormSubmitterEmail').css('border', '1px solid #7D7D7D');
+//     $('#rwAvyFormSubmitterExpAC').css('border', '1px solid #7D7D7D');
+//     $('#rwAvyFormAspectAC').css('border', '1px solid #7D7D7D');
+//     $('#rwAvyFormAreaName').css('border', '1px solid #7D7D7D');
+//     $('#rwAvyFormDate').css('border', '1px solid #7D7D7D');
+//     $('#rwAvyFormAngle').parent().css('border', '1px solid #7D7D7D');
+// }
 
-    var emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emailRegex.test($("#rwAvyFormSubmitterEmail").val())) markFieldInvalid("rwAvyFormSubmitterEmail");
-
-    var slopeAngle = parseInt($("#rwAvyFormAngle").val()) || -1;
-    if (slopeAngle < 1 || slopeAngle > 90) markFieldInvalid("rwAvyFormAngle");
-
-    if (!$("#rwAvyFormSubmitterExp").val()) markFieldInvalid("rwAvyFormSubmitterExpAC");
-    if (!$("#rwAvyFormAreaName").val()) markFieldInvalid("rwAvyFormAreaName");
-    if (!$("#rwAvyFormDate").val()) markFieldInvalid("rwAvyFormDate");
-    if (!$("#rwAvyFormAspect").val()) markFieldInvalid("rwAvyFormAspectAC");
-
-    if (invalidFields) this.view.showModalDialog("The highlighted fields need attention");
-    return !invalidFields;
-}
-
-AvyForm.prototype.resetReportErrorFields = function() {
-    $('#rwAvyFormSubmitterEmail').css('border', '1px solid #7D7D7D');
-    $('#rwAvyFormSubmitterExpAC').css('border', '1px solid #7D7D7D');
-    $('#rwAvyFormAspectAC').css('border', '1px solid #7D7D7D');
-    $('#rwAvyFormAreaName').css('border', '1px solid #7D7D7D');
-    $('#rwAvyFormDate').css('border', '1px solid #7D7D7D');
-    $('#rwAvyFormAngle').parent().css('border', '1px solid #7D7D7D');
-}
-
-AvyForm.prototype.clearReportFields = function() {
-    this.resetReportErrorFields();
-    this.setReportDrawingInputs('', '', '', '', '', '');
-	$('#rwAvyFormDiv').find('input:text, input:hidden, textarea').val('');
-	$('#rwAvyFormDiv').find('.avyRDSliderValue').val('0');
-	$('#rwAvyFormDiv').find('.avyRDSlider').slider('value', 0);
-	$('#rwAvyFormImageGrid').empty();
-}
+// AvyForm.prototype.clearReportFields = function() {
+//     this.resetReportErrorFields();
+//     this.setReportDrawingInputs('', '', '', '', '', '');
+// 	$('#rwAvyFormDiv').find('input:text, input:hidden, textarea').val('');
+// 	$('#rwAvyFormDiv').find('.avyRDSliderValue').val('0');
+// 	$('#rwAvyFormDiv').find('.avyRDSlider').slider('value', 0);
+// 	$('#rwAvyFormImageGrid').empty();
+// }
 
 // AvyForm.prototype.setReportDrawingInputs = function setReportDrawingInputs(lng, lat, elevation, aspect, angle, coordStr) {
 // 	$('#rwAvyFormLng').val(lng);
@@ -427,9 +427,9 @@ AvyForm.prototype.clearReportFields = function() {
 // 	$('#rwAvyFormCoords').val(coordStr);
 // }
 
-AvyForm.prototype.closeReportForm = function() {
-    $('#rwAvyFormOverlay').css('visibility', 'hidden');
-}
+// AvyForm.prototype.closeReportForm = function() {
+//     $('#rwAvyFormOverlay').css('visibility', 'hidden');
+// }
 
 AvyForm.prototype.toggleWindDirectionFields = function(value) {
     if (value === 'empty' || value.length == 0) {
@@ -443,25 +443,25 @@ AvyForm.prototype.toggleWindDirectionFields = function(value) {
     }
 }
 
-AvyForm.prototype.toggleTriggerCauseFields = function(category) {
-    var enableTriggerModifierFields = function() {
-        $('.avyTriggerModifierAutoComplete').prop('disabled', false);
-        $('label[for="rwAvyFormTriggerModifier"]').css('color', 'white');
-    }
-
-    if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier'].slice(2));
-        enableTriggerModifierFields();
-    } else if (category && category.endsWith('Human')) {
-        $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier']);
-        enableTriggerModifierFields();
-    } else {
-        $('#rwAvyFormTriggerModifier').val('');
-        $('.avyTriggerModifierAutoComplete').val('');
-        $('.avyTriggerModifierAutoComplete').prop('disabled', true);
-        $('label[for="rwAvyFormTriggerModifier"]').css('color', 'gray');
-    }
-}
+// AvyForm.prototype.toggleTriggerCauseFields = function(category) {
+//     var enableTriggerModifierFields = function() {
+//         $('.avyTriggerModifierAutoComplete').prop('disabled', false);
+//         $('label[for="rwAvyFormTriggerModifier"]').css('color', 'white');
+//     }
+//
+//     if (category && (category.startsWith('Natural') || category.endsWith('Explosive'))) {
+//         $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier'].slice(2));
+//         enableTriggerModifierFields();
+//     } else if (category && category.endsWith('Human')) {
+//         $('.avyTriggerModifierAutoComplete').avycomplete('option', 'source', window.AutoCompleteSources['AvalancheTriggerModifier']);
+//         enableTriggerModifierFields();
+//     } else {
+//         $('#rwAvyFormTriggerModifier').val('');
+//         $('.avyTriggerModifierAutoComplete').val('');
+//         $('.avyTriggerModifierAutoComplete').prop('disabled', true);
+//         $('label[for="rwAvyFormTriggerModifier"]').css('color', 'gray');
+//     }
+// }
 
 // function setReadOnlyAutoCompleteVal(inputElem, obj) {
 //     if (obj.value == 'empty') {
@@ -494,28 +494,28 @@ AvyForm.prototype.toggleTriggerCauseFields = function(category) {
 //     }
 // }
 
-AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, obj) {
-  if (obj.value === 'empty') {
-      $(hiddenSibling).val('');
-      $(hiddenSibling).siblings('.avyAutoComplete').val('');
-  } else {
-      $(hiddenSibling).val(obj.value);
-      $(hiddenSibling).siblings('.avyAutoComplete').val(obj.label);
-  }
-}
-
-AvyForm.prototype.setReadWriteSliderVal = function(inputElem, value) {
-  $(inputElem).val(value);
-  $(inputElem).siblings('.avyRDSlider').slider('value', value);
-}
-
-AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
-  if (value == -1) {
-    $(inputElem).val('');
-  } else {
-    $(inputElem).val(value);
-  }
-}
+// AvyForm.prototype.setReadWriteAutocompleteVal = function(hiddenSibling, obj) {
+//   if (obj.value === 'empty') {
+//       $(hiddenSibling).val('');
+//       $(hiddenSibling).siblings('.avyAutoComplete').val('');
+//   } else {
+//       $(hiddenSibling).val(obj.value);
+//       $(hiddenSibling).siblings('.avyAutoComplete').val(obj.label);
+//   }
+// }
+//
+// AvyForm.prototype.setReadWriteSliderVal = function(inputElem, value) {
+//   $(inputElem).val(value);
+//   $(inputElem).siblings('.avyRDSlider').slider('value', value);
+// }
+//
+// AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
+//   if (value == -1) {
+//     $(inputElem).val('');
+//   } else {
+//     $(inputElem).val(value);
+//   }
+// }
 
 // AvyForm.prototype.expLevelFromCode = function(code) {
 //     return enumObjFromCode(window.AutoCompleteSources["ExperienceLevel"], code);
@@ -560,6 +560,6 @@ AvyForm.prototype.setReadWriteSpinnerVal = function(inputElem, value) {
 // function metersToFeet(meters) {
 //     return Math.round(meters * 3.28084);
 // }
-
-return AvyForm;
-});
+//
+// return AvyForm;
+// });

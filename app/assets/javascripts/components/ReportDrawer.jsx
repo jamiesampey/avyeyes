@@ -13,7 +13,7 @@ import Cesium from "cesium/Cesium";
 
 import Select from "react-select";
 import Button from "@material-ui/core/Button/Button";
-import {parseApiResponse} from "../Util";
+import {checkStatusAndParseJson} from "../Util";
 import ReportDialog from "./ReportDialog";
 
 const styles = theme => ({
@@ -82,7 +82,7 @@ class ReportDrawer extends React.Component {
     if (this.props.drawerOpen && !this.state.reportExtId) {
       fetch('/api/avalanche/newReportId')
         .then(response => {
-          return parseApiResponse(response);
+          return checkStatusAndParseJson(response);
         })
         .then(data => {
           console.info(`New report ID reserved: ${data.extId}`);

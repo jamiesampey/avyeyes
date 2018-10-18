@@ -21,7 +21,7 @@ import ReportComments from "./ReportComments";
 import ReportImages from "./ReportImages";
 
 import {mockAvalanche} from "../Constants"; // TODO remove after form dev
-import { getRequestParam, getCSRFTokenFromCookie } from "../Util";
+import {getRequestParam, getCSRFTokenFromCookie, checkStatus} from "../Util";
 
 const styles = theme => ({
   dialogPaper: {
@@ -108,6 +108,7 @@ class ReportDialog extends React.Component {
     this.updateAvalanche = this.updateAvalanche.bind(this);
     this.submitAvalanche = this.submitAvalanche.bind(this);
     this.renderMainContent = this.renderMainContent.bind(this);
+    this.cleanup = this.cleanup.bind(this);
 
     this.state = {
       avalanche: mockAvalanche, // TODO set back to null after form dev
@@ -117,7 +118,7 @@ class ReportDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.openReport && !this.state.avalanche) {
+    if (this.props.openReport && this.props.drawing && !this.state.avalanche) {
       let drawing = this.props.drawing;
       console.info(`initializing avalanche report ${prevProps.reportExtId} from drawing`);
 
@@ -155,36 +156,47 @@ class ReportDialog extends React.Component {
     let csrfToken = getCSRFTokenFromCookie();
     let editKey = getRequestParam("edit");
 
-    console.info(`submitAvalanche: editKey is ${editKey}, csrfToken is ${csrfToken}`);
+    console.info(`submitAvalanche: editKey is ${editKey}, csrfToken is ${csrfToken}`); // TODO remove debug logging
 
     let errorFields = [];
     if (!avalanche.areaName) errorFields.push('areaName');
     if (!avalanche.date) errorFields.push('date');
     if (!avalanche.submitterEmail) errorFields.push('submitterEmail');
     if (!avalanche.submitterExp) errorFields.push('submitterExp');
+
     this.setState({errorFields: errorFields});
-
-    if (errorFields.length === 0) {
-      if (editKey) {
-        fetch(`/api/avalanche/${avalanche.extId}?edit=${editKey}&csrfToken=${csrfToken}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(avalanche),
-        })
-      } else {
-        fetch(`/api/avalanche/${avalanche.extId}?csrfToken=${csrfToken}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(avalanche),
-        })
-      }
-
-      this.props.callback();
+    if (errorFields.length > 0) {
+      return;
     }
+
+    if (editKey) {
+      fetch(`/api/avalanche/${avalanche.extId}?edit=${editKey}&csrfToken=${csrfToken}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(avalanche),
+      })
+      .then(response => checkStatus(response))
+      .catch(error => console.error(`Error updating report ${avalanche.extId}: ${error}`))
+      .finally(() => this.cleanup());
+    } else {
+      fetch(`/api/avalanche/${avalanche.extId}?csrfToken=${csrfToken}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(avalanche),
+      })
+      .then(response => checkStatus(response))
+      .catch(error => console.error(`Error submitting new report ${avalanche.extId}: ${error}`))
+      .finally(() => this.cleanup());
+    }
+  }
+
+  cleanup() {
+    this.setState({avalanche: null});
+    this.props.callback();
   }
 
   renderMainContent() {
@@ -261,7 +273,7 @@ class ReportDialog extends React.Component {
           </main>
         </DialogContent>
         <DialogActions classes={{root: classes.dialogActionsRoot}}>
-          <Button color="primary" onClick={this.props.callback}>
+          <Button color="primary" onClick={this.cleanup}>
             Cancel
           </Button>
           <Button color="primary" onClick={this.submitAvalanche}>
