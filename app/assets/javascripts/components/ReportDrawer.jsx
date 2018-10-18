@@ -36,7 +36,7 @@ const styles = theme => ({
   },
   instructions: {
     fontSize: '1.1em',
-    color: 'black',
+    color: theme.palette.text.primary,
   },
   buttonsContainer: {
     textAlign: 'center',
@@ -224,8 +224,8 @@ class ReportDrawer extends React.Component {
     this.setState({
       drawing: {
         entity: drawingEntity,
-        latitude: Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8),
-        longitude: Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8),
+        latitude: parseFloat(Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8)),
+        longitude: parseFloat(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8)),
         altitude: Math.round(highestCartographic.height),
         aspect: ReportDrawer.getDrawingAspect(highestCartographic, lowestCartographic),
         angle: Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),

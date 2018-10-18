@@ -81,17 +81,19 @@ const ReportDetails = props => {
           <TableRow className={classes.tableRow}>
             <TableCell colSpan={2} className={classes.tableCell} style={{paddingRight: 0}}>
               <FormControl required={true} className={classes.formField} style={{width: 500}}>
-                <InputLabel shrink={true}>Area Name</InputLabel>
+                <InputLabel error={props.errorFields.includes('areaName')} shrink={true}>Area Name</InputLabel>
                 <Input
                   type="text"
+                  error={props.errorFields.includes('areaName')}
                   value={avalanche.areaName}
                   onChange={(event) => updateAvalanche("areaName", event.target.value)}
                 />
               </FormControl>
               <FormControl required={true} className={classes.formField} style={{width: 150, float: 'right'}}>
-                <InputLabel shrink={true}>Avalanche Date</InputLabel>
+                <InputLabel error={props.errorFields.includes('date')} shrink={true}>Avalanche Date</InputLabel>
                 <Input
                   type="date"
+                  error={props.errorFields.includes('date')}
                   value={avalanche.date}
                   onChange={(event) => updateAvalanche("date", event.target.value)}
                 />
@@ -101,9 +103,10 @@ const ReportDetails = props => {
           <TableRow className={classes.tableRow}>
             <TableCell className={classes.tableCell} style={{paddingTop: 16, paddingBottom: 32}}>
               <FormControl required={true} className={classes.formField}>
-                <InputLabel shrink={true}>Submitter Email</InputLabel>
+                <InputLabel error={props.errorFields.includes('submitterEmail')} shrink={true}>Submitter Email</InputLabel>
                 <Input
                   type="text"
+                  error={props.errorFields.includes('submitterEmail')}
                   value={avalanche.submitterEmail}
                   onChange={(event) => updateAvalanche("submitterEmail", event.target.value)}
                 />
@@ -111,9 +114,10 @@ const ReportDetails = props => {
             </TableCell>
             <TableCell className={classes.tableCell} style={{paddingTop: 16, paddingRight: 0, paddingBottom: 32}}>
               <FormControl required={true} className={classes.formField} style={{float: 'right'}}>
-                <InputLabel shrink={true}>Submitter Experience Level</InputLabel>
+                <InputLabel error={props.errorFields.includes('submitterExp')} shrink={true}>Submitter Experience Level</InputLabel>
                 <Select
                   value={avalanche.submitterExp}
+                  error={props.errorFields.includes('submitterExp')}
                   onChange={(event) => updateAvalanche("submitterExp", event.target.value)}
                 >
                   { clientData.codes.experienceLevel.map(expLevel => <MenuItem key={expLevel.value} value={expLevel.value}>{expLevel.label}</MenuItem>) }

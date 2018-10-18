@@ -57,7 +57,11 @@ const InfoBar = props => {
 
 InfoBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  open: PropTypes.bool.isRequired,
+  message: PropTypes.string,
+  duration: PropTypes.number,
   closeable: PropTypes.bool,
+  closeCallback: PropTypes.func,
 };
 
 export default withStyles(styles)(InfoBar);

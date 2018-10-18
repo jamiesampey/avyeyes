@@ -21,12 +21,13 @@ import ReportComments from "./ReportComments";
 import ReportImages from "./ReportImages";
 
 import {mockAvalanche} from "../Constants"; // TODO remove after form dev
-
+import { getRequestParam, getCSRFTokenFromCookie } from "../Util";
 
 const styles = theme => ({
   dialogPaper: {
     width: 800,
     height: 700,
+    maxHeight: 700,
   },
   dialogContent: {
     flexGrow: 1,
@@ -105,11 +106,13 @@ class ReportDialog extends React.Component {
   constructor(props) {
     super(props);
     this.updateAvalanche = this.updateAvalanche.bind(this);
+    this.submitAvalanche = this.submitAvalanche.bind(this);
     this.renderMainContent = this.renderMainContent.bind(this);
 
     this.state = {
       avalanche: mockAvalanche, // TODO set back to null after form dev
       main: MainContent.details,
+      errorFields: [],
     }
   }
 
@@ -147,6 +150,43 @@ class ReportDialog extends React.Component {
     this.setState({avalanche: updated});
   }
 
+  submitAvalanche() {
+    let { avalanche } = this.state;
+    let csrfToken = getCSRFTokenFromCookie();
+    let editKey = getRequestParam("edit");
+
+    console.info(`submitAvalanche: editKey is ${editKey}, csrfToken is ${csrfToken}`);
+
+    let errorFields = [];
+    if (!avalanche.areaName) errorFields.push('areaName');
+    if (!avalanche.date) errorFields.push('date');
+    if (!avalanche.submitterEmail) errorFields.push('submitterEmail');
+    if (!avalanche.submitterExp) errorFields.push('submitterExp');
+    this.setState({errorFields: errorFields});
+
+    if (errorFields.length === 0) {
+      if (editKey) {
+        fetch(`/api/avalanche/${avalanche.extId}?edit=${editKey}&csrfToken=${csrfToken}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(avalanche),
+        })
+      } else {
+        fetch(`/api/avalanche/${avalanche.extId}?csrfToken=${csrfToken}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(avalanche),
+        })
+      }
+
+      this.props.callback();
+    }
+  }
+
   renderMainContent() {
     switch (this.state.main) {
       case MainContent.images:
@@ -171,6 +211,7 @@ class ReportDialog extends React.Component {
             clientData={this.props.clientData}
             avalanche={this.state.avalanche}
             updateAvalanche={this.updateAvalanche}
+            errorFields={this.state.errorFields}
           />
         );
     }
@@ -219,11 +260,11 @@ class ReportDialog extends React.Component {
             { this.renderMainContent() }
           </main>
         </DialogContent>
-        <DialogActions classes={{root: classes.dialogActionsRoot}} onClick={this.props.callback}>
-          <Button color="primary">
+        <DialogActions classes={{root: classes.dialogActionsRoot}}>
+          <Button color="primary" onClick={this.props.callback}>
             Cancel
           </Button>
-          <Button color="primary">
+          <Button color="primary" onClick={this.submitAvalanche}>
             Submit
           </Button>
         </DialogActions>

@@ -5,6 +5,12 @@ const NotSpecified = <i>not specified</i>;
 module.exports = {
   notSpecified: NotSpecified,
 
+  getCSRFTokenFromCookie: () => {
+    let docCookie = "; " + document.cookie;
+    let parts = docCookie.split("; csrfToken=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+  },
+
   getRequestParam: paramName => {
     paramName = paramName.replace(/[\[\]]/g, "\\$&");
     let regex = new RegExp("[?&]" + paramName + "(=([^&#]*)|&|#|$)"),
