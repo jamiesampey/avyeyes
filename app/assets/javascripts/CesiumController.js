@@ -4,13 +4,15 @@ import Config from "./Config";
 
 class CesiumController {
 
-  constructor(cesiumContainer) {
-    this.viewer = new Cesium.Viewer(cesiumContainer, Config.cesiumViewerOptions);
-    this.eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+  constructor(cesiumContainer, setAvalancheCallback) {
+    this._viewer = new Cesium.Viewer(cesiumContainer, Config.cesiumViewerOptions);
+    this._eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
     this.geocoder = new Cesium.IonGeocoderService({
       scene: this.viewer.scene,
       accessToken: Cesium.Ion.defaultAccessToken,
     });
+
+    this.setCurrentAvalanche = setAvalancheCallback;
 
     this.CreatedByAvyEyes = "AvyEyes";
 
@@ -39,12 +41,6 @@ class CesiumController {
 
       let pick = this.viewer.scene.pick(movement.position);
       if (Cesium.defined(pick) && pick.id.name) {
-
-        if (!pick.id.billboard) {
-          // clicked on a path, set wait cursor
-          this.controller.setCursorStyle("wait");
-        }
-
         let selectedAvalanche = pick.id;
         let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
         let editKeyParam = getRequestParam("edit");
@@ -61,9 +57,7 @@ class CesiumController {
               this.controller.addAvalancheAndFlyTo(data);
             } else {
               // clicked on a path, display details
-              this.setState({
-                currentAvalanche: data,
-              });
+              this.setCurrentAvalanche(data);
             }
           })
           .catch(error => {

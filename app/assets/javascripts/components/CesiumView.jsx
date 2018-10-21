@@ -60,7 +60,7 @@ class CesiumView extends React.Component {
   }
 
   componentDidMount() {
-    this.controller = new CesiumController(this.cesiumRef.current);
+    this.controller = new CesiumController(this.cesiumRef.current, (avalanche) => this.setState({currentAvalanche: avalanche}));
 
     this.controller.viewer.camera.moveEnd.addEventListener(() => {
       this.filterAvalanches();
@@ -136,8 +136,6 @@ class CesiumView extends React.Component {
   clearFilter() {
     this.filterAvalanches({fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 });
   }
-
-
 
   renderCesiumDecorators() {
     const { clientData, showHelp } = this.props;

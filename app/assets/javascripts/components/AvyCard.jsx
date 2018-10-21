@@ -236,8 +236,6 @@ class AvyCard extends React.Component {
     const { classes, clientData, avalanche, setCursorStyle } = this.props;
     const { rotatingCardMedia, socialMenuAnchor } = this.state;
 
-    setCursorStyle("default");
-
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
     //console.info(`clientData is: ${JSON.stringify(this.props.clientData)}`);
 

@@ -140,22 +140,22 @@ function AvyReport(avyEyesView) {
 //         view.resetView();
 //     });
 // }
-
-AvyReport.prototype.updateReport = function(editKey) {
-    var view = this.view;
-    if (!view.form.validateReportFields()) return;
-
-    var extId = $("#rwAvyFormExtId").val();
-    var reportUpdateUri = "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + view.csrfTokenFromCookie();
-
-    $.ajax({ type: 'PUT', url: reportUpdateUri, data: JSON.stringify(parseReportForm(extId)) }).done(function() {
-        view.showModalDialog("Avalanche report " + extId + " successfully updated");
-    }).fail(function(jqxhr) {
-        view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
-    }).always(function() {
-        view.resetView();
-    });
-}
+//
+// AvyReport.prototype.updateReport = function(editKey) {
+//     var view = this.view;
+//     if (!view.form.validateReportFields()) return;
+//
+//     var extId = $("#rwAvyFormExtId").val();
+//     var reportUpdateUri = "/avalanche/" + extId + "?edit=" + editKey + "&csrfToken=" + view.csrfTokenFromCookie();
+//
+//     $.ajax({ type: 'PUT', url: reportUpdateUri, data: JSON.stringify(parseReportForm(extId)) }).done(function() {
+//         view.showModalDialog("Avalanche report " + extId + " successfully updated");
+//     }).fail(function(jqxhr) {
+//         view.showModalDialog("Error updating report " + extId + ". Error: " + jqxhr.responseText);
+//     }).always(function() {
+//         view.resetView();
+//     });
+// }
 
 AvyReport.prototype.deleteReport = function() {
     var view = this.view;
