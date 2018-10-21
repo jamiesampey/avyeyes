@@ -10,7 +10,8 @@ module.exports = {
     target: 'web',
     devtool: 'source-map',
     entry: {
-      avyeyes: `${avyeyesSource}/App`
+      avyeyes: `${avyeyesSource}/App`,
+      admin: `${avyeyesSource}/Admin`,
     },
     output: {
       path: path.resolve(avyeyesSource, 'build'),
@@ -53,8 +54,7 @@ module.exports = {
           CESIUM_BASE_URL: JSON.stringify('assets/javascripts/build') // Define relative base path in cesium for loading assets
         }),
         new webpack.optimize.CommonsChunkPlugin({
-          name: 'cesium',
-          minChunks: (module) => { return module.context && module.context.indexOf('cesium') !== -1 }
+          name: 'common',
         })
     ],
     amd: {
