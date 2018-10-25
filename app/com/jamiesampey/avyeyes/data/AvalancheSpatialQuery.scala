@@ -16,7 +16,8 @@ case class AvalancheSpatialQuery(
   interfaces: Option[Seq[AvalancheInterface]] = None,
   rSize: Option[Double] = None,
   dSize: Option[Double] = None,
-  order: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.CreateTime, OrderDirection.desc)),
+  orderBy: OrderField.Value = OrderField.CreateTime,
+  order: OrderDirection.Value = OrderDirection.desc,
   offset: Int = 0,
   limit: Int = Int.MaxValue)
 extends OrderedAvalancheQuery {

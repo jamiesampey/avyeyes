@@ -18,7 +18,7 @@ class ConfigurationService @Inject()(config: Configuration, logger: Logger)() {
     throw new RuntimeException(errorMsg)
   }
 
-  def avalancheUrl(extId: String) = s"${config.getString("avyEyesUrl").getOrElse("https://avyeyes.com")}/$extId"
+  def avalancheUrl(extId: String) = s"${config.getString("avyEyesUrl").getOrElse("http://avyeyes.com")}/$extId"
 
   def avalancheEditUrl(a: Avalanche) = s"${avalancheUrl(a.extId)}?edit=${a.editKey}"
 }

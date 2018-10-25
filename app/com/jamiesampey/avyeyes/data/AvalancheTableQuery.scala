@@ -6,10 +6,11 @@ case class AvalancheTableQuery(
   extId: Option[String] = None,
   areaName: Option[String] = None,
   submitterEmail: Option[String] = None,
-  order: List[(OrderField.Value, OrderDirection.Value)] = List((OrderField.CreateTime, OrderDirection.desc)),
+  orderBy: OrderField.Value = OrderField.CreateTime,
+  order: OrderDirection.Value = OrderDirection.desc,
   offset: Int = 0,
   limit: Int = Int.MaxValue)
-  extends OrderedAvalancheQuery {
+extends OrderedAvalancheQuery {
 
   lazy val predicates =
     extIdPredicate(extId) ::
@@ -17,7 +18,7 @@ case class AvalancheTableQuery(
     emailPredicate(submitterEmail) :: Nil
 
   def toPredicate = predicates.collect({case Some(predicate) => predicate}) match {
-    case definedPredicates if definedPredicates.size > 0 => or(definedPredicates)
+    case definedPredicates if definedPredicates.nonEmpty => or(definedPredicates)
     case _ => _ => true
   }
 }

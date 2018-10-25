@@ -113,7 +113,7 @@ class AvalancheDaoFilterSelectTest extends DatabaseTest {
     "selects can be ordered by date ascending" in new WithApplication(appBuilder.build) {
       insertAvalanches(latest, earliest, middle)
 
-      val dateAscOrderQuery = AvalancheSpatialQuery(order = List((OrderField.Date, OrderDirection.asc)))
+      val dateAscOrderQuery = AvalancheSpatialQuery(orderBy = OrderField.Date, order = OrderDirection.asc)
       val avyDateAscArray = subject.getAvalanches(dateAscOrderQuery).toArray
 
       avyDateAscArray(0).extId mustEqual earliest.extId
@@ -124,7 +124,7 @@ class AvalancheDaoFilterSelectTest extends DatabaseTest {
     "selects can be ordered by date descending" in new WithApplication(appBuilder.build) {
       insertAvalanches(latest, earliest, middle)
 
-      val dateDescOrderQuery = AvalancheSpatialQuery(order = List((OrderField.Date, OrderDirection.desc)))
+      val dateDescOrderQuery = AvalancheSpatialQuery(orderBy = OrderField.Date, order = OrderDirection.desc)
       val avyDateDescArray = subject.getAvalanches(dateDescOrderQuery).toArray
 
       avyDateDescArray(0).extId mustEqual latest.extId

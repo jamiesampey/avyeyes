@@ -34,7 +34,8 @@ object SpatialQueryBinder {
         interfaces = firstNonEmptyValue(params.get("interfaces")).map(_.split(',').map(AvalancheInterface.fromCode)),
         rSize = firstNonEmptyValue(params.get("rSize")).map(_.toDouble),
         dSize = firstNonEmptyValue(params.get("dSize")).map(_.toDouble),
-        order = List((OrderField.Date, OrderDirection.desc))
+        orderBy = OrderField.Date,
+        order = OrderDirection.desc
       )
     } match {
       case Success(avalancheQuery) => Right(avalancheQuery)

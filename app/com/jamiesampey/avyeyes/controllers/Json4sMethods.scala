@@ -29,7 +29,6 @@ trait Json4sMethods {
     ("extId" -> a.extId) ~
     ("location" -> Extraction.decompose(a.location)) ~
     ("extUrl" -> configService.avalancheUrl(a.extId)) ~
-    ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~
@@ -59,22 +58,17 @@ trait Json4sMethods {
   private val dtf = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")
 
   private[controllers] def writeAdminTableJson(queryResult: (List[Avalanche], Int, Int))(implicit request: RequestHeader) = {
-    def getHttpsAvalancheLink(a: Avalanche) = {
-      <a href={s"${configService.avalancheEditUrl(a)}"} target="adminViewWindow">{s"${a.title}"}</a>.toString
-    }
-
-    def getViewableElem(viewable: Boolean) = viewable match {
-      case true => <span style="color: green;">Yes</span>.toString
-      case false => <span style="color: red;">No</span>.toString
-    }
-
-    val drawVal = request.getQueryString("draw").map(_.toInt).getOrElse(throw new IllegalArgumentException)
-    val matchingAvalanches = queryResult._1
-    val filteredRecordCount = queryResult._2
-    val totalRecordCount = queryResult._3
-
-    writeJson(("draw" -> drawVal) ~ ("recordsTotal" -> totalRecordCount) ~ ("recordsFiltered" -> filteredRecordCount) ~
-      ("data" -> matchingAvalanches.map(a => List(a.createTime.toString(dtf), a.updateTime.toString(dtf), a.extId, getViewableElem(a.viewable), getHttpsAvalancheLink(a), a.submitterEmail)))
+    writeJson(
+      ("recordsTotal" -> queryResult._3) ~
+        ("recordsFiltered" -> queryResult._2) ~
+        ("records" -> queryResult._1.map(a =>
+          ("created" -> a.createTime.toString(dtf)) ~
+          ("updated" -> a.updateTime.toString(dtf)) ~
+          ("extId" -> a.extId) ~
+          ("viewable" -> a.viewable) ~
+          ("areaName" -> a.areaName) ~
+          ("submitter" -> a.submitterEmail)
+      ))
     )
   }
 }
