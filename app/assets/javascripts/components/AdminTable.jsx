@@ -12,11 +12,14 @@ import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import Typography from "@material-ui/core/Typography/Typography";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
-  filterField: {
+  filterInput: {
     marginLeft: 'auto',
+  },
+  filterIndicator: {
+    marginRight: 5,
   },
 });
 
@@ -86,9 +89,9 @@ class AdminTable extends React.Component {
     return (
       <div>
         <Toolbar>
-          <Typography variant="h6">Avalanches</Typography>
+          <Typography variant="h5">Avalanches</Typography>
           <TextField
-            className={classes.filterField}
+            className={classes.filterInput}
             placeholder="Filter"
             value={this.state.filter}
             onChange={(event) => this.setState({filter: event.target.value}, this.requestTableData)}
@@ -100,17 +103,23 @@ class AdminTable extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
-              { Object.entries(OrderByFields).map(orderByEntry => {
-                let fieldKey = orderByEntry[1].field, fieldLabel = orderByEntry[1].label;
+              { Object.entries(OrderByFields).map(arr => arr[1]).map(orderByEntry => {
+                let fieldKey = orderByEntry.field, fieldLabel = orderByEntry.label;
+
+                let filterIndicator = this.state.filter && (
+                  orderByEntry === OrderByFields.ExtId ||
+                  orderByEntry === OrderByFields.AreaName ||
+                  orderByEntry === OrderByFields.Submitter
+                ) ? <FilterListIcon color="secondary" className={classes.filterIndicator}/> : null;
 
                 return (
                   <TableCell key={fieldKey} padding="dense">
                     <TableSortLabel
                       active={orderBy.field === fieldKey}
                       direction={order}
-                      onClick={() => this.handleColumnSort(orderByEntry[1])}
+                      onClick={() => this.handleColumnSort(orderByEntry)}
                     >
-                      {fieldLabel}
+                      {filterIndicator}{fieldLabel}
                     </TableSortLabel>
                   </TableCell>
                 );
