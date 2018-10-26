@@ -13,8 +13,13 @@ import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Typography from "@material-ui/core/Typography";
+import TablePagination from "@material-ui/core/TablePagination";
+import Paper from "@material-ui/core/Paper";
 
 const styles = theme => ({
+  root: {
+    width: '100%',
+  },
   filterInput: {
     marginLeft: 'auto',
   },
@@ -46,6 +51,8 @@ class AdminTable extends React.Component {
     this.handleColumnSort = this.handleColumnSort.bind(this);
 
     this.state = {
+      page: 0,
+      rowsPerPage: 10,
       orderBy: OrderByFields.Created,
       order: Order.Desc,
       filter: '',
@@ -58,14 +65,19 @@ class AdminTable extends React.Component {
   }
 
   requestTableData() {
-    let queryParams = `start=0&length=100&orderBy=${this.state.orderBy.field}&order=${this.state.order}&filter=${this.state.filter}`;
+    let queryParams = [
+      `start=${this.state.page * this.state.rowsPerPage}`,
+      `length=${this.state.rowsPerPage}`,
+      `orderBy=${this.state.orderBy.field}`,
+      `order=${this.state.order}`,
+      `filter=${this.state.filter}`
+    ];
 
-    fetch(`/api/avalanche/table?${queryParams}`)
+    fetch(`/api/avalanche/table?${queryParams.join('&').trim()}`)
       .then(response => {
         return checkStatusAndParseJson(response);
       })
       .then(data => {
-        console.info(`setting state.rows to ${JSON.stringify(data.records)}`);
         this.setState({
           totalRows: data.recordsTotal,
           filteredRows: data.recordsFiltered,
@@ -82,67 +94,87 @@ class AdminTable extends React.Component {
     this.setState({ orderBy: orderByField, order: order }, this.requestTableData);
   }
 
+  static avalancheUrl(extId, linkText) {
+    let lastSlashIndex = window.location.href.lastIndexOf('/');
+    return <a href={`${window.location.href.substring(0, lastSlashIndex)}/${extId}`} target="avyeyesAdminViewer">{linkText}</a>;
+  }
+
   render() {
     const { classes } = this.props;
-    const { orderBy, order } = this.state;
 
     return (
-      <div>
+      <Paper className={classes.root}>
         <Toolbar>
           <Typography variant="h5">Avalanches</Typography>
           <TextField
             className={classes.filterInput}
             placeholder="Filter"
             value={this.state.filter}
-            onChange={(event) => this.setState({filter: event.target.value}, this.requestTableData)}
+            onChange={event => this.setState({filter: event.target.value}, this.requestTableData)}
             InputProps={{
               startAdornment: <InputAdornment position="start"><FilterListIcon/></InputAdornment>,
             }}
           />
         </Toolbar>
-        <Table>
-          <TableHead>
-            <TableRow>
-              { Object.entries(OrderByFields).map(arr => arr[1]).map(orderByEntry => {
-                let fieldKey = orderByEntry.field, fieldLabel = orderByEntry.label;
+        <div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                { Object.entries(OrderByFields).map(arr => arr[1]).map(orderByEntry => {
+                  let fieldKey = orderByEntry.field, fieldLabel = orderByEntry.label;
 
-                let filterIndicator = this.state.filter && (
-                  orderByEntry === OrderByFields.ExtId ||
-                  orderByEntry === OrderByFields.AreaName ||
-                  orderByEntry === OrderByFields.Submitter
-                ) ? <FilterListIcon color="secondary" className={classes.filterIndicator}/> : null;
+                  let filterIndicator = this.state.filter && (
+                    orderByEntry === OrderByFields.ExtId ||
+                    orderByEntry === OrderByFields.AreaName ||
+                    orderByEntry === OrderByFields.Submitter
+                  ) ? <FilterListIcon color="secondary" className={classes.filterIndicator}/> : null;
 
-                return (
-                  <TableCell key={fieldKey} padding="dense">
-                    <TableSortLabel
-                      active={orderBy.field === fieldKey}
-                      direction={order}
-                      onClick={() => this.handleColumnSort(orderByEntry)}
-                    >
-                      {filterIndicator}{fieldLabel}
-                    </TableSortLabel>
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            { this.state.rows.map(row => {
-                return (
-                  <TableRow key={row.extId}>
-                    <TableCell padding="dense">{row.created}</TableCell>
-                    <TableCell padding="dense">{row.updated}</TableCell>
-                    <TableCell padding="dense">{row.extId}</TableCell>
-                    <TableCell padding="dense">{row.viewable ? "Yes" : "No"}</TableCell>
-                    <TableCell padding="dense">{row.areaName}</TableCell>
-                    <TableCell padding="dense">{row.submitter}</TableCell>
-                  </TableRow>
-                );
-              })
-            }
-          </TableBody>
-        </Table>
-      </div>
+                  return (
+                    <TableCell key={fieldKey} padding="dense">
+                      <TableSortLabel
+                        active={this.state.orderBy.field === fieldKey}
+                        direction={this.state.order}
+                        onClick={() => this.handleColumnSort(orderByEntry)}
+                      >
+                        {filterIndicator}{fieldLabel}
+                      </TableSortLabel>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              { this.state.rows.map(row => {
+                  return (
+                    <TableRow key={row.extId}>
+                      <TableCell padding="dense">{row.created}</TableCell>
+                      <TableCell padding="dense">{row.updated}</TableCell>
+                      <TableCell padding="dense">{AdminTable.avalancheUrl(row.extId, row.extId)}</TableCell>
+                      <TableCell padding="dense">{row.viewable ? "Yes" : "No"}</TableCell>
+                      <TableCell padding="dense">{AdminTable.avalancheUrl(row.extId, row.areaName)}</TableCell>
+                      <TableCell padding="dense">{row.submitter}</TableCell>
+                    </TableRow>
+                  );
+                })
+              }
+            </TableBody>
+          </Table>
+        </div>
+        <TablePagination
+          component="div"
+          count={this.state.filteredRows}
+          rowsPerPage={this.state.rowsPerPage}
+          page={this.state.page}
+          backIconButtonProps={{
+            'aria-label': 'Previous Page',
+          }}
+          nextIconButtonProps={{
+            'aria-label': 'Next Page',
+          }}
+          onChangePage={(event, page) => this.setState({ page: page }, this.requestTableData)}
+          onChangeRowsPerPage={event => this.setState({ rowsPerPage: event.target.value }, this.requestTableData)}
+        />
+      </Paper>
     );
   }
 }
