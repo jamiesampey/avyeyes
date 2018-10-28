@@ -29,12 +29,12 @@ const styles = theme => ({
 });
 
 const OrderByFields = {
-  Created: { field: 'CreateTime', label: 'Created' },
-  Updated: { field: 'UpdateTime', label: 'Updated' },
-  ExtId: { field: 'ExtId', label: 'External ID' },
-  Viewable: { field: 'Viewable', label: 'Viewable' },
-  AreaName: { field: 'AreaName', label: 'Area Name' },
-  Submitter: { field: 'SubmitterEmail', label: 'Submitter' },
+  Created: { field: 'CreateTime', label: 'Created', filterable: false },
+  Updated: { field: 'UpdateTime', label: 'Updated', filterable: false },
+  ExtId: { field: 'ExtId', label: 'External ID', filterable: true },
+  Viewable: { field: 'Viewable', label: 'Viewable', filterable: false },
+  AreaName: { field: 'AreaName', label: 'Area Name', filterable: true },
+  Submitter: { field: 'SubmitterEmail', label: 'Submitter', filterable: true },
 };
 
 const Order = {
@@ -123,11 +123,8 @@ class AdminTable extends React.Component {
                 { Object.entries(OrderByFields).map(arr => arr[1]).map(orderByEntry => {
                   let fieldKey = orderByEntry.field, fieldLabel = orderByEntry.label;
 
-                  let filterIndicator = this.state.filter && (
-                    orderByEntry === OrderByFields.ExtId ||
-                    orderByEntry === OrderByFields.AreaName ||
-                    orderByEntry === OrderByFields.Submitter
-                  ) ? <FilterListIcon color="secondary" className={classes.filterIndicator}/> : null;
+                  let filterIndicator = this.state.filter && orderByEntry.filterable ?
+                    <FilterListIcon color="secondary" className={classes.filterIndicator}/> : null;
 
                   return (
                     <TableCell key={fieldKey} padding="dense">
