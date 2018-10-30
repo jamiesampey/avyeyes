@@ -16,6 +16,7 @@ const styles = theme => ({
   button: {
     height: 32,
     width: 32,
+    padding: 0,
   },
   icon: {
     color: '#edffff',
