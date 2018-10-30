@@ -9,6 +9,7 @@ import javax.inject._
 import org.json4s.JsonDSL._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Action
 import securesocial.core.SecureSocial
 
 
@@ -17,21 +18,23 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
                                    val dao: CachedDao, authorizations: Authorizations, implicit val env: UserEnvironment)
   extends SecureSocial with I18nSupport with Json4sMethods {
 
-  import authorizations._
-
-  def index(extId: String) = UserAwareAction { implicit request =>
-    Ok(com.jamiesampey.avyeyes.views.html.index(if (isAdmin(request.user)) request.user else None))
+  def index(extId: String) = Action { implicit request =>
+    Ok(com.jamiesampey.avyeyes.views.html.index())
   }
 
   def admin = SecuredAction(WithRole(AdminRoles)) { implicit request =>
-    Ok(com.jamiesampey.avyeyes.views.html.admin(request.user))
+    Ok(com.jamiesampey.avyeyes.views.html.admin())
   }
 
-  def clientDataBundle = UserAwareAction { implicit request =>
+  def clientDataBundle = Action { implicit request =>
     Ok(writeJson(s3config ~ dataCodes ~ tooltips ~ helpText))
   }
 
-  private val s3config = "s3" ->
+  def currentUser = UserAwareAction { implicit request =>
+    Ok(writeJson("email" -> request.user.map(_.email)))
+  }
+
+    private val s3config = "s3" ->
     ("bucket" -> configService.getProperty("s3.bucket")) ~
     ("accessKeyId" -> configService.getProperty("s3.readonly.accessKeyId")) ~
     ("secretAccessKey" -> configService.getProperty("s3.readonly.secretAccessKey"))

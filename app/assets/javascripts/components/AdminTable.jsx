@@ -15,13 +15,17 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import Typography from "@material-ui/core/Typography";
 import TablePagination from "@material-ui/core/TablePagination";
 import Paper from "@material-ui/core/Paper";
+import AdminUserChip from "./AdminUserChip";
 
 const styles = theme => ({
   root: {
     width: '100%',
   },
-  filterInput: {
+  userChip: {
     marginLeft: 'auto',
+  },
+  filterInput: {
+    marginLeft: 30,
   },
   filterIndicator: {
     marginRight: 5,
@@ -106,6 +110,9 @@ class AdminTable extends React.Component {
       <Paper className={classes.root}>
         <Toolbar>
           <Typography variant="h5">Avalanches</Typography>
+          <div className={classes.userChip}>
+            <AdminUserChip/>
+          </div>
           <TextField
             className={classes.filterInput}
             placeholder="Filter"

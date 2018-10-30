@@ -21,6 +21,7 @@ GET     /                         com.jamiesampey.avyeyes.controllers.TemplateCo
 GET     /$extId<[a-zA-Z0-9]{8}>   com.jamiesampey.avyeyes.controllers.TemplateController.index(extId)
 GET     /admin                    com.jamiesampey.avyeyes.controllers.TemplateController.admin
 GET     /api/clientData           com.jamiesampey.avyeyes.controllers.TemplateController.clientDataBundle
+GET     /api/currentUser          com.jamiesampey.avyeyes.controllers.TemplateController.currentUser
 
 # Public assets
 GET     /assets/*file        controllers.Assets.versioned(path = "/public", file: Asset)

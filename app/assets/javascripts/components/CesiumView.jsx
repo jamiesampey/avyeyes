@@ -5,6 +5,7 @@ import Cesium from 'cesium/Cesium';
 import CesiumController from "../CesiumController";
 import MenuButton from "./TitleDiv";
 import FilterDrawer from "./FilterDrawer";
+import AdminUserChip from "./AdminUserChip";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
@@ -28,6 +29,12 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     overflow: 'hidden',
+  },
+  userChip: {
+    position: 'absolute',
+    top: 8,
+    right: 240,
+    zIndex: 10,
   },
 });
 
@@ -138,7 +145,7 @@ class CesiumView extends React.Component {
   }
 
   renderCesiumDecorators() {
-    const { clientData, showHelp } = this.props;
+    const { classes, clientData, showHelp } = this.props;
     const { currentAvalanche, filterDrawerOpen, avalancheFilter } = this.state;
 
     return (
@@ -172,6 +179,7 @@ class CesiumView extends React.Component {
 
         <MouseBee controller={this.controller}/>
         <MenuButton menuToggle={() => { this.setState({filterDrawerOpen: true}) }} />
+        <div className={classes.userChip}><AdminUserChip/></div>
         <EyeAltitude viewer={this.controller.viewer} />
         <ResetViewButton controller={this.controller} />
       </div>
