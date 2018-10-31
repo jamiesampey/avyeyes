@@ -111,7 +111,7 @@ class ReportDialog extends React.Component {
     this.cleanup = this.cleanup.bind(this);
 
     this.state = {
-      avalanche: mockAvalanche, // TODO set back to null after form dev
+      avalanche: null,
       main: MainContent.details,
       errorFields: [],
     }

@@ -4,12 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import LinkIcon from "@material-ui/icons/Link";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import InfoBar from "./InfoBar";
-
+import { avalancheUrl } from "../Util";
 
 const styles = theme => ({
   shareIcon: {
@@ -43,7 +42,7 @@ class SocialMenu extends React.Component {
       action_type: 'og.shares',
       action_properties: JSON.stringify({
         object: {
-          'og:url': avalanche.extUrl,
+          'og:url': avalancheUrl(avalanche.extId),
           'og:title': avalanche.title,
           'og:description': avalanche.comments,
           'og:image': "https://" + clientData.s3.bucket + ".s3.amazonaws.com/avalanches/" + avalanche.extId + "/screenshot.jpg",
@@ -62,7 +61,7 @@ class SocialMenu extends React.Component {
     let shareURL = "http://twitter.com/share?";
 
     let params = {
-      url: avalanche.extUrl,
+      url: avalancheUrl(avalanche.extId),
       text: avalanche.title,
     };
     for(let prop in params) shareURL += '&' + prop + '=' + encodeURIComponent(params[prop]);
@@ -86,12 +85,10 @@ class SocialMenu extends React.Component {
           onClose={closeCallback}
         >
           <MenuItem onClick={this.openFacebookDialog} disabled={typeof FB === 'undefined'}>
-            <ListItemIcon>
-              <SvgIcon className={classes.shareIcon}>
-                <path fill="#3B5998"
-                      d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"/>
-              </SvgIcon>
-            </ListItemIcon>
+            <SvgIcon className={classes.shareIcon}>
+              <path fill="#3B5998"
+                    d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"/>
+            </SvgIcon>
             <ListItemText inset primary="Facebook"/>
           </MenuItem>
           <MenuItem onClick={this.openTwitterDialog}>
@@ -101,11 +98,9 @@ class SocialMenu extends React.Component {
             </SvgIcon>
             <ListItemText inset primary="Twitter"/>
           </MenuItem>
-          <CopyToClipboard text={avalanche.extUrl}>
+          <CopyToClipboard text={avalancheUrl(avalanche.extId)}>
             <MenuItem onClick={() => this.setState({ copyLinkOpen: true, }, closeCallback)}>
-              <ListItemIcon>
-                <LinkIcon className={classes.shareIcon}/>
-              </ListItemIcon>
+              <LinkIcon className={classes.shareIcon}/>
               <ListItemText inset primary="Copy Link"/>
             </MenuItem>
           </CopyToClipboard>

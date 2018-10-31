@@ -7,7 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import TableBody from "@material-ui/core/TableBody";
-import {checkStatusAndParseJson} from "../Util";
+import { checkStatusAndParseJson, avalancheUrl } from "../Util";
 import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -98,9 +98,8 @@ class AdminTable extends React.Component {
     this.setState({ orderBy: orderByField, order: order }, this.requestTableData);
   }
 
-  static avalancheUrl(extId, linkText) {
-    let lastSlashIndex = window.location.href.lastIndexOf('/');
-    return <a href={`${window.location.href.substring(0, lastSlashIndex)}/${extId}`} target="avyeyesAdminViewer">{linkText}</a>;
+  static avalancheLink(extId, editKey, linkText) {
+    return <a href={avalancheUrl(extId, editKey)} target="avyeyesAdminViewer">{linkText}</a>
   }
 
   render() {
@@ -153,9 +152,9 @@ class AdminTable extends React.Component {
                     <TableRow key={row.extId}>
                       <TableCell padding="dense">{row.created}</TableCell>
                       <TableCell padding="dense">{row.updated}</TableCell>
-                      <TableCell padding="dense">{AdminTable.avalancheUrl(row.extId, row.extId)}</TableCell>
+                      <TableCell padding="dense">{AdminTable.avalancheLink(row.extId, row.editKey, row.extId)}</TableCell>
                       <TableCell padding="dense">{row.viewable ? "Yes" : "No"}</TableCell>
-                      <TableCell padding="dense">{AdminTable.avalancheUrl(row.extId, row.areaName)}</TableCell>
+                      <TableCell padding="dense">{AdminTable.avalancheLink(row.extId, row.editKey, row.areaName)}</TableCell>
                       <TableCell padding="dense">{row.submitter}</TableCell>
                     </TableRow>
                   );

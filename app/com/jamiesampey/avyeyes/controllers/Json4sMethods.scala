@@ -28,7 +28,7 @@ trait Json4sMethods {
   private[controllers] def avalancheReadOnlyData(a: Avalanche, images: List[AvalancheImage]) = {
     ("extId" -> a.extId) ~
     ("location" -> Extraction.decompose(a.location)) ~
-    ("extUrl" -> configService.avalancheUrl(a.extId)) ~
+    ("title" -> a.title) ~
     ("areaName" -> a.areaName) ~
     ("date" -> Extraction.decompose(a.date)) ~
     ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~
@@ -67,7 +67,8 @@ trait Json4sMethods {
           ("extId" -> a.extId) ~
           ("viewable" -> a.viewable) ~
           ("areaName" -> a.areaName) ~
-          ("submitter" -> a.submitterEmail)
+          ("submitter" -> a.submitterEmail) ~
+          ("editKey" -> a.editKey)
       ))
     )
   }

@@ -48,7 +48,7 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
       idService.unreserveExtId(extId)
 
       log.info(s"Avalanche $extId successfully inserted")
-      Ok(configService.avalancheUrl(extId))
+      Ok(extId)
 
     case Failure(ex) =>
       log.error(s"Unable to deserialize avalanche from report $extId", ex)
@@ -93,12 +93,12 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
   private def sendSubmissionEmails(a: Avalanche) = {
     val emailToAdmin = Email(
       Messages("msg.avyReportSubmitEmailAdminSubject", a.submitterEmail), "AvyEyes <avyeyes@gmail.com>", Seq("avyeyes@gmail.com"),
-      bodyHtml = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, configService.avalancheUrl(a.extId)))
+      bodyHtml = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, a.url))
     )
 
     val emailToSubmitter = Email(
       Messages("msg.avyReportSubmitEmailSubmitterSubject", a.title), "AvyEyes <avyeyes@gmail.com>", Seq(a.submitterEmail),
-      bodyHtml = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, configService.avalancheUrl(a.extId), configService.avalancheEditUrl(a)))
+      bodyHtml = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, a.url, a.editUrl))
     )
 
     mailerClient.send(emailToAdmin)

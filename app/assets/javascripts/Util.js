@@ -42,6 +42,13 @@ module.exports = {
     return new Date(dateString).toLocaleDateString('en-US', options);
   },
 
+  avalancheUrl: (extId, editKey) => {
+    let lastSlashIndex = window.location.href.lastIndexOf('/');
+    let url = `${window.location.href.substring(0, lastSlashIndex)}/${extId}`;
+    if (editKey) url = `${url}?edit=${editKey}`;
+    return url;
+  },
+
   constructImageUrl(s3Bucket, avalanche, image) {
     return `//${s3Bucket}.s3.amazonaws.com/avalanches/${avalanche.extId}/images/${image.filename}`;
   },

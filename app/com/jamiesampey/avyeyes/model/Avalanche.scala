@@ -25,4 +25,8 @@ case class Avalanche(
   lazy val title: String = s"${date.toString(titleDTF)}: $areaName"
 
   lazy val editKey: Long = createTime.getMillis / 1000
+
+  lazy val url = s"http://avyeyes.com/$extId"
+
+  lazy val editUrl = s"$url?edit=$editKey"
 }
