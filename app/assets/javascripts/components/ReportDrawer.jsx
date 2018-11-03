@@ -67,14 +67,13 @@ class ReportDrawer extends React.Component {
     this.handleLocationSelect = this.handleLocationSelect.bind(this);
     this.beginDrawing = this.beginDrawing.bind(this);
     this.digestDrawing = this.digestDrawing.bind(this);
-    this.resetReport = this.resetReport.bind(this);
+    this.convertDrawingToAvalanche = this.convertDrawingToAvalanche.bind(this);
 
     this.state = {
       activeStep: 0,
       locationOptions: [],
       reportExtId: null,
       drawing: null,
-      drawingAccepted: true, // TODO set back to false after form dev
     };
   }
 
@@ -253,18 +252,52 @@ class ReportDrawer extends React.Component {
     return "N";
   }
 
-  resetReport() {
-    if (this.state.drawing) {
-      this.props.controller.removeEntity(this.state.drawing.entity);
-    }
+  convertDrawingToAvalanche() {
+    let { reportExtId, drawing } = this.state;
+
+    let newAvalanche = {
+      extId: reportExtId,
+      location: {
+        longitude: drawing.latitude,
+        latitude: drawing.longitude,
+        altitude: drawing.altitude,
+      },
+      slope: {
+        aspect: drawing.aspect,
+        angle: drawing.angle,
+        elevation: drawing.altitude,
+      },
+      perimeter: drawing.perimeter,
+      viewable: true,
+      submitterEmail: '',
+      submitterExp: '',
+      date: '',
+      areaName: '',
+      weather: {
+        recentSnow: -1,
+        recentWindSpeed: '',
+        recentWindDirection: '',
+      },
+      classification: {
+        avyType: '',
+        trigger: '',
+        triggerModifier: '',
+        interface: '',
+        rSize: -1,
+        dSize: -1.0,
+      },
+      comments: '',
+    };
+
+    // remove the drawing
+    let cesiumDrawingEntity = this.state.drawing.entity;
+    this.props.controller.removeEntity(cesiumDrawingEntity);
 
     this.setState({
       activeStep: 0,
       reportExtId: null,
       drawing: null,
-      drawingAccepted: false,
-    });
-    this.props.callback();
+    }, () => this.props.drawingComplete(newAvalanche));
   }
 
   render() {
@@ -341,7 +374,7 @@ class ReportDrawer extends React.Component {
                     variant="contained"
                     color="primary"
                     size="small"
-                    onClick={() => this.setState({drawingAccepted: true})}
+                    onClick={this.convertDrawingToAvalanche}
                   >
                     Accept Drawing
                   </Button>
@@ -350,13 +383,6 @@ class ReportDrawer extends React.Component {
             </Step>
           </Stepper>
         </Drawer>
-        <ReportDialog
-          clientData={clientData}
-          openReport={this.state.drawingAccepted}
-          reportExtId={this.state.reportExtId}
-          drawing={this.state.drawing}
-          callback={this.resetReport}
-        />
       </div>
     )
   }
@@ -368,7 +394,7 @@ ReportDrawer.propTypes = {
   drawerOpen: PropTypes.bool.isRequired,
   clientData: PropTypes.object,
   controller: PropTypes.object,
-  callback: PropTypes.func.isRequired,
+  drawingComplete: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(ReportDrawer);

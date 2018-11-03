@@ -39,6 +39,9 @@ const styles = theme => ({
     borderColor: theme.palette.divider,
     borderRadius: 10,
   },
+  adminTableCell: {
+    borderColor: 'red',
+  },
   borderedTableCellLabel: {
     marginLeft: 8,
     marginTop: -16,
@@ -266,23 +269,27 @@ const ReportDetails = props => {
                 </TableBody>
               </Table>
               <Divider style={{height: 0, margin: 10, border: 0}}/>
-              <Table className={classes.table}>
-                <TableBody>
-                  <TableRow className={classes.tableRow} style={{verticalAlign: 'top'}}>
-                    <TableCell className={classNames(classes.tableCell, classes.borderedTableCell)} style={{paddingBottom: 16, paddingRight: 0}}>
-                      <Typography className={classes.borderedTableCellLabel}>Admin</Typography>
-                      <FormControlLabel style={{paddingLeft: 10}} label="Viewable"
-                        control={
-                          <Checkbox
-                            checked={avalanche.viewable}
-                            onChange={(event) => updateAvalanche("viewable", event.target.checked)}
-                          />
-                        }
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+
+              { avalanche.hasOwnProperty('viewable') &&
+                <Table className={classes.table}>
+                  <TableBody>
+                    <TableRow className={classes.tableRow} style={{verticalAlign: 'top'}}>
+                      <TableCell className={classNames(classes.tableCell, classes.borderedTableCell, classes.adminTableCell)} style={{paddingBottom: 16, paddingRight: 0}}>
+                        <Typography className={classes.borderedTableCellLabel}>Admin</Typography>
+                        <FormControlLabel style={{paddingLeft: 10}} label="Viewable"
+                          control={
+                            <Checkbox
+                              checked={avalanche.viewable}
+                              onChange={(event) => updateAvalanche("viewable", event.target.checked)}
+                            />
+                          }
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              }
+
             </TableCell>
           </TableRow>
         </TableBody>

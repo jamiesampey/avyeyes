@@ -20,7 +20,6 @@ import ReportDetails from "./ReportDetails";
 import ReportComments from "./ReportComments";
 import ReportImages from "./ReportImages";
 
-import {mockAvalanche} from "../Constants"; // TODO remove after form dev
 import {getRequestParam, getCSRFTokenFromCookie, checkStatus} from "../Util";
 
 const styles = theme => ({
@@ -67,34 +66,6 @@ const styles = theme => ({
   }
 });
 
-const initAvalanche = (extId, location, slope, perimeter) => {
-  return {
-    extId: extId,
-    location: location,
-    slope: slope,
-    perimeter: perimeter,
-    viewable: false,
-    submitterEmail: '',
-    submitterExp: '',
-    date: '',
-    areaName: '',
-    weather: {
-      recentSnow: -1,
-      recentWindSpeed: '',
-      recentWindDirection: '',
-    },
-    classification: {
-      avyType: '',
-      trigger: '',
-      triggerModifier: '',
-      interface: '',
-      rSize: -1,
-      dSize: -1.0,
-    },
-    comments: '',
-  }
-};
-
 const MainContent = {
   details: 0,
   images: 1,
@@ -105,64 +76,38 @@ class ReportDialog extends React.Component {
 
   constructor(props) {
     super(props);
-    this.updateAvalanche = this.updateAvalanche.bind(this);
+    this.updateAvalancheField = this.updateAvalancheField.bind(this);
     this.submitAvalanche = this.submitAvalanche.bind(this);
     this.renderMainContent = this.renderMainContent.bind(this);
     this.cleanup = this.cleanup.bind(this);
 
     this.state = {
-      avalanche: null,
+      workingAvalanche: props.avalanche,
       main: MainContent.details,
       errorFields: [],
-    }
+    };
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.openReport && this.props.drawing && !this.state.avalanche) {
-      let drawing = this.props.drawing;
-      console.info(`initializing avalanche report ${prevProps.reportExtId} from drawing`);
-
-      let location = {
-        longitude: drawing.latitude,
-        latitude: drawing.longitude,
-        altitude: drawing.altitude,
-      };
-
-      let slope = {
-        aspect: drawing.aspect,
-        angle: drawing.angle,
-        elevation: drawing.altitude,
-      };
-
-      this.setState({
-        avalanche: initAvalanche(this.props.reportExtId, location, slope, drawing.perimeter),
-        main: MainContent.details,
-      });
-    }
-  }
-
-  updateAvalanche(field, value) {
-    let updated = this.state.avalanche;
+  updateAvalancheField(field, value) {
+    let updated = this.state.workingAvalanche;
 
     let fields = field.split('.');
     if (fields.length === 2) updated[fields[0]][fields[1]] = value;
     else updated[field] = value;
 
-    this.setState({avalanche: updated});
+    this.setState({workingAvalanche: updated});
   }
 
   submitAvalanche() {
-    let { avalanche } = this.state;
+    let { workingAvalanche } = this.state;
     let csrfToken = getCSRFTokenFromCookie();
     let editKey = getRequestParam("edit");
 
-    console.info(`submitAvalanche: editKey is ${editKey}, csrfToken is ${csrfToken}`); // TODO remove debug logging
-
     let errorFields = [];
-    if (!avalanche.areaName) errorFields.push('areaName');
-    if (!avalanche.date) errorFields.push('date');
-    if (!avalanche.submitterEmail) errorFields.push('submitterEmail');
-    if (!avalanche.submitterExp) errorFields.push('submitterExp');
+    if (!workingAvalanche.areaName) errorFields.push('areaName');
+    if (!workingAvalanche.date) errorFields.push('date');
+    if (!workingAvalanche.submitterEmail) errorFields.push('submitterEmail');
+    if (!workingAvalanche.submitterExp) errorFields.push('submitterExp');
 
     this.setState({errorFields: errorFields});
     if (errorFields.length > 0) {
@@ -170,33 +115,33 @@ class ReportDialog extends React.Component {
     }
 
     if (editKey) {
-      fetch(`/api/avalanche/${avalanche.extId}?edit=${editKey}&csrfToken=${csrfToken}`, {
+      fetch(`/api/avalanche/${workingAvalanche.extId}?edit=${editKey}&csrfToken=${csrfToken}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(avalanche),
+        body: JSON.stringify(workingAvalanche),
       })
       .then(response => checkStatus(response))
-      .catch(error => console.error(`Error updating report ${avalanche.extId}: ${error}`))
+      .catch(error => console.error(`Error updating report ${workingAvalanche.extId}: ${error}`))
       .finally(() => this.cleanup());
     } else {
-      fetch(`/api/avalanche/${avalanche.extId}?csrfToken=${csrfToken}`, {
+      fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(avalanche),
+        body: JSON.stringify(workingAvalanche),
       })
       .then(response => checkStatus(response))
-      .catch(error => console.error(`Error submitting new report ${avalanche.extId}: ${error}`))
+      .catch(error => console.error(`Error submitting new report ${workingAvalanche.extId}: ${error}`))
       .finally(() => this.cleanup());
     }
   }
 
   cleanup() {
-    this.setState({avalanche: null});
-    this.props.callback();
+    this.setState({workingAvalanche: null});
+    this.props.closeCallback();
   }
 
   renderMainContent() {
@@ -205,24 +150,24 @@ class ReportDialog extends React.Component {
         return (
           <ReportImages
             clientData={this.props.clientData}
-            avalanche={this.state.avalanche}
-            updateAvalanche={this.updateAvalanche}
+            avalanche={this.state.workingAvalanche}
+            updateAvalanche={this.updateAvalancheField}
           />
         );
       case MainContent.comments:
         return (
           <ReportComments
             clientData={this.props.clientData}
-            avalanche={this.state.avalanche}
-            updateAvalanche={this.updateAvalanche}
+            avalanche={this.state.workingAvalanche}
+            updateAvalanche={this.updateAvalancheField}
           />
         );
       default:
         return (
           <ReportDetails
             clientData={this.props.clientData}
-            avalanche={this.state.avalanche}
-            updateAvalanche={this.updateAvalanche}
+            avalanche={this.state.workingAvalanche}
+            updateAvalanche={this.updateAvalancheField}
             errorFields={this.state.errorFields}
           />
         );
@@ -231,15 +176,12 @@ class ReportDialog extends React.Component {
 
   render() {
     const { classes, clientData } = this.props;
-    if (!clientData || !this.state || !this.state.avalanche) return null;
-
-    console.info(`avalanche is ${JSON.stringify(this.state.avalanche)}`);
 
     return (
       <Dialog
         classes={{paper: classes.dialogPaper}}
         maxWidth={false}
-        open={this.props.openReport}
+        open={Boolean(this.state.workingAvalanche)}
         onBackdropClick={() => {}}
         onEscapeKeyDown={() => {}}
       >
@@ -288,10 +230,8 @@ class ReportDialog extends React.Component {
 ReportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
-  openReport: PropTypes.bool.isRequired,
-  reportExtId: PropTypes.string,
-  drawing: PropTypes.object,
-  callback: PropTypes.func.isRequired,
+  avalanche: PropTypes.object,
+  closeCallback: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ReportDialog);

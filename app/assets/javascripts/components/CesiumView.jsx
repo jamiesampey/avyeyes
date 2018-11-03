@@ -15,7 +15,8 @@ import AvyCard from "./AvyCard";
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import {checkStatusAndParseJson} from "../Util";
+import {checkStatusAndParseJson, getRequestParam} from "../Util";
+import ReportDialog from "./ReportDialog";
 
 const styles = theme => ({
   root: {
@@ -52,7 +53,6 @@ class CesiumView extends React.Component {
 
     this.state = {
       cesiumInitialized: false,
-      currentAvalanche: null,
       filterDrawerOpen: false,
       avalancheFilter: {
         fromDate: '',
@@ -67,13 +67,38 @@ class CesiumView extends React.Component {
   }
 
   componentDidMount() {
-    this.controller = new CesiumController(this.cesiumRef.current, (avalanche) => this.setState({currentAvalanche: avalanche}));
+    this.controller = new CesiumController(this.cesiumRef.current);
+    this.controller.viewer.camera.moveEnd.addEventListener(this.filterAvalanches);
+    this.controller.eventHandler.setInputAction(movement => {
+      let pick = this.controller.viewer.scene.pick(movement.position);
+      if (Cesium.defined(pick) && pick.id.name) {
+        let selectedAvalanche = pick.id;
+        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
+        let editKeyParam = getRequestParam("edit");
+        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
-    this.controller.viewer.camera.moveEnd.addEventListener(() => {
-      this.filterAvalanches();
-    });
+        fetch(avalancheUrl)
+          .then(response => {
+            return checkStatusAndParseJson(response);
+          })
+          .then(data => {
+            if (pick.id.billboard) {
+              // clicked on a pin, add the path and fly to it
+              this.controller.removeAllEntities();
+              this.controller.addAvalancheAndFlyTo(data);
+            } else {
+              // clicked on a path, display details
+              this.props.setCurrentAvalanche(data);
+            }
+          })
+          .catch(error => {
+            console.error(`Failed to fetch details for avalanche ${selectedAvalanche.id}. Error: ${error}`);
+          });
 
-    this.props.initialized(this.controller);
+      }
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+    this.props.setController(this.controller);
     this.setState({ cesiumInitialized: true });
 
     let extIdUrlParam = window.location.pathname.substr(1); // remove initial path slash
@@ -144,22 +169,28 @@ class CesiumView extends React.Component {
     this.filterAvalanches({fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 });
   }
 
+  static renderAvalanche(clientData, currentAvalanche, setCurrentAvalanche) {
+    return (!currentAvalanche.areaName || currentAvalanche.submitterEmail) ?
+      <ReportDialog
+        clientData={clientData}
+        avalanche={currentAvalanche}
+        closeCallback={() => setCurrentAvalanche(null)}
+      />
+      :
+      <AvyCard
+        clientData={clientData}
+        avalanche={currentAvalanche}
+        closeCallback={() => setCurrentAvalanche(null)}
+      />;
+  }
+
   renderCesiumDecorators() {
-    const { classes, clientData, showHelp } = this.props;
-    const { currentAvalanche, filterDrawerOpen, avalancheFilter } = this.state;
+    const { classes, clientData, currentAvalanche, setCurrentAvalanche, showHelp } = this.props;
+    const { filterDrawerOpen, avalancheFilter } = this.state;
 
     return (
       <div>
-        { currentAvalanche &&
-          <AvyCard
-            avalanche={currentAvalanche}
-            clientData={clientData}
-            setCursorStyle={this.controller.setCursorStyle}
-            closeCallback={() => {
-              this.setState({currentAvalanche: null})
-            }}
-          />
-        }
+        { currentAvalanche && CesiumView.renderAvalanche(clientData, currentAvalanche, setCurrentAvalanche) }
 
         <FilterDrawer
           drawerOpen={filterDrawerOpen}
@@ -201,8 +232,11 @@ class CesiumView extends React.Component {
 CesiumView.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  clientData: PropTypes.object.isRequired,
+  currentAvalanche: PropTypes.object,
+  setCurrentAvalanche: PropTypes.func.isRequired,
+  setController: PropTypes.func.isRequired,
   showHelp: PropTypes.func.isRequired,
-  initialized: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(CesiumView);

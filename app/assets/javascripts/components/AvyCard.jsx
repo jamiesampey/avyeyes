@@ -233,7 +233,7 @@ class AvyCard extends React.Component {
   }
 
   render() {
-    const { classes, clientData, avalanche, setCursorStyle } = this.props;
+    const { classes, clientData, avalanche } = this.props;
     const { rotatingCardMedia, socialMenuAnchor } = this.state;
 
     //console.info(`Showing card for avalanche:\n${JSON.stringify(avalanche)}`);
@@ -390,6 +390,9 @@ class AvyCard extends React.Component {
 AvyCard.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  clientData: PropTypes.object.isRequired,
+  avalanche: PropTypes.object,
+  closeCallback: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(AvyCard);

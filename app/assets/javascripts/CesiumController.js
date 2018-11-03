@@ -1,10 +1,9 @@
 import Cesium from 'cesium/Cesium';
-import {getRequestParam, checkStatusAndParseJson} from "./Util";
 import Config from "./Config";
 
 class CesiumController {
 
-  constructor(cesiumContainer, setAvalancheCallback) {
+  constructor(cesiumContainer) {
     this._viewer = new Cesium.Viewer(cesiumContainer, Config.cesiumViewerOptions);
     this._eventHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
     this.geocoder = new Cesium.IonGeocoderService({
@@ -12,11 +11,7 @@ class CesiumController {
       accessToken: Cesium.Ion.defaultAccessToken,
     });
 
-    this.setCurrentAvalanche = setAvalancheCallback;
-
     this.CreatedByAvyEyes = "AvyEyes";
-
-    this.setAvalancheSelectHandler();
   }
 
   get viewer() {
@@ -33,39 +28,6 @@ class CesiumController {
 
   set eventHandler(eventHandler) {
     this._eventHandler = eventHandler;
-  }
-
-  setAvalancheSelectHandler() {
-    this.eventHandler.setInputAction(movement => {
-      // this.form.hideReadOnlyForm();
-
-      let pick = this.viewer.scene.pick(movement.position);
-      if (Cesium.defined(pick) && pick.id.name) {
-        let selectedAvalanche = pick.id;
-        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
-        let editKeyParam = getRequestParam("edit");
-        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
-
-        fetch(avalancheUrl)
-          .then(response => {
-            return checkStatusAndParseJson(response);
-          })
-          .then(data => {
-            if (pick.id.billboard) {
-              // clicked on a pin, add the path and fly to it
-              this.controller.removeAllEntities();
-              this.controller.addAvalancheAndFlyTo(data);
-            } else {
-              // clicked on a path, display details
-              this.setCurrentAvalanche(data);
-            }
-          })
-          .catch(error => {
-            console.error(`Failed to fetch details for avalanche ${selectedAvalanche.id}. Error: ${error}`);
-          });
-
-      }
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
   }
 
   addEntity(entity) {

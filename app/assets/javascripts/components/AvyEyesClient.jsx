@@ -93,6 +93,7 @@ class AvyEyesClient extends React.Component {
     this.state = {
       reportDrawerOpen: false,
       cesiumController: null,
+      currentAvalanche: null,
       infoMessage: null,
       help: null,
     };
@@ -117,7 +118,11 @@ class AvyEyesClient extends React.Component {
           drawerOpen={this.state.reportDrawerOpen}
           clientData={this.state.clientData}
           controller={this.state.cesiumController}
-          callback={() => this.setState({reportDrawerOpen: false})}
+          drawingComplete={avalanche => this.setState({
+            currentAvalanche: avalanche,
+            reportDrawerOpen: false,
+          })
+          }
         />
         <main className={classNames(classes.content, classes.contentLeft, {
             [classes.contentShift]: this.state.reportDrawerOpen,
@@ -127,8 +132,10 @@ class AvyEyesClient extends React.Component {
 
           <CesiumView
             clientData={this.state.clientData}
+            currentAvalanche={this.state.currentAvalanche}
+            setCurrentAvalanche={avalanche => this.setState({ currentAvalanche: avalanche })}
+            setController={cesiumController => this.setState({ cesiumController: cesiumController })}
             showHelp={this.showHelp}
-            initialized={ (cesiumController) => this.setState({cesiumController: cesiumController})}
           />
 
           { this.state.help &&
