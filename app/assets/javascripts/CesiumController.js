@@ -80,18 +80,10 @@ class CesiumController {
     let pitch = -89.9; // work around -90 degree problem in flyToBoundingSphere
     let range = 1000000;
 
-    let finishUp = flyToEntity => {
-      this.removeEntity(flyToEntity);
-      // TODO show clues
-      // showZoomInClue().then(function() {
-      //   showCesiumHelpClue();
-      // })
-    };
-
     let flyToDefaultView = () => {
       let defaultTarget = this.targetEntityFromCoords(-105.5, 39.0); // colorado
       this.flyTo(defaultTarget, heading, pitch, range).then(() => {
-        finishUp(defaultTarget);
+        this.removeEntity(defaultTarget);
       });
     };
 
@@ -99,7 +91,7 @@ class CesiumController {
       navigator.geolocation.getCurrentPosition(pos => {
         let geolocatedTarget = this.targetEntityFromCoords(pos.coords.longitude, pos.coords.latitude);
         this.flyTo(geolocatedTarget, 0.0, pitch, range).then(() => {
-          finishUp(geolocatedTarget);
+          this.removeEntity(geolocatedTarget);
         });
       }, flyToDefaultView, {timeout:8000, enableHighAccuracy:false});
     } else {
@@ -107,9 +99,9 @@ class CesiumController {
     }
   }
 
-  addAvalancheAndFlyTo(a) {
+  addAvalancheAndFlyTo(a, callback) {
     this.addAvalanche(a);
-    let boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.coords));
+    let boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.perimeter));
 
     this.viewer.camera.flyToBoundingSphere(boundingSphere, {
       duration: 4.0,
@@ -118,18 +110,7 @@ class CesiumController {
         this.viewer.camera.flyToBoundingSphere(boundingSphere, {
           duration: 4.0,
           offset: CesiumController.toHeadingPitchRange(CesiumController.flyToHeadingFromAspect(a.slope.aspect), -35, 1200),
-          complete: () => {
-            // TODO show clues
-            // showClickPathClue("Click on the red avalanche path for the details").then(() => {
-            //   showCesiumHelpClue();
-            // });
-
-            // TODO is the below state needed?
-            // this.clickPathClueShown = true;
-            // setTimeout(() => {
-            //   this.avalancheSpotlight = false;
-            // }, 5000);
-          }
+          complete: callback,
         });}
     });
   }
@@ -147,33 +128,27 @@ class CesiumController {
     // does an avalanche entity need to be replaced? I.e. pin->path or path->pin?
     let replaceEntity = (entity, avalanche) => {
       if (!entity) return true;
-      return (entity.polygon && !avalanche.coords) || (!entity.polygon && avalanche.coords);
+      return (entity.polygon && !avalanche.perimeter) || (!entity.polygon && avalanche.perimeter);
     };
 
     avalanches.forEach(avalanche => {
       let existingEntity = this.viewer.entities.getById(avalanche.extId);
-
       if (replaceEntity(existingEntity, avalanche)) {
         this.removeEntity(existingEntity);
         this.addAvalanche(avalanche);
-        // TODO show the 'click on the red path' notify
-        // if (avalanche.coords) {
-        //   showClickPathClue("Click on any red avalanche path for the details");
-        //   this.clickPathClueShown = true;
-        // }
       }
     });
   }
 
   addAvalanche(a) {
     let getEntity = () => {
-      if (a.coords) {
+      if (a.perimeter) {
         return {
           id: a.extId,
           name: a.title,
           polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
-            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.coords),
+            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.perimeter),
             heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
           }
         };

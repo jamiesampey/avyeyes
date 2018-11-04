@@ -67,17 +67,24 @@ class CesiumView extends React.Component {
   }
 
   componentDidMount() {
+    const avalancheGetUrl = (extId) => {
+      let url = `/api/avalanche/${extId}`;
+      let editKey = getRequestParam('edit');
+      return editKey ? `${url}?edit=${editKey}` : url;
+    };
+
     this.controller = new CesiumController(this.cesiumRef.current);
-    this.controller.viewer.camera.moveEnd.addEventListener(this.filterAvalanches);
+
+    this.controller.viewer.camera.moveEnd.addEventListener(() => {
+      if (!this.props.currentAvalanche) this.filterAvalanches();
+    });
+
     this.controller.eventHandler.setInputAction(movement => {
       let pick = this.controller.viewer.scene.pick(movement.position);
       if (Cesium.defined(pick) && pick.id.name) {
         let selectedAvalanche = pick.id;
-        let avalancheUrl = "/api/avalanche/" + selectedAvalanche.id;
-        let editKeyParam = getRequestParam("edit");
-        if (editKeyParam) avalancheUrl += "?edit=" + editKeyParam;
 
-        fetch(avalancheUrl)
+        fetch(avalancheGetUrl(selectedAvalanche.id))
           .then(response => {
             return checkStatusAndParseJson(response);
           })
@@ -85,7 +92,7 @@ class CesiumView extends React.Component {
             if (pick.id.billboard) {
               // clicked on a pin, add the path and fly to it
               this.controller.removeAllEntities();
-              this.controller.addAvalancheAndFlyTo(data);
+              this.controller.addAvalancheAndFlyTo(data, () => setTimeout(this.props.setCurrentAvalanche(data), 2000));
             } else {
               // clicked on a path, display details
               this.props.setCurrentAvalanche(data);
@@ -103,13 +110,14 @@ class CesiumView extends React.Component {
 
     let extIdUrlParam = window.location.pathname.substr(1); // remove initial path slash
 
+    // init avalanche fly to and display
     if (extIdUrlParam) {
-      fetch(`/api/avalanche/${extIdUrlParam}`)
+      fetch(avalancheGetUrl(extIdUrlParam))
         .then(response => {
           return checkStatusAndParseJson(response);
         })
         .then(data => {
-          this.controller.addAvalancheAndFlyTo(data);
+          this.controller.addAvalancheAndFlyTo(data, () => setTimeout(this.props.setCurrentAvalanche(data), 2000));
         })
         .catch(error => {
           this.controller.geolocateAndFlyTo();
