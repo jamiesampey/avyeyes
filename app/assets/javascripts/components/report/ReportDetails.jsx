@@ -73,9 +73,7 @@ const styles = theme => ({
 });
 
 const ReportDetails = props => {
-  const { classes, clientData, avalanche, updateAvalanche } = props;
-
-  if (!avalanche) return null;
+  const { classes, clientData, avalanche, updateAvalanche, isAdminView } = props;
 
   return (
     <form>
@@ -270,7 +268,7 @@ const ReportDetails = props => {
               </Table>
               <Divider style={{height: 0, margin: 10, border: 0}}/>
 
-              { avalanche.hasOwnProperty('viewable') &&
+              { isAdminView &&
                 <Table className={classes.table}>
                   <TableBody>
                     <TableRow className={classes.tableRow} style={{verticalAlign: 'top'}}>

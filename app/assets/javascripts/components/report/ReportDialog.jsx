@@ -63,7 +63,7 @@ const styles = theme => ({
     marginLeft: 48,
     borderTop: `1px solid ${theme.palette.divider}`,
     background: theme.palette.background.default,
-  }
+  },
 });
 
 const MainContent = {
@@ -77,7 +77,8 @@ class ReportDialog extends React.Component {
   constructor(props) {
     super(props);
     this.updateAvalancheField = this.updateAvalancheField.bind(this);
-    this.submitAvalanche = this.submitAvalanche.bind(this);
+    this.submitReport = this.submitReport.bind(this);
+    this.deleteReport = this.deleteReport.bind(this);
     this.renderMainContent = this.renderMainContent.bind(this);
     this.cleanup = this.cleanup.bind(this);
 
@@ -102,10 +103,9 @@ class ReportDialog extends React.Component {
     this.setState({workingAvalanche: updated});
   }
 
-  submitAvalanche() {
+  submitReport(editKey) {
     let { workingAvalanche } = this.state;
     let csrfToken = getCSRFTokenFromCookie();
-    let editKey = getRequestParam("edit");
 
     let errorFields = [];
     if (!workingAvalanche.areaName) errorFields.push('areaName');
@@ -149,11 +149,26 @@ class ReportDialog extends React.Component {
     }
   }
 
+  deleteReport() {
+    let { workingAvalanche } = this.state;
+    let csrfToken = getCSRFTokenFromCookie();
+
+    fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
+      method: 'DELETE',
+    })
+      .then(response => {
+        checkStatus(response);
+        console.info(`Deleted report ${workingAvalanche.extId}. Server response is ${response.status}`);
+      })
+      .catch(error => console.error(`Error deleting report ${workingAvalanche.extId}: ${error}`))
+      .finally(this.cleanup);
+  }
+
   cleanup() {
     this.setState({workingAvalanche: null}, this.props.closeCallback);
   }
 
-  renderMainContent() {
+  renderMainContent(isAdminView) {
     if (!this.state.workingAvalanche) return null;
 
     switch (this.state.main) {
@@ -180,6 +195,7 @@ class ReportDialog extends React.Component {
             avalanche={this.state.workingAvalanche}
             updateAvalanche={this.updateAvalancheField}
             errorFields={this.state.errorFields}
+            isAdminView={isAdminView}
           />
         );
     }
@@ -187,6 +203,9 @@ class ReportDialog extends React.Component {
 
   render() {
     const { classes, clientData } = this.props;
+
+    let editKey = getRequestParam("edit");
+    let isAdminView = this.state.workingAvalanche && this.state.workingAvalanche.hasOwnProperty('viewable') && editKey;
 
     return (
       <Dialog
@@ -222,14 +241,19 @@ class ReportDialog extends React.Component {
             </Tooltip>
           </Drawer>
           <main className={classes.main}>
-            { this.renderMainContent() }
+            { this.renderMainContent(isAdminView) }
           </main>
         </DialogContent>
         <DialogActions classes={{root: classes.dialogActionsRoot}}>
+          { isAdminView &&
+          <Button color="secondary" onClick={this.deleteReport}>
+            Delete
+          </Button>
+          }
           <Button color="primary" onClick={this.cleanup}>
             Cancel
           </Button>
-          <Button color="primary" onClick={this.submitAvalanche}>
+          <Button color="primary" onClick={() => this.submitReport(editKey)}>
             Submit
           </Button>
         </DialogActions>

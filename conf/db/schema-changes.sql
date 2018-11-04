@@ -11,3 +11,6 @@ alter table app_user add last_activity_time timestamp not null default NOW();
 update app_user set last_activity_time = create_time;
 alter table app_user add facebook_user_id text;
 alter table app_user add password_hash text;
+
+-- Release 2.0.0
+drop table avalanche_human;
