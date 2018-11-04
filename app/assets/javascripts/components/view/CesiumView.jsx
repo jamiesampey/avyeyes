@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Cesium from 'cesium/Cesium';
-import CesiumController from "../CesiumController";
+import CesiumController from "../../CesiumController";
 import MenuButton from "./TitleDiv";
 import FilterDrawer from "./FilterDrawer";
-import AdminUserChip from "./AdminUserChip";
+import AdminUserChip from "../admin/AdminUserChip";
 import EyeAltitude from "./EyeAltitude";
 import ResetViewButton from "./ResetViewButton";
 import MouseBee from "./MouseBee";
@@ -13,10 +13,10 @@ import FilterSnackbar from "./FilterSnackbar";
 import AvyCard from "./AvyCard";
 
 import 'cesium/Widgets/widgets.css';
-import '../../stylesheets/AvyEyesClient.scss';
+import '../../../stylesheets/AvyEyesClient.scss';
 
-import {checkStatusAndParseJson, getRequestParam} from "../Util";
-import ReportDialog from "./ReportDialog";
+import {checkStatusAndParseJson, getRequestParam} from "../../Util";
+import ReportDialog from "../report/ReportDialog";
 
 const styles = theme => ({
   root: {

@@ -8,7 +8,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import LinkIcon from "@material-ui/icons/Link";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import InfoBar from "./InfoBar";
-import { avalancheUrl } from "../Util";
+import { avalancheUrl } from "../../Util";
 
 const styles = theme => ({
   shareIcon: {

@@ -41,7 +41,7 @@ import {
   compositeLabelForDataCode,
   metersToFeet,
   constructImageUrl
-} from "../Util";
+} from "../../Util";
 
 const styles = theme => ({
   dialog: {

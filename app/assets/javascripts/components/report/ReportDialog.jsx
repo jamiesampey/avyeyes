@@ -20,7 +20,7 @@ import ReportDetails from "./ReportDetails";
 import ReportComments from "./ReportComments";
 import ReportImages from "./ReportImages";
 
-import {getRequestParam, getCSRFTokenFromCookie, checkStatus} from "../Util";
+import {getRequestParam, getCSRFTokenFromCookie, checkStatus} from "../../Util";
 
 const styles = theme => ({
   dialogPaper: {
@@ -82,10 +82,14 @@ class ReportDialog extends React.Component {
     this.cleanup = this.cleanup.bind(this);
 
     this.state = {
-      workingAvalanche: props.avalanche,
+      workingAvalanche: null,
       main: MainContent.details,
       errorFields: [],
     };
+  }
+
+  componentDidMount() {
+    this.setState({workingAvalanche: this.props.avalanche});
   }
 
   updateAvalancheField(field, value) {
@@ -122,9 +126,12 @@ class ReportDialog extends React.Component {
         },
         body: JSON.stringify(workingAvalanche),
       })
-      .then(response => checkStatus(response))
+      .then(response => {
+        checkStatus(response);
+        console.info(`Updated report ${workingAvalanche.extId}. Server response is ${response.status}`);
+      })
       .catch(error => console.error(`Error updating report ${workingAvalanche.extId}: ${error}`))
-      .finally(() => this.cleanup());
+      .finally(this.cleanup);
     } else {
       fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
         method: 'POST',
@@ -133,18 +140,22 @@ class ReportDialog extends React.Component {
         },
         body: JSON.stringify(workingAvalanche),
       })
-      .then(response => checkStatus(response))
+      .then(response => {
+        checkStatus(response);
+        console.info(`Submitted new report ${workingAvalanche.extId}. Server response is ${response.status}`);
+      })
       .catch(error => console.error(`Error submitting new report ${workingAvalanche.extId}: ${error}`))
-      .finally(() => this.cleanup());
+      .finally(this.cleanup);
     }
   }
 
   cleanup() {
-    this.setState({workingAvalanche: null});
-    this.props.closeCallback();
+    this.setState({workingAvalanche: null}, this.props.closeCallback);
   }
 
   renderMainContent() {
+    if (!this.state.workingAvalanche) return null;
+
     switch (this.state.main) {
       case MainContent.images:
         return (

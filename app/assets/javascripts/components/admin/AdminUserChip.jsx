@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Chip from "@material-ui/core/Chip";
-import {checkStatusAndParseJson} from "../Util";
+import {checkStatusAndParseJson} from "../../Util";
 
 const styles = theme => ({
 

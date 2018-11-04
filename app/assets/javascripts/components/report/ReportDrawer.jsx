@@ -13,8 +13,7 @@ import Cesium from "cesium/Cesium";
 
 import Select from "react-select";
 import Button from "@material-ui/core/Button/Button";
-import {checkStatusAndParseJson} from "../Util";
-import ReportDialog from "./ReportDialog";
+import {checkStatusAndParseJson} from "../../Util";
 
 const styles = theme => ({
   drawerPaper: {
@@ -32,7 +31,6 @@ const styles = theme => ({
   },
   stepLabel: {
     fontSize: '1.1em',
-    color: 'red',
   },
   instructions: {
     fontSize: '1.1em',
@@ -78,7 +76,7 @@ class ReportDrawer extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapShot) {
-    if (this.props.drawerOpen && !this.state.reportExtId) {
+    if (this.props.drawerOpen && !prevProps.drawerOpen && !this.state.reportExtId) {
       fetch('/api/avalanche/newReportId')
         .then(response => {
           return checkStatusAndParseJson(response);
@@ -134,8 +132,11 @@ class ReportDrawer extends React.Component {
     let cesiumViewer = this.props.controller.viewer;
     let eventHandler = this.props.controller.eventHandler;
 
-    // remove the default avalanche-click event handler
+    //  temporarily replace the normal left-click and mouse-move event handlers
+    let origLeftClickInputAction = eventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
     eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
+    let origMouseMoveInputAction = eventHandler.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     this.props.controller.setCursorStyle('crosshair');
 
@@ -161,10 +162,11 @@ class ReportDrawer extends React.Component {
       } else {
         isDrawing = false;
 
-        // Finished with the drawing, reset the normal Cesium event handlers and save the drawing
+        // Finished with the drawing... reset the Cesium event handlers and digest the drawing
         eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
         eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-        this.props.controller.setAvalancheSelectHandler();
+        eventHandler.setInputAction(origLeftClickInputAction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        eventHandler.setInputAction(origMouseMoveInputAction, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
         this.props.controller.setCursorStyle('default');
 
         let newPolygonEntity = this.props.controller.addEntity({

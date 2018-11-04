@@ -10,8 +10,8 @@ module.exports = {
     target: 'web',
     devtool: 'source-map',
     entry: {
-      avyeyes: `${avyeyesSource}/App`,
-      admin: `${avyeyesSource}/Admin`,
+      avyeyes: `${avyeyesSource}/AppEntry`,
+      admin: `${avyeyesSource}/AdminEntry`,
     },
     output: {
       path: path.resolve(avyeyesSource, 'build'),

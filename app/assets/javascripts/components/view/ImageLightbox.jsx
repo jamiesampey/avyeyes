@@ -3,7 +3,7 @@ import Lightbox from 'react-image-lightbox';
 
 import 'react-image-lightbox/style.css';
 
-import { constructImageUrl } from '../Util';
+import { constructImageUrl } from '../../Util';
 
 export default class ImageLightbox extends React.Component {
   constructor(props) {

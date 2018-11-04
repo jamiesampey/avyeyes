@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Config from '../Config';
-import ReportButton from "./ReportButton";
-import InfoBar from "./InfoBar";
-import HelpDialog from "./HelpDialog";
+import ReportButton from "./report/ReportButton";
+import InfoBar from "./view/InfoBar";
+import HelpDialog from "./view/HelpDialog";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
 import {checkStatusAndParseJson} from "../Util";
-import ReportDrawer from "./ReportDrawer";
-import CesiumView from "./CesiumView";
+import ReportDrawer from "./report/ReportDrawer";
+import CesiumView from "./view/CesiumView";
 
 const reportDrawerWidth = 350;
 

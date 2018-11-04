@@ -7,7 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import TableBody from "@material-ui/core/TableBody";
-import { checkStatusAndParseJson, avalancheUrl } from "../Util";
+import { checkStatusAndParseJson, avalancheUrl } from "../../Util";
 import Toolbar from "@material-ui/core/Toolbar";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
