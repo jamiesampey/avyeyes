@@ -84,6 +84,7 @@ const ReportDetails = props => {
               <FormControl required={true} className={classes.formField} style={{width: 500}}>
                 <InputLabel error={props.errorFields.includes('areaName')} shrink={true}>Area Name</InputLabel>
                 <Input
+                  inputProps={{id: "area-name"}}
                   type="text"
                   error={props.errorFields.includes('areaName')}
                   value={avalanche.areaName}
@@ -93,6 +94,7 @@ const ReportDetails = props => {
               <FormControl required={true} className={classes.formField} style={{width: 150, float: 'right'}}>
                 <InputLabel error={props.errorFields.includes('date')} shrink={true}>Avalanche Date</InputLabel>
                 <Input
+                  inputProps={{id: "avalanche-date"}}
                   type="date"
                   error={props.errorFields.includes('date')}
                   value={avalanche.date}
@@ -106,6 +108,7 @@ const ReportDetails = props => {
               <FormControl required={true} className={classes.formField}>
                 <InputLabel error={props.errorFields.includes('submitterEmail')} shrink={true}>Submitter Email</InputLabel>
                 <Input
+                  inputProps={{id: "submitter-email"}}
                   type="text"
                   error={props.errorFields.includes('submitterEmail')}
                   value={avalanche.submitterEmail}
@@ -201,6 +204,7 @@ const ReportDetails = props => {
                       <FormControl className={classes.slopeFormField} style={{width: 100}}>
                         <InputLabel shrink={true}>Elevation (m)</InputLabel>
                         <Input
+                          inputProps={{id: "elevation"}}
                           type="text"
                           readOnly={true}
                           value={avalanche.slope.elevation}
@@ -218,6 +222,7 @@ const ReportDetails = props => {
                       <FormControl className={classes.slopeFormField}>
                         <InputLabel shrink={true}>Angle</InputLabel>
                         <Input
+                          inputProps={{id: "angle"}}
                           type="text"
                           value={avalanche.slope.angle}
                           onChange={(event) => updateAvalanche("slope.angle", event.target.value)}

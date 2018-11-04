@@ -24,10 +24,7 @@ object AvalancheSerializer extends CustomSerializer[Avalanche]( implicit formats
       slope = (json \ "slope").extract[Slope],
       weather = (json \ "weather").extract[Weather],
       classification = (json \ "classification").extract[Classification],
-      perimeter = (json \ "perimeter").extract[String] match {
-        case perim if perim.nonEmpty => perim.trim.split(" ").toSeq.map(Coordinate(_))
-        case _ => Seq.empty
-      },
+      perimeter = (json \ "perimeter").extract[Seq[Coordinate]],
       comments = (json \ "comments").extractOpt[String] match {
         case Some(text) if text.nonEmpty => Some(escapeJava(text))
         case _ => None

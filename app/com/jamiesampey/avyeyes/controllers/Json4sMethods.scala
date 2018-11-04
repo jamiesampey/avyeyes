@@ -37,11 +37,11 @@ trait Json4sMethods {
     ("classification" -> Extraction.decompose(a.classification)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
     ("images" -> Extraction.decompose(images)) ~
-    ("perimeter" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+    ("perimeter" -> Extraction.decompose(a.perimeter))
   }
 
   private[controllers] def avalanchePathSearchResult(a: Avalanche) = {
-    avalanchePinSearchResult(a) ~ ("perimeter" -> a.perimeter.flatMap(coord => Array(coord.longitude, coord.latitude, coord.altitude)))
+    avalanchePinSearchResult(a) ~ ("perimeter" -> Extraction.decompose(a.perimeter))
   }
 
   private[controllers] def avalanchePinSearchResult(a: Avalanche) = {

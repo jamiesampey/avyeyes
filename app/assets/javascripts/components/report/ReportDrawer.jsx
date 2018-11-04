@@ -216,7 +216,11 @@ class ReportDrawer extends React.Component {
         lowestCartographic = cartographic;
       }
 
-      coordinates.push(`${Cesium.Math.toDegrees(cartographic.longitude).toFixed(8)},${Cesium.Math.toDegrees(cartographic.latitude).toFixed(8)},${cartographic.height.toFixed(2)}`);
+      coordinates.push({
+        longitude: parseFloat(Cesium.Math.toDegrees(cartographic.longitude).toFixed(8)),
+        latitude: parseFloat(Cesium.Math.toDegrees(cartographic.latitude).toFixed(8)),
+        altitude: Math.round(cartographic.height),
+      });
     });
 
     let hypotenuse = Cesium.Cartesian3.distance(highestCartesian, lowestCartesian);
@@ -230,7 +234,7 @@ class ReportDrawer extends React.Component {
         altitude: Math.round(highestCartographic.height),
         aspect: ReportDrawer.getDrawingAspect(highestCartographic, lowestCartographic),
         angle: Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),
-        perimeter: coordinates.join(' ').trim()
+        perimeter: coordinates,
       }
     }, this.stepForward);
   }

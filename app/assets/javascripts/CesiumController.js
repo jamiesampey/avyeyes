@@ -48,6 +48,12 @@ class CesiumController {
     entitiesToRemove.forEach(entity => { this.removeEntity(entity); });
   }
 
+  static perimeterToDegreesHeightsArray(a) {
+    return Cesium.Cartesian3.fromDegreesArrayHeights(
+      a.perimeter.flatMap(coord => [coord.longitude, coord.latitude, coord.altitude])
+    );
+  }
+
   flyToDest(dest) {
     let flyToEntity;
 
@@ -101,7 +107,7 @@ class CesiumController {
 
   addAvalancheAndFlyTo(a, callback) {
     this.addAvalanche(a);
-    let boundingSphere = Cesium.BoundingSphere.fromPoints(Cesium.Cartesian3.fromDegreesArrayHeights(a.perimeter));
+    let boundingSphere = Cesium.BoundingSphere.fromPoints(CesiumController.perimeterToDegreesHeightsArray(a));
 
     this.viewer.camera.flyToBoundingSphere(boundingSphere, {
       duration: 4.0,
@@ -148,7 +154,7 @@ class CesiumController {
           name: a.title,
           polygon: {
             material: Cesium.Color.RED.withAlpha(0.4),
-            hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(a.perimeter),
+            hierarchy: CesiumController.perimeterToDegreesHeightsArray(a),
             heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
           }
         };
