@@ -134,17 +134,16 @@ class ReportDrawer extends React.Component {
 
     //  temporarily replace the normal left-click and mouse-move event handlers
     let origLeftClickInputAction = eventHandler.getInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-    eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
     let origMouseMoveInputAction = eventHandler.getInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
     eventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
 
     this.props.controller.setCursorStyle('crosshair');
 
     let isDrawing = false;
-    let cartesian3Array = [];
+    let lastPointAddTime;
+    let cart3Array = [];
     let drawingPolyline;
-    let drawingPolylineColor = Cesium.Color.RED;
-    let drawingPolygonColor = Cesium.Color.RED.withAlpha(0.4);
 
     eventHandler.setInputAction(() => {
       if (!isDrawing) {
@@ -152,13 +151,24 @@ class ReportDrawer extends React.Component {
 
         drawingPolyline = this.props.controller.addEntity({
           polyline: {
-            positions: new Cesium.CallbackProperty(function () {
-              return cartesian3Array;
-            }, false),
-            material: drawingPolylineColor,
+            positions: new Cesium.CallbackProperty(() => { return cart3Array; }, false),
+            clampToGround: true,
+            material: Cesium.Color.RED,
             width: 3
           }
         });
+        lastPointAddTime = Date.now(); // IMPORTANT: allow a brief pause b/t the adding of the polyline entity and adding to the cart3 array
+
+        eventHandler.setInputAction((movement) => {
+          let now = Date.now();
+          if ((now - lastPointAddTime) > 50) {
+            let ray = cesiumViewer.camera.getPickRay(movement.endPosition);
+            let cartesianPos = cesiumViewer.scene.globe.pick(ray, cesiumViewer.scene);
+            if (Cesium.defined(cartesianPos)) cart3Array.push(cartesianPos);
+            lastPointAddTime = now;
+          }
+        }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+
       } else {
         isDrawing = false;
 
@@ -172,29 +182,18 @@ class ReportDrawer extends React.Component {
         let newPolygonEntity = this.props.controller.addEntity({
           polygon: {
             hierarchy: {
-              positions: cartesian3Array
+              positions: cart3Array
             },
             perPositionHeight: true,
-            material: drawingPolygonColor,
+            material: Cesium.Color.RED.withAlpha(0.4),
             outline: false
           }
         });
 
         this.props.controller.removeEntity(drawingPolyline);
-        this.digestDrawing(cartesian3Array, newPolygonEntity);
+        this.digestDrawing(cart3Array, newPolygonEntity);
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
-    eventHandler.setInputAction((movement) => {
-      if (!isDrawing) return;
-
-      let ray = cesiumViewer.camera.getPickRay(movement.endPosition);
-      let cartesianPos = cesiumViewer.scene.globe.pick(ray, cesiumViewer.scene);
-
-      if (Cesium.defined(cartesianPos)) {
-        cartesian3Array.push(cartesianPos);
-      }
-    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
   }
 
   digestDrawing(cartesian3Array, drawingEntity) {
