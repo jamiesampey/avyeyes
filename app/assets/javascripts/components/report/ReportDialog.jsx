@@ -203,15 +203,16 @@ class ReportDialog extends React.Component {
 
   render() {
     const { classes, clientData } = this.props;
+    const { workingAvalanche } = this.state;
 
     let editKey = getRequestParam("edit");
-    let isAdminView = this.state.workingAvalanche && this.state.workingAvalanche.hasOwnProperty('viewable') && editKey;
+    let isAdminView = workingAvalanche && workingAvalanche.hasOwnProperty('viewable') && editKey;
 
     return (
       <Dialog
         classes={{paper: classes.dialogPaper}}
         maxWidth={false}
-        open={Boolean(this.state.workingAvalanche)}
+        open={Boolean(workingAvalanche)}
         onBackdropClick={() => {}}
         onEscapeKeyDown={() => {}}
       >
@@ -246,7 +247,9 @@ class ReportDialog extends React.Component {
         </DialogContent>
         <DialogActions classes={{root: classes.dialogActionsRoot}}>
           { isAdminView &&
-          <Button color="secondary" onClick={this.deleteReport}>
+          <Button color="secondary" onClick={() => {
+            if (confirm(`Delete avalanche ${workingAvalanche.extId} ?`)) this.deleteReport();
+          }}>
             Delete
           </Button>
           }

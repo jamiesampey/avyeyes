@@ -264,8 +264,8 @@ class ReportDrawer extends React.Component {
     let newAvalanche = {
       extId: reportExtId,
       location: {
-        longitude: drawing.latitude,
-        latitude: drawing.longitude,
+        longitude: drawing.longitude,
+        latitude: drawing.latitude,
         altitude: drawing.altitude,
       },
       slope: {
