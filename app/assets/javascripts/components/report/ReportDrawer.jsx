@@ -8,17 +8,18 @@ import Stepper from "@material-ui/core/Stepper/Stepper";
 import Step from "@material-ui/core/Step/Step";
 import StepLabel from "@material-ui/core/StepLabel/StepLabel";
 import StepContent from "@material-ui/core/StepContent/StepContent";
+import Button from "@material-ui/core/Button";
 
 import Cesium from "cesium/Cesium";
 
-import Select from "react-select";
-import Button from "@material-ui/core/Button/Button";
 import {checkStatusAndParseJson} from "../../Util";
+import GeoCompleteSelect from "./GeoCompleteSelect";
 
 const styles = theme => ({
   drawerPaper: {
     position: 'relative',
     width: 350,
+    height: '100%',
   },
   reportHeading: {
     marginLeft: 16,
@@ -44,15 +45,6 @@ const styles = theme => ({
   },
 });
 
-const locationSelectStyles = {
-  menu: () => ({
-    border: 1,
-    zIndex: 10,
-  }),
-  menuList: () => ({
-  }),
-};
-
 const ManualViewStep = 1;
 const NavHelpButtonClass = "cesium-navigation-help-button";
 
@@ -61,15 +53,12 @@ class ReportDrawer extends React.Component {
     super(props);
 
     this.stepForward = this.stepForward.bind(this);
-    this.handleLocationChange = this.handleLocationChange.bind(this);
-    this.handleLocationSelect = this.handleLocationSelect.bind(this);
     this.beginDrawing = this.beginDrawing.bind(this);
     this.digestDrawing = this.digestDrawing.bind(this);
     this.convertDrawingToAvalanche = this.convertDrawingToAvalanche.bind(this);
 
     this.state = {
       activeStep: 0,
-      locationOptions: [],
       reportExtId: null,
       drawing: null,
     };
@@ -94,36 +83,6 @@ class ReportDrawer extends React.Component {
       let navHelpButtons = document.getElementsByClassName(NavHelpButtonClass);
       navHelpButtons[0].click();
     }
-  }
-
-  stepForward() {
-    this.setState(state => ({
-      activeStep: state.activeStep + 1,
-    }));
-  }
-
-  handleLocationChange(value) {
-    if (!value || value.length < 1) return;
-
-    this.props.controller.geocode(value).then( geocodeResults => {
-      this.setState({
-        locationOptions: geocodeResults.map(result => {
-          return {
-            label: result.displayName,
-            value: JSON.stringify(result.destination),
-          }
-        })
-      })
-    });
-  }
-
-  handleLocationSelect(selected) {
-    let location = JSON.parse(selected.value);
-    let dest = location.x ? new Cesium.Cartesian3(location.x, location.y, location.z):
-      new Cesium.Rectangle(location.west, location.south, location.east, location.north);
-    this.props.controller.flyToDest(dest);
-
-    this.stepForward();
   }
 
   beginDrawing() {
@@ -305,90 +264,91 @@ class ReportDrawer extends React.Component {
     }, () => this.props.drawingComplete(newAvalanche));
   }
 
+  stepForward() {
+    this.setState(state => ({
+      activeStep: state.activeStep + 1,
+    }));
+  }
+
   render() {
     const {classes, drawerOpen, clientData } = this.props;
 
     return (
-      <div>
-        <Drawer
-          variant="persistent"
-          anchor="left"
-          open={drawerOpen}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <Typography className={classes.reportHeading}>
-            Report an Avalanche
-          </Typography>
-          <Stepper orientation="vertical" className={classes.verticalStepper} activeStep={this.state.activeStep}>
-            <Step key={clientData.help.avyReportStepOneLabel}>
-              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepOneLabel}</StepLabel>
-              <StepContent>
-                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepOneContent}}/>
-                <div>
-                  <Select
-                    styles={locationSelectStyles}
-                    onInputChange={this.handleLocationChange}
-                    onChange={this.handleLocationSelect}
-                    options={this.state.locationOptions}
-                    placeholder="Location"
-                  />
-                </div>
-              </StepContent>
-            </Step>
-            <Step key={clientData.help.avyReportStepTwoLabel}>
-              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepTwoLabel}</StepLabel>
-              <StepContent>
-                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepTwoContent}}/>
-                <div className={classes.buttonsContainer}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={this.beginDrawing}
-                  >
-                    Begin Drawing
-                  </Button>
-                </div>
-              </StepContent>
-            </Step>
-            <Step key={clientData.help.avyReportStepThreeLabel}>
-              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepThreeLabel}</StepLabel>
-              <StepContent>
-                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepThreeContent}}/>
-              </StepContent>
-            </Step>
-            <Step key={clientData.help.avyReportStepFourLabel}>
-              <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepFourLabel}</StepLabel>
-              <StepContent>
-                <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepFourContent}}/>
-                <div className={classes.buttonsContainer}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => {
-                      this.props.controller.removeEntity(this.state.drawing.entity);
-                      this.setState({activeStep: 1, drawing: null});
-                    }}
-                  >
-                    Redraw
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={this.convertDrawingToAvalanche}
-                  >
-                    Accept Drawing
-                  </Button>
-                </div>
-              </StepContent>
-            </Step>
-          </Stepper>
-        </Drawer>
-      </div>
+      <Drawer
+        variant="persistent"
+        anchor="left"
+        open={drawerOpen}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <Typography className={classes.reportHeading}>
+          Report an Avalanche
+        </Typography>
+        <Stepper orientation="vertical" className={classes.verticalStepper} activeStep={this.state.activeStep}>
+          <Step key={clientData.help.avyReportStepOneLabel}>
+            <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepOneLabel}</StepLabel>
+            <StepContent>
+              <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepOneContent}}/>
+              <div>
+                <GeoCompleteSelect
+                  controller={this.props.controller}
+                  callback={this.stepForward}
+                />
+              </div>
+            </StepContent>
+          </Step>
+          <Step key={clientData.help.avyReportStepTwoLabel}>
+            <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepTwoLabel}</StepLabel>
+            <StepContent>
+              <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepTwoContent}}/>
+              <div className={classes.buttonsContainer}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={this.beginDrawing}
+                >
+                  Begin Drawing
+                </Button>
+              </div>
+            </StepContent>
+          </Step>
+          <Step key={clientData.help.avyReportStepThreeLabel}>
+            <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepThreeLabel}</StepLabel>
+            <StepContent>
+              <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepThreeContent}}/>
+            </StepContent>
+          </Step>
+          <Step key={clientData.help.avyReportStepFourLabel}>
+            <StepLabel classes={{label: classes.stepLabel}}>{clientData.help.avyReportStepFourLabel}</StepLabel>
+            <StepContent>
+              <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportStepFourContent}}/>
+              <div className={classes.buttonsContainer}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => {
+                    this.props.controller.removeEntity(this.state.drawing.entity);
+                    this.setState({activeStep: 1, drawing: null});
+                  }}
+                >
+                  Redraw
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={this.convertDrawingToAvalanche}
+                >
+                  Accept Drawing
+                </Button>
+              </div>
+            </StepContent>
+          </Step>
+        </Stepper>
+      </Drawer>
     )
   }
 }
