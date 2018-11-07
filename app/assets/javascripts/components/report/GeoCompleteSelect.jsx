@@ -3,9 +3,13 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Cesium from "cesium/Cesium";
 import Select from "react-select";
-import Paper from "@material-ui/core/Paper/Paper";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 
 const styles = theme => ({
+  noOptionsMessage: {
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+  },
   locationMenuPaper: {
     position: 'absolute',
     zIndex: 1,
@@ -15,11 +19,36 @@ const styles = theme => ({
   },
 });
 
+const MIN_INPUT_LENGTH = 4;
+
 class GeoCompleteSelect extends React.Component {
   constructor(props) {
     super(props);
+
     this.handleLocationChange = this.handleLocationChange.bind(this);
     this.handleLocationSelect = this.handleLocationSelect.bind(this);
+
+    this.selectComponents = {
+      NoOptionsMessage: props => {
+        return (
+          <Typography
+            color="textSecondary"
+            className={props.selectProps.classes.noOptionsMessage}
+            {...props.innerProps}
+          >
+            No matching locations
+          </Typography>
+        );
+      },
+      Menu: props => {
+        const {inputValue} = props.selectProps;
+        return !inputValue || inputValue.length < MIN_INPUT_LENGTH ? null : (
+          <Paper square className={props.selectProps.classes.locationMenuPaper} {...props.innerProps}>
+            {props.children}
+          </Paper>
+        );
+      },
+    };
 
     this.state = {
       locationOptions: [],
@@ -27,7 +56,7 @@ class GeoCompleteSelect extends React.Component {
   }
 
   handleLocationChange(value) {
-    if (!value || value.length < 4) return;
+    if (!value || value.length < MIN_INPUT_LENGTH) return;
 
     this.props.controller.geocode(value).then( geocodeResults => {
       this.setState({
@@ -52,14 +81,7 @@ class GeoCompleteSelect extends React.Component {
 
   render() {
     let { classes } = this.props;
-
-    const Menu = (props) => {
-      return (
-        <Paper square className={props.selectProps.classes.locationMenuPaper} {...props.innerProps}>
-          {props.children}
-        </Paper>
-      );
-    };
+    let { NoOptionsMessage, Menu } = this.selectComponents;
 
     return (
       <Select
@@ -68,7 +90,7 @@ class GeoCompleteSelect extends React.Component {
         onChange={this.handleLocationSelect}
         options={this.state.locationOptions}
         placeholder="Location"
-        components={{Menu}}
+        components={{ NoOptionsMessage, Menu }}
       />
     );
   }
