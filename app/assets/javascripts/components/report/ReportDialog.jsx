@@ -214,8 +214,8 @@ class ReportDialog extends React.Component {
         classes={{paper: classes.dialogPaper}}
         maxWidth={false}
         open={Boolean(workingAvalanche)}
-        onBackdropClick={() => {}}
-        onEscapeKeyDown={() => {}}
+        disableBackdropClick
+        disableEscapeKeyDown
       >
         <DialogContent className={classes.dialogContent}>
           <AppBar position="absolute" className={classes.appBar}>
