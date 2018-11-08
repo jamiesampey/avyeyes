@@ -14,17 +14,17 @@ function AvyForm(avyEyesView, mockS3Promise) {
     //         console.error("Failed to retrieve S3 configuration from AvyEyes server: " + jqxhr.responseText);
     //     });
     // });
-
-    this.s3Config.then(function(s3) {
-        this.s3Client = new AWS.S3({
-            accessKeyId: s3.accessKeyId,
-            secretAccessKey: s3.secretAccessKey,
-            params: {
-                Bucket: s3.bucket
-            }
-        });
-    }.bind(this));
-}
+//
+//     this.s3Config.then(function(s3) {
+//         this.s3Client = new AWS.S3({
+//             accessKeyId: s3.accessKeyId,
+//             secretAccessKey: s3.secretAccessKey,
+//             params: {
+//                 Bucket: s3.bucket
+//             }
+//         });
+//     }.bind(this));
+// }
 
 // AvyForm.prototype.displayReadOnlyForm = function(mousePos, a) {
 	// $("#roAvyFormTitle").text(a.title);
@@ -327,24 +327,24 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
     }.bind(this));
 }
 
-function setImageFancyBox(selector) {
-    $(selector).fancybox({
-        padding: 0,
-        openEffect: "elastic",
-        closeEffect: "elastic",
-        beforeShow: function() {
-            var captionHtml = $(this.element).next(".captionContainer").html();
-            if (captionHtml.length) {
-                this.title = "<div style='max-width:" + $(this.element).data("width")
-                    + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
-            }
-        }
-    });
-}
+// function setImageFancyBox(selector) {
+//     $(selector).fancybox({
+//         padding: 0,
+//         openEffect: "elastic",
+//         closeEffect: "elastic",
+//         beforeShow: function() {
+//             var captionHtml = $(this.element).next(".captionContainer").html();
+//             if (captionHtml.length) {
+//                 this.title = "<div style='max-width:" + $(this.element).data("width")
+//                     + ";white-space: pre-wrap;text-align:left;'>" + captionHtml + "</div>";
+//             }
+//         }
+//     });
+// }
 
-AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
-    return this.s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + filename });
-}
+// AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
+//     return this.s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + filename });
+// }
 
 AvyForm.prototype.getImageRestUrl = function(extId, filename) {
   var avalancheImagesUrl = '/avalanche/' + extId + '/images';
@@ -362,13 +362,13 @@ function getFileBaseName(filename) {
     return filename.substring(0, filename.lastIndexOf('.'));
 }
 
-AvyForm.prototype.enableAdminControls = function() {
-    return new Promise(function(resolve, reject) {
-        $("#rwAvyFormDeleteButton").show();
-        $("#rwAvyFormAdminTd").show();
-        resolve();
-    });
-}
+// AvyForm.prototype.enableAdminControls = function() {
+//     return new Promise(function(resolve, reject) {
+//         $("#rwAvyFormDeleteButton").show();
+//         $("#rwAvyFormAdminTd").show();
+//         resolve();
+//     });
+// }
 
 // AvyForm.prototype.validateReportFields = function() {
 //     this.resetReportErrorFields();
@@ -431,17 +431,17 @@ AvyForm.prototype.enableAdminControls = function() {
 //     $('#rwAvyFormOverlay').css('visibility', 'hidden');
 // }
 
-AvyForm.prototype.toggleWindDirectionFields = function(value) {
-    if (value === 'empty' || value.length == 0) {
-        $('#rwAvyFormRecentWindDirection').val('');
-        $('#rwAvyFormRecentWindDirection').siblings('.avyDirectionAutoComplete').val('');
-        $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
-        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', true);
-    } else {
-        $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
-        $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
-    }
-}
+// AvyForm.prototype.toggleWindDirectionFields = function(value) {
+//     if (value === 'empty' || value.length == 0) {
+//         $('#rwAvyFormRecentWindDirection').val('');
+//         $('#rwAvyFormRecentWindDirection').siblings('.avyDirectionAutoComplete').val('');
+//         $('#rwAvyFormRecentWindDirectionText').css('color', 'gray');
+//         $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', true);
+//     } else {
+//         $('#rwAvyFormRecentWindDirectionText').css('color', 'white');
+//         $('#rwAvyFormWeather .avyDirectionAutoComplete').prop('disabled', false);
+//     }
+// }
 
 // AvyForm.prototype.toggleTriggerCauseFields = function(category) {
 //     var enableTriggerModifierFields = function() {

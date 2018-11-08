@@ -84,7 +84,7 @@ class ReportDialog extends React.Component {
 
     this.state = {
       workingAvalanche: null,
-      main: MainContent.details,
+      main: MainContent.images,
       errorFields: [],
     };
   }

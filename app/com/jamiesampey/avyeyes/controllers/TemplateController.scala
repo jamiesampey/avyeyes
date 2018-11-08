@@ -34,7 +34,7 @@ class TemplateController @Inject()(val configService: ConfigurationService, val 
     Ok(writeJson("email" -> request.user.map(_.email)))
   }
 
-    private val s3config = "s3" ->
+  private val s3config = "s3" ->
     ("bucket" -> configService.getProperty("s3.bucket")) ~
     ("accessKeyId" -> configService.getProperty("s3.readonly.accessKeyId")) ~
     ("secretAccessKey" -> configService.getProperty("s3.readonly.secretAccessKey"))

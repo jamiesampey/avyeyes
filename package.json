@@ -18,6 +18,7 @@
     "@material-ui/core": "^3.2.1",
     "@material-ui/icons": "^3.0.1",
     "@material-ui/lab": "^3.0.0-alpha.20",
+    "aws-sdk": "^2.351.0",
     "cesium": "^1.49.0",
     "classnames": "^2.2.6",
     "prop-types": "^15.6.2",
