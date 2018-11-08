@@ -110,6 +110,7 @@ class ReportDialog extends React.Component {
     let errorFields = [];
     if (!workingAvalanche.areaName) errorFields.push('areaName');
     if (!workingAvalanche.date) errorFields.push('date');
+    if (!workingAvalanche.slope.angle || workingAvalanche.slope.angle > 90 || workingAvalanche.slope.angle < 1) errorFields.push('angle');
     if (!workingAvalanche.submitterEmail) errorFields.push('submitterEmail');
     if (!workingAvalanche.submitterExp) errorFields.push('submitterExp');
 

@@ -75,6 +75,8 @@ const styles = theme => ({
 const ReportDetails = props => {
   const { classes, clientData, avalanche, updateAvalanche, isAdminView } = props;
 
+  const NoneMenuItem = <MenuItem key='none' value=''><i>None</i></MenuItem>;
+
   return (
     <form>
       <Table className={classes.table}>
@@ -139,6 +141,7 @@ const ReportDetails = props => {
                   value={avalanche.classification.avyType}
                   onChange={(event) => updateAvalanche("classification.avyType", event.target.value)}
                 >
+                  { NoneMenuItem }
                   { clientData.codes.avalancheType.map(avyType => <MenuItem key={avyType.value} value={avyType.value}>{avyType.label}</MenuItem>) }
                 </Select>
               </FormControl>
@@ -149,6 +152,7 @@ const ReportDetails = props => {
                   value={avalanche.classification.trigger}
                   onChange={(event) => updateAvalanche("classification.trigger", event.target.value)}
                 >
+                  { NoneMenuItem }
                   { clientData.codes.avalancheTrigger.map(trigger => <MenuItem key={trigger.value} value={trigger.value}>{trigger.label}</MenuItem>) }
                 </Select>
               </FormControl>
@@ -159,6 +163,7 @@ const ReportDetails = props => {
                   value={avalanche.classification.triggerModifier}
                   onChange={(event) => updateAvalanche("classification.triggerModifier", event.target.value)}
                 >
+                  { NoneMenuItem }
                   { clientData.codes.avalancheTriggerModifier.map(triggerModifier => <MenuItem key={triggerModifier.value} value={triggerModifier.value}>{triggerModifier.label}</MenuItem>) }
                 </Select>
               </FormControl>
@@ -169,6 +174,7 @@ const ReportDetails = props => {
                   value={avalanche.classification.interface}
                   onChange={(event) => updateAvalanche("classification.interface", event.target.value)}
                 >
+                  { NoneMenuItem }
                   { clientData.codes.avalancheInterface.map(avyInterface => <MenuItem key={avyInterface.value} value={avyInterface.value}>{avyInterface.label}</MenuItem>) }
                 </Select>
               </FormControl>
@@ -220,12 +226,13 @@ const ReportDetails = props => {
                         </Select>
                       </FormControl>
                       <FormControl className={classes.slopeFormField}>
-                        <InputLabel shrink={true}>Angle</InputLabel>
+                        <InputLabel shrink={true} error={props.errorFields.includes('angle')}>Angle</InputLabel>
                         <Input
                           inputProps={{id: "angle"}}
                           type="text"
+                          error={props.errorFields.includes('angle')}
                           value={avalanche.slope.angle}
-                          onChange={(event) => updateAvalanche("slope.angle", event.target.value)}
+                          onChange={(event) => updateAvalanche("slope.angle", parseInt(event.target.value) || 0)}
                         />
                       </FormControl>
                     </TableCell>
@@ -244,7 +251,7 @@ const ReportDetails = props => {
                           inputProps={{id: "recent-snow"}}
                           type="text"
                           value={avalanche.weather.recentSnow}
-                          onChange={(event) => updateAvalanche("weather.recentSnow", event.target.value)}
+                          onChange={(event) => updateAvalanche("weather.recentSnow", parseInt(event.target.value) || 0)}
                         />
                       </FormControl>
                       <FormControl className={classes.formField} style={{width: 160}}>
@@ -254,6 +261,7 @@ const ReportDetails = props => {
                           value={avalanche.weather.recentWindSpeed}
                           onChange={(event) => updateAvalanche("weather.recentWindSpeed", event.target.value)}
                         >
+                          { NoneMenuItem }
                           { clientData.codes.windSpeed.map(speed => <MenuItem key={speed.value} value={speed.value}>{speed.label}</MenuItem>) }
                         </Select>
                       </FormControl>
@@ -264,6 +272,7 @@ const ReportDetails = props => {
                           value={avalanche.weather.recentWindDirection}
                           onChange={(event) => updateAvalanche("weather.recentWindDirection", event.target.value)}
                         >
+                          { NoneMenuItem }
                           { clientData.codes.direction.map(dir => <MenuItem key={dir.value} value={dir.value}>{dir.label}</MenuItem>) }
                         </Select>
                       </FormControl>
