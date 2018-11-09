@@ -17,6 +17,7 @@ import '../../../stylesheets/AvyEyesClient.scss';
 
 import {checkStatusAndParseJson, getRequestParam} from "../../Util";
 import ReportDialog from "../report/ReportDialog";
+import InfoBar from "./InfoBar";
 
 const styles = theme => ({
   root: {
@@ -47,12 +48,14 @@ class CesiumView extends React.Component {
 
     this.cesiumRef = React.createRef();
 
+    this.renderAvalanche = this.renderAvalanche.bind(this);
     this.renderCesiumDecorators = this.renderCesiumDecorators.bind(this);
     this.filterAvalanches = this.filterAvalanches.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
 
     this.state = {
       cesiumInitialized: false,
+      infoBarMessage: null,
       filterDrawerOpen: false,
       avalancheFilter: {
         fromDate: '',
@@ -177,28 +180,32 @@ class CesiumView extends React.Component {
     this.filterAvalanches({fromDate: '', toDate: '', avyTypes: [], triggers: [], interfaces: [], rSize: 0, dSize: 0 });
   }
 
-  static renderAvalanche(clientData, currentAvalanche, setCurrentAvalanche) {
+  renderAvalanche() {
+    const { clientData, currentAvalanche, setCurrentAvalanche } = this.props;
+
     return (!currentAvalanche.areaName || currentAvalanche.submitterEmail) ?
       <ReportDialog
         clientData={clientData}
         avalanche={currentAvalanche}
-        closeCallback={() => setCurrentAvalanche(null)}
+        setInfoMessage={(message) => this.setState({ infoBarMessage: message })}
+        onClose={() => setCurrentAvalanche(null)}
       />
       :
       <AvyCard
         clientData={clientData}
         avalanche={currentAvalanche}
-        closeCallback={() => setCurrentAvalanche(null)}
+        setInfoMessage={(message) => this.setState({ infoBarMessage: message })}
+        onClose={() => setCurrentAvalanche(null)}
       />;
   }
 
   renderCesiumDecorators() {
-    const { classes, clientData, currentAvalanche, setCurrentAvalanche, showHelp } = this.props;
+    const { classes, clientData, currentAvalanche, showHelp } = this.props;
     const { filterDrawerOpen, avalancheFilter } = this.state;
 
     return (
       <div>
-        { currentAvalanche && CesiumView.renderAvalanche(clientData, currentAvalanche, setCurrentAvalanche) }
+        { currentAvalanche && this.renderAvalanche() }
 
         <FilterDrawer
           drawerOpen={filterDrawerOpen}
@@ -215,6 +222,15 @@ class CesiumView extends React.Component {
           filter={avalancheFilter}
           clearFilter={this.clearFilter}
         />
+
+        { Boolean(this.state.infoBarMessage) &&
+          <InfoBar
+            open={Boolean(this.state.infoBarMessage)}
+            message={this.state.infoBarMessage}
+            duration={5}
+            onClose={() => this.setState({infoBarMessage: null}) }
+          />
+        }
 
         <MouseBee controller={this.controller}/>
         <MenuButton menuToggle={() => { this.setState({filterDrawerOpen: true}) }} />

@@ -84,7 +84,7 @@ class ReportDialog extends React.Component {
 
     this.state = {
       workingAvalanche: null,
-      main: MainContent.images,
+      main: MainContent.details,
       errorFields: [],
     };
   }
@@ -104,7 +104,9 @@ class ReportDialog extends React.Component {
   }
 
   submitReport(editKey) {
+    let { setInfoMessage } = this.props;
     let { workingAvalanche } = this.state;
+
     let csrfToken = getCSRFTokenFromCookie();
 
     let errorFields = [];
@@ -129,9 +131,11 @@ class ReportDialog extends React.Component {
       })
       .then(response => {
         checkStatus(response);
-        console.info(`Updated report ${workingAvalanche.extId}. Server response is ${response.status}`);
+        setInfoMessage(`SUCCESS: Avalanche ID '${workingAvalanche.extId}' was updated`);
       })
-      .catch(error => console.error(`Error updating report ${workingAvalanche.extId}: ${error}`))
+      .catch(error => {
+        setInfoMessage(`ERROR updating avalanche ID '${workingAvalanche.extId}'. Error is: ${error}`);
+      })
       .finally(this.cleanup);
     } else {
       fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
@@ -143,15 +147,19 @@ class ReportDialog extends React.Component {
       })
       .then(response => {
         checkStatus(response);
-        console.info(`Submitted new report ${workingAvalanche.extId}. Server response is ${response.status}`);
+        setInfoMessage(`SUCCESS: New avalanche with ID '${workingAvalanche.extId}' added. A confirmation email will be sent shortly`);
       })
-      .catch(error => console.error(`Error submitting new report ${workingAvalanche.extId}: ${error}`))
+      .catch(error => {
+        setInfoMessage(`ERROR adding new avalanche with ID '${workingAvalanche.extId}'. Error is: ${error}`);
+      })
       .finally(this.cleanup);
     }
   }
 
   deleteReport() {
+    let { setInfoMessage } = this.props;
     let { workingAvalanche } = this.state;
+
     let csrfToken = getCSRFTokenFromCookie();
 
     fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
@@ -159,14 +167,16 @@ class ReportDialog extends React.Component {
     })
       .then(response => {
         checkStatus(response);
-        console.info(`Deleted report ${workingAvalanche.extId}. Server response is ${response.status}`);
+        setInfoMessage(`SUCCESS: Avalanche ${workingAvalanche.extId} was deleted`);
       })
-      .catch(error => console.error(`Error deleting report ${workingAvalanche.extId}: ${error}`))
+      .catch(error => {
+        setInfoMessage(`ERROR deleting avalanche ${workingAvalanche.extId}. Error is: ${error}`);
+      })
       .finally(this.cleanup);
   }
 
   cleanup() {
-    this.setState({workingAvalanche: null}, this.props.closeCallback);
+    this.setState({workingAvalanche: null}, this.props.onClose);
   }
 
   renderMainContent(isAdminView) {
@@ -270,7 +280,8 @@ ReportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
   avalanche: PropTypes.object,
-  closeCallback: PropTypes.func.isRequired,
+  setInfoMessage: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ReportDialog);

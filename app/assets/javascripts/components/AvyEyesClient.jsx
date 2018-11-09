@@ -4,7 +4,6 @@ import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Config from '../Config';
 import ReportButton from "./report/ReportButton";
-import InfoBar from "./view/InfoBar";
 import HelpDialog from "./view/HelpDialog";
 
 import 'cesium/Widgets/widgets.css';
@@ -94,7 +93,6 @@ class AvyEyesClient extends React.Component {
       reportDrawerOpen: false,
       cesiumController: null,
       currentAvalanche: null,
-      infoMessage: null,
       help: null,
     };
   }
@@ -145,14 +143,6 @@ class AvyEyesClient extends React.Component {
               closeCallback={() => this.setState({ help: null }) }
             />
           }
-
-          <InfoBar
-            open={Boolean(this.state.infoMessage)}
-            message={this.state.infoMessage}
-            duration={15}
-            closeable
-            closeCallback={() => this.setState({ infoMessage: null }) }
-          />
 
           <ReportButton
             visible={!this.state.reportDrawerOpen}

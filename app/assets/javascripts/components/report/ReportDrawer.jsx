@@ -303,7 +303,7 @@ class ReportDrawer extends React.Component {
               <div>
                 <GeoCompleteSelect
                   controller={this.props.controller}
-                  callback={this.stepForward}
+                  onSelect={this.stepForward}
                 />
               </div>
             </StepContent>

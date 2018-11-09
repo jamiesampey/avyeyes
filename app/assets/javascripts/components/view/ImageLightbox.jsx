@@ -4,6 +4,7 @@ import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
 import { constructImageUrl } from '../../Util';
+import PropTypes from "prop-types";
 
 export default class ImageLightbox extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class ImageLightbox extends React.Component {
   }
 
   render() {
-    const { closeCallback } = this.props;
+    const { onClose } = this.props;
     const { images, imageIdx } = this.state;
 
     if (images.length === 0) return null;
@@ -40,7 +41,7 @@ export default class ImageLightbox extends React.Component {
           prevSrc={images[(imageIdx + images.length - 1) % images.length].url}
           imageTitle={<span style={{fontSize: 16}}>Image {imageIdx + 1} of {images.length}</span>}
           imageCaption={images[imageIdx].caption}
-          onCloseRequest={closeCallback}
+          onCloseRequest={onClose}
           onMovePrevRequest={() =>
             this.setState({
               imageIdx: (imageIdx + images.length - 1) % images.length,
@@ -55,3 +56,9 @@ export default class ImageLightbox extends React.Component {
     )
   }
 }
+
+ImageLightbox.propTypes = {
+  avalanche: PropTypes.object.isRequired,
+  s3Bucket: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

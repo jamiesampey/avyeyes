@@ -39,13 +39,13 @@ class HelpDialog extends React.Component {
   }
 
   render() {
-    const { classes, title, contentString, closeCallback } = this.props;
+    const { classes, title, contentString, onClose } = this.props;
 
     return (
         <Dialog
           className={classes.dialog}
           open={Boolean(contentString)}
-          onClose={closeCallback}
+          onClose={onClose}
         >
           <div>
             <AppBar className={classes.appBar}>
@@ -53,7 +53,7 @@ class HelpDialog extends React.Component {
                 <Typography variant="h6" color="inherit">
                   {title}
                 </Typography>
-                <IconButton className={classes.closeButton} onClick={closeCallback} color="inherit">
+                <IconButton className={classes.closeButton} onClick={onClose} color="inherit">
                   <CloseIcon/>
                 </IconButton>
               </Toolbar>
@@ -73,7 +73,7 @@ HelpDialog.propTypes = {
   theme: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
   contentString: PropTypes.string,
-  closeCallback: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(HelpDialog);

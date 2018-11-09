@@ -209,7 +209,7 @@ class AvyCard extends React.Component {
       clearInterval(this.state.cardMediaInterval);
     }
 
-    this.props.closeCallback();
+    this.props.onClose();
   }
 
   renderCardMedia(avalanche, imageUrl) {
@@ -227,7 +227,7 @@ class AvyCard extends React.Component {
       <ImageLightbox
         avalanche={avalanche}
         s3Bucket={this.props.clientData.s3.bucket}
-        closeCallback={() => { this.setState({ lightboxOpen: false }) }}
+        onClose={() => { this.setState({ lightboxOpen: false }) }}
       />
     )
   }
@@ -254,7 +254,7 @@ class AvyCard extends React.Component {
           avalanche={avalanche}
           clientData={clientData}
           anchorEl={socialMenuAnchor}
-          closeCallback={() => { this.setState({ socialMenuAnchor: null }) }}
+          onClose={() => { this.setState({ socialMenuAnchor: null }) }}
         />
         <Dialog
           className={classes.dialog}
@@ -392,7 +392,8 @@ AvyCard.propTypes = {
   theme: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
   avalanche: PropTypes.object,
-  closeCallback: PropTypes.func.isRequired,
+  setInfoMessage: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(AvyCard);

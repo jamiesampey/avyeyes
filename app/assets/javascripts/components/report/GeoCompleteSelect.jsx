@@ -76,7 +76,7 @@ class GeoCompleteSelect extends React.Component {
       new Cesium.Rectangle(location.west, location.south, location.east, location.north);
     this.props.controller.flyToDest(dest);
 
-    this.props.callback();
+    this.props.onSelect();
   }
 
   render() {
@@ -99,7 +99,7 @@ class GeoCompleteSelect extends React.Component {
 GeoCompleteSelect.propTypes = {
   classes: PropTypes.object.isRequired,
   controller: PropTypes.object,
-  callback: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(GeoCompleteSelect);

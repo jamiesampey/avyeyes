@@ -14,9 +14,6 @@ const styles = theme => ({
   shareIcon: {
     margin: 0,
   },
-  snackbarRoot: {
-    backgroundColor: 'red',
-  },
 });
 
 class SocialMenu extends React.Component {
@@ -28,14 +25,14 @@ class SocialMenu extends React.Component {
     this.openTwitterDialog = this.openTwitterDialog.bind(this);
 
     this.state = {
-      copyLinkOpen: false,
+      copyLinkMessage: null,
     }
   }
 
   openFacebookDialog() {
-    const { avalanche, clientData, closeCallback } = this.props;
+    const { avalanche, clientData, onClose } = this.props;
 
-    closeCallback();
+    onClose();
 
     FB.ui({
       method: 'share_open_graph',
@@ -54,9 +51,9 @@ class SocialMenu extends React.Component {
   };
 
   openTwitterDialog() {
-    const { avalanche, closeCallback } = this.props;
+    const { avalanche, onClose } = this.props;
 
-    closeCallback();
+    onClose();
 
     let shareURL = "http://twitter.com/share?";
 
@@ -75,14 +72,14 @@ class SocialMenu extends React.Component {
   };
 
   render() {
-    const { classes, anchorEl, clientData, avalanche, closeCallback } = this.props;
+    const { classes, anchorEl, clientData, avalanche, onClose } = this.props;
 
     return (
       <div>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
-          onClose={closeCallback}
+          onClose={onClose}
         >
           <MenuItem onClick={this.openFacebookDialog} disabled={typeof FB === 'undefined'}>
             <SvgIcon className={classes.shareIcon}>
@@ -99,18 +96,20 @@ class SocialMenu extends React.Component {
             <ListItemText inset primary="Twitter"/>
           </MenuItem>
           <CopyToClipboard text={avalancheUrl(avalanche.extId)}>
-            <MenuItem onClick={() => this.setState({ copyLinkOpen: true, }, closeCallback)}>
+            <MenuItem onClick={() => this.setState({ copyLinkMessage: clientData.help.copyLinkMessage }, onClose)}>
               <LinkIcon className={classes.shareIcon}/>
               <ListItemText inset primary="Copy Link"/>
             </MenuItem>
           </CopyToClipboard>
         </Menu>
-        <InfoBar
-          open={this.state.copyLinkOpen}
-          message={clientData.help.copyLinkMessage}
-          duration={5}
-          closeCallback={() => this.setState({copyLinkOpen: false})}
-        />
+        { Boolean(this.state.copyLinkMessage) &&
+          <InfoBar
+            open={Boolean(this.state.copyLinkMessage)}
+            message={this.state.copyLinkMessage}
+            duration={5}
+            onClose={() => this.setState({copyLinkMessage: null})}
+          />
+        }
       </div>
     );
   }
@@ -118,6 +117,10 @@ class SocialMenu extends React.Component {
 
 SocialMenu.propTypes = {
   classes: PropTypes.object.isRequired,
+  avalanche: PropTypes.object.isRequired,
+  clientData: PropTypes.object.isRequired,
+  anchorEL: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(SocialMenu);

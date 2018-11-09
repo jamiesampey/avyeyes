@@ -24,14 +24,14 @@ const styles = theme => ({
 
 const InfoBar = props => {
 
-  let { classes, open, message, duration, closeable, closeCallback } = props;
+  let { classes, open, message, duration, closeable, onClose } = props;
 
   return (
     <Snackbar
       anchorOrigin={{vertical: 'top', horizontal: 'center'}}
       open={open}
       autoHideDuration={duration ? duration * 1000 : null}
-      onClose={closeCallback}
+      onClose={onClose}
       ContentProps={{
         classes: {
           root: classes.snackbarRoot,
@@ -46,7 +46,7 @@ const InfoBar = props => {
           className={classes.closeIconButton}
           key="closeSnackbar"
           size="small"
-          onClick={closeCallback}
+          onClick={onClose}
         >
           <CloseIcon/>
         </IconButton>
@@ -61,7 +61,7 @@ InfoBar.propTypes = {
   message: PropTypes.string,
   duration: PropTypes.number,
   closeable: PropTypes.bool,
-  closeCallback: PropTypes.func,
+  onClose: PropTypes.func,
 };
 
 export default withStyles(styles)(InfoBar);
