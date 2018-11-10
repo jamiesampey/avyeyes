@@ -254,7 +254,10 @@ class AvyCard extends React.Component {
           avalanche={avalanche}
           clientData={clientData}
           anchorEl={socialMenuAnchor}
-          onClose={() => { this.setState({ socialMenuAnchor: null }) }}
+          onClose={(infoMessage) => {
+            if (infoMessage) this.props.setInfoMessage(infoMessage);
+            this.setState({ socialMenuAnchor: null });
+          }}
         />
         <Dialog
           className={classes.dialog}

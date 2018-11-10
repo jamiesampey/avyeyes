@@ -7,7 +7,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import LinkIcon from "@material-ui/icons/Link";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import InfoBar from "./InfoBar";
 import { avalancheUrl } from "../../Util";
 
 const styles = theme => ({
@@ -23,10 +22,6 @@ class SocialMenu extends React.Component {
 
     this.openFacebookDialog = this.openFacebookDialog.bind(this);
     this.openTwitterDialog = this.openTwitterDialog.bind(this);
-
-    this.state = {
-      copyLinkMessage: null,
-    }
   }
 
   openFacebookDialog() {
@@ -75,42 +70,32 @@ class SocialMenu extends React.Component {
     const { classes, anchorEl, clientData, avalanche, onClose } = this.props;
 
     return (
-      <div>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={onClose}
-        >
-          <MenuItem onClick={this.openFacebookDialog} disabled={typeof FB === 'undefined'}>
-            <SvgIcon className={classes.shareIcon}>
-              <path fill="#3B5998"
-                    d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"/>
-            </SvgIcon>
-            <ListItemText inset primary="Facebook"/>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={onClose}
+      >
+        <MenuItem onClick={this.openFacebookDialog} disabled={typeof FB === 'undefined'}>
+          <SvgIcon className={classes.shareIcon}>
+            <path fill="#3B5998"
+                  d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"/>
+          </SvgIcon>
+          <ListItemText inset primary="Facebook"/>
+        </MenuItem>
+        <MenuItem onClick={this.openTwitterDialog}>
+          <SvgIcon className={classes.shareIcon}>
+            <path fill="#1DA1F2"
+                  d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/>
+          </SvgIcon>
+          <ListItemText inset primary="Twitter"/>
+        </MenuItem>
+        <CopyToClipboard text={avalancheUrl(avalanche.extId)}>
+          <MenuItem onClick={() => onClose(clientData.help.copyLinkMessage)}>
+            <LinkIcon className={classes.shareIcon}/>
+            <ListItemText inset primary="Copy Link"/>
           </MenuItem>
-          <MenuItem onClick={this.openTwitterDialog}>
-            <SvgIcon className={classes.shareIcon}>
-              <path fill="#1DA1F2"
-                    d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z"/>
-            </SvgIcon>
-            <ListItemText inset primary="Twitter"/>
-          </MenuItem>
-          <CopyToClipboard text={avalancheUrl(avalanche.extId)}>
-            <MenuItem onClick={() => this.setState({ copyLinkMessage: clientData.help.copyLinkMessage }, onClose)}>
-              <LinkIcon className={classes.shareIcon}/>
-              <ListItemText inset primary="Copy Link"/>
-            </MenuItem>
-          </CopyToClipboard>
-        </Menu>
-        { Boolean(this.state.copyLinkMessage) &&
-          <InfoBar
-            open={Boolean(this.state.copyLinkMessage)}
-            message={this.state.copyLinkMessage}
-            duration={5}
-            onClose={() => this.setState({copyLinkMessage: null})}
-          />
-        }
-      </div>
+        </CopyToClipboard>
+      </Menu>
     );
   }
 }

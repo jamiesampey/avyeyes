@@ -136,7 +136,7 @@ class CesiumView extends React.Component {
       boundingBox = this.controller.getBoundingBox();
     } catch(error) {
       this.setState({
-        infoMessage: this.props.clientData.help.horizonInView
+        infoBarMessage: this.props.clientData.help.horizonInView
       });
       return;
     }
@@ -187,8 +187,10 @@ class CesiumView extends React.Component {
       <ReportDialog
         clientData={clientData}
         avalanche={currentAvalanche}
-        setInfoMessage={(message) => this.setState({ infoBarMessage: message })}
-        onClose={() => setCurrentAvalanche(null)}
+        onClose={(message) => {
+          if (message) this.setState({ infoBarMessage: message });
+          setCurrentAvalanche(null);
+        }}
       />
       :
       <AvyCard
