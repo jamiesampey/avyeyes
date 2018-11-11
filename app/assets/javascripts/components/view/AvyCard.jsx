@@ -106,6 +106,9 @@ const styles = theme => ({
       height: 30,
     }
   },
+  comments: {
+    whiteSpace: 'pre-line',
+  },
   linkCopySnackbarRoot: {
     backgroundColor: 'red',
   },
@@ -362,7 +365,7 @@ class AvyCard extends React.Component {
                         </ListItemIcon>
                       </Tooltip>
                       <ListItemText disableTypography>
-                        <Typography paragraph>
+                        <Typography paragraph className={classes.comments}>
                           {avalanche.comments}
                         </Typography>
                       </ListItemText>
