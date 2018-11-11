@@ -264,7 +264,7 @@ class ReportDialog extends React.Component {
             Delete
           </Button>
           }
-          <Button color="primary" onClick={this.cleanup}>
+          <Button color="primary" onClick={() => this.cleanup(null)}>
             Cancel
           </Button>
           <Button color="primary" onClick={() => this.submitReport(editKey)}>
