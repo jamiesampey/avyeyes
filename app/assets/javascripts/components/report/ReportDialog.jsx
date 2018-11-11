@@ -236,17 +236,17 @@ class ReportDialog extends React.Component {
             </Toolbar>
           </AppBar>
           <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
-            <Tooltip placement="right" title={clientData.tooltips.avyFormSWAGFields}>
+            <Tooltip placement="right" title={clientData.tooltips.avyReportSWAGFields}>
               <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.details})}>
                 <ViewListIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip placement="right" title={clientData.tooltips.avyFormImages}>
+            <Tooltip placement="right" title={clientData.tooltips.avyReportImages}>
               <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.images})}>
                 <ImageIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip placement="right" title={clientData.tooltips.avyFormComments}>
+            <Tooltip placement="right" title={clientData.tooltips.avyReportComments}>
               <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.comments})}>
                 <CommentsIcon />
               </IconButton>

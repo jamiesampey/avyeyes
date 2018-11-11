@@ -17,7 +17,7 @@ const ReportComments = props => {
 
   return (
     <div>
-      <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyFormCommentsInstr}} />
+      <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportCommentsInstr}} />
       <TextField
         fullWidth
         multiline

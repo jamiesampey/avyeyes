@@ -7,8 +7,13 @@ import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import MenuIcon from '@material-ui/icons/Menu';
 import AWS from 'aws-sdk/dist/aws-sdk';
+import TextField from "@material-ui/core/TextField/TextField";
 
 const styles = theme => ({
+  instructions: {
+    marginBottom: 20,
+    color: theme.palette.text.primary,
+  },
   imageMenuIcon: {
     color: 'white',
   },
@@ -47,22 +52,9 @@ class ReportImages extends React.Component {
     console.info(`images are ${JSON.stringify(this.state.images)}`);
 
     return (
-      <div className={classes.root}>
-        <GridList cellHeight={180} className={classes.gridList}>
-          { this.state.images.map(image => (
-            <GridListTile key={image.filename}>
-              <img src={this.signedImageUrl(avalanche.extId, image.filename)} />
-              <GridListTileBar
-                subtitle={image.caption}
-                actionIcon={
-                  <IconButton>
-                    <MenuIcon className={classes.imageMenuIcon}/>
-                  </IconButton>
-                }
-              />
-            </GridListTile>
-          ))}
-        </GridList>
+      <div>
+        <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportImagesInstr}} />
+
       </div>
     );
   }

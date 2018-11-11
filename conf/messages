@@ -44,12 +44,12 @@ help.avyReportSubmitEmailAdminBody={0} has submitted a new avalanche report ({1}
 help.avyReportSubmitEmailSubmitterSubject=Avalanche Report: {0}
 help.avyReportSubmitEmailSubmitterBody=AvyEyes has received a new avalanche report submitted by this email address:<br/><br/><b>{0}</b><br/><br/>The report is publicly viewable at: {1} (share this URL)<br/><br/>The report may be edited for up to seven (7) days using this private URL: {2} (don't share this URL)
 
-tooltip.avyFormSWAGFields=Details and SWAG Fields
-tooltip.avyFormImages=Image Upload
-tooltip.avyFormComments=Submitter Comments
+tooltip.avyReportSWAGFields=Details and SWAG Fields
+tooltip.avyReportImages=Image Upload
+tooltip.avyReportComments=Submitter Comments
 
-help.avyFormCommentsInstr=Enter your description of the avalanche below. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
-help.avyFormImageDropZoneInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/assets/images/img-edit-icon.png' /> to add a caption and the red <img src='/assets/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/assets/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
+help.avyReportCommentsInstr=Enter your description of the avalanche below. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
+help.avyReportImagesInstr=<ul><li>There is a limit of 20 images per avalanche report and each image must be less than 5 MB</li><li>Once image thumbnails appear use the green pencil <img src='/assets/images/img-edit-icon.png' /> to add a caption and the red <img src='/assets/images/img-delete-icon.png' /> to delete</li><li>Order images by dragging them with the move cursor <img src='/assets/images/img-move-icon.png' /> within the drop box</li><li>Uploading images may take a few minutes...</li></ul>
 
 ####### Admin #######
 
