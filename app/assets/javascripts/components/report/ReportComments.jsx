@@ -4,6 +4,9 @@ import {withStyles} from '@material-ui/core/styles';
 import TextField from "@material-ui/core/TextField";
 
 const styles = theme => ({
+  root: {
+    maxHeight: '100%',
+  },
   instructions: {
     marginBottom: 20,
     color: theme.palette.text.primary,
@@ -16,7 +19,7 @@ const ReportComments = props => {
   if (!avalanche) return null;
 
   return (
-    <div>
+    <div className={classes.root}>
       <div className={classes.instructions} dangerouslySetInnerHTML={{__html: clientData.help.avyReportCommentsInstr}} />
       <TextField
         fullWidth

@@ -19,6 +19,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabe
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 
 const styles = theme => ({
+  root: {
+    maxHeight: '100%',
+  },
   table: {
     borderCollapse: 'separate',
   },
@@ -78,7 +81,7 @@ const ReportDetails = props => {
   const NoneMenuItem = <MenuItem key='none' value=''><i>None</i></MenuItem>;
 
   return (
-    <form>
+    <form className={classes.root}>
       <Table className={classes.table}>
         <TableBody>
           <TableRow className={classes.tableRow}>
