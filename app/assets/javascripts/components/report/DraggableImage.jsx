@@ -4,8 +4,11 @@ import {withStyles} from "@material-ui/core";
 
 const styles = theme => ({
   image: {
-    maxWidth: '100%',
-    maxHeight: '100%',
+    width: '100%',
+    height: '100%',
+    backgroundPosition: 'center center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain',
   },
 });
 
@@ -30,7 +33,13 @@ const DraggableImage = props => {
   let { classes, isDragging, connectDragSource, imageUrl, filename, caption } = props;
 
   return connectDragSource(
-    <img key={filename} className={classes.image} src={imageUrl} />
+    <div
+      key={filename}
+      className={classes.image}
+      style={{
+        backgroundImage: `url(${imageUrl})`,
+      }}
+    />
   );
 };
 

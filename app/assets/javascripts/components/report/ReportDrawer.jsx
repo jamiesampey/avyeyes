@@ -31,10 +31,10 @@ const styles = theme => ({
     padding: 16,
   },
   stepLabel: {
-    fontSize: '1.1em',
+    fontSize: '1.1rem',
   },
   instructions: {
-    fontSize: '1.1em',
+    fontSize: '1.1rem',
     color: theme.palette.text.primary,
   },
   buttonsContainer: {
