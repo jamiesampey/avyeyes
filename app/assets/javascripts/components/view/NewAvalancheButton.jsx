@@ -22,7 +22,7 @@ const styles = theme => ({
   },
 });
 
-const ReportButton = props => {
+const NewAvalancheButton = props => {
   const { classes, visible, startReport } = props;
 
   if (!visible) return null;
@@ -41,8 +41,8 @@ const ReportButton = props => {
   );
 };
 
-ReportButton.propTypes = {
+NewAvalancheButton.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ReportButton);
+export default withStyles(styles)(NewAvalancheButton);

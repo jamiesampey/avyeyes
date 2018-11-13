@@ -194,30 +194,30 @@ function AvyEyesView(socialMode) {
 // 	$("#helpOverlayText").tabs("option", "active", tab);
 // 	$("#helpOverlay").show();
 // }
-
-AvyEyesView.prototype.doReport = function() {
-	this.removeAllEntities();
-	this.cancelReport();
-	this.currentReport = new AvyReport(this);
-	this.currentReport.beginReport();
-    window.onbeforeunload = function(e) {
-        return "Report in progress!";
-    };
-}
-
-AvyEyesView.prototype.cancelReport = function() {
-    $(".reportInstructions").hide();
-    this.form.closeReportForm();
-    this.form.clearReportFields();
-	this.currentReport = null;
-	window.onbeforeunload = null;
-}
-
-AvyEyesView.prototype.resetView = function() {
-	this.removeAllEntities();
-	this.cancelReport();
-	this.showControls();
-}
+//
+// AvyEyesView.prototype.doReport = function() {
+// 	this.removeAllEntities();
+// 	this.cancelReport();
+// 	this.currentReport = new AvyReport(this);
+// 	this.currentReport.beginReport();
+//     window.onbeforeunload = function(e) {
+//         return "Report in progress!";
+//     };
+// }
+//
+// AvyEyesView.prototype.cancelReport = function() {
+//     $(".reportInstructions").hide();
+//     this.form.closeReportForm();
+//     this.form.clearReportFields();
+// 	this.currentReport = null;
+// 	window.onbeforeunload = null;
+// }
+//
+// AvyEyesView.prototype.resetView = function() {
+// 	this.removeAllEntities();
+// 	this.cancelReport();
+// 	this.showControls();
+// }
 
 // AvyEyesView.prototype.addAvalanches = function(avalancheArray) {
 //     var oldAvalancheIds = this.cesiumViewer.entities.values.map(function(entity) {
@@ -338,38 +338,38 @@ AvyEyesView.prototype.resetView = function() {
 //         flyToDefaultView();
 //     }
 // }
-
-var geocodeAttempts = 0;
-AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
-    if (!address) return;
-
-    geocodeAttempts++;
-
-    var geocodeFailure = function() {
-        geocodeAttempts = 0;
-        this.showModalDialog("Failed to geocode '" + address + "'");
-    }.bind(this);
-
-    this.geocode(address, function(data) {
-        if (data.resourceSets.length === 0
-           || data.resourceSets[0].resources.length === 0
-           || data.resourceSets[0].resources[0].geocodePoints.length === 0) {
-            if (geocodeAttempts < 3) {
-                this.geocodeAndFlyTo(address, pitch, range);
-            } else {
-                geocodeFailure(address);
-            }
-            return;
-        }
-
-        var geocodePoints = data.resourceSets[0].resources[0].geocodePoints[0];
-        var geocodedTarget = this.targetEntityFromCoords(geocodePoints.coordinates[1], geocodePoints.coordinates[0]);
-        this.flyTo(geocodedTarget, 0.0, pitch, range).then(function() {
-            this.removeEntity(geocodedTarget);
-        }.bind(this));
-        geocodeAttempts = 0;
-    }.bind(this), geocodeFailure);
-}
+//
+// var geocodeAttempts = 0;
+// AvyEyesView.prototype.geocodeAndFlyTo = function(address, pitch, range) {
+//     if (!address) return;
+//
+//     geocodeAttempts++;
+//
+//     var geocodeFailure = function() {
+//         geocodeAttempts = 0;
+//         this.showModalDialog("Failed to geocode '" + address + "'");
+//     }.bind(this);
+//
+//     this.geocode(address, function(data) {
+//         if (data.resourceSets.length === 0
+//            || data.resourceSets[0].resources.length === 0
+//            || data.resourceSets[0].resources[0].geocodePoints.length === 0) {
+//             if (geocodeAttempts < 3) {
+//                 this.geocodeAndFlyTo(address, pitch, range);
+//             } else {
+//                 geocodeFailure(address);
+//             }
+//             return;
+//         }
+//
+//         var geocodePoints = data.resourceSets[0].resources[0].geocodePoints[0];
+//         var geocodedTarget = this.targetEntityFromCoords(geocodePoints.coordinates[1], geocodePoints.coordinates[0]);
+//         this.flyTo(geocodedTarget, 0.0, pitch, range).then(function() {
+//             this.removeEntity(geocodedTarget);
+//         }.bind(this));
+//         geocodeAttempts = 0;
+//     }.bind(this), geocodeFailure);
+// }
 
 // AvyEyesView.prototype.geocode = function(address, onSuccess, onFailure) {
 //     if (!address) return;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Config from '../Config';
-import ReportButton from "./report/ReportButton";
+import NewAvalancheButton from "./view/NewAvalancheButton";
 import HelpDialog from "./view/HelpDialog";
 
 import 'cesium/Widgets/widgets.css';
@@ -144,7 +144,7 @@ class AvyEyesClient extends React.Component {
             />
           }
 
-          <ReportButton
+          <NewAvalancheButton
             visible={!this.state.reportDrawerOpen}
             startReport={() => { this.setState({reportDrawerOpen: true}) }}
           />

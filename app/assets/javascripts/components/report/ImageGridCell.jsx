@@ -4,8 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {
-    width: '24%',
-    paddingTop: '24%',
+    width: 170,
+    height: 170,
     border: '1px solid',
     borderColor: theme.palette.divider,
   },

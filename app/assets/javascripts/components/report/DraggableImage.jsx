@@ -3,7 +3,7 @@ import {DragSource} from 'react-dnd';
 import {withStyles} from "@material-ui/core";
 
 const styles = theme => ({
-  root: {
+  image: {
     maxWidth: '100%',
     maxHeight: '100%',
   },
@@ -26,12 +26,12 @@ const collect = (connect, monitor) => {
   };
 };
 
-function DraggableImage({ isDragging, connectDragSource, imageUrl, filename, caption }) {
+const DraggableImage = props => {
+  let { classes, isDragging, connectDragSource, imageUrl, filename, caption } = props;
+
   return connectDragSource(
-    <div key={filename}>
-      Hello World {/*<img src={imageUrl} />*/}
-    </div>
+    <img key={filename} className={classes.image} src={imageUrl} />
   );
-}
+};
 
 export default DragSource('AvalancheImageTile', imageSource, collect)(withStyles(styles)(DraggableImage));

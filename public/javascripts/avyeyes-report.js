@@ -156,22 +156,22 @@ function AvyReport(avyEyesView) {
 //         view.resetView();
 //     });
 // }
-
-AvyReport.prototype.deleteReport = function() {
-    var view = this.view;
-    var extId = $("#rwAvyFormExtId").val();
-
-    $.ajax({
-        type: 'DELETE',
-        url: "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie()
-    }).done(function() {
-        view.showModalDialog("Avalanche report " + extId + " successfully deleted");
-    }).fail(function(jqxhr, textStatus, errorThrown) {
-        view.showModalDialog("Error deleting report " + extId + ". Error: " + errorThrown);
-    }).always(function() {
-        view.resetView();
-    });
-}
+//
+// AvyReport.prototype.deleteReport = function() {
+//     var view = this.view;
+//     var extId = $("#rwAvyFormExtId").val();
+//
+//     $.ajax({
+//         type: 'DELETE',
+//         url: "/avalanche/" + extId + "?csrfToken=" + view.csrfTokenFromCookie()
+//     }).done(function() {
+//         view.showModalDialog("Avalanche report " + extId + " successfully deleted");
+//     }).fail(function(jqxhr, textStatus, errorThrown) {
+//         view.showModalDialog("Error deleting report " + extId + ". Error: " + errorThrown);
+//     }).always(function() {
+//         view.resetView();
+//     });
+// }
 
 // function parseReportForm(reportExtId) {
 //     var parseIntWithDefault = function(selector) {
