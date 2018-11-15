@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { DropTarget } from "react-dnd";
 import IconButton from "@material-ui/core/IconButton";
-import MagnifyIcon from "@material-ui/icons/ZoomIn";
 import CaptionIcon from "@material-ui/icons/InsertComment";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -75,27 +74,14 @@ const ImageGridCell = props => {
             <IconButton
               size="small"
               className={classes.actionButton}
-              onClick={(e) => {
-                console.info(`Magnify in cell ${order}`);
-              }}
-            >
-              <MagnifyIcon className={classes.actionIcon}/>
-            </IconButton>
-            <IconButton
-              size="small"
-              className={classes.actionButton}
-              onClick={(e) => {
-                onCaptionChange(order, "some new caption");
-              }}
+              onClick={onCaptionChange}
             >
               <CaptionIcon className={classes.actionIcon}/>
             </IconButton>
             <IconButton
               size="small"
               className={classes.actionButton}
-              onClick={(e) => {
-                onDelete(order);
-              }}
+              onClick={onDelete}
             >
               <DeleteIcon className={classes.actionIcon}/>
             </IconButton>
