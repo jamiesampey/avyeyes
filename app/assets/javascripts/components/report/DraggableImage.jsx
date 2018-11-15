@@ -15,7 +15,6 @@ const styles = theme => ({
 const imageSource = {
   beginDrag(props) {
     return {
-      imageUrl: props.imageUrl,
       filename: props.filename,
       caption: props.caption,
     };
@@ -30,7 +29,7 @@ const collect = (connect, monitor) => {
 };
 
 const DraggableImage = props => {
-  let { classes, isDragging, connectDragSource, imageUrl, filename, caption } = props;
+  let { classes, isDragging, connectDragSource, imageUrl, filename } = props;
 
   return connectDragSource(
     <div

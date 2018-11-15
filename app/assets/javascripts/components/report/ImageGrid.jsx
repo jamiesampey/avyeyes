@@ -6,6 +6,7 @@ import {withStyles} from "@material-ui/core";
 import ImageGridCell from "./ImageGridCell";
 import DraggableImageTile from "./DraggableImage";
 import AWS from 'aws-sdk/dist/aws-sdk';
+import {checkStatus, getCSRFTokenFromCookie, getRequestParam} from "../../Util";
 
 const styles = theme => ({
   root: {
@@ -16,12 +17,14 @@ const styles = theme => ({
   },
 });
 
+const MaxImages = 20;
+
 class ImagesGrid extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.reorderImages = this.reorderImages.bind(this);
+    this.handleImageMove = this.handleImageMove.bind(this);
 
     // aws-sdk doesn't play well with webpack, so we need to import the build distro
     // and reference the global window.AWS
@@ -35,55 +38,61 @@ class ImagesGrid extends React.Component {
 
     this.state = {
       s3Client: client,
+      editKey: getRequestParam("edit"),
+      csrfToken: getCSRFTokenFromCookie(),
+      extId: this.props.avalanche.extId,
+      images: this.props.avalanche.images.map(image => {
+        return {
+          filename: image.filename,
+          caption: image.caption,
+        }
+      }),
     };
   }
 
-  componentDidMount() {
-    this.populateImageCells();
-  }
+  handleImageMove(cellIndex, movedImage) {
+    let { extId, images, editKey, csrfToken } = this.state;
 
-  populateImageCells() {
-    let extId = this.props.avalanche.extId;
-    let images = this.props.avalanche.images;
-    let imageCells = [];
-    for (let i = 0; i < 20; i++) {
+    let prevImageIndex = images.findIndex(image => image.filename === movedImage.filename);
 
-      let cellContent = null;
-      if (i < images.length) {
-        cellContent =
-          <DraggableImageTile
-            imageUrl={this.signedImageUrl(extId, images[i].filename)}
-            filename={images[i].filename}
-            caption={images[i].caption}
-          />
-      }
+    images.splice(prevImageIndex, 1);
+    images.splice(cellIndex, 0, movedImage);
 
-      imageCells.push(
-        <ImageGridCell key={i} order={i} onImageDrop={this.reorderImages}>
-          {cellContent}
-        </ImageGridCell>
-      )
-    }
+    this.setState({ images: images });
 
-    this.setState({ imageCells: imageCells });
-  }
-
-  signedImageUrl(extId, filename) {
-    return this.state.s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + filename });
-  }
-
-  reorderImages(cellIndex, filename) {
-    console.info(`image ${filename} dropped into ImageGridCell ${i}`);
-    this.populateImageCells();
+    fetch(`/api/avalanche/${extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ order: images.map(image => image.filename) }),
+    })
+    .then(response => checkStatus(response))
+    .catch(error => console.error(`ERROR updating image order for avalanche ${extId}. Error is: ${error}`))
   }
 
   render() {
     let { classes } = this.props;
+    let { s3Client, images, extId } = this.state;
+
+    let imageGridCells = images.map((image, index) =>
+      <ImageGridCell key={index} order={index} onImageDrop={this.handleImageMove}>
+        <DraggableImageTile
+          imageUrl={s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + image.filename })}
+          filename={image.filename}
+          caption={image.caption}
+        />
+      </ImageGridCell>
+    );
+
+    for (let i = images.length; i < MaxImages; i++) {
+      imageGridCells.push(<ImageGridCell key={i} order={i} />)
+    }
 
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div className={classes.root}>
-          { this.state.imageCells }
+          { imageGridCells }
         </div>
       </DragDropContextProvider>
     )

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import {DropTarget} from "react-dnd";
 
 const styles = theme => ({
   root: {
@@ -22,10 +23,24 @@ const styles = theme => ({
   },
 });
 
-const ImageGridCell = props => {
-  const { classes, order, children, onImageDrop } = props;
+const imageGridCellTarget = {
+  drop(props, monitor) {
+    // TODO disallow drop on gridCells that do not have an onImageDrop prop
+    props.onImageDrop(props.order, monitor.getItem());
+  }
+};
 
-  return (
+const collect = (connect, monitor) => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+};
+
+const ImageGridCell = props => {
+  const { classes, order, connectDropTarget, isOver, children } = props;
+
+  return connectDropTarget(
     <div className={classes.root}>
       <div className={classes.orderNumber}>{order + 1}</div>
       {children}
@@ -37,4 +52,4 @@ ImageGridCell.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ImageGridCell);
+export default DropTarget('AvalancheImageTile', imageGridCellTarget, collect)(withStyles(styles)(ImageGridCell));

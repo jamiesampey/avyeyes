@@ -84,6 +84,8 @@ class ReportDialog extends React.Component {
     this.cleanup = this.cleanup.bind(this);
 
     this.state = {
+      editKey: getRequestParam("edit"),
+      csrfToken: getCSRFTokenFromCookie(),
       workingAvalanche: null,
       main: MainContent.details,
       errorFields: [],
@@ -106,9 +108,7 @@ class ReportDialog extends React.Component {
 
   submitReport(editKey) {
     let resultMessage = null;
-    let { workingAvalanche } = this.state;
-
-    let csrfToken = getCSRFTokenFromCookie();
+    let { workingAvalanche, csrfToken } = this.state;
 
     let errorFields = [];
     if (!workingAvalanche.areaName) errorFields.push('areaName');
@@ -215,9 +215,8 @@ class ReportDialog extends React.Component {
 
   render() {
     const { classes, clientData } = this.props;
-    const { workingAvalanche } = this.state;
+    const { workingAvalanche, editKey } = this.state;
 
-    let editKey = getRequestParam("edit");
     let isAdminView = workingAvalanche && workingAvalanche.hasOwnProperty('viewable') && editKey;
 
     return (
