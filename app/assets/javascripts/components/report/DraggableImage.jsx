@@ -8,7 +8,7 @@ const styles = theme => ({
     height: '100%',
     backgroundPosition: 'center center',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain',
+    backgroundSize: 'cover',
   },
 });
 

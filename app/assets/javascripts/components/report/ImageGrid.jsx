@@ -11,9 +11,9 @@ import {checkStatus, getCSRFTokenFromCookie, getRequestParam} from "../../Util";
 const styles = theme => ({
   root: {
     width: '100%',
-    height: '100%',
     display: 'flex',
     flexWrap: 'wrap',
+    paddingBottom: 20,
   },
 });
 
@@ -25,6 +25,8 @@ class ImagesGrid extends React.Component {
     super(props);
 
     this.handleImageMove = this.handleImageMove.bind(this);
+    this.handleCaptionChange = this.handleCaptionChange.bind(this);
+    this.handleImageDelete = this.handleImageDelete.bind(this);
 
     // aws-sdk doesn't play well with webpack, so we need to import the build distro
     // and reference the global window.AWS
@@ -53,6 +55,8 @@ class ImagesGrid extends React.Component {
   handleImageMove(cellIndex, movedImage) {
     let { extId, images, editKey, csrfToken } = this.state;
 
+    console.info(`moved image is ${JSON.stringify(movedImage)}`);
+
     let prevImageIndex = images.findIndex(image => image.filename === movedImage.filename);
 
     images.splice(prevImageIndex, 1);
@@ -71,12 +75,44 @@ class ImagesGrid extends React.Component {
     .catch(error => console.error(`ERROR updating image order for avalanche ${extId}. Error is: ${error}`))
   }
 
+  handleCaptionChange(index, newCaption) {
+    let { extId, images, editKey, csrfToken } = this.state;
+
+    console.info(`changing caption for ${extId}/${images[index].filename}`);
+
+    fetch(`/api/avalanche/${extId}/images/${images[index].filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ caption: newCaption }),
+    })
+      .then(response => checkStatus(response))
+      .catch(error => console.error(`ERROR updating caption for image ${extId}/${images[index].filename}. Error is: ${error}`))
+  }
+
+  handleImageDelete(index) {
+    let { extId, images, editKey, csrfToken } = this.state;
+
+    console.info(`deleting ${extId}/${images[index].filename}`);
+
+    fetch(`/api/avalanche/${extId}/images/${filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
+      method: 'DELETE',
+    })
+      .then(response => checkStatus(response))
+      .catch(error => console.error(`ERROR deleting image ${extId}/${images[index].filename}. Error is: ${error}`))
+  }
+
   render() {
     let { classes } = this.props;
     let { s3Client, images, extId } = this.state;
 
     let imageGridCells = images.map((image, index) =>
-      <ImageGridCell key={index} order={index} onImageDrop={this.handleImageMove}>
+      <ImageGridCell key={index} order={index}
+        onImageDrop={this.handleImageMove}
+        onCaptionChange={this.handleCaptionChange}
+        onDelete={this.handleImageDelete}
+      >
         <DraggableImageTile
           imageUrl={s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + image.filename })}
           filename={image.filename}
