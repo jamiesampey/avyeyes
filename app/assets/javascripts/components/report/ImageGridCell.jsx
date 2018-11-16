@@ -10,8 +10,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 const styles = theme => ({
   root: {
     position: 'relative',
-    width: 170,
-    height: 170,
+    width: 166,
+    height: 166,
     border: '1px solid',
     borderColor: theme.palette.divider,
     display: 'flex',
@@ -19,6 +19,7 @@ const styles = theme => ({
     '&:hover': {
       cursor: 'move',
     },
+    margin: 1,
   },
   orderNumber: {
     position: 'absolute',
@@ -48,8 +49,12 @@ const styles = theme => ({
 });
 
 const imageGridCellTarget = {
+  canDrop(props) {
+    return props.onImageDrop;
+  },
+
   drop(props, monitor) {
-    if (props.onImageDrop) props.onImageDrop(props.index, monitor.getItem());
+    props.onImageDrop(props.index, monitor.getItem());
   }
 };
 
@@ -64,7 +69,11 @@ const ImageGridCell = props => {
   const { classes, index, connectDropTarget, isOver, onCaptionChange, onDelete, children } = props;
 
   return connectDropTarget(
-    <div className={classes.root}>
+
+    <div
+      className={classes.root}
+      style={isOver && Boolean(children) ? { borderColor: 'red', borderWidth: 3 } : null}
+    >
       <div className={classes.orderNumber}>{index + 1}</div>
       {children}
       {children &&
