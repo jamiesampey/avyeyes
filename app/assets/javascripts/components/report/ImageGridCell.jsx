@@ -23,7 +23,7 @@ const styles = theme => ({
   orderNumber: {
     position: 'absolute',
     top: 2,
-    left: 4,
+    left: 6,
     fontSize: '1.1rem',
     color: 'crimson',
   },
@@ -49,8 +49,7 @@ const styles = theme => ({
 
 const imageGridCellTarget = {
   drop(props, monitor) {
-    // TODO disallow drop on gridCells that do not have an onImageDrop prop
-    props.onImageDrop(props.order, monitor.getItem());
+    if (props.onImageDrop) props.onImageDrop(props.order, monitor.getItem());
   }
 };
 
@@ -62,11 +61,11 @@ const collect = (connect, monitor) => {
 };
 
 const ImageGridCell = props => {
-  const { classes, order, connectDropTarget, isOver, onCaptionChange, onDelete, children } = props;
+  const { classes, index, connectDropTarget, isOver, onCaptionChange, onDelete, children } = props;
 
   return connectDropTarget(
     <div className={classes.root}>
-      <div className={classes.orderNumber}>{order + 1}</div>
+      <div className={classes.orderNumber}>{index + 1}</div>
       {children}
       {children &&
         <div className={classes.actionsBar}>

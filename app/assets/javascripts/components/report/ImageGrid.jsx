@@ -8,6 +8,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import ImageGridCell from "./ImageGridCell";
@@ -96,14 +97,11 @@ class ImagesGrid extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ caption: newCaption }),
+      body: JSON.stringify({ caption: captionImage.caption }),
     })
     .then(response => checkStatus(response))
     .catch(error => console.error(`ERROR updating caption for image ${extId}/${captionImage.filename}. Error is: ${error}`))
-    .finally(() => this.setState({
-      captionImage: null,
-      caption: null,
-    }))
+    .finally(() => this.setState({ captionImage: null }))
   }
 
   handleImageDelete() {
@@ -122,7 +120,7 @@ class ImagesGrid extends React.Component {
     let { s3Client, images, extId, captionImage, deleteImage } = this.state;
 
     let imageGridCells = images.map((image, index) =>
-      <ImageGridCell key={index} order={index}
+      <ImageGridCell key={index} index={index}
         onImageDrop={this.handleImageMove}
         onDelete={() => this.setState({ deleteImage: image })}
         onCaptionChange={() => this.setState({ captionImage: image })}
@@ -135,7 +133,7 @@ class ImagesGrid extends React.Component {
     );
 
     for (let i = images.length; i < MaxImages; i++) {
-      imageGridCells.push(<ImageGridCell key={i} order={i} />)
+      imageGridCells.push(<ImageGridCell key={i} index={i} />)
     }
 
     return (
@@ -181,7 +179,9 @@ class ImagesGrid extends React.Component {
           >
             <DialogTitle>Delete Image</DialogTitle>
             <DialogContent>
-              Are you sure you want to delete this image?
+              <Typography variant="body1" color="textPrimary">
+                Are you sure you want to delete this image?
+              </Typography>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => this.setState({ deleteImage: null })} color="primary">

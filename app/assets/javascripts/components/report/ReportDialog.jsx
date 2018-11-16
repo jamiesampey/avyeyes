@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -89,6 +90,7 @@ class ReportDialog extends React.Component {
       workingAvalanche: null,
       main: MainContent.details,
       errorFields: [],
+      deleteReport: false,
     };
   }
 
@@ -177,7 +179,10 @@ class ReportDialog extends React.Component {
   }
 
   cleanup(message) {
-    this.setState({workingAvalanche: null}, this.props.onClose(message));
+    this.setState({
+      workingAvalanche: null,
+      deleteReport: false,
+    }, this.props.onClose(message));
   }
 
   renderMainContent(isAdminView) {
@@ -215,63 +220,88 @@ class ReportDialog extends React.Component {
 
   render() {
     const { classes, clientData } = this.props;
-    const { workingAvalanche, editKey } = this.state;
+    const { workingAvalanche, editKey, deleteReport } = this.state;
 
     let isAdminView = workingAvalanche && workingAvalanche.hasOwnProperty('viewable') && editKey;
 
     return (
-      <Dialog
-        classes={{paper: classes.dialogPaper}}
-        maxWidth={false}
-        open={Boolean(workingAvalanche)}
-        disableBackdropClick
-        disableEscapeKeyDown
-      >
-        <DialogContent className={classes.dialogContent}>
-          <AppBar position="absolute" className={classes.appBar}>
-            <Toolbar disableGutters={true}>
-              <Typography variant="h6" color="inherit" noWrap className={classes.title}>
-                Avalanche Report
+      <div>
+        <Dialog
+          classes={{paper: classes.dialogPaper}}
+          maxWidth={false}
+          open={Boolean(workingAvalanche)}
+          disableBackdropClick
+          disableEscapeKeyDown
+        >
+          <DialogContent className={classes.dialogContent}>
+            <AppBar position="absolute" className={classes.appBar}>
+              <Toolbar disableGutters={true}>
+                <Typography variant="h6" color="inherit" noWrap className={classes.title}>
+                  Avalanche Report
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
+              <Tooltip placement="right" title={clientData.tooltips.avyReportSWAGFields}>
+                <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.details})}>
+                  <ViewListIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip placement="right" title={clientData.tooltips.avyReportImages}>
+                <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.images})}>
+                  <ImageIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip placement="right" title={clientData.tooltips.avyReportComments}>
+                <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.comments})}>
+                  <CommentsIcon />
+                </IconButton>
+              </Tooltip>
+            </Drawer>
+            <main className={classes.main}>
+              { this.renderMainContent(isAdminView) }
+            </main>
+          </DialogContent>
+          <DialogActions classes={{root: classes.dialogActionsRoot}}>
+            { isAdminView &&
+            <Button color="secondary" onClick={() => this.setState({ deleteReport: true })}>
+              Delete
+            </Button>
+            }
+            <Button color="primary" onClick={() => this.cleanup(null)}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={() => this.submitReport(editKey)}>
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {deleteReport &&
+          <Dialog
+            open={Boolean(deleteReport)}
+            disableBackdropClick
+            disableEscapeKeyDown
+            maxWidth="xs"
+          >
+            <DialogTitle>Delete Report</DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" color="textPrimary">
+                Delete avalanche report {workingAvalanche.extId} ?
               </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
-            <Tooltip placement="right" title={clientData.tooltips.avyReportSWAGFields}>
-              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.details})}>
-                <ViewListIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip placement="right" title={clientData.tooltips.avyReportImages}>
-              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.images})}>
-                <ImageIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip placement="right" title={clientData.tooltips.avyReportComments}>
-              <IconButton className={classes.button} onClick={() => this.setState({main: MainContent.comments})}>
-                <CommentsIcon />
-              </IconButton>
-            </Tooltip>
-          </Drawer>
-          <main className={classes.main}>
-            { this.renderMainContent(isAdminView) }
-          </main>
-        </DialogContent>
-        <DialogActions classes={{root: classes.dialogActionsRoot}}>
-          { isAdminView &&
-          <Button color="secondary" onClick={() => {
-            if (confirm(`Delete avalanche ${workingAvalanche.extId} ?`)) this.deleteReport();
-          }}>
-            Delete
-          </Button>
-          }
-          <Button color="primary" onClick={() => this.cleanup(null)}>
-            Cancel
-          </Button>
-          <Button color="primary" onClick={() => this.submitReport(editKey)}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => this.setState({deleteReport: false})} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={this.deleteReport} color="primary">
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        }
+
+      </div>
     );
   };
 }
