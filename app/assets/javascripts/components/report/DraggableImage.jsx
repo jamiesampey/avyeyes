@@ -26,11 +26,10 @@ const collect = (connect, monitor) => {
 };
 
 const DraggableImage = props => {
-  let { classes, isDragging, connectDragSource, image, imageUrl } = props;
+  let { classes, isDragging, connectDragSource, imageUrl } = props;
 
   return connectDragSource(
     <div
-      key={image.filename}
       className={classes.image}
       style={{
         backgroundImage: `url(${imageUrl})`,

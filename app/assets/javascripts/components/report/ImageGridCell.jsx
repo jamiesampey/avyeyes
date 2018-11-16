@@ -49,7 +49,7 @@ const styles = theme => ({
 
 const imageGridCellTarget = {
   drop(props, monitor) {
-    if (props.onImageDrop) props.onImageDrop(props.order, monitor.getItem());
+    if (props.onImageDrop) props.onImageDrop(props.index, monitor.getItem());
   }
 };
 

@@ -17,7 +17,7 @@ import DraggableImageTile from "./DraggableImage";
 import {checkStatus, getCSRFTokenFromCookie, getRequestParam} from "../../Util";
 
 const styles = theme => ({
-  root: {
+  imageGrid: {
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
@@ -41,6 +41,7 @@ class ImagesGrid extends React.Component {
     this.handleImageMove = this.handleImageMove.bind(this);
     this.handleCaptionChange = this.handleCaptionChange.bind(this);
     this.handleImageDelete = this.handleImageDelete.bind(this);
+    this.refreshImageGrid = this.refreshImageGrid.bind(this);
 
     // aws-sdk doesn't play well with webpack, so we need to import the build distro
     // and reference the global window.AWS
@@ -56,43 +57,49 @@ class ImagesGrid extends React.Component {
       s3Client: client,
       editKey: getRequestParam("edit"),
       csrfToken: getCSRFTokenFromCookie(),
-      extId: this.props.avalanche.extId,
+      captionImage: null,
+      deleteImage: null,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
       images: this.props.avalanche.images.map(image => {
         return {
           filename: image.filename,
           caption: image.caption,
         }
       }),
-      captionImage: null,
-      deleteImage: null,
-    };
+    }, this.refreshImageGrid);
   }
 
   handleImageMove(cellIndex, movedImage) {
-    let { extId, images, editKey, csrfToken } = this.state;
+    let { avalanche } = this.props;
+    let { images, editKey, csrfToken } = this.state;
 
     let prevImageIndex = images.findIndex(image => image.filename === movedImage.filename);
-
     images.splice(prevImageIndex, 1);
     images.splice(cellIndex, 0, movedImage);
 
-    this.setState({ images: images });
-
-    fetch(`/api/avalanche/${extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
+    fetch(`/api/avalanche/${avalanche.extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ order: images.map(image => image.filename) }),
     })
-    .then(response => checkStatus(response))
-    .catch(error => console.error(`ERROR updating image order for avalanche ${extId}. Error is: ${error}`))
+    .then(response => {
+      checkStatus(response);
+      this.setState({images: images}, this.refreshImageGrid);
+    })
+    .catch(error => console.error(`ERROR updating image order for avalanche ${avalanche.extId}. Error is: ${error}`))
   }
 
   handleCaptionChange() {
-    let { extId, captionImage, editKey, csrfToken } = this.state;
+    let { avalanche } = this.props;
+    let { captionImage, editKey, csrfToken } = this.state;
 
-    fetch(`/api/avalanche/${extId}/images/${captionImage.filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
+    fetch(`/api/avalanche/${avalanche.extId}/images/${captionImage.filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -100,34 +107,41 @@ class ImagesGrid extends React.Component {
       body: JSON.stringify({ caption: captionImage.caption }),
     })
     .then(response => checkStatus(response))
-    .catch(error => console.error(`ERROR updating caption for image ${extId}/${captionImage.filename}. Error is: ${error}`))
+    .catch(error => console.error(`ERROR updating caption for image ${avalanche.extId}/${captionImage.filename}. Error is: ${error}`))
     .finally(() => this.setState({ captionImage: null }))
   }
 
   handleImageDelete() {
-    let { extId, deleteImage, editKey, csrfToken } = this.state;
+    let { avalanche } = this.props;
+    let { images, deleteImage, editKey, csrfToken } = this.state;
 
-    fetch(`/api/avalanche/${extId}/images/${deleteImage.filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
+    let prevImageIndex = images.findIndex(image => image.filename === deleteImage.filename);
+    images.splice(prevImageIndex, 1);
+
+    fetch(`/api/avalanche/${avalanche.extId}/images/${deleteImage.filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'DELETE',
     })
-    .then(response => checkStatus(response))
-    .catch(error => console.error(`ERROR deleting image ${extId}/${deleteImage.filename}. Error is: ${error}`))
+    .then(response => {
+      checkStatus(response);
+      this.setState({images: images}, this.refreshImageGrid);
+    })
+    .catch(error => console.error(`ERROR deleting image ${avalanche.extId}/${deleteImage.filename}. Error is: ${error}`))
     .finally(() => this.setState({ deleteImage: null }))
   }
 
-  render() {
-    let { classes } = this.props;
-    let { s3Client, images, extId, captionImage, deleteImage } = this.state;
+  refreshImageGrid() {
+    let { classes, avalanche } = this.props;
+    let { s3Client, images } = this.state;
 
     let imageGridCells = images.map((image, index) =>
       <ImageGridCell key={index} index={index}
-        onImageDrop={this.handleImageMove}
-        onDelete={() => this.setState({ deleteImage: image })}
-        onCaptionChange={() => this.setState({ captionImage: image })}
+                     onImageDrop={this.handleImageMove}
+                     onDelete={() => this.setState({ deleteImage: image })}
+                     onCaptionChange={() => this.setState({ captionImage: image })}
       >
         <DraggableImageTile
           image={image}
-          imageUrl={s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + image.filename })}
+          imageUrl={s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + avalanche.extId + '/images/' + image.filename })}
         />
       </ImageGridCell>
     );
@@ -136,65 +150,74 @@ class ImagesGrid extends React.Component {
       imageGridCells.push(<ImageGridCell key={i} index={i} />)
     }
 
+    this.setState({
+      imageGrid: <div className={classes.imageGrid}>{imageGridCells}</div>,
+    });
+  }
+
+  render() {
+    let { classes } = this.props;
+    let { imageGrid, captionImage, deleteImage } = this.state;
+
     return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div className={classes.root}>
-          { imageGridCells }
+      <div>
+        <DragDropContextProvider backend={HTML5Backend}>
+          { imageGrid }
+        </DragDropContextProvider>
 
-          <Dialog
-            open={Boolean(captionImage)}
-            disableBackdropClick
-            disableEscapeKeyDown
-            maxWidth={false}
-            classes={{paper: classes.captionDialogPaper}}
-          >
-            <DialogTitle>Image Caption</DialogTitle>
-            <DialogContent className={classes.captionDialogContent}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                label="Caption"
-                value={Boolean(captionImage) ? captionImage.caption : ''}
-                onChange={(event) => {
-                  captionImage.caption = event.target.value;
-                  this.setState({captionImage: captionImage});
-                }}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => this.setState({ captionImage: null })} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleCaptionChange} color="primary">
-                Ok
-              </Button>
-            </DialogActions>
-          </Dialog>
+        <Dialog
+          open={Boolean(captionImage)}
+          disableBackdropClick
+          disableEscapeKeyDown
+          maxWidth={false}
+          classes={{paper: classes.captionDialogPaper}}
+        >
+          <DialogTitle>Image Caption</DialogTitle>
+          <DialogContent className={classes.captionDialogContent}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Caption"
+              value={Boolean(captionImage) ? captionImage.caption : ''}
+              onChange={(event) => {
+                captionImage.caption = event.target.value;
+                this.setState({captionImage: captionImage});
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.setState({ captionImage: null })} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleCaptionChange} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-          <Dialog
-            open={Boolean(deleteImage)}
-            disableBackdropClick
-            disableEscapeKeyDown
-            maxWidth="xs"
-          >
-            <DialogTitle>Delete Image</DialogTitle>
-            <DialogContent>
-              <Typography variant="body1" color="textPrimary">
-                Are you sure you want to delete this image?
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => this.setState({ deleteImage: null })} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleImageDelete} color="primary">
-                Delete
-              </Button>
-            </DialogActions>
-          </Dialog>
+        <Dialog
+          open={Boolean(deleteImage)}
+          disableBackdropClick
+          disableEscapeKeyDown
+          maxWidth="xs"
+        >
+          <DialogTitle>Delete Image</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" color="textPrimary">
+              Are you sure you want to delete this image?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.setState({ deleteImage: null })} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleImageDelete} color="primary">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-        </div>
-      </DragDropContextProvider>
+      </div>
     )
   }
 }
