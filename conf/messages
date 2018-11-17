@@ -49,10 +49,10 @@ tooltip.avyReportImages=Image Upload
 tooltip.avyReportComments=Submitter Comments
 
 help.avyReportCommentsInstr=Enter your description of the avalanche below. People may be interested to know the events leading up the avalanche, a description of the snowpack, the weather, the scene/terrain, any human factors involved, the events following the avalanche and/or any rescue effort, etc.<br/><br/><span style="font-style: italic;">Tip: Copy & paste text from a local file to avoid accidental data loss</span>
-help.avyReportImagesInstr1=Limit 20 images per avalanche report. Each image must be less than 5 MB
+help.avyReportImagesInstr1=Limit 20 images per report. Each image must be less than 5 MB
 help.avyReportImagesInstr2=Order images by dragging them within the grid
-help.avyReportImagesInstr3=Add captions to images (optional)
-help.avyReportImagesInstr4=Delete an image
+help.avyReportImagesInstr3=Add a caption to the image (optional)
+help.avyReportImagesInstr4=Delete the image
 
 ####### Admin #######
 

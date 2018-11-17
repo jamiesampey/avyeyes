@@ -30,7 +30,7 @@ const styles = theme => ({
     }
   },
   updateButtonCell: {
-    maxWidth: 180,
+    maxWidth: 200,
     verticalAlign: 'top',
   },
   uploadButton: {
@@ -46,7 +46,8 @@ const styles = theme => ({
   },
   instructionsList: {
     '& li': {
-      paddingBottom: 0,
+      paddingTop: 0,
+      paddingBottom: 4,
     },
     '& div': {
       paddingLeft: 0,
@@ -135,7 +136,7 @@ const ReportImages = props => {
           </TableCell>
         </TableRow>
         <TableRow>
-          <TableCell colSpan={2} style={{paddingRight: 0}}>
+          <TableCell colSpan={2} style={{paddingTop: 16, paddingRight: 0}}>
             <ImageGrid s3config={clientData.s3} avalanche={avalanche} />
           </TableCell>
         </TableRow>
