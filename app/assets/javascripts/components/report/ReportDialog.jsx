@@ -161,9 +161,7 @@ class ReportDialog extends React.Component {
 
   deleteReport() {
     let resultMessage = null;
-    let { workingAvalanche } = this.state;
-
-    let csrfToken = getCSRFTokenFromCookie();
+    let { workingAvalanche, csrfToken } = this.state;
 
     fetch(`/api/avalanche/${workingAvalanche.extId}?csrfToken=${csrfToken}`, {
       method: 'DELETE',
@@ -188,30 +186,34 @@ class ReportDialog extends React.Component {
   renderMainContent(isAdminView) {
     if (!this.state.workingAvalanche) return null;
 
-    switch (this.state.main) {
+    let { clientData } = this.props;
+    let { main, workingAvalanche, errorFields, editKey, csrfToken } = this.state;
+
+    switch (main) {
       case MainContent.images:
         return (
           <ReportImages
-            clientData={this.props.clientData}
-            avalanche={this.state.workingAvalanche}
-            updateAvalanche={this.updateAvalancheField}
+            clientData={clientData}
+            avalanche={workingAvalanche}
+            editKey={editKey}
+            csrfToken={csrfToken}
           />
         );
       case MainContent.comments:
         return (
           <ReportComments
-            clientData={this.props.clientData}
-            avalanche={this.state.workingAvalanche}
+            clientData={clientData}
+            avalanche={workingAvalanche}
             updateAvalanche={this.updateAvalancheField}
           />
         );
       default:
         return (
           <ReportDetails
-            clientData={this.props.clientData}
-            avalanche={this.state.workingAvalanche}
+            clientData={clientData}
+            avalanche={workingAvalanche}
             updateAvalanche={this.updateAvalancheField}
-            errorFields={this.state.errorFields}
+            errorFields={errorFields}
             isAdminView={isAdminView}
           />
         );

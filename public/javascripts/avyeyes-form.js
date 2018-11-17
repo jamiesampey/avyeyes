@@ -209,32 +209,32 @@ function AvyForm(avyEyesView, mockS3Promise) {
 //     $("#cesiumContainer").css("cursor", "default");
 // }
 
-AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
-    $('#rwAvyFormImageGrid').empty();
+// AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
+//     $('#rwAvyFormImageGrid').empty();
+//
+//     var tempImageCellId = function(filename) {
+//         return extId + "-" + getFileBaseName(filename);
+//     }
 
-    var tempImageCellId = function(filename) {
-        return extId + "-" + getFileBaseName(filename);
-    }
-
-    $('#rwAvyFormImageGrid').sortable({
-        items: '> .rwAvyFormImageCell',
-        update: function(event, ui) {
-            $.ajax({
-                type: "PUT",
-                contentType : 'application/json',
-                url: this.getImageRestUrl(extId),
-                data: JSON.stringify({
-                    "order": $('#rwAvyFormImageGrid').sortable('toArray')
-                }),
-                success: function(result) {
-                    console.log("Successfully changed image order");
-                },
-                fail: function(jqxhr, textStatus, error) {
-                    console.error("Failed to set image order. Error: " + textStatus + ", " + error);
-                }
-            });
-        }.bind(this)
-    });
+    // $('#rwAvyFormImageGrid').sortable({
+    //     items: '> .rwAvyFormImageCell',
+    //     update: function(event, ui) {
+    //         $.ajax({
+    //             type: "PUT",
+    //             contentType : 'application/json',
+    //             url: this.getImageRestUrl(extId),
+    //             data: JSON.stringify({
+    //                 "order": $('#rwAvyFormImageGrid').sortable('toArray')
+    //             }),
+    //             success: function(result) {
+    //                 console.log("Successfully changed image order");
+    //             },
+    //             fail: function(jqxhr, textStatus, error) {
+    //                 console.error("Failed to set image order. Error: " + textStatus + ", " + error);
+    //             }
+    //         });
+    //     }.bind(this)
+    // });
 
     $("#rwAvyFormImageUploadForm").fileupload({
         dataType:'json',
@@ -262,70 +262,70 @@ AvyForm.prototype.resetReadWriteImageUpload = function(extId) {
     });
 }
 
-AvyForm.prototype.appendImageCellToReadWriteForm = function(filenameBase) {
-    $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
-        + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
-        + "<img src='/assets/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
-    $('#rwAvyFormImageGrid').sortable('refresh');
-}
+// AvyForm.prototype.appendImageCellToReadWriteForm = function(filenameBase) {
+//     $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
+//         + "<span style='display: inline-block; height: 100%; vertical-align: middle;'></span>"
+//         + "<img src='/assets/images/spinner-image-upload.gif' style='vertical-align: middle;'/></div>");
+//     $('#rwAvyFormImageGrid').sortable('refresh');
+// }
 
-AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
-    var imageUrl = this.getSignedImageUrl(extId, image.filename)
-    var imageAnchorId = imageCellId + "-anchor";
-    var imageEditIconId = imageCellId + "-edit";
-    var imageDeleteIconId = imageCellId + "-delete";
-    var existingCaption = (typeof image.caption != "undefined") ? image.caption : "";
-
-    $("#" + imageCellId).empty();
-    $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
-        + "<a id='" + imageAnchorId + "' href='" + imageUrl + "' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
-        + "<div class='captionContainer' style='display: none;'>" + existingCaption + "</div>"
-        + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/assets/images/img-edit-icon.png' />"
-        + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/assets/images/img-delete-icon.png' />"
-        + "</div>");
-
-    setImageFancyBox('#' + imageAnchorId);
-
-    $("#" + imageEditIconId).click(function() {
-        var caption = prompt("Enter the caption", existingCaption);
-        if (caption != null) {
-            $.ajax({
-                type: "PUT",
-                contentType : 'application/json',
-                url: this.getImageRestUrl(extId, image.filename),
-                data: JSON.stringify({
-                    "caption": caption
-                }),
-                success: function(result) {
-                    existingCaption = caption;
-                    $("#" + imageCellId).find(".captionContainer").html(caption);
-                    setImageFancyBox('#' + imageAnchorId);
-                    console.log("Successfully set image caption");
-                },
-                fail: function(jqxhr, textStatus, error) {
-                    console.error("Failed to edit image caption. Error: " + textStatus + ", " + error);
-                }
-            });
-        }
-    }.bind(this));
-
-    $('#' + imageDeleteIconId).click(function() {
-        if (confirm('Are you sure you want to delete the image?')) {
-            $.ajax({
-                url: this.getImageRestUrl(extId, image.filename),
-                type: 'DELETE',
-                success: function(result) {
-                    $('#rwAvyFormImageGrid').find('#' + imageCellId).remove();
-                    $('#rwAvyFormImageGrid').sortable('refresh');
-                    console.log("Successfully deleted image");
-                },
-                fail: function(jqxhr, textStatus, error) {
-                    console.error('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
-                }
-            });
-        }
-    }.bind(this));
-}
+// AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
+//     var imageUrl = this.getSignedImageUrl(extId, image.filename)
+//     var imageAnchorId = imageCellId + "-anchor";
+//     var imageEditIconId = imageCellId + "-edit";
+//     var imageDeleteIconId = imageCellId + "-delete";
+//     var existingCaption = (typeof image.caption != "undefined") ? image.caption : "";
+//
+//     $("#" + imageCellId).empty();
+//     $("#" + imageCellId).append("<div class='rwAvyFormImageWrapper'>"
+//         + "<a id='" + imageAnchorId + "' href='" + imageUrl + "' rel='rwAvyFormImages'><img class='rwAvyFormImage' src='" + imageUrl + "' /></a>"
+//         + "<div class='captionContainer' style='display: none;'>" + existingCaption + "</div>"
+//         + "<img id='" + imageEditIconId + "' class='rwAvyFormImageEditIcon' src='/assets/images/img-edit-icon.png' />"
+//         + "<img id='" + imageDeleteIconId + "' class='rwAvyFormImageDeleteIcon' src='/assets/images/img-delete-icon.png' />"
+//         + "</div>");
+//
+//     setImageFancyBox('#' + imageAnchorId);
+//
+//     $("#" + imageEditIconId).click(function() {
+//         var caption = prompt("Enter the caption", existingCaption);
+//         if (caption != null) {
+//             $.ajax({
+//                 type: "PUT",
+//                 contentType : 'application/json',
+//                 url: this.getImageRestUrl(extId, image.filename),
+//                 data: JSON.stringify({
+//                     "caption": caption
+//                 }),
+//                 success: function(result) {
+//                     existingCaption = caption;
+//                     $("#" + imageCellId).find(".captionContainer").html(caption);
+//                     setImageFancyBox('#' + imageAnchorId);
+//                     console.log("Successfully set image caption");
+//                 },
+//                 fail: function(jqxhr, textStatus, error) {
+//                     console.error("Failed to edit image caption. Error: " + textStatus + ", " + error);
+//                 }
+//             });
+//         }
+//     }.bind(this));
+//
+//     $('#' + imageDeleteIconId).click(function() {
+//         if (confirm('Are you sure you want to delete the image?')) {
+//             $.ajax({
+//                 url: this.getImageRestUrl(extId, image.filename),
+//                 type: 'DELETE',
+//                 success: function(result) {
+//                     $('#rwAvyFormImageGrid').find('#' + imageCellId).remove();
+//                     $('#rwAvyFormImageGrid').sortable('refresh');
+//                     console.log("Successfully deleted image");
+//                 },
+//                 fail: function(jqxhr, textStatus, error) {
+//                     console.error('Failed to delete ' + image.filename + '. Error: ' + textStatus + ", " + error);
+//                 }
+//             });
+//         }
+//     }.bind(this));
+// }
 
 // function setImageFancyBox(selector) {
 //     $(selector).fancybox({
@@ -345,22 +345,22 @@ AvyForm.prototype.setImageCellContent = function(imageCellId, extId, image) {
 // AvyForm.prototype.getSignedImageUrl = function(extId, filename) {
 //     return this.s3Client.getSignedUrl('getObject', { Key: 'avalanches/' + extId + '/images/' + filename });
 // }
-
-AvyForm.prototype.getImageRestUrl = function(extId, filename) {
-  var avalancheImagesUrl = '/avalanche/' + extId + '/images';
-  if (filename) avalancheImagesUrl += '/' + getFileBaseName(filename);
-
-  avalancheImagesUrl += '?csrfToken=' + this.view.csrfTokenFromCookie();
-
-  var editKeyParam = this.view.getRequestParam("edit");
-  if (editKeyParam) avalancheImagesUrl += "&edit=" + editKeyParam;
-
-  return avalancheImagesUrl;
-}
-
-function getFileBaseName(filename) {
-    return filename.substring(0, filename.lastIndexOf('.'));
-}
+//
+// AvyForm.prototype.getImageRestUrl = function(extId, filename) {
+//   var avalancheImagesUrl = '/avalanche/' + extId + '/images';
+//   if (filename) avalancheImagesUrl += '/' + getFileBaseName(filename);
+//
+//   avalancheImagesUrl += '?csrfToken=' + this.view.csrfTokenFromCookie();
+//
+//   var editKeyParam = this.view.getRequestParam("edit");
+//   if (editKeyParam) avalancheImagesUrl += "&edit=" + editKeyParam;
+//
+//   return avalancheImagesUrl;
+// }
+//
+// function getFileBaseName(filename) {
+//     return filename.substring(0, filename.lastIndexOf('.'));
+// }
 
 // AvyForm.prototype.enableAdminControls = function() {
 //     return new Promise(function(resolve, reject) {

@@ -55,8 +55,6 @@ class ImagesGrid extends React.Component {
 
     this.state = {
       s3Client: client,
-      editKey: getRequestParam("edit"),
-      csrfToken: getCSRFTokenFromCookie(),
       captionImage: null,
       deleteImage: null,
     };
@@ -74,8 +72,8 @@ class ImagesGrid extends React.Component {
   }
 
   handleImageMove(cellIndex, movedImage) {
-    let { avalanche } = this.props;
-    let { images, editKey, csrfToken } = this.state;
+    let { avalanche, editKey, csrfToken } = this.props;
+    let { images } = this.state;
 
     let prevImageIndex = images.findIndex(image => image.filename === movedImage.filename);
     images.splice(prevImageIndex, 1);
@@ -96,8 +94,8 @@ class ImagesGrid extends React.Component {
   }
 
   handleCaptionChange() {
-    let { avalanche } = this.props;
-    let { captionImage, editKey, csrfToken } = this.state;
+    let { avalanche, editKey, csrfToken } = this.props;
+    let { captionImage } = this.state;
 
     fetch(`/api/avalanche/${avalanche.extId}/images/${captionImage.filename}?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'PUT',
@@ -112,8 +110,8 @@ class ImagesGrid extends React.Component {
   }
 
   handleImageDelete() {
-    let { avalanche } = this.props;
-    let { images, deleteImage, editKey, csrfToken } = this.state;
+    let { avalanche, editKey, csrfToken } = this.props;
+    let { images, deleteImage } = this.state;
 
     let prevImageIndex = images.findIndex(image => image.filename === deleteImage.filename);
     images.splice(prevImageIndex, 1);

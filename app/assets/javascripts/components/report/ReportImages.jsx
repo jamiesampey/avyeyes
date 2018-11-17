@@ -17,6 +17,7 @@ import ImagesIcon from '@material-ui/icons/Collections';
 import CaptionIcon from "@material-ui/icons/InsertComment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoveIcon from "@material-ui/icons/OpenWith";
+import {checkStatusAndParseJson} from "../../Util";
 
 const styles = theme => ({
   table: {
@@ -63,9 +64,39 @@ const styles = theme => ({
 });
 
 const ReportImages = props => {
-  let { classes, clientData, avalanche } = props;
+  let { classes, clientData, avalanche, editKey, csrfToken } = props;
 
   let fileInputRef = React.createRef();
+
+  const uploadImages = (files) => {
+    console.info(`uploading ${files}`);
+
+    let formData  = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      let file = files[i];
+      if (file instanceof File) {
+        console.info(`appending ${file.name} to formData`);
+        formData.append(file.name, file)
+      }
+    }
+
+    fetch(`/api/avalanche/${avalanche.extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
+      },
+      body: formData,
+    })
+    .then(response => {
+      return checkStatusAndParseJson(response)
+    })
+    .then(data => {
+      console.info(`Server response is ${JSON.stringify(data)}`);
+    })
+    .catch(error => console.error(`ERROR uploading images for avalanche ${avalanche.extId}. Error is: ${error}`))
+  };
 
   return (
     <Table className={classes.table}>
@@ -86,8 +117,8 @@ const ReportImages = props => {
               type="file"
               accept="image/*"
               multiple
-              style={{visibility: 'hidden'}}
-              onChange={(e) => console.info(`uploading ${e.target.files.length} images`)}
+              style={{visibility: 'hidden', width: 0, height: 0 }}
+              onChange={(e) => uploadImages(e.target.files)}
             />
           </TableCell>
           <TableCell className={classes.instructionsCell} style={{paddingRight: 0}}>
@@ -137,7 +168,12 @@ const ReportImages = props => {
         </TableRow>
         <TableRow>
           <TableCell colSpan={2} style={{paddingTop: 16, paddingRight: 0}}>
-            <ImageGrid s3config={clientData.s3} avalanche={avalanche} />
+            <ImageGrid
+              s3config={clientData.s3}
+              avalanche={avalanche}
+              editKey={editKey}
+              csrfToken={csrfToken}
+            />
           </TableCell>
         </TableRow>
       </TableBody>
