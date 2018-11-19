@@ -15,7 +15,7 @@ import AvyCard from "./AvyCard";
 import 'cesium/Widgets/widgets.css';
 import '../../../stylesheets/AvyEyesClient.scss';
 
-import {checkStatusAndParseJson, getRequestParam} from "../../Util";
+import {checkStatusAndParseJson, fetchAvalanche} from "../../Util";
 import ReportDialog from "../report/ReportDialog";
 import InfoBar from "./InfoBar";
 
@@ -81,7 +81,7 @@ class CesiumView extends React.Component {
       if (Cesium.defined(pick) && pick.id.name) {
         let selectedAvalanche = pick.id;
 
-        CesiumView.fetchAvalanche(selectedAvalanche.id)
+        fetchAvalanche(selectedAvalanche.id)
           .then(data => {
             if (pick.id.billboard) {
               // clicked on a pin, add the path and fly to it
@@ -106,7 +106,7 @@ class CesiumView extends React.Component {
 
     // init avalanche fly to and display
     if (extIdUrlParam) {
-      CesiumView.fetchAvalanche(extIdUrlParam)
+      fetchAvalanche(extIdUrlParam)
         .then(data => {
           this.controller.addAvalancheAndFlyTo(data, () => setTimeout(this.props.setCurrentAvalanche(data), 2000));
         })
@@ -116,15 +116,6 @@ class CesiumView extends React.Component {
     } else {
       this.controller.geolocateAndFlyTo();
     }
-  }
-
-  static fetchAvalanche(extId) {
-    let url = `/api/avalanche/${extId}`;
-    let editKey = getRequestParam('edit');
-    if (editKey) url += `?edit=${editKey}`;
-    return fetch(url).then(response => {
-      return checkStatusAndParseJson(response);
-    });
   }
 
   filterAvalanches(updatedFilter) {

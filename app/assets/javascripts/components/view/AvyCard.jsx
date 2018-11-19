@@ -35,7 +35,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import {
-  notSpecified,
+  NotSpecified,
   parseApiDateString,
   labelForDataCode,
   compositeLabelForDataCode,
@@ -200,7 +200,7 @@ class AvyCard extends React.Component {
       if (weather.recentWindDirection !== Empty) desc += ` from the ${labelForDataCode(direction, weather.recentWindDirection)}`;
     }
 
-    return desc.length > 0 ? desc : notSpecified;
+    return desc.length > 0 ? desc : NotSpecified;
   }
 
   toggleExpanded() {

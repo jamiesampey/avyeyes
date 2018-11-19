@@ -194,7 +194,7 @@ class ReportDialog extends React.Component {
         return (
           <ReportImages
             clientData={clientData}
-            avalanche={workingAvalanche}
+            extId={workingAvalanche.extId}
             editKey={editKey}
             csrfToken={csrfToken}
           />
