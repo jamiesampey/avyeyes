@@ -69,22 +69,18 @@ const ReportImages = props => {
   let fileInputRef = React.createRef();
 
   const uploadImages = (files) => {
-    console.info(`uploading ${files}`);
-
     let formData  = new FormData();
 
     for (let i = 0; i < files.length; i++) {
       let file = files[i];
       if (file instanceof File) {
-        console.info(`appending ${file.name} to formData`);
-        formData.append(file.name, file)
+        formData.append("files", file)
       }
     }
 
     fetch(`/api/avalanche/${avalanche.extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         'Accept': 'application/json',
       },
       body: formData,

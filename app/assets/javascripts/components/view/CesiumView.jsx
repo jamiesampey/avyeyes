@@ -70,12 +70,6 @@ class CesiumView extends React.Component {
   }
 
   componentDidMount() {
-    const avalancheGetUrl = (extId) => {
-      let url = `/api/avalanche/${extId}`;
-      let editKey = getRequestParam('edit');
-      return editKey ? `${url}?edit=${editKey}` : url;
-    };
-
     this.controller = new CesiumController(this.cesiumRef.current);
 
     this.controller.viewer.camera.moveEnd.addEventListener(() => {
@@ -87,10 +81,7 @@ class CesiumView extends React.Component {
       if (Cesium.defined(pick) && pick.id.name) {
         let selectedAvalanche = pick.id;
 
-        fetch(avalancheGetUrl(selectedAvalanche.id))
-          .then(response => {
-            return checkStatusAndParseJson(response);
-          })
+        CesiumView.fetchAvalanche(selectedAvalanche.id)
           .then(data => {
             if (pick.id.billboard) {
               // clicked on a pin, add the path and fly to it
@@ -115,10 +106,7 @@ class CesiumView extends React.Component {
 
     // init avalanche fly to and display
     if (extIdUrlParam) {
-      fetch(avalancheGetUrl(extIdUrlParam))
-        .then(response => {
-          return checkStatusAndParseJson(response);
-        })
+      CesiumView.fetchAvalanche(extIdUrlParam)
         .then(data => {
           this.controller.addAvalancheAndFlyTo(data, () => setTimeout(this.props.setCurrentAvalanche(data), 2000));
         })
@@ -128,6 +116,15 @@ class CesiumView extends React.Component {
     } else {
       this.controller.geolocateAndFlyTo();
     }
+  }
+
+  static fetchAvalanche(extId) {
+    let url = `/api/avalanche/${extId}`;
+    let editKey = getRequestParam('edit');
+    if (editKey) url += `?edit=${editKey}`;
+    return fetch(url).then(response => {
+      return checkStatusAndParseJson(response);
+    });
   }
 
   filterAvalanches(updatedFilter) {
