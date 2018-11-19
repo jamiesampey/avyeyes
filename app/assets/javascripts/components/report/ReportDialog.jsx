@@ -180,13 +180,16 @@ class ReportDialog extends React.Component {
     this.setState({
       workingAvalanche: null,
       deleteReport: false,
-    }, this.props.onClose(message));
+    }, () => {
+      this.props.setInfoMessage(message);
+      this.props.onClose();
+    });
   }
 
   renderMainContent(isAdminView) {
     if (!this.state.workingAvalanche) return null;
 
-    let { clientData } = this.props;
+    let { clientData, setInfoMessage } = this.props;
     let { main, workingAvalanche, errorFields, editKey, csrfToken } = this.state;
 
     switch (main) {
@@ -195,6 +198,7 @@ class ReportDialog extends React.Component {
           <ReportImages
             clientData={clientData}
             extId={workingAvalanche.extId}
+            setInfoMessage={setInfoMessage}
             editKey={editKey}
             csrfToken={csrfToken}
           />
@@ -312,6 +316,7 @@ ReportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
   avalanche: PropTypes.object,
+  setInfoMessage: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

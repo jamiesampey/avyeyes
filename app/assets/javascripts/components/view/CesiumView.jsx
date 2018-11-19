@@ -175,10 +175,8 @@ class CesiumView extends React.Component {
       <ReportDialog
         clientData={clientData}
         avalanche={currentAvalanche}
-        onClose={(message) => {
-          if (message) this.setState({ infoBarMessage: message });
-          setCurrentAvalanche(null);
-        }}
+        setInfoMessage={(message) => this.setState({ infoBarMessage: message })}
+        onClose={() => setCurrentAvalanche(null)}
       />
       :
       <AvyCard

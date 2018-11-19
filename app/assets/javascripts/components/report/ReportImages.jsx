@@ -121,7 +121,7 @@ class ReportImages extends React.Component {
   }
 
   uploadImages(files) {
-    let { extId, editKey, csrfToken } = this.props;
+    let { extId, setInfoMessage, editKey, csrfToken } = this.props;
 
     let formData  = new FormData();
 
@@ -131,6 +131,8 @@ class ReportImages extends React.Component {
         formData.append("files", file)
       }
     }
+
+    setInfoMessage('Image upload in progress. New images will appear in the grid when the upload is complete');
 
     fetch(`/api/avalanche/${extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'POST',
