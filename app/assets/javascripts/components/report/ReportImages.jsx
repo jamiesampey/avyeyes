@@ -143,7 +143,6 @@ class ReportImages extends React.Component {
         return checkStatusAndParseJson(response)
       })
       .then(data => {
-        console.info(`Server response is ${JSON.stringify(data)}`);
         this.refreshImageGrid();
       })
       .catch(error => console.error(`ERROR uploading images for avalanche ${extId}. Error is: ${error}`))
@@ -206,30 +205,32 @@ class ReportImages extends React.Component {
     let { classes, extId } = this.props;
     let { s3Client } = this.state;
 
-    fetchAvalanche(extId).then(data => {
-      let updatedImages = data.images;
-
-      let imageGridCells = updatedImages.map((image, index) =>
+    let createNewImageGrid = (images) => {
+      let imageGridCells = images.map((image, index) =>
         <ImageGridCell key={index} index={index}
           onImageDrop={this.handleImageMove}
-          onDelete={() => this.setState({ deleteImage: image })}
-          onCaptionChange={() => this.setState({ captionImage: image })}
+          onDelete={() => this.setState({deleteImage: image})}
+          onCaptionChange={() => this.setState({captionImage: image})}
         >
           <DraggableImageTile
             image={image}
-            imageUrl={s3Client.getSignedUrl('getObject', { Key: `avalanches/${extId}/images/${image.filename}` })}
+            imageUrl={s3Client.getSignedUrl('getObject', {Key: `avalanches/${extId}/images/${image.filename}`})}
           />
         </ImageGridCell>
       );
 
-      for (let i = updatedImages.length; i < MaxImages; i++) {
-        imageGridCells.push(<ImageGridCell key={i} index={i} />)
+      for (let i = images.length; i < MaxImages; i++) {
+        imageGridCells.push(<ImageGridCell key={i} index={i}/>)
       }
 
       this.setState({
-        imageOrder: updatedImages.map(image => image.filename),
+        imageOrder: images.map(image => image.filename),
         imageGrid: <div className={classes.imageGrid}>{imageGridCells}</div>,
       });
+    };
+
+    fetchAvalanche(extId).then(data => {
+      this.setState({ imageGrid: null }, () => createNewImageGrid(data.images));
     })
     .catch(error => {
       console.error(`Unable to fetch images for avalanche ${extId}. Error: ${error}`);
