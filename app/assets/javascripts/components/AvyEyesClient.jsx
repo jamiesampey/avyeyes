@@ -4,16 +4,15 @@ import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Config from '../Config';
 import NewAvalancheButton from "./view/NewAvalancheButton";
+import DrawingStepper from "./report/DrawingStepper";
+import CesiumView from "./view/CesiumView";
 import HelpDialog from "./view/HelpDialog";
+import {checkStatusAndParseJson} from "../Util";
 
 import 'cesium/Widgets/widgets.css';
 import '../../stylesheets/AvyEyesClient.scss';
 
-import {checkStatusAndParseJson} from "../Util";
-import ReportDrawer from "./report/ReportDrawer";
-import CesiumView from "./view/CesiumView";
-
-const reportDrawerWidth = 350;
+const REPORT_DRAW_WIDTH = 350;
 
 const styles = theme => ({
   root: {
@@ -37,7 +36,7 @@ const styles = theme => ({
     }),
   },
   contentLeft: {
-    marginLeft: -(reportDrawerWidth+1),
+    marginLeft: -(REPORT_DRAW_WIDTH + 1),
     padding: 0,
     height: '100%',
   },
@@ -112,7 +111,7 @@ class AvyEyesClient extends React.Component {
 
     return (
       <div className={classes.root}>
-        <ReportDrawer
+        <DrawingStepper
           drawerOpen={this.state.reportDrawerOpen}
           clientData={this.state.clientData}
           controller={this.state.cesiumController}
@@ -122,12 +121,12 @@ class AvyEyesClient extends React.Component {
           })
           }
         />
+
         <main className={classNames(classes.content, classes.contentLeft, {
             [classes.contentShift]: this.state.reportDrawerOpen,
             [classes.contentShiftLeft]: this.state.reportDrawerOpen,
           })}
         >
-
           <CesiumView
             clientData={this.state.clientData}
             currentAvalanche={this.state.currentAvalanche}

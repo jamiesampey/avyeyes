@@ -48,7 +48,7 @@ const styles = theme => ({
 const MANUEL_VIEW_STEP = 1;
 const NAV_HELP_BUTTON_CLASS = "cesium-navigation-help-button";
 
-class ReportDrawer extends React.Component {
+class DrawingStepper extends React.Component {
   constructor(props) {
     super(props);
 
@@ -201,7 +201,7 @@ class ReportDrawer extends React.Component {
         latitude: parseFloat(Cesium.Math.toDegrees(highestCartographic.latitude).toFixed(8)),
         longitude: parseFloat(Cesium.Math.toDegrees(highestCartographic.longitude).toFixed(8)),
         altitude: Math.round(highestCartographic.height),
-        aspect: ReportDrawer.getDrawingAspect(highestCartographic, lowestCartographic),
+        aspect: DrawingStepper.getDrawingAspect(highestCartographic, lowestCartographic),
         angle: Math.round(Cesium.Math.toDegrees(Math.asin(opposite / hypotenuse))),
         perimeter: coordinates,
       }
@@ -401,7 +401,7 @@ class ReportDrawer extends React.Component {
   }
 }
 
-ReportDrawer.propTypes = {
+DrawingStepper.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   drawerOpen: PropTypes.bool.isRequired,
@@ -410,4 +410,4 @@ ReportDrawer.propTypes = {
   drawingComplete: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(ReportDrawer);
+export default withStyles(styles, { withTheme: true })(DrawingStepper);
