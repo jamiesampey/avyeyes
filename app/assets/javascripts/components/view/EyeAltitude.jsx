@@ -57,6 +57,7 @@ class EyeAltitude extends React.Component {
 
 EyeAltitude.propTypes = {
   classes: PropTypes.object.isRequired,
+  viewer: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(EyeAltitude);

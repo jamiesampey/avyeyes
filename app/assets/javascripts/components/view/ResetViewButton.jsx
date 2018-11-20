@@ -51,6 +51,7 @@ class ResetViewButton extends React.Component {
 
 ResetViewButton.propTypes = {
   classes: PropTypes.object.isRequired,
+  controller: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ResetViewButton);

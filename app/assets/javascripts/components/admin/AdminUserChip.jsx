@@ -1,12 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
 import Chip from "@material-ui/core/Chip";
 import {checkStatusAndParseJson} from "../../Util";
-
-const styles = theme => ({
-
-});
 
 class AdminUserChip extends React.Component {
 
@@ -30,8 +24,6 @@ class AdminUserChip extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-
     return ( this.state.userEmail &&
       <Chip
         label={this.state.userEmail}
@@ -42,8 +34,4 @@ class AdminUserChip extends React.Component {
   };
 }
 
-AdminUserChip.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(AdminUserChip);
+export default AdminUserChip;

@@ -318,6 +318,8 @@ ReportDetails.propTypes = {
   clientData: PropTypes.object.isRequired,
   avalanche: PropTypes.object.isRequired,
   updateAvalanche: PropTypes.func.isRequired,
+  errorFields: PropTypes.array,
+  isAdminView: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(ReportDetails);

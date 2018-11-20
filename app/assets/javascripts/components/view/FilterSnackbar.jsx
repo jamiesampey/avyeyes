@@ -125,8 +125,8 @@ const FilterSnackbar = props => {
 FilterSnackbar.propTypes = {
   classes: PropTypes.object.isRequired,
   drawerOpen: PropTypes.bool.isRequired,
-  filter: PropTypes.object,
-  clearFilter: PropTypes.func,
+  filter: PropTypes.object.isRequired,
+  clearFilter: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(FilterSnackbar);

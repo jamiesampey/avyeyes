@@ -1,6 +1,8 @@
 import React from "react";
 
-const NotSpecified = <i>not specified</i>;
+const NOT_SPECIFIED = <i>not specified</i>;
+
+const AVALANCHE_IMAGE_TILE = 'AvalancheImageTile';
 
 const getRequestParam = paramName => {
   paramName = paramName.replace(/[\[\]]/g, "\\$&");
@@ -63,12 +65,12 @@ const constructImageUrl = (s3Bucket, avalanche, image) => {
  */
 const labelForDataCode = (array, code) => {
   let match = array.find(obj => { return obj.value === code });
-  return match ? match.label : NotSpecified;
+  return match ? match.label : NOT_SPECIFIED;
 };
 
 const compositeLabelForDataCode = (array, code) => {
   let match = array.find(obj => { return obj.value === code });
-  return match ? `${match.value} - ${match.label}` : NotSpecified;
+  return match ? `${match.value} - ${match.label}` : NOT_SPECIFIED;
 };
 
 const metersToFeet = (meters) => {
@@ -76,7 +78,8 @@ const metersToFeet = (meters) => {
 };
 
 module.exports = {
-  NotSpecified,
+  NOT_SPECIFIED,
+  AVALANCHE_IMAGE_TILE,
   fetchAvalanche,
   getRequestParam,
   checkStatus,

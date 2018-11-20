@@ -43,6 +43,8 @@ const NewAvalancheButton = props => {
 
 NewAvalancheButton.propTypes = {
   classes: PropTypes.object.isRequired,
+  visible: PropTypes.bool.isRequired,
+  startReport: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(NewAvalancheButton);

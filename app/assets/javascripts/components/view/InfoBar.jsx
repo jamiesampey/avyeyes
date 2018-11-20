@@ -24,7 +24,7 @@ const styles = theme => ({
 
 const InfoBar = props => {
 
-  let { classes, open, message, duration, closeable, onClose } = props;
+  let { classes, open, message, duration, onClose } = props;
 
   return (
     <Snackbar
@@ -41,10 +41,8 @@ const InfoBar = props => {
       }}
       message={message}
       action={[
-        closeable &&
         <IconButton
           className={classes.closeIconButton}
-          key="closeSnackbar"
           size="small"
           onClick={onClose}
         >
@@ -60,7 +58,6 @@ InfoBar.propTypes = {
   open: PropTypes.bool.isRequired,
   message: PropTypes.string,
   duration: PropTypes.number,
-  closeable: PropTypes.bool,
   onClose: PropTypes.func,
 };
 

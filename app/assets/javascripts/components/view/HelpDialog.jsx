@@ -72,7 +72,7 @@ HelpDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,
-  contentString: PropTypes.string,
+  contentString: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 

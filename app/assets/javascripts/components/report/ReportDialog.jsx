@@ -228,7 +228,7 @@ class ReportDialog extends React.Component {
     const { classes, clientData } = this.props;
     const { workingAvalanche, editKey, deleteReport } = this.state;
 
-    let isAdminView = workingAvalanche && workingAvalanche.hasOwnProperty('viewable') && editKey;
+    let isAdminView = Boolean(workingAvalanche) && workingAvalanche.hasOwnProperty('viewable') && Boolean(editKey);
 
     return (
       <div>
@@ -315,7 +315,7 @@ class ReportDialog extends React.Component {
 ReportDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
-  avalanche: PropTypes.object,
+  avalanche: PropTypes.object.isRequired,
   setInfoMessage: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };

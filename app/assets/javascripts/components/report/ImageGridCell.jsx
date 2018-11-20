@@ -5,6 +5,7 @@ import { DropTarget } from "react-dnd";
 import IconButton from "@material-ui/core/IconButton";
 import CaptionIcon from "@material-ui/icons/InsertComment";
 import DeleteIcon from "@material-ui/icons/Delete";
+import {AVALANCHE_IMAGE_TILE} from "../../Util";
 
 
 const styles = theme => ({
@@ -102,6 +103,10 @@ const ImageGridCell = props => {
 
 ImageGridCell.propTypes = {
   classes: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  onImageDrop: PropTypes.func,
+  onDelete: PropTypes.func,
+  onCaptionChange: PropTypes.func,
 };
 
-export default DropTarget('AvalancheImageTile', imageGridCellTarget, collect)(withStyles(styles)(ImageGridCell));
+export default DropTarget(AVALANCHE_IMAGE_TILE, imageGridCellTarget, collect)(withStyles(styles)(ImageGridCell));

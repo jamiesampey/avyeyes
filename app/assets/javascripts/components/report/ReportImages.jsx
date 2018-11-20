@@ -17,7 +17,7 @@ import ImagesIcon from '@material-ui/icons/Collections';
 import CaptionIcon from "@material-ui/icons/InsertComment";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoveIcon from "@material-ui/icons/OpenWith";
-import {checkStatus, checkStatusAndParseJson, fetchAvalanche} from "../../Util";
+import {checkStatus, checkStatusAndParseJson} from "../../Util";
 import {DragDropContextProvider} from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import Dialog from "@material-ui/core/Dialog/Dialog";
@@ -84,7 +84,7 @@ const styles = theme => ({
   },
 });
 
-const MaxImages = 20;
+const MAX_IMAGES = 20;
 
 class ReportImages extends React.Component {
 
@@ -221,7 +221,7 @@ class ReportImages extends React.Component {
         </ImageGridCell>
       );
 
-      for (let i = images.length; i < MaxImages; i++) {
+      for (let i = images.length; i < MAX_IMAGES; i++) {
         imageGridCells.push(<ImageGridCell key={i} index={i}/>)
       }
 
@@ -384,6 +384,7 @@ ReportImages.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
   extId: PropTypes.string.isRequired,
+  setInfoMessage: PropTypes.func.isRequired,
   editKey: PropTypes.string,
   csrfToken: PropTypes.string.isRequired,
 };

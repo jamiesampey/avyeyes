@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Cesium from 'cesium/Cesium';
 import CesiumController from "../../CesiumController";
-import MenuButton from "./TitleDiv";
+import AvyEyesTitle from "./AvyEyesTitle";
 import FilterDrawer from "./FilterDrawer";
 import AdminUserChip from "../admin/AdminUserChip";
 import EyeAltitude from "./EyeAltitude";
@@ -197,7 +197,7 @@ class CesiumView extends React.Component {
 
         <FilterDrawer
           drawerOpen={filterDrawerOpen}
-          drawerClose={() => this.setState({filterDrawerOpen: false}) }
+          onClose={() => this.setState({filterDrawerOpen: false}) }
           clientData={clientData}
           filter={avalancheFilter}
           applyFilter={this.filterAvalanches}
@@ -221,7 +221,7 @@ class CesiumView extends React.Component {
         }
 
         <MouseBee controller={this.controller}/>
-        <MenuButton menuToggle={() => { this.setState({filterDrawerOpen: true}) }} />
+        <AvyEyesTitle menuToggle={() => { this.setState({filterDrawerOpen: true}) }} />
         <div className={classes.userChip}><AdminUserChip/></div>
         <EyeAltitude viewer={this.controller.viewer} />
         <ResetViewButton controller={this.controller} />

@@ -1,8 +1,10 @@
 import React from 'react';
 import {DragSource} from 'react-dnd';
 import {withStyles} from "@material-ui/core";
+import {AVALANCHE_IMAGE_TILE} from "../../Util";
+import PropTypes from "prop-types";
 
-const styles = theme => ({
+const styles = () => ({
   image: {
     width: '100%',
     height: '100%',
@@ -26,7 +28,7 @@ const collect = (connect, monitor) => {
 };
 
 const DraggableImage = props => {
-  let { classes, isDragging, connectDragSource, imageUrl } = props;
+  let { classes, connectDragSource, imageUrl } = props;
 
   return connectDragSource(
     <div
@@ -38,4 +40,10 @@ const DraggableImage = props => {
   );
 };
 
-export default DragSource('AvalancheImageTile', imageSource, collect)(withStyles(styles)(DraggableImage));
+DraggableImage.propTypes = {
+  classes: PropTypes.object.isRequired,
+  image: PropTypes.object.isRequired,
+  imageUrl: PropTypes.string.isRequired,
+};
+
+export default DragSource(AVALANCHE_IMAGE_TILE, imageSource, collect)(withStyles(styles)(DraggableImage));

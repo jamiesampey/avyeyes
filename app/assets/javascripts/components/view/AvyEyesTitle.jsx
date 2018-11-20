@@ -27,7 +27,7 @@ const styles = theme => ({
   },
 });
 
-const TitleDiv = props => {
+const AvyEyesTitle = props => {
   const { classes, menuToggle } = props;
   return (
     <div className={classes.root}>
@@ -39,8 +39,9 @@ const TitleDiv = props => {
   );
 };
 
-TitleDiv.propTypes = {
+AvyEyesTitle.propTypes = {
   classes: PropTypes.object.isRequired,
+  menuToggle: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(TitleDiv);
+export default withStyles(styles)(AvyEyesTitle);

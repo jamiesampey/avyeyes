@@ -102,8 +102,8 @@ class SocialMenu extends React.Component {
 
 SocialMenu.propTypes = {
   classes: PropTypes.object.isRequired,
-  avalanche: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
+  avalanche: PropTypes.object.isRequired,
   anchorEL: PropTypes.object,
   onClose: PropTypes.func.isRequired,
 };

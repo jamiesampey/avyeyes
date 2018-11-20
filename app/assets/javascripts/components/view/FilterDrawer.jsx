@@ -70,6 +70,7 @@ const styles = theme => ({
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -121,7 +122,7 @@ class FilterDrawer extends React.Component {
     const {
       classes,
       drawerOpen,
-      drawerClose,
+      onClose,
       clientData,
       filter,
       clearFilter,
@@ -136,7 +137,7 @@ class FilterDrawer extends React.Component {
           variant="temporary"
           anchor="left"
           open={drawerOpen}
-          ModalProps={{onBackdropClick: drawerClose}}
+          ModalProps={{onBackdropClick: onClose}}
           classes={{
             paper: classes.drawerPaper,
           }}
@@ -148,7 +149,7 @@ class FilterDrawer extends React.Component {
               disableRipple
               onClick={(e) => {
                 e.stopPropagation();
-                drawerClose();
+                onClose();
                 showHelp({
                   title: "Avalanche Filter Help",
                   content: clientData.help.filterHelpContent
@@ -274,8 +275,8 @@ FilterDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   drawerOpen: PropTypes.bool.isRequired,
-  drawerClose: PropTypes.func.isRequired,
-  clientData: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  clientData: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
   applyFilter: PropTypes.func.isRequired,
   clearFilter: PropTypes.func.isRequired,

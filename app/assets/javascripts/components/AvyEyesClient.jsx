@@ -139,7 +139,7 @@ class AvyEyesClient extends React.Component {
             <HelpDialog
               title={this.state.help.title}
               contentString={this.state.help.content}
-              closeCallback={() => this.setState({ help: null }) }
+              onClose={() => this.setState({ help: null }) }
             />
           }
 

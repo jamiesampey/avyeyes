@@ -35,7 +35,7 @@ import TableBody from "@material-ui/core/TableBody";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import {
-  NotSpecified,
+  NOT_SPECIFIED,
   parseApiDateString,
   labelForDataCode,
   compositeLabelForDataCode,
@@ -114,8 +114,8 @@ const styles = theme => ({
   },
 });
 
-const imageRotateInverval = 5000;
-const introWordCount = 50;
+const IMAGE_ROTATE_INTERVAL = 5000;
+const INTRO_WORD_COUNT = 50;
 
 class AvyCard extends React.Component {
 
@@ -174,7 +174,7 @@ class AvyCard extends React.Component {
               rotatingCardMedia: this.renderCardMedia(avalanche, imageUrls[newIndex]),
             });
           }
-        }, imageRotateInverval)
+        }, IMAGE_ROTATE_INTERVAL)
       })
     }
   }
@@ -182,7 +182,7 @@ class AvyCard extends React.Component {
   static introText(text) {
     if (!text || text.length === 0) return <i>no description</i>;
     let words = text.split(' ');
-    return words.length <= introWordCount ? text : `${words.slice(0, introWordCount).join(' ')}...`;
+    return words.length <= INTRO_WORD_COUNT ? text : `${words.slice(0, INTRO_WORD_COUNT).join(' ')}...`;
   }
 
   weatherDesc(weather) {
@@ -200,7 +200,7 @@ class AvyCard extends React.Component {
       if (weather.recentWindDirection !== Empty) desc += ` from the ${labelForDataCode(direction, weather.recentWindDirection)}`;
     }
 
-    return desc.length > 0 ? desc : NotSpecified;
+    return desc.length > 0 ? desc : NOT_SPECIFIED;
   }
 
   toggleExpanded() {
@@ -254,8 +254,8 @@ class AvyCard extends React.Component {
       <div>
         {this.state.lightboxOpen && this.renderLightbox(avalanche)}
         <SocialMenu
-          avalanche={avalanche}
           clientData={clientData}
+          avalanche={avalanche}
           anchorEl={socialMenuAnchor}
           onClose={(infoMessage) => {
             if (infoMessage) this.props.setInfoMessage(infoMessage);
@@ -397,7 +397,7 @@ AvyCard.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
-  avalanche: PropTypes.object,
+  avalanche: PropTypes.object.isRequired,
   setInfoMessage: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 };
