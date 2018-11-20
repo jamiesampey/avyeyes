@@ -10,6 +10,7 @@ GET     /api/avalanche/search           com.jamiesampey.avyeyes.controllers.Sear
 GET     /api/avalanche/:extId           com.jamiesampey.avyeyes.controllers.SearchController.find(extId, edit: Option[String])
 
 # Images
+GET     /api/avalanche/:extId/images               com.jamiesampey.avyeyes.controllers.ImageController.getImages(extId, edit: Option[String])
 POST    /api/avalanche/:extId/images/screenshot    com.jamiesampey.avyeyes.controllers.ImageController.uploadScreenshot(extId)
 POST    /api/avalanche/:extId/images               com.jamiesampey.avyeyes.controllers.ImageController.uploadImages(extId, edit: Option[String])
 PUT     /api/avalanche/:extId/images/:filename     com.jamiesampey.avyeyes.controllers.ImageController.caption(extId, filename, edit: Option[String])

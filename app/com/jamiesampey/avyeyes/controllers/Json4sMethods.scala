@@ -17,7 +17,7 @@ trait Json4sMethods {
 
   implicit val formats = avyeyesFormats
 
-  private[controllers] def avalancheAdminData(a: Avalanche, images: List[AvalancheImage]) = {
+  private[controllers] def avalancheAdminData(a: Avalanche, images: List[AvalancheImage]): JObject = {
     ("viewable" -> a.viewable) ~ avalancheReadWriteData(a, images)
   }
 
@@ -36,17 +36,19 @@ trait Json4sMethods {
     ("slope" -> Extraction.decompose(a.slope)) ~
     ("classification" -> Extraction.decompose(a.classification)) ~
     ("comments" -> unescapeJava(a.comments.getOrElse(""))) ~
-    ("images" -> Extraction.decompose(images)) ~
-    ("perimeter" -> Extraction.decompose(a.perimeter))
+    ("perimeter" -> Extraction.decompose(a.perimeter)) ~
+    avalancheImages(images)
   }
 
-  private[controllers] def avalanchePathSearchResult(a: Avalanche) = {
+  private[controllers] def avalanchePathSearchResult(a: Avalanche): JObject = {
     avalanchePinSearchResult(a) ~ ("perimeter" -> Extraction.decompose(a.perimeter))
   }
 
-  private[controllers] def avalanchePinSearchResult(a: Avalanche) = {
+  private[controllers] def avalanchePinSearchResult(a: Avalanche): JObject = {
     ("extId" -> a.extId) ~ ("title" -> a.title) ~ ("submitterExp" -> ExperienceLevel.toCode(a.submitterExp)) ~ ("slope" -> Extraction.decompose(a.slope)) ~ ("location" -> Extraction.decompose(a.location))
   }
+
+  private[controllers] def avalancheImages(images: List[AvalancheImage]): JObject = "images" -> Extraction.decompose(images)
 
   private[controllers] def writeJson(jValue: JValue): String = compact(render(jValue))
 

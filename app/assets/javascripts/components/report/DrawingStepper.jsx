@@ -240,8 +240,8 @@ class DrawingStepper extends React.Component {
         trigger: EMPTY_STRING,
         triggerModifier: EMPTY_STRING,
         interface: EMPTY_STRING,
-        rSize: EMPTY_STRING,
-        dSize: EMPTY_STRING,
+        rSize: 0,
+        dSize: 0,
       },
       comments: EMPTY_STRING,
     };

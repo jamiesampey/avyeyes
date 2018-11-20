@@ -118,6 +118,17 @@ class ImageController @Inject()(dao: CachedDao, s3: AmazonS3Service, authorizati
     }
   }
 
+  def getImages(avyExtId: String, editKeyOpt: Option[String]) = UserAwareAction.async { implicit request =>
+    if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
+      log.warn(s"Not authorized to view images for avalanche $avyExtId")
+      Future { Unauthorized }
+    } else {
+      dao.getAvalancheImages(avyExtId).map { images =>
+        Ok(writeJson(avalancheImages(images)))
+      }
+    }
+  }
+
   def caption(avyExtId: String, baseFilename: String, editKeyOpt: Option[String]) = UserAwareAction(parse.json) { implicit request =>
     if (!isAuthorizedToEdit(avyExtId, request.user, editKeyOpt)) {
       log.warn(s"Not authorized to edit image caption for avalanche $avyExtId")

@@ -204,7 +204,7 @@ class ReportImages extends React.Component {
   }
 
   refreshImageGrid() {
-    let { classes, extId } = this.props;
+    let { classes, extId, editKey, csrfToken } = this.props;
     let { s3Client } = this.state;
 
     let createNewImageGrid = (images) => {
@@ -231,12 +231,13 @@ class ReportImages extends React.Component {
       });
     };
 
-    fetchAvalanche(extId).then(data => {
-      this.setState({ imageGrid: null }, () => createNewImageGrid(data.images));
-    })
-    .catch(error => {
-      console.error(`Unable to fetch images for avalanche ${extId}. Error: ${error}`);
-    });
+    fetch(`/api/avalanche/${extId}/images?edit=${editKey}&csrfToken=${csrfToken}`)
+      .then(response => checkStatusAndParseJson(response))
+      .then(data => this.setState({ imageGrid: null }, () => createNewImageGrid(data.images)))
+      .catch(error => {
+        console.error(`ERROR fetching images for avalanche ${extId}. Error: ${error}`);
+        this.setState({ imageGrid: null }, () => createNewImageGrid([]));
+      });
   }
 
   render() {
