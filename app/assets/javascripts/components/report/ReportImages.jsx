@@ -383,7 +383,7 @@ ReportImages.propTypes = {
   classes: PropTypes.object.isRequired,
   clientData: PropTypes.object.isRequired,
   extId: PropTypes.string.isRequired,
-  editKey: PropTypes.string.isRequired,
+  editKey: PropTypes.string,
   csrfToken: PropTypes.string.isRequired,
 };
 

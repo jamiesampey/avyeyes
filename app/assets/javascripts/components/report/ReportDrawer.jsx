@@ -12,7 +12,7 @@ import Button from "@material-ui/core/Button";
 
 import Cesium from "cesium/Cesium";
 
-import {checkStatusAndParseJson} from "../../Util";
+import {checkStatus, checkStatusAndParseJson, getCSRFTokenFromCookie} from "../../Util";
 import GeoCompleteSelect from "./GeoCompleteSelect";
 
 const styles = theme => ({
@@ -45,8 +45,8 @@ const styles = theme => ({
   },
 });
 
-const ManualViewStep = 1;
-const NavHelpButtonClass = "cesium-navigation-help-button";
+const MANUEL_VIEW_STEP = 1;
+const NAV_HELP_BUTTON_CLASS = "cesium-navigation-help-button";
 
 class ReportDrawer extends React.Component {
   constructor(props) {
@@ -56,6 +56,7 @@ class ReportDrawer extends React.Component {
     this.beginDrawing = this.beginDrawing.bind(this);
     this.digestDrawing = this.digestDrawing.bind(this);
     this.convertDrawingToAvalanche = this.convertDrawingToAvalanche.bind(this);
+    this.uploadDrawingScreenshot = this.uploadDrawingScreenshot.bind(this);
 
     this.state = {
       activeStep: 0,
@@ -79,8 +80,8 @@ class ReportDrawer extends React.Component {
         });
     }
 
-    if (this.state.activeStep === ManualViewStep) {
-      let navHelpButtons = document.getElementsByClassName(NavHelpButtonClass);
+    if (this.state.activeStep === MANUEL_VIEW_STEP) {
+      let navHelpButtons = document.getElementsByClassName(NAV_HELP_BUTTON_CLASS);
       navHelpButtons[0].click();
     }
   }
@@ -207,6 +208,78 @@ class ReportDrawer extends React.Component {
     }, this.stepForward);
   }
 
+  convertDrawingToAvalanche() {
+    let { reportExtId, drawing } = this.state;
+    const EMPTY_STRING = '';
+
+    return {
+      extId: reportExtId,
+      location: {
+        longitude: drawing.longitude,
+        latitude: drawing.latitude,
+        altitude: drawing.altitude,
+      },
+      slope: {
+        aspect: drawing.aspect,
+        angle: drawing.angle,
+        elevation: drawing.altitude,
+      },
+      perimeter: drawing.perimeter,
+      viewable: true,
+      submitterEmail: EMPTY_STRING,
+      submitterExp: EMPTY_STRING,
+      date: EMPTY_STRING,
+      areaName: EMPTY_STRING,
+      weather: {
+        recentSnow: EMPTY_STRING,
+        recentWindSpeed: EMPTY_STRING,
+        recentWindDirection: EMPTY_STRING,
+      },
+      classification: {
+        avyType: EMPTY_STRING,
+        trigger: EMPTY_STRING,
+        triggerModifier: EMPTY_STRING,
+        interface: EMPTY_STRING,
+        rSize: EMPTY_STRING,
+        dSize: EMPTY_STRING,
+      },
+      comments: EMPTY_STRING,
+    };
+  }
+
+  uploadDrawingScreenshot() {
+    let { reportExtId } = this.state;
+    let csrfToken = getCSRFTokenFromCookie();
+
+    let base64ImageContent = this.props.controller.viewer.canvas.toDataURL('image/jpeg', 0.8).replace(/^data:image\/jpeg;base64,/, "");
+    let sliceSize = 1024;
+    let byteChars = window.atob(base64ImageContent);
+
+    let byteArrays = [];
+    for (let offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+      let slice = byteChars.slice(offset, offset + sliceSize);
+
+      let byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    let formData = new FormData();
+    formData.append("screenshot", new Blob(byteArrays, {type: 'image/jpeg'}));
+
+    fetch(`/api/avalanche/${reportExtId}/images/screenshot?csrfToken=${csrfToken}`, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => {
+      checkStatus(response);
+      console.info(`Screenshot successfully uploaded for new avalanche report ${reportExtId}`);
+    })
+    .catch(error => console.error(`ERROR uploading drawing screenshot for new avalanche report ${reportExtId}: ${error}`));
+  }
+
   static getDrawingAspect(highestCartographic, lowestCartographic) {
     let lat1 = highestCartographic.latitude;
     let lat2 = lowestCartographic.latitude;
@@ -226,54 +299,6 @@ class ReportDrawer extends React.Component {
     return "N";
   }
 
-  convertDrawingToAvalanche() {
-    let { reportExtId, drawing } = this.state;
-
-    let newAvalanche = {
-      extId: reportExtId,
-      location: {
-        longitude: drawing.longitude,
-        latitude: drawing.latitude,
-        altitude: drawing.altitude,
-      },
-      slope: {
-        aspect: drawing.aspect,
-        angle: drawing.angle,
-        elevation: drawing.altitude,
-      },
-      perimeter: drawing.perimeter,
-      viewable: true,
-      submitterEmail: null,
-      submitterExp: null,
-      date: null,
-      areaName: null,
-      weather: {
-        recentSnow: null,
-        recentWindSpeed: null,
-        recentWindDirection: null,
-      },
-      classification: {
-        avyType: null,
-        trigger: null,
-        triggerModifier: null,
-        interface: null,
-        rSize: null,
-        dSize: null,
-      },
-      comments: null,
-    };
-
-    // remove the drawing
-    let cesiumDrawingEntity = this.state.drawing.entity;
-    this.props.controller.removeEntity(cesiumDrawingEntity);
-
-    this.setState({
-      activeStep: 0,
-      reportExtId: null,
-      drawing: null,
-    }, () => this.props.drawingComplete(newAvalanche));
-  }
-
   stepForward() {
     this.setState(state => ({
       activeStep: state.activeStep + 1,
@@ -281,7 +306,7 @@ class ReportDrawer extends React.Component {
   }
 
   render() {
-    const {classes, drawerOpen, clientData } = this.props;
+    const {classes, drawerOpen, clientData, drawingComplete } = this.props;
 
     return (
       <Drawer
@@ -350,7 +375,20 @@ class ReportDrawer extends React.Component {
                   variant="contained"
                   color="primary"
                   size="small"
-                  onClick={this.convertDrawingToAvalanche}
+                  onClick={() => {
+                    this.uploadDrawingScreenshot();
+                    let newAvalanche = this.convertDrawingToAvalanche();
+
+                    // remove the drawing
+                    let cesiumDrawingEntity = this.state.drawing.entity;
+                    this.props.controller.removeEntity(cesiumDrawingEntity);
+
+                    this.setState({
+                      activeStep: 0,
+                      reportExtId: null,
+                      drawing: null,
+                    }, () => drawingComplete(newAvalanche));
+                  }}
                 >
                   Accept Drawing
                 </Button>

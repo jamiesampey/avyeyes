@@ -45,12 +45,12 @@ function AvyEyesView(socialMode) {
     // this.cesiumEventHandler = new Cesium.ScreenSpaceEventHandler(this.cesiumViewer.scene.canvas);
     // this.setAvyMouseEventHandlers();
 
-    window.addEventListener("keydown", function() {
-        $("#helpOverlay").hide();
-    }, false);
-
-    this.form = new AvyForm(this);
-    this.ui = new AvyEyesUI(this);
+    // window.addEventListener("keydown", function() {
+    //     $("#helpOverlay").hide();
+    // }, false);
+    //
+    // this.form = new AvyForm(this);
+    // this.ui = new AvyEyesUI(this);
 
     // if (this.socialEnabled) {
     //     FB.init({
@@ -60,8 +60,8 @@ function AvyEyesView(socialMode) {
     //     });
     // }
 
-    this.clickPathClueShown = false;
-    this.avalancheSpotlight = false;
+    // this.clickPathClueShown = false;
+    // this.avalancheSpotlight = false;
 
     // this.ui.loaded.then(function() {
     //     console.log("AvyEyes UI is wired");
@@ -454,108 +454,108 @@ function AvyEyesView(socialMode) {
 //   if (!results[2]) return '';
 //   return decodeURIComponent(results[2].replace(/\+/g, " "));
 // }
+//
+// AvyEyesView.prototype.uploadCesiumScreenshot = function() {
+//     var base64ImageContent = this.cesiumViewer.canvas.toDataURL("image/jpeg", 0.8).replace(/^data:image\/jpeg;base64,/, "");
+//     var sliceSize = 1024;
+//     var byteChars = window.atob(base64ImageContent);
+//     var byteArrays = [];
+//
+//     for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+//         var slice = byteChars.slice(offset, offset + sliceSize);
+//
+//         var byteNumbers = new Array(slice.length);
+//         for (var i = 0; i < slice.length; i++) {
+//             byteNumbers[i] = slice.charCodeAt(i);
+//         }
+//
+//         byteArrays.push(new Uint8Array(byteNumbers));
+//     }
+//
+//     var formData = new FormData();
+//     formData.append("screenshot", new Blob(byteArrays, {type: 'image/jpeg'}));
+//
+//     $.ajax({
+//         url: "/avalanche/" + $('#rwAvyFormExtId').val() + "/images/screenshot?csrfToken=" + this.csrfTokenFromCookie(),
+//         type: "POST",
+//         cache: false,
+//         contentType: false,
+//         processData: false,
+//         data: formData
+//     }).fail(function(jqxhr, textStatus, error) {
+//         var err = textStatus + ", " + error;
+//         console.log("AvyEyes screenshot upload error: " + err);
+//     });
+// }
 
-AvyEyesView.prototype.uploadCesiumScreenshot = function() {
-    var base64ImageContent = this.cesiumViewer.canvas.toDataURL("image/jpeg", 0.8).replace(/^data:image\/jpeg;base64,/, "");
-    var sliceSize = 1024;
-    var byteChars = window.atob(base64ImageContent);
-    var byteArrays = [];
-
-    for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
-        var slice = byteChars.slice(offset, offset + sliceSize);
-
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        byteArrays.push(new Uint8Array(byteNumbers));
-    }
-
-    var formData = new FormData();
-    formData.append("screenshot", new Blob(byteArrays, {type: 'image/jpeg'}));
-
-    $.ajax({
-        url: "/avalanche/" + $('#rwAvyFormExtId').val() + "/images/screenshot?csrfToken=" + this.csrfTokenFromCookie(),
-        type: "POST",
-        cache: false,
-        contentType: false,
-        processData: false,
-        data: formData
-    }).fail(function(jqxhr, textStatus, error) {
-        var err = textStatus + ", " + error;
-        console.log("AvyEyes screenshot upload error: " + err);
-    });
-}
-
-AvyEyesView.prototype.csrfTokenFromCookie = function() {
-  var docCookie = "; " + document.cookie;
-  var parts = docCookie.split("; csrfToken=");
-  if (parts.length === 2) return parts.pop().split(";").shift();
-}
-
-function showZoomInClue() {
-    return showCenterTopClue("Click on an avalanche pin to zoom in, or zoom in manually");
-}
-
-function showClickPathClue(text) {
-    return showCenterTopClue(text);
-}
-
-function showCenterTopClue(text) {
-    var delay = 6000;
-    var showDuration = 400;
-    var hideDuration = 200;
-    return new Promise(function(resolve) {
-        $('#topCenterMsgDiv').notify(text, {
-            clickToHide: true,
-            autoHide: true,
-            autoHideDelay: delay,
-            arrowShow: false,
-            arrowSize: 10,
-            position: 'bottom center',
-            style: 'bootstrap',
-            className: 'info',
-            showAnimation: 'slideDown',
-            showDuration: showDuration,
-            hideAnimation: 'slideUp',
-            hideDuration: hideDuration,
-            gap: 0
-        });
-
-        setTimeout(function() {
-            resolve();
-        }, delay + showDuration + hideDuration);
-    });
-}
-
-function showCesiumHelpClue() {
-    var delay = 6000;
-    var showDuration = 400;
-    var hideDuration = 200;
-    return new Promise(function(resolve) {
-        $('button.cesium-navigation-help-button').notify(
-            "Click the ? button for help using the 3D map view", {
-                clickToHide: true,
-                autoHide: true,
-                autoHideDelay: delay,
-                arrowShow: true,
-                arrowSize: 5,
-                position: 'bottom right',
-                style: 'bootstrap',
-                className: 'info',
-                showAnimation: 'slideDown',
-                showDuration: showDuration,
-                hideAnimation: 'slideUp',
-                hideDuration: hideDuration,
-                gap: 2
-            });
-
-        setTimeout(function() {
-            resolve();
-        }, delay + showDuration + hideDuration);
-    });
-}
+// AvyEyesView.prototype.csrfTokenFromCookie = function() {
+//   var docCookie = "; " + document.cookie;
+//   var parts = docCookie.split("; csrfToken=");
+//   if (parts.length === 2) return parts.pop().split(";").shift();
+// }
+//
+// function showZoomInClue() {
+//     return showCenterTopClue("Click on an avalanche pin to zoom in, or zoom in manually");
+// }
+//
+// function showClickPathClue(text) {
+//     return showCenterTopClue(text);
+// }
+//
+// function showCenterTopClue(text) {
+//     var delay = 6000;
+//     var showDuration = 400;
+//     var hideDuration = 200;
+//     return new Promise(function(resolve) {
+//         $('#topCenterMsgDiv').notify(text, {
+//             clickToHide: true,
+//             autoHide: true,
+//             autoHideDelay: delay,
+//             arrowShow: false,
+//             arrowSize: 10,
+//             position: 'bottom center',
+//             style: 'bootstrap',
+//             className: 'info',
+//             showAnimation: 'slideDown',
+//             showDuration: showDuration,
+//             hideAnimation: 'slideUp',
+//             hideDuration: hideDuration,
+//             gap: 0
+//         });
+//
+//         setTimeout(function() {
+//             resolve();
+//         }, delay + showDuration + hideDuration);
+//     });
+// }
+//
+// function showCesiumHelpClue() {
+//     var delay = 6000;
+//     var showDuration = 400;
+//     var hideDuration = 200;
+//     return new Promise(function(resolve) {
+//         $('button.cesium-navigation-help-button').notify(
+//             "Click the ? button for help using the 3D map view", {
+//                 clickToHide: true,
+//                 autoHide: true,
+//                 autoHideDelay: delay,
+//                 arrowShow: true,
+//                 arrowSize: 5,
+//                 position: 'bottom right',
+//                 style: 'bootstrap',
+//                 className: 'info',
+//                 showAnimation: 'slideDown',
+//                 showDuration: showDuration,
+//                 hideAnimation: 'slideUp',
+//                 hideDuration: hideDuration,
+//                 gap: 2
+//             });
+//
+//         setTimeout(function() {
+//             resolve();
+//         }, delay + showDuration + hideDuration);
+//     });
+// }
 
 // function toHeadingPitchRange(heading, pitch, range) {
 //     return new Cesium.HeadingPitchRange(Cesium.Math.toRadians(heading), Cesium.Math.toRadians(pitch), range);

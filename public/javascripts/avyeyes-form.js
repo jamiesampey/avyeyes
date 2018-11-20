@@ -235,32 +235,32 @@ function AvyForm(avyEyesView, mockS3Promise) {
     //         });
     //     }.bind(this)
     // });
-
-    $("#rwAvyFormImageUploadForm").fileupload({
-        dataType:'json',
-        url: this.getImageRestUrl(extId),
-        dropZone:$('#rwAvyFormImageDropZone'),
-        add: function (e, data) {
-            if ($("#rwAvyFormImageGrid").find(".rwAvyFormImageCell").length >= 20) {
-                alert("Image limit exceeded. There is a max of 20 images per report.");
-            } else if (data.files[0].size && data.files[0].size > 5000000) {
-                alert("Image " + data.files[0].name + " is too big. Images must be less than 5 MB.");
-            } else {
-                this.appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
-                setTimeout(function() { data.submit(); }, 800);
-            }
-        }.bind(this),
-        done: function(e, data) {
-            var imageMetadata = data.result[0]
-            var newImageCellId = getFileBaseName(imageMetadata.filename);
-            $("#" + tempImageCellId(imageMetadata.origFilename)).attr("id", newImageCellId);
-            this.setImageCellContent(newImageCellId, extId, imageMetadata);
-        }.bind(this),
-        fail: function(e, data) {
-            console.log("Error", data.errorThrown);
-        }
-    });
-}
+//
+//     $("#rwAvyFormImageUploadForm").fileupload({
+//         dataType:'json',
+//         url: this.getImageRestUrl(extId),
+//         dropZone:$('#rwAvyFormImageDropZone'),
+//         add: function (e, data) {
+//             if ($("#rwAvyFormImageGrid").find(".rwAvyFormImageCell").length >= 20) {
+//                 alert("Image limit exceeded. There is a max of 20 images per report.");
+//             } else if (data.files[0].size && data.files[0].size > 5000000) {
+//                 alert("Image " + data.files[0].name + " is too big. Images must be less than 5 MB.");
+//             } else {
+//                 this.appendImageCellToReadWriteForm(tempImageCellId(data.files[0].name));
+//                 setTimeout(function() { data.submit(); }, 800);
+//             }
+//         }.bind(this),
+//         done: function(e, data) {
+//             var imageMetadata = data.result[0]
+//             var newImageCellId = getFileBaseName(imageMetadata.filename);
+//             $("#" + tempImageCellId(imageMetadata.origFilename)).attr("id", newImageCellId);
+//             this.setImageCellContent(newImageCellId, extId, imageMetadata);
+//         }.bind(this),
+//         fail: function(e, data) {
+//             console.log("Error", data.errorThrown);
+//         }
+//     });
+// }
 
 // AvyForm.prototype.appendImageCellToReadWriteForm = function(filenameBase) {
 //     $('#rwAvyFormImageGrid').append("<div id='" + filenameBase + "' class='rwAvyFormImageCell'>"
