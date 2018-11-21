@@ -73,6 +73,17 @@ const styles = theme => ({
     paddingLeft: 6,
     width: 310,
   },
+  sliderThumb: {
+    position: 'absolute',
+    zIndex: 10,
+    borderRadius: '50%',
+    backgroundColor: '#3f51b5',
+  },
+  sliderThumbValue: {
+    marginTop: 14,
+    color: theme.palette.text.primary,
+    fontSize: '.8rem',
+  },
 });
 
 const ReportDetails = props => {
@@ -135,9 +146,9 @@ const ReportDetails = props => {
             </TableCell>
           </TableRow>
           <TableRow className={classes.tableRow}>
-            <TableCell className={classNames(classes.tableCell, classes.borderedTableCell)} style={{paddingRight: 10}}>
+            <TableCell className={classNames(classes.tableCell, classes.borderedTableCell)} style={{paddingRight: 10, paddingBottom: 10}}>
               <Typography className={classes.borderedTableCellLabel}>SWAG Classification</Typography>
-              <FormControl className={classes.formField}>
+              <FormControl className={classes.formField} style={{marginTop: 6}}>
                 <InputLabel htmlFor="avalanche-type">Avalanche Type</InputLabel>
                 <Select
                   inputProps={{id: 'avalanche-type'}}
@@ -190,6 +201,7 @@ const ReportDetails = props => {
                   max={5}
                   step={1}
                   onChange={(e, v) => { updateAvalanche('classification.rSize', v) }}
+                  thumb={<div className={classes.sliderThumb}><div className={classes.sliderThumbValue}>{avalanche.classification.rSize}</div></div>}
                 />
               </FormControl>
               <FormControl className={classes.formField} style={{marginTop: 24, paddingBottom: 16}}>
@@ -201,6 +213,7 @@ const ReportDetails = props => {
                   max={5}
                   step={.5}
                   onChange={(e, v) => { updateAvalanche('classification.dSize', v) }}
+                  thumb={<div className={classes.sliderThumb}><div className={classes.sliderThumbValue}>{avalanche.classification.dSize}</div></div>}
                 />
               </FormControl>
             </TableCell>

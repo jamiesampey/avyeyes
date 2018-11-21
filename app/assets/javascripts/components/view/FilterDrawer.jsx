@@ -62,6 +62,17 @@ const styles = theme => ({
     paddingLeft: 6,
     width: 230,
   },
+  sliderThumb: {
+    position: 'absolute',
+    zIndex: 10,
+    borderRadius: '50%',
+    backgroundColor: '#3f51b5',
+  },
+  sliderThumbValue: {
+    marginTop: 14,
+    color: theme.palette.text.primary,
+    fontSize: '.8rem',
+  },
   clearButton: {
     margin: 16,
     marginLeft: 'auto',
@@ -240,6 +251,7 @@ class FilterDrawer extends React.Component {
                 max={5}
                 step={1}
                 onChange={(e, v) => { this.applyFilterToView('rSize', v) }}
+                thumb={<div className={classes.sliderThumb}><div className={classes.sliderThumbValue}>{filter.rSize}</div></div>}
               />
             </FormControl>
             <FormControl className={classes.formField}>
@@ -253,6 +265,7 @@ class FilterDrawer extends React.Component {
                 max={5}
                 step={.5}
                 onChange={(e, v) => { this.applyFilterToView('dSize', v) }}
+                thumb={<div className={classes.sliderThumb}><div className={classes.sliderThumbValue}>{filter.dSize}</div></div>}
               />
             </FormControl>
             <Button
