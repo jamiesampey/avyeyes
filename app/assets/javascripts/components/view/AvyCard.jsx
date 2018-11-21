@@ -100,6 +100,9 @@ const styles = theme => ({
       marginBottom: 'auto',
     },
   },
+  listItemIcon: {
+    marginBottom: 'auto',
+  },
   swagTable: {
     marginLeft: 5,
     '& tr': {
@@ -311,13 +314,13 @@ class AvyCard extends React.Component {
                       </Tooltip>
                       <ListItemText disableTypography>
                         <Typography paragraph>
-                          {avalanche.slope.angle}&deg; {avalanche.slope.aspect} aspect at {avalanche.slope.elevation.toLocaleString()} meters ({metersToFeet(avalanche.slope.elevation).toLocaleString()} ft)
+                          {avalanche.slope.angle}&deg; pitch, {avalanche.slope.aspect} aspect at {avalanche.slope.elevation.toLocaleString()} meters ({metersToFeet(avalanche.slope.elevation).toLocaleString()} ft)
                         </Typography>
                       </ListItemText>
                     </ListItem>
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardSWAG}>
-                        <ListItemIcon>
+                        <ListItemIcon className={classes.listItemIcon}>
                           <ViewListIcon/>
                         </ListItemIcon>
                       </Tooltip>
@@ -360,7 +363,7 @@ class AvyCard extends React.Component {
                     </ListItem>
                     <ListItem disableGutters>
                       <Tooltip placement="top-start" title={clientData.tooltips.avyCardComments}>
-                        <ListItemIcon>
+                        <ListItemIcon className={classes.listItemIcon}>
                           <CommentsIcon/>
                         </ListItemIcon>
                       </Tooltip>
