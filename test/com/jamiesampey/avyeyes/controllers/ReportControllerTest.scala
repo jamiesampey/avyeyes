@@ -8,7 +8,6 @@ import com.jamiesampey.avyeyes.util.Constants.AvalancheEditWindow
 import helpers.BaseSpec
 import org.joda.time.DateTime
 import org.json4s.Extraction
-import org.json4s.JsonAST.JString
 import org.mockito.Mockito
 import org.specs2.specification.BeforeEach
 import play.api.inject.bind
@@ -58,7 +57,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
     "insert a new avalanche report" in new WithApplication(appBuilder.build) {
       val newAvalanche = genAvalanche.generate.copy(extId = testExtId)
-      val newReportRequest = FakeRequest().withTextBody(testAvalancheJson(newAvalanche))
+      val newReportRequest = fakeRequestForAvalanche(newAvalanche)
 
       val action = subject.submitReport(testExtId)
       val result = call(action, newReportRequest).resolve
@@ -81,8 +80,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
-
-      val updateRequest = FakeRequest().withTextBody(testAvalancheJson(updatedAvalanche))
+      val updateRequest = fakeRequestForAvalanche(updatedAvalanche)
 
       val action = subject.updateReport(testExtId, Some(originalAvalanche.editKey.toString))
       val result = call(action, updateRequest).resolve
@@ -104,8 +102,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
-
-      val updateRequest = FakeRequest().withTextBody(testAvalancheJson(updatedAvalanche))
+      val updateRequest = fakeRequestForAvalanche(updatedAvalanche)
 
       val action = subject.updateReport(testExtId, None)
       val result = call(action, updateRequest).resolve
@@ -120,8 +117,7 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
 
       val newComments = "new comments"
       val updatedAvalanche = originalAvalanche.copy(comments = Some(newComments), viewable = true)
-
-      val updateRequest = FakeRequest().withTextBody(testAvalancheJson(updatedAvalanche))
+      val updateRequest = fakeRequestForAvalanche(updatedAvalanche)
 
       val action = subject.updateReport(testExtId, Some(originalAvalanche.editKey.toString))
       val result = call(action, updateRequest).resolve
@@ -158,7 +154,5 @@ class ReportControllerTest extends BaseSpec with BeforeEach with Json4sMethods {
     }
   }
 
-  private def testAvalancheJson(avalanche: Avalanche) = writeJson(
-    Extraction.decompose(avalanche).replace(List("perimeter"), JString(avalanche.perimeter.map(_.toString).mkString(" ")))
-  )
+  private def fakeRequestForAvalanche(avalanche: Avalanche) = FakeRequest().withTextBody(writeJson(Extraction.decompose(avalanche)))
 }

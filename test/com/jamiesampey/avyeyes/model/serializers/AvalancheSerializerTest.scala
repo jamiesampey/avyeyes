@@ -34,10 +34,7 @@ class AvalancheSerializerTest extends BaseSpec {
 
     "deserialize an Avalanche from JSON" in {
       val avalanche = genAvalanche.generate
-
       val json = Extraction.decompose(avalanche)
-        .replace(List("perimeter"), JString(coordPerimeterAsString(avalanche.perimeter)))
-
       val extractedAvalanche = json.extract[Avalanche]
 
       extractedAvalanche.createTime mustEqual strToDate(dateToStr(avalanche.createTime))
@@ -57,10 +54,8 @@ class AvalancheSerializerTest extends BaseSpec {
 
     "escape encoded chars in comments" in {
       val avalanche = genAvalanche.generate
-      val json = Extraction.decompose(avalanche)
-        .replace(List("perimeter"), JString(coordPerimeterAsString(avalanche.perimeter)))
-        .replace(List("comments"), JString(
-          """Some comments with a
+      val json = Extraction.decompose(avalanche).replace(List("comments"),
+        JString("""Some comments with a
             |newline in the middle""".stripMargin))
 
       val extractedAvalanche = json.extract[Avalanche]
@@ -71,15 +66,11 @@ class AvalancheSerializerTest extends BaseSpec {
 
     "translate empty comments to None" in {
       val avalanche = genAvalanche.generate
-      val json = Extraction.decompose(avalanche)
-        .replace(List("perimeter"), JString(coordPerimeterAsString(avalanche.perimeter)))
-        .replace(List("comments"), JString(""))
+      val json = Extraction.decompose(avalanche).replace(List("comments"), JString(""))
 
       val extractedAvalanche = json.extract[Avalanche]
 
       extractedAvalanche.comments must beNone
     }
   }
-
-  private def coordPerimeterAsString(perimeter: Seq[Coordinate]) = perimeter.map(_.toString).mkString(" ")
 }
