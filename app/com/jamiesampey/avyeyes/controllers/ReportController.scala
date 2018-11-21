@@ -92,13 +92,13 @@ class ReportController @Inject()(implicit val dao: CachedDao, idService: Externa
 
   private def sendSubmissionEmails(a: Avalanche) = {
     val emailToAdmin = Email(
-      Messages("msg.avyReportSubmitEmailAdminSubject", a.submitterEmail), "AvyEyes <avyeyes@gmail.com>", Seq("avyeyes@gmail.com"),
-      bodyHtml = Some(Messages("msg.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, a.url))
+      Messages("help.avyReportSubmitEmailAdminSubject", a.submitterEmail), "AvyEyes <avyeyes@gmail.com>", Seq("avyeyes@gmail.com"),
+      bodyHtml = Some(Messages("help.avyReportSubmitEmailAdminBody", a.submitterEmail, a.extId, a.title, a.url))
     )
 
     val emailToSubmitter = Email(
-      Messages("msg.avyReportSubmitEmailSubmitterSubject", a.title), "AvyEyes <avyeyes@gmail.com>", Seq(a.submitterEmail),
-      bodyHtml = Some(Messages("msg.avyReportSubmitEmailSubmitterBody", a.title, a.url, a.editUrl))
+      Messages("help.avyReportSubmitEmailSubmitterSubject", a.title), "AvyEyes <avyeyes@gmail.com>", Seq(a.submitterEmail),
+      bodyHtml = Some(Messages("help.avyReportSubmitEmailSubmitterBody", a.title, a.url, a.editUrl))
     )
 
     mailerClient.send(emailToAdmin)

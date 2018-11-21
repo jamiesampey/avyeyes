@@ -54,11 +54,6 @@ help.avyReportImagesInstr2=Order images by dragging them within the grid
 help.avyReportImagesInstr3=Add a caption to the image (optional)
 help.avyReportImagesInstr4=Delete the image
 
-####### Admin #######
-
-label.avyAdminLoggedInAs=Logged in as
-label.avyAdminLogout=Logout
-
 ####### Enumerations #######
 
 enum.AvalancheType.L=Loose-snow avalanche

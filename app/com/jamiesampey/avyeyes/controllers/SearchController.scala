@@ -50,7 +50,7 @@ class SearchController @Inject()(val configService: ConfigurationService, val lo
 
   def spatialSearch(query: AvalancheSpatialQuery, camAltParam: Option[Double], camLngParam: Option[Double], camLatParam: Option[Double]) = Action { implicit request =>
     query.geoBounds match {
-      case geoBounds if geoBounds.isEmpty => BadRequest(Messages("msg.horizonInView"))
+      case geoBounds if geoBounds.isEmpty => BadRequest(Messages("help.horizonInView"))
       case _ => Try(dao.getAvalanches(query)) match {
         case Success(avalanches) =>
           (camAltParam, camLngParam, camLatParam) match {
