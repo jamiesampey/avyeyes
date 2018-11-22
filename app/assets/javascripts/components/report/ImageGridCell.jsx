@@ -70,14 +70,13 @@ const ImageGridCell = props => {
   const { classes, index, connectDropTarget, isOver, onCaptionChange, onDelete, children } = props;
 
   return connectDropTarget(
-
     <div
       className={classes.root}
       style={isOver && Boolean(children) ? { borderColor: 'red', borderWidth: 3 } : null}
     >
       <div className={classes.orderNumber}>{index + 1}</div>
       {children}
-      {children &&
+      {Boolean(children) && children.props.hasOwnProperty('image') &&
         <div className={classes.actionsBar}>
           <div className={classes.actionsWrapper}>
             <IconButton

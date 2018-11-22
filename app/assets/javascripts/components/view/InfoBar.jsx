@@ -42,6 +42,7 @@ const InfoBar = props => {
       message={message}
       action={[
         <IconButton
+          key="closeSnackbar"
           className={classes.closeIconButton}
           size="small"
           onClick={onClose}

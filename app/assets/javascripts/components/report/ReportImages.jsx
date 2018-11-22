@@ -27,6 +27,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import ImageGridCell from "./ImageGridCell";
 import DraggableImageTile from "./DraggableImage";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const styles = theme => ({
   table: {
@@ -76,6 +77,12 @@ const styles = theme => ({
     flexWrap: 'wrap',
     paddingBottom: 20,
   },
+  uploadSpinner: {
+    position: 'absolute',
+    top: 54,
+    left: 54,
+    color: 'crimson',
+  },
   captionDialogPaper: {
     width: 650,
   },
@@ -111,6 +118,7 @@ class ReportImages extends React.Component {
 
     this.state = {
       s3Client: client,
+      uploadCount: 0,
       captionImage: null,
       deleteImage: null,
     };
@@ -121,8 +129,9 @@ class ReportImages extends React.Component {
   }
 
   uploadImages(files) {
-    let { extId, setInfoMessage, editKey, csrfToken } = this.props;
+    if (files.length < 1) return;
 
+    let { extId, setInfoMessage, editKey, csrfToken } = this.props;
     let formData  = new FormData();
 
     for (let i = 0; i < files.length; i++) {
@@ -133,6 +142,7 @@ class ReportImages extends React.Component {
     }
 
     setInfoMessage('Image upload in progress. New images will appear in the grid when the upload is complete');
+    this.setState({ uploadCount: files.length }, this.refreshImageGrid);
 
     fetch(`/api/avalanche/${extId}/images?edit=${editKey}&csrfToken=${csrfToken}`, {
       method: 'POST',
@@ -141,13 +151,9 @@ class ReportImages extends React.Component {
       },
       body: formData,
     })
-      .then(response => {
-        return checkStatusAndParseJson(response)
-      })
-      .then(data => {
-        this.refreshImageGrid();
-      })
-      .catch(error => console.error(`ERROR uploading images for avalanche ${extId}. Error is: ${error}`))
+      .then(response => checkStatus(response))
+      .catch(error => setInfoMessage(`ERROR uploading images: ${error}`))
+      .finally(() => this.setState({ uploadCount: 0 }, this.refreshImageGrid))
   };
 
   handleImageMove(cellIndex, movedImage) {
@@ -205,7 +211,7 @@ class ReportImages extends React.Component {
 
   refreshImageGrid() {
     let { classes, extId, editKey, csrfToken } = this.props;
-    let { s3Client } = this.state;
+    let { s3Client, uploadCount } = this.state;
 
     let createNewImageGrid = (images) => {
       let imageGridCells = images.map((image, index) =>
@@ -221,8 +227,16 @@ class ReportImages extends React.Component {
         </ImageGridCell>
       );
 
-      for (let i = images.length; i < MAX_IMAGES; i++) {
-        imageGridCells.push(<ImageGridCell key={i} index={i}/>)
+      for (let i = imageGridCells.length; i < (images.length + uploadCount); i++) {
+        imageGridCells.push(
+          <ImageGridCell key={i} index={i}>
+            <CircularProgress className={classes.uploadSpinner} style={{width: 60, height: 60}}/>
+          </ImageGridCell>
+        );
+      }
+
+      for (let j = imageGridCells.length; j < MAX_IMAGES; j++) {
+        imageGridCells.push(<ImageGridCell key={j} index={j}/>);
       }
 
       this.setState({
@@ -323,57 +337,61 @@ class ReportImages extends React.Component {
           </TableBody>
         </Table>
 
-        <Dialog
-          open={Boolean(captionImage)}
-          disableBackdropClick
-          disableEscapeKeyDown
-          maxWidth={false}
-          classes={{paper: classes.captionDialogPaper}}
-        >
-          <DialogTitle>Image Caption</DialogTitle>
-          <DialogContent className={classes.captionDialogContent}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Caption"
-              value={Boolean(captionImage) ? captionImage.caption : ''}
-              onChange={(event) => {
-                captionImage.caption = event.target.value;
-                this.setState({captionImage: captionImage});
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.setState({captionImage: null})} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleCaptionChange} color="primary">
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
+        { Boolean(captionImage) &&
+          <Dialog
+            open={Boolean(captionImage)}
+            disableBackdropClick
+            disableEscapeKeyDown
+            maxWidth={false}
+            classes={{paper: classes.captionDialogPaper}}
+          >
+            <DialogTitle>Image Caption</DialogTitle>
+            <DialogContent className={classes.captionDialogContent}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                label="Caption"
+                value={captionImage.caption}
+                onChange={(event) => {
+                  captionImage.caption = event.target.value;
+                  this.setState({captionImage: captionImage});
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => this.setState({captionImage: null})} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={this.handleCaptionChange} color="primary">
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
+        }
 
-        <Dialog
-          open={Boolean(deleteImage)}
-          disableBackdropClick
-          disableEscapeKeyDown
-          maxWidth="xs"
-        >
-          <DialogTitle>Delete Image</DialogTitle>
-          <DialogContent>
-            <Typography variant="body1" color="textPrimary">
-              Are you sure you want to delete this image?
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.setState({deleteImage: null})} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleImageDelete} color="primary">
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
+        { Boolean(deleteImage) &&
+          <Dialog
+            open={Boolean(deleteImage)}
+            disableBackdropClick
+            disableEscapeKeyDown
+            maxWidth="xs"
+          >
+            <DialogTitle>Delete Image</DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" color="textPrimary">
+                Are you sure you want to delete this image?
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => this.setState({deleteImage: null})} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={this.handleImageDelete} color="primary">
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
+        }
 
       </div>
     );
