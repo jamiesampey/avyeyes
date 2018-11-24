@@ -44,18 +44,25 @@ module.exports = {
         }],
         unknownContextCritical: false, // Needed to avoid warnings from Cesium requires
     },
+    optimization: {
+        splitChunks: {
+          cacheGroups: {
+            common: {
+              name: 'common',
+              chunks: 'initial',
+              minChunks: 2
+            }
+          }
+        }
+    },
     plugins: [
         new webpack.NamedModulesPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
         new CopywebpackPlugin([ { from: path.join(cesiumSource, cesiumWorkers), to: 'Workers' } ]),
         new CopywebpackPlugin([ { from: path.join(cesiumSource, 'Assets'), to: 'Assets' } ]),
         new CopywebpackPlugin([ { from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' } ]),
         new webpack.DefinePlugin({
           CESIUM_BASE_URL: JSON.stringify('assets/javascripts/build') // Define relative base path in cesium for loading assets
         }),
-        new webpack.optimize.CommonsChunkPlugin({
-          name: 'common',
-        })
     ],
     amd: {
       toUrlUndefined: true // Enable webpack-friendly use of require in Cesium
