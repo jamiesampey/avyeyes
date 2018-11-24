@@ -8,7 +8,7 @@
     "clean": "rm -rf app/assets/javascripts/build",
     "compile": "webpack --config webpack.dev.js",
     "watch": "webpack --config webpack.dev.js --watch",
-    "dist": "webpack --config webpack.prod.js"
+    "dist": "npm run clean && webpack --config webpack.prod.js"
   },
   "repository": {
     "type": "git",

@@ -60,12 +60,12 @@ pipelineStages := Seq(digest, gzip)
 
 lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
 
-lazy val webpack = TaskKey[Unit]("Run webpack when packaging the application")
+lazy val webpackProdBuild = TaskKey[Unit]("Run a webpack prod build prior to prod .zip packaging")
 
-webpack := { Process("npm run compile", baseDirectory.value) ! }
+webpackProdBuild := { Process("npm run dist", baseDirectory.value) ! }
 
-dist <<= dist dependsOn webpack
+dist <<= dist dependsOn webpackProdBuild
 
-stage <<= stage dependsOn webpack
+stage <<= stage dependsOn webpackProdBuild
 
 // test <<= (test in Test) dependsOn webpack

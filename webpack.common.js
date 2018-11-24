@@ -8,7 +8,6 @@ const cesiumWorkers = '../Build/Cesium/Workers';
 
 module.exports = {
     target: 'web',
-    devtool: 'source-map',
     entry: {
       avyeyes: `${avyeyesSource}/AppEntry`,
       admin: `${avyeyesSource}/AdminEntry`,
