@@ -4,7 +4,7 @@ organization := "com.jamiesampey"
 
 name := "avyeyes"
 
-version := "1.3.7"
+version := "2.0.0"
 
 scalaVersion := "2.11.11"
 
@@ -56,16 +56,15 @@ watchSources ~= { (ws: Seq[File]) =>
   }
 }
 
-pipelineStages := Seq(digest, gzip)
+// pipelineStages := Seq(digest, gzip)
 
 lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
 
+// Prod build stuff below
+
+sources in (Compile, doc) := Seq.empty
+publishArtifact in (Compile, packageDoc) := false
+
 lazy val webpackProdBuild = TaskKey[Unit]("Run a webpack prod build prior to prod .zip packaging")
-
 webpackProdBuild := { Process("npm run dist", baseDirectory.value) ! }
-
 dist <<= dist dependsOn webpackProdBuild
-
-stage <<= stage dependsOn webpackProdBuild
-
-// test <<= (test in Test) dependsOn webpack
