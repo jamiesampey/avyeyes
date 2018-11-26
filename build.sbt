@@ -56,8 +56,6 @@ watchSources ~= { (ws: Seq[File]) =>
   }
 }
 
-// pipelineStages := Seq(digest, gzip)
-
 lazy val avyeyes = (project in file(".")).enablePlugins(PlayScala)
 
 // Prod build stuff below
