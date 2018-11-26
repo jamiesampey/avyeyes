@@ -19,8 +19,8 @@ A few example reports:
 
 ## The Code:
 
-The server side is written in [Scala](http://www.scala-lang.org/) and runs in the [Play Framework](https://www.playframework.com/). Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking and [ScalaCheck](http://www.scalacheck.org/) for test object generation.
+Server-side API code is written in [Scala](http://www.scala-lang.org/) and runs in the [Play Framework](https://www.playframework.com/). Tests are written in [Specs2](http://etorreborre.github.io/specs2/) with [Mockito](http://site.mockito.org/) for mocking and [ScalaCheck](http://www.scalacheck.org/) for test object generation.
 
-The client side is vanilla Javascript with [jQuery](https://jquery.com/), [jQueryUI](https://jqueryui.com/), and a few additional jQuery plugins. Javascript code is organized/injected via AMD and optimized with [RequireJS](http://requirejs.org/). The 3D view is provided by [CesiumJS](http://cesiumjs.org/). Tests are written in [Jasmine](https://jasmine.github.io/) with [Sinon](http://sinonjs.org/) and [Squire](https://github.com/iammerrick/Squire.js/) for mocking.
+The AvyEyes client is a pure ES6 Javascript [React](https://reactjs.org/) project which makes heavy use of Google's [Material-UI](https://material-ui.com/) library. The 3D view is provided by [CesiumJS](http://cesiumjs.org/). The AvyEyes client is an [NPM](https://www.npmjs.com/) project that uses [Babel](https://babeljs.io/) to transpile React JSX, and [Webpack](https://webpack.js.org/) to organize/build/optimize the Javascript.
 
 AvyEyes is deployed in [AWS](https://aws.amazon.com/) as an Elastic Beanstalk app with a [Postgres](https://www.postgresql.org/) RDS instance providing persistence and S3 providing file storage.
