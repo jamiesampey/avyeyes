@@ -77,7 +77,7 @@ const metersToFeet = (meters) => {
   return Math.round(meters * 3.28084);
 };
 
-module.exports = {
+export {
   NOT_SPECIFIED,
   AVALANCHE_IMAGE_TILE,
   fetchAvalanche,
