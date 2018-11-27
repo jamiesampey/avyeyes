@@ -1,6 +1,6 @@
 {
   "name": "avyeyes-client",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "React JS client for AvyEyes",
   "main": "avyeyes.js",
   "author": "Jamie Sampey",
